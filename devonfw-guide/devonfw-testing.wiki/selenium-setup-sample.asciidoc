@@ -1,0 +1,93 @@
+
+:toc: macro
+toc::[]
+:idprefix:
+:idseparator: -
+
+= Selenium Setup Example
+[%hardbreaks]
+Welcome to the Selenium setup wiki page. In this page we are going to familiarize ourselves with a few Selenium basic usages. 
+
+Fist of all we need to open the IDE, in our case we are going to use Eclipse. Let´s create a Maven project pressing right mouse button -> new -> Project...
+
+Now let’s go to Build Path and add the dependencies that we are going to need. Click in Add External JARs… button and search the jar files. In my case they are stored in the /lib folder that I created myself into the project. I also imported the Third Party drivers provided in the Selenium download page.
+
+Once our IDE is finally prepared, we are going to create a class for a simple functionality example.
+
+## Preparing the browser 
+----
+public void webLauncher(){
+    try{
+	System.setProperty("webdriver.chrome.driver", ".\\lib\\chromedriver.exe");
+	chromeDriver = new ChromeDriver();
+	
+	chromeDriver.manage().window().maximize();
+	chromeDriver.manage().deleteAllCookies();
+	chromeDriver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
+	chromeDriver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
+	chromeDriver.get("http://www.capgemini.com");
+	
+	useChrome();
+    }catch (Exception e){
+	e.printStackTrace();
+    }
+}
+----
+The useChrome() function will be shown below. Now we need to instantiate the code above in the App class. 
+----
+public class App {
+
+    public static void main( String[] args ) {
+        new App().callChrome();
+    }
+
+    public void callChrome(){
+        ChromeClass chrome = new ChromeClass();
+        chrome.webLauncher();
+	try {
+	    chrome.generateList();
+        } catch (Exception e) {
+ 	    e.printStackTrace();
+	}
+    }
+}
+----
+This will open the browser.
+
+## First automatic navigation
+
+This part will show us how Selenium do the clicks and write.
+----
+public void useChrome(){
+    try{
+	chromeDriver.findElement(By.className("header__search-button")).click();
+	chromeDriver.findElement(By.id("mainsearch")).sendKeys("Christmas");
+	chromeDriver.findElement(By.id("mainsearch_post")).click();
+	chromeDriver.findElement(By.className("single-input__submit")).click();	
+    }catch(NullPointerException npe){
+	npe.printStackTrace();
+    }
+}
+----
+Another utility is that we can get attributes. In the code below we can see a little example about how to make a list file.
+----
+public void generateList() throws Exception{
+		
+    List<WebElement> links=chromeDriver.findElements(By.tagName("a"));
+    PrintWriter writer = new PrintWriter("CapLinks.txt");
+
+    for(WebElement ele:links){
+        System.out.println(ele.getAttribute("href"));
+        numElement++;
+        writer.println(numElement + " - " + ele.getAttribute("href"));
+    } 
+		
+    writer.close();
+    chromeDriver.close();
+}
+----
+Now we can see the links with the href attribute, and store them into a file.
+
+In next sections you will have further and detailed information about Selenium and how powerful it can be, used wisely .
+
+https://github.com/devonfw/devonfw-testing/wiki/framework-setup[Continue to Framework setup]

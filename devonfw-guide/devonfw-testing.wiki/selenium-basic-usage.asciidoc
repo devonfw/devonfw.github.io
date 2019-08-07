@@ -1,0 +1,90 @@
+:toc: macro
+toc::[]
+:idprefix:
+:idseparator: -
+
+= Selenium Basic Usage
+
+== Maven Integration
+
+Maven is required because the tests will be started using Maven Goals. Even if your webapplication is not built upon a Maven project, you should create a _pom.xml_ just for the Selenium testing purposes.
+
+After creating the _pom.xml_ file, the WebDriver extensions have to be declared as a dependency.
+
+[source, xml]
+----
+<dependency>
+	<groupId>com.github.webdriverextensions</groupId>
+	<artifactId>webdriverextensions</artifactId>
+	<version>3.5.0</version>
+	<scope>test</scope>
+</dependency>
+----
+
+== Locating UI Elements
+
+UI elements can be located by using the following attributes:
+
+* ID
+* Class Name
+* Tag Name
+* Name
+* Link Text
+* Partial Link Text
+* CSS Selectors
+
+Binding these elements to Java objects is relatively straightforward.
+
+[source, java]
+----
+// WebDriver Initialization
+WebDriver driver = new HTMLUnitDriver();
+
+// Loading desired Webpage
+driver.get("somewebpage.com");
+
+// Finding elements using findElement() method with multiple attributes
+Element element = driver.findElement(By.id("someComboBoxId"));
+
+Element element = driver.findElement(By.className("someComboBoxClassName"));
+
+Element element = driver.findElement(By.tagName("someComboBoxTagName"));
+
+Element element = driver.findElement(By.name("someComboBoxName"));
+
+Element element = driver.findElement(By.linkText("someLinkText"));
+
+Element element = driver.findElement(By.partialLinkText("LinkText"));
+
+Element element = driver.findElement(By.cssSelector("#css .cssclass"));
+
+----
+
+*Note:* Alternatively to using the _driver.findElement()_ method, the _@Find_ annotation can simplify the element locating process.
+
+[source, java]
+----
+@FindBy(id = "someComboBoxId")
+Element element;
+----
+
+== UI Element Interaction
+
+=== Fetching values
+
+Getter methods can be used to access element values.
+
+[source, java]
+----
+Element element = driver.findElement(By.id("someElementId"))
+String value = element.getText();
+----
+
+=== Setting values
+
+[source, java]
+----
+
+driver.findElement(By.id("someId")).sendKeys("Selenium will enter this text");
+
+----

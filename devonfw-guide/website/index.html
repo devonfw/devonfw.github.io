@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>devonfw guide</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="//fonts.googleapis.com/css?family=Ubuntu"
+    />
+
+    <!-- Style fort the header/navbar -->
+    <link rel="stylesheet" type="text/css" href="header/header.css" />
+
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <style>
+    body,
+    html {
+      margin: 0;
+      font-family: Ubuntu;
+    }
+
+    html {
+      overflow: scroll;
+      overflow-x: hidden;
+    }
+
+    ::-webkit-scrollbar {
+      width: 0px; /* Remove scrollbar space */
+      background: transparent; /* Optional: just make scrollbar invisible */
+    }
+
+    /****************************** Layout ********************************/
+    .main-content {
+      height: 100vh;
+      display: grid;
+      grid-template-columns: auto;
+      grid-template-rows: 62px auto;
+    }
+
+    .docs-page {
+      grid-row-start: 2;
+      grid-column-start: 1;
+      display: grid;
+      grid-template-columns: 25% auto 20%;
+      grid-template-rows: auto;
+      height: 100%;
+    }
+
+    .about-page {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-evenly;
+    }
+
+    .about-page .cards-section {
+      display: flex;
+    }
+
+    /***************** Wiki sidebar / wiki second sidebar *****************/
+    .wiki-sidebar {
+      grid-row-start: 1;
+      grid-column-start: 1;
+      padding: 0 16px;
+      overflow: scroll;
+    }
+
+    .wiki-sidebar .toc2 {
+      line-height: 16px;
+    }
+
+    .wiki-sidebar a,
+    .wiki-second-sidebar a {
+      color: #2b292d;
+      display: block;
+      margin-top: 16px;
+      text-decoration: none;
+    }
+
+    .wiki-sidebar .sidebar-header > h1,
+    .wiki-sidebar .sidebar-header:not(:first-child) > div > div {
+      display: none;
+    }
+
+    .wiki-sidebar .sidebar-header:first-child > div > div,
+    .wiki-second-sidebar .title {
+      margin-top: 32px;
+    }
+
+    .wiki-sidebar a.active,
+    .wiki-second-sidebar a .navy {
+      color: #4cbdec;
+    }
+
+    .wiki-sidebar a .navy,
+    .wiki-second-sidebar a .navy {
+      color: #2b292d;
+    }
+
+    .wiki-sidebar ul,
+    .wiki-second-sidebar ul {
+      list-style: none;
+      padding-left: 24px;
+    }
+    /************* Wiki second sidebar **************/
+
+    .wiki-second-sidebar {
+      grid-row-start: 1;
+      grid-column-start: 3;
+      font-family: Ubuntu;
+      padding: 0 16px;
+      overflow: scroll;
+    }
+
+    .sectlevel2,
+    .sectlevel3 {
+      display: none;
+    }
+
+    .wiki-second-sidebar .sectlevel2.display,
+    .wiki-second-sidebar .sectlevel3.display {
+      display: unset;
+    }
+
+    /***************** Wiki content *****************/
+    .wiki-content {
+      grid-row-start: 1;
+      grid-column-start: 2;
+    }
+
+    .wiki-content iframe {
+      width: 100%;
+    }
+
+    #content .imageblock {
+      display: flex;
+      flex-direction: column;
+    }
+
+    #content .imageblock .content {
+      align-self: center;
+    }
+
+    /****************** website navbar *****************/
+    .website-navbar {
+      height: 62px;
+      background-color: #4cbdec;
+      grid-row-start: 1;
+      grid-row-end: 1;
+      grid-column: 1;
+      display: flex;
+    }
+
+    /*
+    .website-navbar ul {
+      height: 100%;
+      margin-top: 0;
+      margin-bottom: 0;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+    }
+
+    .website-navbar ul li {
+      display: flex;
+      align-items: center;
+    }
+
+    .website-navbar ul li a {
+      text-decoration: none;
+      color: white;
+      margin-left: 16px;
+      margin-right: 16px;
+    }*/
+
+    .website-navbar * {
+      color: white;
+      margin-left: 16px;
+      margin-right: 16px;
+      cursor: default;
+    }
+
+    .website-navbar *:first-child {
+      flex-grow: 1;
+    }
+
+    /*************************** Website cards *****************************/
+
+    .website-card {
+      box-sizing: border-box;
+      width: 600px;
+      padding: 32px 24px;
+      background-color: white;
+      border: 2px solid rgba(43, 41, 45, 0.2);
+      border-radius: 9px;
+      display: flex;
+      margin-top: 16px;
+    }
+
+    .website-card:hover{
+      border-radius: 9px;
+      background-color: #FFFFFF;
+      border: none;
+      box-shadow: 0px 0px 16px 0px rgba(0,0,0,0.2);
+	  }
+
+    .website-card .image {
+      margin-right: 32px;
+    }
+
+    .website-card img {
+      width: 80%;
+    }
+
+    .website-card a {
+      color: #4cbdec;
+    }
+
+    /***************************** Utilities *******************************/
+    .hidden {
+      display: none;
+    }
+  </style>
+  <body>
+    <div class="main-content">
+      <div id="website-navbar" class="website-navbar"></div>
+      <div id="website-content" class="website-content">
+        <div id="about-page" class="about-page"></div>
+        <div id="docs-page" class="docs-page hidden">
+          <div id="wiki-content" class="wiki-content"></div>
+          <div class="wiki-second-sidebar">
+            <div class="title">CONTENT</div>
+            <div id="second-sidebar-content"></div>
+          </div>
+          <!-- HTML SIDEBAR -->
+          <div id="sidebar" class="wiki-sidebar">
+            <div id="header-1" class="sidebar-header">
+              <h1>devonfw guide devon4ng</h1>
+              <div id="toc" class="toc2">
+                <div id="toctitle">Table of Contents</div>
+                <ul class="sectlevel0">
+                  <li>
+                    <a href="#master-devon4ng.asciidoc">devon4ng</a>
+                    <ul class="sectlevel1">
+                      <li>
+                        <a href="#architecture.asciidoc">Architecture</a>
+                        <ul class="sectlevel2">
+                          <li>
+                            <a href="#architecture.asciidoc_overview"
+                              >Overview</a
+                            >
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#meta-architecture.asciidoc"
+                          >Meta Architecture</a
+                        >
+                        <ul class="sectlevel2">
+                          <li>
+                            <a href="#meta-architecture.asciidoc_introduction"
+                              >Introduction</a
+                            >
+                          </li>
+                          <li>
+                            <a
+                              href="#meta-architecture.asciidoc_devonfw-reference-client-architecture"
+                              >devonfw Reference Client Architecture</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#meta-architecture.asciidoc_appendix"
+                              >Appendix</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#meta-architecture.asciidoc_references"
+                              >References</a
+                            >
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#master-devon4ng.asciidoc_layers">Layers</a>
+                        <ul class="sectlevel2">
+                          <li>
+                            <a href="#components-layer.asciidoc"
+                              >Components Layer</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#services-layer.asciidoc"
+                              >Services Layer</a
+                            >
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#master-devon4ng.asciidoc_guides">Guides</a>
+                        <ul class="sectlevel2">
+                          <li>
+                            <a href="#guide-package-managers.asciidoc"
+                              >Package Managers</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#guide-npm-yarn-workflow.asciidoc"
+                              >Package Managers Workflow</a
+                            >
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#master-devon4ng.asciidoc_angular"
+                          >1. Angular</a
+                        >
+                        <ul class="sectlevel2">
+                          <li>
+                            <a href="#guide-accessibility.asciidoc"
+                              >1.1. Accessibility</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#guide-angular-elements.asciidoc"
+                              >1.2. Angular Elements</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#guide-angular-lazy-loading.asciidoc"
+                              >1.3. Angular Lazy loading</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#guide-angular-library.asciidoc"
+                              >1.4. Angular Library</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#guide-angular-theming.asciidoc"
+                              >1.5. Angular Material Theming</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#guide-angular-pwa.asciidoc"
+                              >1.6. Angular Progressive Web App</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#guide-app-initializer.asciidoc"
+                              >1.7. APP_INITIALIZER</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#guide-component-decomposition.asciidoc"
+                              >1.8. Component Decomposition</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#guide-consuming-rest-services.asciidoc"
+                              >1.9. Consuming REST services</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#guide-error-handler.asciidoc"
+                              >1.10. Error Handler in angular</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#guide-file-structure.asciidoc"
+                              >1.11. File Structure</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#guide-internationalization.asciidoc"
+                              >1.12. Internationalization</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#guide-routing.asciidoc">1.13. Routing</a>
+                          </li>
+                          <li>
+                            <a href="#guide-testing.asciidoc">1.14. Testing</a>
+                          </li>
+                          <li>
+                            <a href="#guide-update-angular-cli.asciidoc"
+                              >1.15. Update Angular CLI</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#guide-working-with-angular-cli.asciidoc"
+                              >1.16. Working with Angular CLI</a
+                            >
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#master-devon4ng.asciidoc_ionic">2. Ionic</a>
+                        <ul class="sectlevel2">
+                          <li>
+                            <a href="#guide-ionic-getting-started.asciidoc"
+                              >2.1. Ionic 4 Getting started</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#basic-proyect-set-up"
+                              >2.2. Basic proyect set up</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#guide-ionic-from-code-to-android.asciidoc"
+                              >2.3. Ionic 4 to android</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#guide-ionic-pwa.asciidoc"
+                              >2.4. Ionic Progressive Web App</a
+                            >
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#master-devon4ng.asciidoc_layouts"
+                          >3. Layouts</a
+                        >
+                        <ul class="sectlevel2">
+                          <li>
+                            <a
+                              href="#guide-layout-with-angular-material.asciidoc"
+                              >3.1. Angular Material Layout</a
+                            >
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#master-devon4ng.asciidoc_ngrx">4. NgRx</a>
+                        <ul class="sectlevel2">
+                          <li>
+                            <a href="#guide-ngrx-getting-started.asciidoc"
+                              >4.1. Introduction to NgRx</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#guide-ngrx-simple-store.asciidoc"
+                              >4.2. State, Selection and Reducers</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#guide-ngrx-effects.asciidoc"
+                              >4.3. Side effects with NgRx/Effects</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#guide-ngrx-entity.asciidoc"
+                              >4.4. Simplifying CRUD with NgRx/Entity</a
+                            >
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#master-devon4ng.asciidoc_cookbook"
+                          >5. Cookbook</a
+                        >
+                        <ul class="sectlevel2">
+                          <li>
+                            <a href="#cookbook-abstract-class-store.asciidoc"
+                              >5.1. Abstract Class Store</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#guide-add-electron.asciidoc"
+                              >5.2. Angular Electron</a
+                            >
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div id="header-2" class="sidebar-header">
+              <h1>devonfw guide testing</h1>
+              <div id="toc" class="toc2">
+                <div id="toctitle">Table of Contents</div>
+                <ul class="sectlevel0">
+                  <li>
+                    <a href="#master-devonfw-testing.asciidoc"
+                      >devonfw testing</a
+                    >
+                    <ul class="sectlevel1">
+                      <li>
+                        <a href="#Home.asciidoc">Home</a>
+                        <ul class="sectlevel2">
+                          <li><a href="#home.asciidoc_contact">Contact</a></li>
+                          <li>
+                            <a
+                              href="#home.asciidoc_what-is-e2e-mr-checker-test-framework"
+                              >What is E2E Mr Checker Test Framework</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#home.asciidoc_where-mr-checker-applies"
+                              >Where Mr Checker applies?</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#home.asciidoc_benefits-for-the-project"
+                              >Benefits for the project</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#home.asciidoc_road-map-plan"
+                              >Road map plan</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#home.asciidoc_wiki-structure"
+                              >Wiki Structure</a
+                            >
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a href="#How-to-install.asciidoc">How to install</a>
+                        <ul class="sectlevel3">
+                          <li>
+                            <a
+                              href="#how-to-install.asciidoc_easy-out-of-the-box-installation"
+                              >Easy out of the box installation</a
+                            >
+                          </li>
+                          <li>
+                            <a
+                              href="#how-to-install.asciidoc_out-of-the-box-installation---with-additional-steps"
+                              >Out of the box installation - with additional
+                              steps</a
+                            >
+                          </li>
+                          <li>
+                            <a
+                              href="#how-to-install.asciidoc_advanced-manual-step-by-step-installation"
+                              >Advanced manual step by step installation</a
+                            >
+                          </li>
+                        </ul>
+                      </li>
+                      <li>
+                        <a
+                          href="#master-devonfw-testing.asciidoc_mr-checker-test-framework-modules"
+                          >Mr Checker Test Framework modules</a
+                        >
+                        <ul class="sectlevel2">
+                          <li>
+                            <a href="#Core-test-module.asciidoc"
+                              >Core Test Module</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#Selenium-test-module.asciidoc"
+                              >Selenium Test Module</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#WebAPI-test-module.asciidoc"
+                              >WebAPI Test Module</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#WebAPI-test-module.asciidoc"
+                              >Service Virtualization</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#Security-test-module.asciidoc"
+                              >Security Test Module</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#Database-test-module.asciidoc"
+                              >Database Test Module</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#Mobile-test-module.asciidoc"
+                              >Mobile Test Module</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#Standalone-test-module.asciidoc"
+                              >Standalone Test Module</a
+                            >
+                          </li>
+                          <li>
+                            <a href="#DevOps-module.asciidoc">DevOps Module</a>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      //const NAVBAR_HTML_UL = 'header/header.html #toc';
+      const NAVBAR_HTML_UL = 'layout.html #content .sect1';
+      const CARDS_HTML_UL = 'layout.html #content .sect1';
+      const INITAL_PAGE_URL = './master.html';
+      const SIDEBAR_NAME = 'Features';
+
+      $(window).on('load', function() {
+        openPage(INITAL_PAGE_URL);
+
+        toSecondSidebar();
+
+        $('ul.sectlevel0 > li > a')
+          .first()
+          .addClass('active');
+
+        $('.wiki-sidebar .sidebar-header:first-child > div > div').text(
+          SIDEBAR_NAME,
+        );
+        clickSidebar();
+
+        configureNavbar(NAVBAR_HTML_UL);
+
+        loadCards(CARDS_HTML_UL);
+
+        editSrc();
+      });
+
+      function openPage(page, bookmark = '') {
+        let frame = `
+                    <iframe
+                        id="page-frame"
+                        src="${page}${bookmark}"
+                        height="100%"
+                        style="border:none"
+                    ></iframe>`;
+        $('#page-frame').remove();
+        $('#wiki-content').append(frame);
+      }
+
+      function clickSidebar() {
+        $('ul.sectlevel0 > li').each(function(index) {
+          let text = $(this)
+            .children('a')
+            .text();
+
+          $(this)
+            .find('a')
+            .each(function(index) {
+              let bookmark = $(this).attr('href');
+
+              $(this).click(function() {
+                if (text == 'devon4ng') {
+                  openPage('./master.html', bookmark);
+                } else {
+                  openPage('./master-1.html', bookmark);
+                }
+
+                $('ul.sectlevel0 > li a').removeClass('active');
+                $(this).addClass('active');
+              });
+            });
+        });
+      }
+
+      function toSecondSidebar(
+        originSelector = '.sectlevel1 > li',
+        destSelector = '#second-sidebar-content',
+      ) {
+        $(originSelector).each(function(index) {
+          let sectlevel2 = $(this).children('ul');
+
+          $(this).click(function() {
+            $(destSelector)
+              .children()
+              .remove();
+            sectlevel2.removeClass('display');
+            $(destSelector).append(sectlevel2.addClass('display'));
+          });
+        });
+      }
+
+      function configureNavbar(
+        navbarHtmlUl,
+        navbarDestSelector = '#website-navbar',
+      ) {
+        $(navbarDestSelector).load(navbarHtmlUl, function() {
+          $(this).html(
+            $(navbarDestSelector + ' [id$="_header"]')
+              .siblings()
+              .find('.sect2 .sect3 h4')
+              .addClass('navbar-link'),
+          );
+
+          $('.navbar-link').click(function() {
+            const regex = /(.*)_(.*)/g;
+            let m = regex.exec($(this).attr('id'));
+            let page = m[m.length - 1];
+            console.log(page);
+            $('[id$="-page"]').addClass('hidden');
+            $('#' + page + '-page').removeClass('hidden');
+          });
+        });
+      }
+
+      function loadCards(cardsHtmlUl, cardDestSelector = '#about-page') {
+        $(cardDestSelector).load(cardsHtmlUl, function() {
+          let outmap = $.map(
+            $(cardDestSelector + ' [id$="_cards"]')
+              .siblings()
+              .find('.sect3'),
+            function(val, i) {
+              let mainDiv = $('<div></div>');
+              let image = $('<div class="image"></div>').append(
+                $(val).children('.imageblock'),
+              );
+              mainDiv.append(image);
+
+              let content = $('<div class="content"></div>').append(
+                $(val).children(':not(.imageblock)'),
+              );
+              mainDiv.append(content);
+
+              return mainDiv.addClass('website-card');
+            },
+          );
+
+          $(this).html(outmap);
+          editSrc();
+        });
+      }
+
+      function editSrc() {
+        $('img').each(function() {
+          $(this).attr(
+            'src',
+            $(this)
+              .attr('src')
+              .replace(
+                'C:/Proyectos/devon-docgen-projects/devonfw-guide-fork-faster/devonfw-guide/target/website/',
+                '../',
+              ),
+          );
+        });
+      }
+    </script>
+  </body>
+</html>

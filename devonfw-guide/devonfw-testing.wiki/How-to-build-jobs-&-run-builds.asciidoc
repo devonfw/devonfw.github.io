@@ -1,0 +1,129 @@
+:toc: macro
+toc::[]
+:idprefix:
+:idseparator: -
+
+= Adding a new item
+
+The easiest way to create a new job is to use the "new item" option. You can create a whole new item or copy the configuration from an already existing job with changing only the parameters we are interested in.
+
+image::images/devops/Jobs_menu.png["List of jobs", width="450", link="images/devops/Jobs_menu.png"]
+
+Click "new item" in the menu and next and on the next page enter an item name and choose the type.
+
+image::images/devops/New_item_name.png["List of jobs", width="450", link="images/devops/New_item_name.png"]
+
+If you want, you can copy an existing configuration:
+
+image::images/devops/Copy_conf_from_old_job.png["List of jobs", width="450", link="images/devops/Copy_conf_from_old_job.png"]
+
+
+= Configuring job
+
+Each job can be configured according to your preferences. This is done on the page available in the menu of the job page. Just click on "configure".
+
+Load the main page again and next look at the middle of the page. Two job catalogs are displayed there.
+
+image::images/devops/List_of_jobs.png["List of jobs", width="450", link="images/devops/List_of_jobs.png"]
+
+
+Click "Training" directory name. You will be taken to a page with a list of available jobs. In the default configuration there are:
+
+. selenium_workshop
+. selenium_workshop_cucumber
+. selenium_workshop_cucumberParallel
+
+image::images/devops/List_of_training_jobs.png["List of training jobs", width="450", link="images/devops/List_of_training_jobs.png"]
+
+
+Click on the name - "selenium_workshop". You will be taken to the main page of the selected Job
+
+image::images/devops/Selenium_workshop_content.png["Selenium workshop content", width="450", link="images/devops/Selenium_workshop_content.png"]
+
+From the menu on the left select "configure". 
+
+image::images/devops/Job_config_page.png["Job config page", width="450", link="images/devops/Job_config_page.png"]
+
+The configuration categories are displayed there:
+
+. General 
+. Source Code Management
+. Build Triggers
+. Build Environment
+. Build
+. Post-build Actions
+
+
+= Running example build
+
+Let create the first build. Choose selenium workshop main page again.
+
+image::images/devops/Selenium_workshop_content.png["Selenium workshop content", width="450", link="images/devops/Selenium_workshop_content.png"]
+
+Click the link "Build with parameters " in the menu on the left. On this page you can choose the configuration of the branch name and the name of the test that will run.
+
+image::images/devops/Build_with_parameters_page_content.png["Build with parameters page content", width="450", link="images/devops/Build_with_parameters_page_content.png"]
+
+Click the button and see that your build has been targeted. 
+
+image::images/devops/Waiting_for_executor_for_first_build.png["Waiting for executor for first build", width="450", link="images/devops/Waiting_for_executor_for_first_build.png"]
+
+After assigning to him the executor it will be executed.
+
+image::images/devops/Jenkins_slave_execution_process.png["Jenkins slave execution process", width="450", link="images/devops/Jenkins_slave_execution_process.png"]
+
+It is also possible to preview the build page:
+
+image::images/devops/Jenkins_after_build_page.png["Jenkins after build page", width="450", link="images/devops/Jenkins_after_build_page.png"]
+
+= Editing the list of plugins
+
+Please, open `/home/<YourUserName>/dev_ops_module/jenkinsdockercompose/jenkins_home_mng` directory. You should see file  `plugins.txt` on the list. Please edit it. It is possible to add or remove plugins that interest you.
+
+```
+$  cd /home/<YourUserName>/dev_ops_module/jenkinsdockercompose/jenkins_home_mng
+$  ls
+$  nano plugins.txt
+```
+Finish editing this file: Nano: `Ctrl + X` and `Y` Vi: `Esc + wq`. After this operation, the application must be restarted:
+* https://github.com/devonfw/devonfw-testing/wiki/How-to-build-this-DevOps-module[DevOps module installation]
+
+The second way is to edit the plugins option in the GUI.
+
+
+= User management
+Please, open `/home/<YourUserName>/dev_ops_module/jenkinsdockercompose/jenkins_home_security/jenkins_home/users` directory. Print content of it by `ls` command. You should see list of jenkins users. 
+```
+$  cd /home/<YourUserName>/dev_ops_module/jenkinsdockercompose/jenkins_home_security/jenkins_home/users
+$  ls
+```
+
+== Adding new user
+
+The easiest way to create a new user is to copy his configuration file from one of the existing users and substitute the required options. 
+
+```
+# Please create directory for new user and copy files
+#
+$  mkdir newUserName
+$  cd newUserName
+$  cp ../user1/config.xml .
+$  ls
+#  You should see Your config. Please edit chosen option if You want
+$  nano config.xml
+```
+Finish editing this file: Nano: `Ctrl + X` and `Y`
+
+== Removing user
+
+Open default directory of users again: `/home/<YourUserName>/dev_ops_module/jenkinsdockercompose/jenkins_home_security/jenkins_home/users`. Choose user name to remove and execute it by Unix `rm` command:
+
+```
+$  cd /home/<YourUserName>/dev_ops_module/jenkinsdockercompose/jenkins_home_security/jenkins_home/users
+$  ls
+#  execute commmand : rm -rf <userName>
+#  ! Take special care, executing the following command in the wrong directory can cause undesirable effects for other
+#  applications or the entire operating system
+$  rm -rf user1
+```
+

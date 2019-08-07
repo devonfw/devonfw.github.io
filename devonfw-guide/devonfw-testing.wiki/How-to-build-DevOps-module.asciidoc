@@ -1,0 +1,143 @@
+:toc: macro
+toc::[]
+:idprefix:
+:idseparator: -
+
+= How to build DevOps module
+
+== Prerequisites
+* 64-bit Linux operating server system (recommended: Ubuntu 16.04 LTS server - https://www.ubuntu.com/download/server/thank-you?version=16.04.3&architecture=amd64[Download]
+* Non-root user with sudo privileges (the default user created during the operating system installation process) 
+* Docker - open source software platform to create, deploy and manage virtualized application containers on a common operating system (OS), with an ecosystem of allied tools.
+* git - version control system software to clone module code
+
+== Docker service installation
+```
+$  curl -fsSL get.docker.com -o get-docker.sh
+
+$  sh get-docker.sh
+```
+
+== Git installation
+```
+$  sudo apt-get install git
+```
+
+== Creating special system users
+```
+$  sudo useradd -M jenkins
+
+$  sudo usermod -L jenkins
+
+$  sudo usermod -a -G docker jenkins
+```
+
+== Cloning the repository
+
+Check Your current directory, create a new for DevOps module in /home/<YourUserName>. Open it and enter git clone command  
+```
+$  pwd
+   /home/<YourUserName>/
+$  mkdir dev_ops_module
+$  cd dev_ops_module
+$  pwd
+   /home/<YourUserName>/dev_ops_module
+$  git clone https://bitbucket.org/lukasz_stefaniszyn/jenkinsdockercompose.git
+```
+
+== Enabling Docker remote API
+
+Enable Docker remote API - By default, due to security reasons, Docker runs via a non-networked Unix socket. This solution allows only local communication. The Docker daemon in Ubuntu 16.04 is configured by the system, so You need to modify file `/lib/systemd/system/docker.service`. You'll enable the access to the Docker daemon from specific IP address. 
+
+Allow port communication:
+```
+$  sudo ufw allow 4243/tcp
+$  sudo ufw allow 32000:33000/tcp
+```
+
+Open file docker service and replace variable `ExecStart` value:
+```
+$  sudo nano /lib/systemd/system/docker.service
+#
+# Find variable ExecStart and change value to: /usr/bin/dockerd -H tcp://0.0.0.0:4243 -H unix:///var/run/docker.sock
+#
+
+$  ExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:4243 -H unix:///var/run/docker.sock
+```
+Finish editing this file: Nano: `Ctrl + X` and `Y` Vi: `Esc + wq`
+
+Restart deamon and docker service:
+```
+$  sudo systemctl daemon-reload
+$  sudo service docker restart
+```
+
+Please, test the configuration:
+```
+$  curl --noproxy GET http://127.0.0.1:4243/version
+```
+
+The answer should be similar to the one shown in the picture:
+
+image::images/devops/Api_version_test.png["Api version test", width="450", link="images/devops/Api_version_test.png"]
+
+== Jenkins with Docker
+
+Execute commands:
+```
+$  sudo apt-get upgrade -y
+$  sudo apt-get install -y sudo libltdl-dev
+$  GID=$(cut -d: -f3 < <(getent group docker))
+```
+
+
+= Running module
+
+Open JenkinsDockerCompose directory and print the path by `pwd` command:
+
+```
+$ pwd
+/home/<YourUserName>/dev_ops_module
+$ cd jenkinsdockercompose
+$ pwd
+/home/<YourUserName>/dev_ops_module/jenkinsdockercompose/
+```
+ 
+Let's edit a configuration file `create_and_run.sh`. You can use default system text editors such as "nano" or "vi":
+
+```
+$ nano create_and_run.sh
+```
+
+Replace variable value in the second line with the path previously displayed: `/home/<YourUserName>/dev_ops_module/jenkinsdockercompose/`
+
+```
+1  echo "Set global variables"
+2  REPO_HOME=/home/<DefaultUserName>/dev_ops_module/jenkinsdockercompose/
+```
+
+Finish editing this file: Nano: `Ctrl + X` and `Y` Vi: `Esc + wq` and run the script:
+```
+$ sudo ./create_and_run.sh
+```
+
+Wait until the end of the building process. It can take a few minutes. What happened there?
+
+. Setting global variables
+. Removing older docker images (if they exist)
+. Building jenkins_home_security image
+. Building jenkins_home_jobs image
+. Building jenkins_home_mng image
+. Start Jenkins
+
+Run web browser with address `http://<server-ip-address>:8080`. If the configuration is correct, the Jenkins main page will be displayed.
+
+image::images/devops/Jenkins_main_page.png["Jenkins main page", width="450", link="images/devops/Jenkins_main_page.png"]
+
+== Configuring slaves
+
+Login as jenkins admin and run web browser with address `http://<server-ip-address>:8080/configure`
+
+Find API ip address option and change it to `http://<server-ip-address>:4243`
+
+image::images/devops/Jenkins_api_gui_test.PNG["Jenkins api gui test", width="450", link="images/devops/Jenkins_api_gui_test.PNG"]
