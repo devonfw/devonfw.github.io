@@ -15,8 +15,29 @@
       href="//fonts.googleapis.com/css?family=Ubuntu"
     />
 
-    <!-- Style fort the header/navbar -->
+    <!-- Style for the header/navbar -->
     <link rel="stylesheet" type="text/css" href="header/header.css" />
+
+    <!-- Script for the header/navbar -->
+    <script src="header/header.js"></script>
+
+    <!-- Style fort the cards -->
+    <link rel="stylesheet" type="text/css" href="cards/cards.css" />
+
+    <!-- Script for the cards -->
+    <script src="cards/cards.js"></script>
+
+    <!-- Style fort the explore-cards -->
+    <link rel="stylesheet" type="text/css" href="explore-cards/explore-cards.css" />
+
+    <!-- Script for the explore-cards -->
+    <script src="explore-cards/explore-cards.js"></script>
+
+    <!-- Style fort the resources -->
+    <link rel="stylesheet" type="text/css" href="resources/resources.css" />
+
+    <!-- Script for the resources -->
+    <script src="resources/resources.js"></script>
 
     <script
       src="https://code.jquery.com/jquery-3.4.1.min.js"
@@ -58,13 +79,13 @@
       height: 100%;
     }
 
-    .about-page {
+    .logo-page {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-evenly;
     }
 
-    .about-page .cards-section {
+    .logo-page .cards-section {
       display: flex;
     }
 
@@ -152,81 +173,6 @@
       align-self: center;
     }
 
-    /****************** website navbar *****************/
-    .website-navbar {
-      height: 62px;
-      background-color: #4cbdec;
-      grid-row-start: 1;
-      grid-row-end: 1;
-      grid-column: 1;
-      display: flex;
-    }
-
-    /*
-    .website-navbar ul {
-      height: 100%;
-      margin-top: 0;
-      margin-bottom: 0;
-      display: flex;
-      flex-direction: row;
-      justify-content: flex-end;
-    }
-
-    .website-navbar ul li {
-      display: flex;
-      align-items: center;
-    }
-
-    .website-navbar ul li a {
-      text-decoration: none;
-      color: white;
-      margin-left: 16px;
-      margin-right: 16px;
-    }*/
-
-    .website-navbar * {
-      color: white;
-      margin-left: 16px;
-      margin-right: 16px;
-      cursor: default;
-    }
-
-    .website-navbar *:first-child {
-      flex-grow: 1;
-    }
-
-    /*************************** Website cards *****************************/
-
-    .website-card {
-      box-sizing: border-box;
-      width: 600px;
-      padding: 32px 24px;
-      background-color: white;
-      border: 2px solid rgba(43, 41, 45, 0.2);
-      border-radius: 9px;
-      display: flex;
-      margin-top: 16px;
-    }
-
-    .website-card:hover{
-      border-radius: 9px;
-      background-color: #FFFFFF;
-      border: none;
-      box-shadow: 0px 0px 16px 0px rgba(0,0,0,0.2);
-	  }
-
-    .website-card .image {
-      margin-right: 32px;
-    }
-
-    .website-card img {
-      width: 80%;
-    }
-
-    .website-card a {
-      color: #4cbdec;
-    }
-
     /***************************** Utilities *******************************/
     .hidden {
       display: none;
@@ -236,7 +182,9 @@
     <div class="main-content">
       <div id="website-navbar" class="website-navbar"></div>
       <div id="website-content" class="website-content">
-        <div id="about-page" class="about-page"></div>
+        <div id="logo-page" class="logo-page"></div>
+        <div id="resources-page" class="resources-page hidden"></div>
+        <div id="explore-page" class="explore-page hidden"></div>
         <div id="docs-page" class="docs-page hidden">
           <div id="wiki-content" class="wiki-content"></div>
           <div class="wiki-second-sidebar">
@@ -621,6 +569,8 @@
       //const NAVBAR_HTML_UL = 'header/header.html #toc';
       const NAVBAR_HTML_UL = 'layout.html #content .sect1';
       const CARDS_HTML_UL = 'layout.html #content .sect1';
+      const EXPLORE_CARDS_HTML_UL = 'layout.html #content .sect1';
+      const RESOURCES_HTML = 'layout.html #content .sect1';
       const INITAL_PAGE_URL = './master.html';
       const SIDEBAR_NAME = 'Features';
 
@@ -638,11 +588,13 @@
         );
         clickSidebar();
 
-        configureNavbar(NAVBAR_HTML_UL);
+        loadNavbar(NAVBAR_HTML_UL);
 
         loadCards(CARDS_HTML_UL);
 
-        editSrc();
+        loadExploreCards(EXPLORE_CARDS_HTML_UL);
+
+        loadResources(RESOURCES_HTML);
       });
 
       function openPage(page, bookmark = '') {
@@ -696,70 +648,6 @@
             sectlevel2.removeClass('display');
             $(destSelector).append(sectlevel2.addClass('display'));
           });
-        });
-      }
-
-      function configureNavbar(
-        navbarHtmlUl,
-        navbarDestSelector = '#website-navbar',
-      ) {
-        $(navbarDestSelector).load(navbarHtmlUl, function() {
-          $(this).html(
-            $(navbarDestSelector + ' [id$="_header"]')
-              .siblings()
-              .find('.sect2 .sect3 h4')
-              .addClass('navbar-link'),
-          );
-
-          $('.navbar-link').click(function() {
-            const regex = /(.*)_(.*)/g;
-            let m = regex.exec($(this).attr('id'));
-            let page = m[m.length - 1];
-            console.log(page);
-            $('[id$="-page"]').addClass('hidden');
-            $('#' + page + '-page').removeClass('hidden');
-          });
-        });
-      }
-
-      function loadCards(cardsHtmlUl, cardDestSelector = '#about-page') {
-        $(cardDestSelector).load(cardsHtmlUl, function() {
-          let outmap = $.map(
-            $(cardDestSelector + ' [id$="_cards"]')
-              .siblings()
-              .find('.sect3'),
-            function(val, i) {
-              let mainDiv = $('<div></div>');
-              let image = $('<div class="image"></div>').append(
-                $(val).children('.imageblock'),
-              );
-              mainDiv.append(image);
-
-              let content = $('<div class="content"></div>').append(
-                $(val).children(':not(.imageblock)'),
-              );
-              mainDiv.append(content);
-
-              return mainDiv.addClass('website-card');
-            },
-          );
-
-          $(this).html(outmap);
-          editSrc();
-        });
-      }
-
-      function editSrc() {
-        $('img').each(function() {
-          $(this).attr(
-            'src',
-            $(this)
-              .attr('src')
-              .replace(
-                'C:/Proyectos/devon-docgen-projects/devonfw-guide-fork-faster/devonfw-guide/target/website/',
-                '../',
-              ),
-          );
         });
       }
     </script>
