@@ -1,4 +1,4 @@
-function loadCards(cardsHtmlUl, cardDestSelector = '#logo-page') {
+function loadCards(cardsHtmlUl, cardDestSelector = '#logo-page', handler = () => {}) {
         $(cardDestSelector).load(cardsHtmlUl, function() {
           let outmap = $.map(
             $(cardDestSelector + ' [id$="_cards"]')
@@ -21,20 +21,6 @@ function loadCards(cardsHtmlUl, cardDestSelector = '#logo-page') {
           );
 
           $(this).html(outmap);
-          editSrc();
-        });
-      }
-
-      function editSrc() {
-        $('img').each(function() {
-          $(this).attr(
-            'src',
-            $(this)
-              .attr('src')
-              .replace(
-                'C:/Proyectos/devon-docgen-projects/devonfw-guide-fork-faster/devonfw-guide/target/website/',
-                '../',
-              ),
-          );
+          handler();
         });
       }

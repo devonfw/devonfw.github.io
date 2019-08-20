@@ -14,7 +14,6 @@ function loadNavbar(
         const regex = /(.*)_(.*)/g;
         let m = regex.exec($(this).attr('id'));
         let page = m[m.length - 1];
-        console.log(page);
         $('[id$="-page"]').addClass('hidden');
         $('#' + page + '-page').removeClass('hidden');
       });

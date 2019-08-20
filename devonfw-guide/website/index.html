@@ -15,6 +15,9 @@
       href="//fonts.googleapis.com/css?family=Ubuntu"
     />
 
+    <!-- Style for the theme/custom-theme 
+    <link rel="stylesheet" type="text/css" href="../theme/custom-theme.css" />-->
+
     <!-- Style for the header/navbar -->
     <link rel="stylesheet" type="text/css" href="header/header.css" />
 
@@ -28,7 +31,11 @@
     <script src="cards/cards.js"></script>
 
     <!-- Style fort the explore-cards -->
-    <link rel="stylesheet" type="text/css" href="explore-cards/explore-cards.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="explore-cards/explore-cards.css"
+    />
 
     <!-- Script for the explore-cards -->
     <script src="explore-cards/explore-cards.js"></script>
@@ -50,6 +57,7 @@
       integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
       crossorigin="anonymous"
     ></script>
+    <script src="https://unpkg.com/lunr/lunr.js"></script>
   </head>
   <style>
     body,
@@ -57,6 +65,7 @@
       margin: 0;
       font-family: Ubuntu;
       background-color: white;
+      word-wrap: break-word;
     }
 
     html {
@@ -76,9 +85,9 @@
 
     .docs-page {
       display: grid;
-      grid-template-columns: 25% auto 20%;
+      grid-template-columns: 25% 55% 20%;
       grid-template-rows: auto;
-      height: 100%;
+      height: 100vh;
     }
 
     .logo-page {
@@ -160,6 +169,7 @@
     .wiki-content {
       grid-row-start: 1;
       grid-column-start: 2;
+      overflow-x: auto;
     }
 
     .wiki-content iframe {
@@ -182,6 +192,12 @@
 
     hr {
       display: none;
+    }
+
+    a {
+      color: #4cbdec;
+      text-decoration: none;
+      line-height: inherit;
     }
   </style>
   <body>
@@ -570,22 +586,40 @@
         </div>
         <div id="community-page" class="community-page hidden"></div>
       </div>
+      <div style="padding: 12px 32px; background-color: #4cbdec">
+        <input id="search-field" type="text" />
+        <button onclick="query()">Search</button>
+        <div >
+          <ul id="search-results" style="color: white">
+
+          </ul>
+        </div>
+      </div>
     </div>
 
     <script>
       //const NAVBAR_HTML_UL = 'header/header.html #toc';
       const NAVBAR_HTML_UL = 'layout.html #content .sect1';
+
       const CARDS_HTML_UL = 'layout.html #content .sect1';
+      const CARDS_DEST = '#logo-page';
+
       const EXPLORE_CARDS_HTML_UL = 'layout.html #content .sect1';
+      const EXPLORE_CARDS_DEST = '#explore-page';
+
       const RESOURCES_HTML = 'layout.html #content .sect1';
+      const RESOURCES_DEST = '#resources-page';
+
       const COMMUNITY_HTML = 'layout.html #content .sect1';
-      const INITAL_PAGE_URL = './master.html';
+      const COMMUNITY_DEST = '#community-page';
+
+      const INITAL_PAGE_URL = '../devon4ng.wiki/architecture.html #content';
       const SIDEBAR_NAME = 'Features';
 
       $(window).on('load', function() {
-        openPage(INITAL_PAGE_URL);
+        sidebarEditHref();
 
-        toSecondSidebar();
+        loadWikiPage(INITAL_PAGE_URL, '');
 
         $('ul.sectlevel0 > li > a')
           .first()
@@ -598,66 +632,139 @@
 
         loadNavbar(NAVBAR_HTML_UL);
 
-        loadCards(CARDS_HTML_UL);
+        loadCards(CARDS_HTML_UL, CARDS_DEST, editSrc);
 
-        loadExploreCards(EXPLORE_CARDS_HTML_UL);
+        loadExploreCards(EXPLORE_CARDS_HTML_UL, EXPLORE_CARDS_DEST, editSrc);
 
-        loadResources(RESOURCES_HTML);
+        loadResources(RESOURCES_HTML, RESOURCES_DEST, editSrc);
 
-        loadCommunity(COMMUNITY_HTML);
+        loadCommunity(COMMUNITY_HTML, COMMUNITY_DEST, editSrc);
       });
 
-      function openPage(page, bookmark = '') {
-        let frame = `
-                    <iframe
-                        id="page-frame"
-                        src="${page}${bookmark}"
-                        height="100%"
-                        style="border:none"
-                    ></iframe>`;
-        $('#page-frame').remove();
-        $('#wiki-content').append(frame);
+      function loadWikiPage(page, bookmark = '', handler = () => {}) {
+        $('#wiki-content').load(`${page} ${bookmark}`, handler);
       }
 
       function clickSidebar() {
-        $('ul.sectlevel0 > li').each(function(index) {
-          let text = $(this)
-            .children('a')
-            .text();
+        $('ul.sectlevel0 > li').click(function(event) {
+          let clickedItem = $(this);
+          let link = $(this).children('a');
+          let page = link.attr('href');
 
-          $(this)
-            .find('a')
-            .each(function(index) {
-              let bookmark = $(this).attr('href');
+          event.preventDefault();
+          loadWikiPage(page, '#content', () => {
+            toSecondSidebar(clickedItem.find('.sectlevel1:first-child > li'));
+            editSrc();
+          });
 
-              $(this).click(function() {
-                if (text == 'devon4ng') {
-                  openPage('./master.html', bookmark);
-                } else {
-                  openPage('./master-1.html', bookmark);
-                }
+          $('ul.sectlevel0 a').removeClass('active');
+          link.addClass('active');
 
-                $('ul.sectlevel0 > li a').removeClass('active');
-                $(this).addClass('active');
-              });
-            });
+          return false;
+        });
+
+        $('ul.sectlevel1 > li').click(function(event) {
+          let clickedItem = $(this);
+          let link = $(this).find('a');
+          let page = link.attr('href');
+
+          event.preventDefault();
+          loadWikiPage(page, '#content', () => {
+            toSecondSidebar(clickedItem);
+            editSrc();
+          });
+          $('ul.sectlevel0 a').removeClass('active');
+          link.addClass('active');
+
+          return false;
         });
       }
 
       function toSecondSidebar(
-        originSelector = '.sectlevel1 > li',
+        originElement,
         destSelector = '#second-sidebar-content',
       ) {
-        $(originSelector).each(function(index) {
-          let sectlevel2 = $(this).children('ul');
-
-          $(this).click(function() {
-            $(destSelector)
-              .children()
-              .remove();
-            sectlevel2.removeClass('display');
-            $(destSelector).append(sectlevel2.addClass('display'));
+        $(originElement)
+          .children('ul')
+          .each(function() {
+            $(this).removeClass('display');
+            $(destSelector).html(
+              $(this)
+                .addClass('display')
+                .clone(),
+            );
           });
+      }
+
+      function sidebarEditHref() {
+        $('#sidebar .sectlevel0 > li').each(function() {
+          let level0href;
+
+          // Get folder name
+          $(this)
+            .children('a')
+            .each(function() {
+              level0href = $(this)
+                .attr('href')
+                .replace(/#master-([a-zA-Z0-9-]+)\.asciidoc$/, '$1.wiki');
+            });
+
+          let firstPage = '';
+          // Replace sectlevel1 URL
+          $(this)
+            .find('.sectlevel1 li')
+            .children('a')
+            .each(function(index) {
+              $(this).attr(
+                'href',
+                $(this)
+                  .attr('href')
+                  .replace(
+                    /#([a-zA-Z0-9-]+)\.asciidoc$/,
+                    `../${level0href}/$1.html`,
+                  ),
+              );
+
+              if (index == 0) {
+                firstPage = $(this).attr('href');
+              }
+            });
+
+          // Replace seclevel0 URL
+          $(this)
+            .children('a')
+            .each(function() {
+              $(this).attr('href', `${firstPage}`);
+            });
+        });
+      }
+
+      function editSrc() {
+        $('img').each(function() {
+          $(this).attr(
+            'src',
+            $(this)
+              .attr('src')
+              .replace(
+                'C:/Proyectos/devon-docgen-projects/devonfw-guide-fork-faster/devonfw-guide/target/website/',
+                '../',
+              ),
+          );
+        });
+      }
+
+      function query() {
+        $.getJSON('index.json', function(idxJson) {
+          let idx = lunr.Index.load(idxJson);
+          let query = document.getElementById('search-field').value;
+          let queryRes = idx.search(query);
+          
+          let results = ''
+          queryRes.forEach((res) => {
+            results += `<li>${res.ref}</li>`;
+          })
+
+          $('#search-results').html(results);
         });
       }
     </script>
