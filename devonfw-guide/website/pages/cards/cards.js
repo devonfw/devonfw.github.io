@@ -1,26 +1,34 @@
-function loadCards(cardsHtmlUl, cardDestSelector = '#logo-page', handler = () => {}) {
-        $(cardDestSelector).load(cardsHtmlUl, function() {
-          let outmap = $.map(
-            $(cardDestSelector + ' [id$="_cards"]')
-              .siblings()
-              .find('.sect3'),
-            function(val, i) {
-              let mainDiv = $('<div></div>');
-              let image = $('<div class="image"></div>').append(
-                $(val).children('.imageblock'),
-              );
-              mainDiv.append(image);
+function loadCards(
+  cardsHtmlUl,
+  cardDestSelector = '#logo-page',
+  handler = () => {},
+) {
 
-              let content = $('<div class="content"></div>').append(
-                $(val).children(':not(.imageblock)'),
-              );
-              mainDiv.append(content);
+  console.info('loading cards...');
+  $(cardDestSelector).load(cardsHtmlUl, function() {
+    let outmap = $.map(
+      $(cardDestSelector + ' [id$="_cards"]')
+        .siblings()
+        .find('.sect3'),
+      function(val, i) {
+        let mainDiv = $('<div></div>');
+        let image = $('<div class="image"></div>').append(
+          $(val).children('.imageblock'),
+        );
+        mainDiv.append(image);
 
-              return mainDiv.addClass('website-card');
-            },
-          );
+        let content = $('<div class="content"></div>').append(
+          $(val).children(':not(.imageblock)'),
+        );
+        mainDiv.append(content);
 
-          $(this).html(outmap);
-          handler();
-        });
-      }
+        return mainDiv.addClass('website-card');
+      },
+    );
+
+    $(this).html(outmap);
+    handler();
+
+    console.info('Cards loaded succesfully!');
+  });
+}
