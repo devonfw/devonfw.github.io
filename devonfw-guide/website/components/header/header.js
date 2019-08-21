@@ -1,21 +1,12 @@
-function loadNavbar(
-    navbarHtmlUl,
-    navbarDestSelector = '#website-navbar',
-  ) {
-    $(navbarDestSelector).load(navbarHtmlUl, function() {
-      $(this).html(
-        $(navbarDestSelector + ' [id$="_header"]')
-          .siblings()
-          .find('.sect2 .sect3 h4')
-          .addClass('navbar-link'),
-      );
+function loadNavbar(navbarDestSelector, afterLoad = () => {}) {
+  const HTML_FILE = getHtmlFileName();
+  const NAVBAR_SELECTOR = `${HTML_FILE} #content .sect1 .sectionbody ul`;
+  $(navbarDestSelector).load(NAVBAR_SELECTOR, afterLoad);
+}
 
-      $('.navbar-link').click(function() {
-        const regex = /(.*)_(.*)/g;
-        let m = regex.exec($(this).attr('id'));
-        let page = m[m.length - 1];
-        $('[id$="-page"]').addClass('hidden');
-        $('#' + page + '-page').removeClass('hidden');
-      });
-    });
-  }
+function getHtmlFileName() {
+  let thisFile = $('script[src$="/header.js"]')[0];
+  let thisFilename = thisFile.attributes.src.value;
+  let htmlFilemame = thisFilename.replace(/\.js$/g, '.html');
+  return htmlFilemame;
+}
