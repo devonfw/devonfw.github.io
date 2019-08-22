@@ -8,17 +8,16 @@
   }
 
   function getHtmlFileName() {
-    console.log('FILENAME');
     let thisFile = $('script[src$="/header.js"]')[0];
     let thisFilename = thisFile.attributes.src.value;
     let htmlFilemame = thisFilename.replace(/\.js$/g, '.html');
-    console.log('FILENAME');
-    console.log(htmlFilemame);
     return htmlFilemame;
   }
 
   function appendEnd(navbarDestSelector, element) {
-    $(navbarDestSelector).append(element);
+    console.log('FILENAME');
+    const navbarDest = `${navbarDestSelector} > ul:first-child`;
+    $(navbarDest).append(element);
   }
 
   // List of functions accessibly by other scripts
