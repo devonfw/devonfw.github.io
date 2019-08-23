@@ -65,7 +65,6 @@ function generateIndexJson(documents) {
     this.ref('id');
     this.field('title');
     this.field('body');
-    this.metadataWhitelist = ['position']
 
     documents.forEach(function(doc) {
       this.add(doc);
