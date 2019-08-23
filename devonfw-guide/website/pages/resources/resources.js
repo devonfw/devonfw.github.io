@@ -13,7 +13,7 @@
   }
 
   function getHtmlFileName() {
-    let thisFile = $('script[src$="/resources.js"]')[0];
+    let thisFile = $('script[src$="resources.js"]')[0];
     let thisFilename = thisFile.attributes.src.value;
     let htmlFilemame = thisFilename.replace(/\.js$/g, '.html');
     return htmlFilemame;
