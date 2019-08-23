@@ -6,15 +6,6 @@
   ) {
     const HTML_FILE = getHtmlFileName();
     const EXPLORE_CARDS_SELECTOR = `${HTML_FILE} #content .sect1`;
-/*
-    $(cardDestSelector).load(cardsHtmlUl, function() {
-      let cards = $(cardDestSelector + ' [id$="_explore-cards"]')
-        .siblings('.sectionbody')
-        .children('.sect2');
-      cards.find('.sect3 .ulist').addClass('website-explore-card');
-      $(this).html(cards);
-      handler();
-    });*/
 
     $(cardDestSelector).load(EXPLORE_CARDS_SELECTOR, function() {
       handler();
