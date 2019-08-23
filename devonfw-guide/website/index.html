@@ -239,6 +239,10 @@
       display: none;
     }
 
+    .shown {
+      display: none;
+    }
+
     hr {
       display: none;
     }
@@ -635,13 +639,6 @@
         </div>
         <div id="community-page" class="community-page hidden"></div>
       </div>
-      <div style="padding: 12px 32px; background-color: #4cbdec">
-        <input id="search-field" type="text" />
-        <button onclick="query()">Search</button>
-        <div>
-          <ul id="search-results" style="color: white"></ul>
-        </div>
-      </div>
     </div>
 
     <script>
@@ -678,7 +675,7 @@
         );
         clickSidebar();
 
-        HeaderModule.loadNavbar(NAVBAR_DEST);
+        HeaderModule.loadNavbar(NAVBAR_DEST, getSearchBar);
 
         loadCards(CARDS_HTML_UL, CARDS_DEST, editSrc);
 
@@ -817,13 +814,32 @@
                 Sample title
               </div>
               <div class="sr-content">
+                
                 ${res.ref}
               </div>
             </div>`;
           });
 
+          console.log(idx)
+          console.log(queryRes)
+
           $('#search-results').html(results);
+          $('#search-results').removeClass('hidden')
         });
+      }
+
+      function getSearchBar() {
+        const searchBar = `
+        <li>
+          <div class="search-bar">
+            <input id="search-field" type="text" />
+            <button onclick="query()">Search</button>
+            <div class="search-bar-results hidden" id="search-results">
+            </div>
+          </div>
+        </li>`;
+
+        HeaderModule.appendEnd(NAVBAR_DEST, searchBar);
       }
     </script>
   </body>

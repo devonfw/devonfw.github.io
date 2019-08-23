@@ -24,7 +24,7 @@ function getFilesFromDir(dirname, extension) {
   let result = [];
 
   dirContent.forEach(function(dirItem) {
-    item = dirname + '/' + dirItem;
+    item = `${dirname}/${dirItem}`;
     fileStats = fs.lstatSync(item);
 
     if (fileStats.isDirectory()) {
@@ -71,7 +71,7 @@ function generateIndexJson(documents) {
     }, this);
   });
   
-  idxJson = JSON.stringify(idx);
+  let idxJson = JSON.stringify(idx);
 
   fs.writeFileSync('./index.json', idxJson);
   console.log('The file was saved!');
