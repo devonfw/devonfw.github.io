@@ -5,13 +5,13 @@
     return htmlFilemame;
   }
 
-  function loadDocs(docsDestSelector, pageToLoad ,handler = () => {}) {
+  function loadDocs(docsDestSelector, pageToLoad, handler = () => {}) {
     const HTML_FILE = getHtmlFileName();
     const DOCS_SELECTOR = `${HTML_FILE} #content`;
-    
+
     $(docsDestSelector).load(pageToLoad, function() {
-        handler();
-      });
+      handler();
+    });
   }
 
   function clickSidebar() {
@@ -19,11 +19,13 @@
       let clickedItem = $(this);
       let link = $(this).children('a');
       let page = `${link.attr('href')} #content`;
+      const pageDest = '#wiki-content';
 
+      console.log('after prevent');
       event.preventDefault();
-      loadDocs(page, () => {
+      loadDocs(pageDest, page, () => {
         toSecondSidebar(clickedItem.find('.sectlevel1:first-child > li'));
-        // editSrc();
+        editSrc();
       });
 
       $('ul.sectlevel0 a').removeClass('active');
@@ -36,11 +38,12 @@
       let clickedItem = $(this);
       let link = $(this).find('a');
       let page = `${link.attr('href')} #content`;
+      const pageDest = '#wiki-content';
 
       event.preventDefault();
-      loadDocs(page, () => {
+      loadDocs(pageDest, page, () => {
         toSecondSidebar(clickedItem);
-        // editSrc();
+        editSrc();
       });
       $('ul.sectlevel0 a').removeClass('active');
       link.addClass('active');
@@ -105,6 +108,22 @@
         .each(function() {
           $(this).attr('href', `${firstPage}`);
         });
+    });
+  }
+
+  function editSrc(searchValue, replaceValue) {
+    let searchVal =
+      searchValue ||
+      'C:/Proyectos/devon-docgen-projects/devonfw-guide-fork-faster/devonfw-guide/target/generated-docs/';
+    let replaceVal = replaceValue || '../';
+
+    $('img').each(function() {
+      $(this).attr(
+        'src',
+        $(this)
+          .attr('src')
+          .replace(searchVal, replaceVal),
+      );
     });
   }
 
