@@ -89,11 +89,11 @@
         .each(function(index) {
           $(this).attr(
             'href',
-            $(this)
+            $(this) 
               .attr('href')
               .replace(
                 /#([a-zA-Z0-9-]+)\.asciidoc$/,
-                `../${level0href}/$1.html`,
+                `../../../${level0href}/$1.html`,
               ),
           );
 
@@ -115,7 +115,7 @@
     let searchVal =
       searchValue ||
       'C:/Proyectos/devon-docgen-projects/devonfw-guide-fork-faster/devonfw-guide/target/generated-docs/';
-    let replaceVal = replaceValue || '../';
+    let replaceVal = replaceValue || '../../../';
 
     $('img').each(function() {
       $(this).attr(

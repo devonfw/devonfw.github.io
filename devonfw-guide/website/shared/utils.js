@@ -19,8 +19,9 @@
   function getParametersFromUrl() {
     let url_string = window.location.href;
     let url = new URL(url_string);
-    let c = url.searchParams.get('q');
-    console.log(c);
+    let q = url.searchParams.get('q');
+
+    return q;
   }
 
   // List of functions accessibly by other scripts
