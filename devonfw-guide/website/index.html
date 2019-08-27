@@ -39,11 +39,7 @@
     <script src="https://unpkg.com/lunr/lunr.js"></script>
 
     <!-- General styles -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="shared/styles/styles.css"
-    />
+    <link rel="stylesheet" type="text/css" href="shared/styles/styles.css" />
   </head>
 
   <body>
@@ -84,30 +80,42 @@
       }
 
       function query() {
-        $.getJSON('index.json', function(idxJson) {
-          let idx = lunr.Index.load(idxJson);
-          let query = document.getElementById('search-field').value;
-          let queryRes = idx.search(query);
+        $.getJSON('docs-json.json', function(docsJson) {
+          //console.log(docsJson)
+          docs = docsJson;
 
-          let results = '';
-          queryRes.forEach((res) => {
-            results += `
-            <div>
-              <div class="sr-title">
-                Sample title
-              </div>
-              <div class="sr-content">
-                
-                ${res.ref}
-              </div>
-            </div>`;
-          });
+          return ((docs) => {
+            $.getJSON('index.json', function(idxJson) {
+              let idx = lunr.Index.load(idxJson);
+              let query = document.getElementById('search-field').value;
+              let queryRes = idx.search(query);
 
-          console.log(idx)
-          console.log(queryRes)
+              const findById = (id, objects) => {
+                const obj = objects.find((obj) => '' + obj.id == '' + id);
+                return obj.title;
+              };
 
-          $('#search-results').html(results);
-          $('#search-results').removeClass('hidden')
+              let results = '';
+              for (let i = 0; i < queryRes.length; i++) {
+                if (i > 5) break;
+                results += `
+                  <div>
+                    <div class="sr-title">
+                      ${findById(res.ref, docs)}
+                    </div>
+                    <div class="sr-content">  
+                      ${res.ref}
+                    </div>
+                  </div>`;
+              }
+
+              console.log(idx);
+              console.log(queryRes);
+
+              $('#search-results').html(results);
+              $('#search-results').removeClass('hidden');
+            });
+          })(docs);
         });
       }
 
@@ -115,7 +123,7 @@
         const searchBar = `
         <li>
           <div class="search-bar">
-            <input id="search-field" type="text" />
+            <input id="search-field" type="text" placeholder="Search by keyword(s)..."/>
             <button onclick="query()">Search</button>
             <div class="search-bar-results hidden" id="search-results">
             </div>

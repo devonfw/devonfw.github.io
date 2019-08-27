@@ -12,9 +12,11 @@ function getLunrDoc(dirname, extension) {
   files.forEach((file) => docs.push(readFromFilename(file)));
 
   let idxJson = generateIndexJson(docs);
-  console.log(docs);
-  console.log(files);
   query(idxJson);
+}
+
+function normalize(path) {
+	return path.replace('\\/', '/').replace('//', '/').replace('\\', '/');
 }
 
 function getFilesFromDir(dirname, extension) {
@@ -34,7 +36,7 @@ function getFilesFromDir(dirname, extension) {
     }
 
     if (fileStats.isFile() && path.extname(item) === extension) {
-      result = result.concat([item]);
+      result = result.concat([normalize(item)]);
     }
   });
 
@@ -42,19 +44,25 @@ function getFilesFromDir(dirname, extension) {
 }
 
 function readFromFilename(file) {
-  let doc = { id: file, title: '', body: '' };
+  let doc = { id: file, title: 'not found', body: '' };
 
   doc.body = fs.readFileSync(file, 'utf-8');
   let lines = doc.body.split('\n');
+  let titleLevel = 10;
 
   lines.forEach(function(line) {
-    let matchRes = line.match(/^(=+) (.*)$/g);
+    let matchRes = line.match(/^=+ (.*)/);
     let lineLevel = occurrences(matchRes ? matchRes[0] : '', '=');
+  
+	if (lineLevel == 0) {
+		matchRes = line.match(/^#+ (.*)/);
+		lineLevel = occurrences(matchRes ? matchRes[0] : '', '#');
+	}
+	
     let isTitle = lineLevel > 0;
 
-    if (isTitle) {
-      let numOfTitle = lineLevel == 1 ? '' : lineLevel - 1;
-      doc['title' + numOfTitle] = matchRes[0];
+    if (isTitle && titleLevel > lineLevel ) {
+		doc.title = matchRes[1];
     }
   });
   return doc;
@@ -65,6 +73,7 @@ function generateIndexJson(documents) {
     this.ref('id');
     this.field('title');
     this.field('body');
+	this.metadataWhitelist = ['position']
 
     documents.forEach(function(doc) {
       this.add(doc);
@@ -72,7 +81,8 @@ function generateIndexJson(documents) {
   });
   
   let idxJson = JSON.stringify(idx);
-
+	
+  fs.writeFileSync('./docs-json.json', JSON.stringify(documents));
   fs.writeFileSync('./index.json', idxJson);
   console.log('The file was saved!');
 
@@ -85,7 +95,6 @@ function query(idxJson) {
   let query = "installed packet manager start";
   let queryRes = idx.search(query);
   console.log('QUERY RESULT: ');
-  console.log(util.inspect(queryRes, false, null, true));
 }
 
 function occurrences(string, subString) {
