@@ -16,8 +16,16 @@
     });
   }
 
+  function getParametersFromUrl() {
+    let url_string = window.location.href;
+    let url = new URL(url_string);
+    let c = url.searchParams.get('q');
+    console.log(c);
+  }
+
   // List of functions accessibly by other scripts
   window.UtilsModule = {
     editSrc: editSrc,
+    getParametersFromUrl: getParametersFromUrl,
   };
 })(window);

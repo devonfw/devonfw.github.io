@@ -81,7 +81,6 @@
 
       function query() {
         $.getJSON('docs-json.json', function(docsJson) {
-          //console.log(docsJson)
           docs = docsJson;
 
           return ((docs) => {
@@ -92,28 +91,38 @@
 
               const findById = (id, objects) => {
                 const obj = objects.find((obj) => '' + obj.id == '' + id);
+                console.log(obj);
                 return obj.title;
               };
 
               let results = '';
               for (let i = 0; i < queryRes.length; i++) {
+                res = queryRes[i];
                 if (i > 5) break;
                 results += `
                   <div>
                     <div class="sr-title">
                       ${findById(res.ref, docs)}
                     </div>
-                    <div class="sr-content">  
+                    <div class="sr-content">
                       ${res.ref}
                     </div>
                   </div>`;
               }
 
-              console.log(idx);
-              console.log(queryRes);
-
               $('#search-results').html(results);
               $('#search-results').removeClass('hidden');
+              $('.sr-content').each(function(item) {
+                $(this).click(function() {
+                  location.href =
+                    'pages/docs/page-docs.html' +
+                    '?q=' +
+                    $(this)
+                      .text()
+                      .trim()
+                      .replace('./devonfw-guide/', '../').replace(/\.asciidoc$/, '.html');
+                });
+              });
             });
           })(docs);
         });
