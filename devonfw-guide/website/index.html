@@ -31,6 +31,9 @@
     <!-- Script for the cards -->
     <script src="pages/cards/cards.js"></script>
 
+    <!-- Script for the utils module -->
+    <script src="shared/utils.js"></script>
+
     <script
       src="https://code.jquery.com/jquery-3.4.1.min.js"
       integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
@@ -58,26 +61,10 @@
       const CARDS_DEST = '#logo-page';
 
       $(window).on('load', function() {
-        HeaderModule.loadNavbar(NAVBAR_DEST, getSearchBar);
+        HeaderModule.loadNavbar(NAVBAR_DEST);
 
-        loadCards(CARDS_HTML_UL, CARDS_DEST, editSrc);
+        loadCards(CARDS_HTML_UL, CARDS_DEST, UtilsModule.editSrc);
       });
-
-      function editSrc(searchValue, replaceValue) {
-        let searchVal =
-          searchValue ||
-          'C:/Proyectos/devon-docgen-projects/devonfw-guide-fork-faster/devonfw-guide/target/generated-docs/';
-        let replaceVal = replaceValue || '../';
-
-        $('img').each(function() {
-          $(this).attr(
-            'src',
-            $(this)
-              .attr('src')
-              .replace(searchVal, replaceVal),
-          );
-        });
-      }
 
       function query() {
         $.getJSON('docs-json.json', function(docsJson) {
@@ -127,20 +114,6 @@
             });
           })(docs);
         });
-      }
-
-      function getSearchBar() {
-        const searchBar = `
-        <li>
-          <div class="search-bar">
-            <input id="search-field" type="text" placeholder="Search by keyword(s)..."/>
-            <button onclick="query()">Search</button>
-            <div class="search-bar-results hidden" id="search-results">
-            </div>
-          </div>
-        </li>`;
-
-        HeaderModule.appendEnd(NAVBAR_DEST, searchBar);
       }
     </script>
   </body>
