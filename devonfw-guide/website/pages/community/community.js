@@ -1,4 +1,4 @@
-(function(window, undefined) {
+(function(window) {
   // Function definitions
   function loadCommunity(
     communityDestSelector = '#explore-page',

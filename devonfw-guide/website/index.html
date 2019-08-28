@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -54,67 +54,28 @@
     </div>
 
     <script>
-      const LAYOUT_URL = 'layout/layout.html';
       const NAVBAR_DEST = '#website-navbar';
-
-      const CARDS_HTML_UL = `${LAYOUT_URL} #content .sect1`;
+      const CARDS_HTML_UL = 'layout/layout.html #content .sect1';
       const CARDS_DEST = '#logo-page';
 
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
       $(window).on('load', function() {
-        HeaderModule.loadNavbar(NAVBAR_DEST);
+        const queryFun = () => {
+          HeaderModule.queryFunction(
+            searchData,
+            './devonfw-guide/',
+            '../../../',
+          );
+        };
+
+        HeaderModule.loadNavbar(NAVBAR_DEST, () => {
+          HeaderModule.searchOnClick(queryFun);
+        });
 
         loadCards(CARDS_HTML_UL, CARDS_DEST, UtilsModule.editSrc);
       });
-
-      function query() {
-        $.getJSON('docs-json.json', function(docsJson) {
-          docs = docsJson;
-
-          return ((docs) => {
-            $.getJSON('index.json', function(idxJson) {
-              let idx = lunr.Index.load(idxJson);
-              let query = document.getElementById('search-field').value;
-              let queryRes = idx.search(query);
-
-              const findById = (id, objects) => {
-                const obj = objects.find((obj) => '' + obj.id == '' + id);
-                console.log(obj);
-                return obj.title;
-              };
-
-              let results = '';
-              for (let i = 0; i < queryRes.length; i++) {
-                res = queryRes[i];
-                if (i > 5) break;
-                results += `
-                  <div>
-                    <div class="sr-title">
-                      ${findById(res.ref, docs)}
-                    </div>
-                    <div class="sr-content">
-                      ${res.ref}
-                    </div>
-                  </div>`;
-              }
-
-              $('#search-results').html(results);
-              $('#search-results').removeClass('hidden');
-              $('.sr-content').each(function(item) {
-                $(this).click(function() {
-                  location.href =
-                    'pages/docs/page-docs.html' +
-                    '?q=' +
-                    $(this)
-                      .text()
-                      .trim()
-                      .replace('./devonfw-guide/', '../../../')
-                      .replace(/\.asciidoc$/, '.html');
-                });
-              });
-            });
-          })(docs);
-        });
-      }
     </script>
   </body>
 </html>

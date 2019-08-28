@@ -36,6 +36,9 @@
       integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
       crossorigin="anonymous"
     ></script>
+    
+    <!-- Lunr -->
+    <script src="https://unpkg.com/lunr/lunr.js"></script>
 
     <!-- General styles -->
     <link
@@ -50,11 +53,24 @@
     <div id="website-navbar" class="website-navbar"></div>
     <div id="resources-page" class="resources-page "></div>
     <script>
-      $(window).on('load', function() {
-        const RESOURCES_DEST = '#resources-page';
-        const NAVBAR_DEST = '#website-navbar';
+      const RESOURCES_DEST = '#resources-page';
+      const NAVBAR_DEST = '#website-navbar';
+      
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
 
-        HeaderModule.loadNavbar(NAVBAR_DEST);
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(
+            searchData,
+            './devonfw-guide/',
+            '../../../',
+          );
+        };
+
+        HeaderModule.loadNavbar(NAVBAR_DEST, () => {
+          HeaderModule.searchOnClick(queryFun);
+        });
 
         ResourcesModule.loadResources(RESOURCES_DEST, () => {
           UtilsModule.editSrc(undefined, '../../../');

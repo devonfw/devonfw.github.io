@@ -1,4 +1,4 @@
-(function(window, undefined) {
+(function(window) {
   // Function definitions
   function loadNavbar(navbarDestSelector, afterLoad = () => {}) {
     const HTML_FILE = getHtmlFileName();
@@ -29,18 +29,65 @@
       <li>
         <div class="search-bar">
           <input id="search-field" type="text" placeholder="Search by keyword(s)..."/>
-          <button onclick="query()">Search</button>
+          <button id="query-btn">Search</button>
           <div class="search-bar-results hidden" id="search-results">
           </div>
         </div>
       </li>`;
-  
+
     return searchBar;
+  }
+
+  function searchOnClick(clickFunction) {
+    let queryBtn = document.getElementById('query-btn');
+    queryBtn.addEventListener('click', clickFunction);
+  }
+
+  function query(searchData, searchvalue, newvalue) {
+    let query = document.getElementById('search-field').value;
+    let queryRes = searchData.index.search(query);
+
+    const findById = (id, objects) => {
+      const obj = objects.find((obj) => '' + obj.id == '' + id);
+      return obj.title;
+    };
+
+    let results = '';
+    for (let i = 0; i < queryRes.length; i++) {
+      let res = queryRes[i];
+      if (i > 5) break;
+      results += `
+              <div>
+                <div class="sr-title">
+                  ${findById(res.ref, searchData.documents)}
+                </div>
+                <div class="sr-content">
+                  ${res.ref}
+                </div>
+              </div>`;
+    }
+
+    $('#search-results').html(results);
+    $('#search-results').removeClass('hidden');
+    $('.sr-content').each(function(item) {
+      $(this).click(function() {
+        location.href =
+          'pages/docs/page-docs.html' +
+          '?q=' +
+          $(this)
+            .text()
+            .trim()
+            .replace(searchvalue, newvalue)
+            .replace(/\.asciidoc$/, '.html');
+      });
+    });
   }
 
   // List of functions accessibly by other scripts
   window.HeaderModule = {
     loadNavbar: loadNavbar,
     appendEnd: appendEnd,
+    searchOnClick: searchOnClick,
+    queryFunction: query,
   };
 })(window);

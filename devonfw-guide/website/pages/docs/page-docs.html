@@ -37,6 +37,9 @@
       crossorigin="anonymous"
     ></script>
 
+    <!-- Lunr -->
+    <script src="https://unpkg.com/lunr/lunr.js"></script>
+
     <!-- General styles -->
     <link
       rel="stylesheet"
@@ -409,16 +412,30 @@
       </div>
     </div>
     <script>
+      const DOCS_DEST = '#wiki-content';
+      const NAVBAR_DEST = '#website-navbar';
+      const INITAL_PAGE_URL =
+        '../../../devon4ng.wiki/architecture.html #content';
+      const SIDEBAR_NAME = 'Features';
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
       $(window).on('load', function() {
-        const DOCS_DEST = '#wiki-content';
-        const NAVBAR_DEST = '#website-navbar';
-        const INITAL_PAGE_URL =
-          '../../../devon4ng.wiki/architecture.html #content';
-        const SIDEBAR_NAME = 'Features';
         let urlParam = UtilsModule.getParametersFromUrl();
         let loadUrl = urlParam ? `${urlParam} #content` : INITAL_PAGE_URL;
 
-        HeaderModule.loadNavbar(NAVBAR_DEST);
+        const queryFun = () => {
+          HeaderModule.queryFunction(
+            searchData,
+            './devonfw-guide/',
+            '../../../',
+          );
+        };
+
+        HeaderModule.loadNavbar(NAVBAR_DEST, () => {
+          HeaderModule.searchOnClick(queryFun);
+        });
+
         DocsModule.sidebarEditHref();
         DocsModule.loadDocs(DOCS_DEST, loadUrl, () => {
           UtilsModule.editSrc(undefined, '../../../');

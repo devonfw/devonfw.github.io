@@ -1,4 +1,4 @@
-(function(window, undefined) {
+(function(window) {
   // Function definitions
   function loadExploreCards(
     cardDestSelector = '#explore-page',

@@ -37,6 +37,9 @@
       crossorigin="anonymous"
     ></script>
 
+    <!-- Lunr -->
+    <script src="https://unpkg.com/lunr/lunr.js"></script>
+
     <!-- General styles -->
     <link
       rel="stylesheet"
@@ -50,11 +53,24 @@
     <div id="website-navbar" class="website-navbar"></div>
     <div id="community-page" class="community-page "></div>
     <script>
-      $(window).on('load', function() {
-        const COMMUNITY_DEST = '#community-page';
-        const NAVBAR_DEST = '#website-navbar';
+      const COMMUNITY_DEST = '#community-page';
+      const NAVBAR_DEST = '#website-navbar';
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
 
-        HeaderModule.loadNavbar(NAVBAR_DEST);
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(
+            searchData,
+            './devonfw-guide/',
+            '../../../',
+          );
+        };
+
+        HeaderModule.loadNavbar(NAVBAR_DEST, () => {
+          HeaderModule.searchOnClick(queryFun);
+        });
+
         CommunityModule.loadCommunity(COMMUNITY_DEST, () => {
           UtilsModule.editSrc(undefined, '../../');
         });

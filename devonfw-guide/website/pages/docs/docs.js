@@ -1,14 +1,6 @@
-(function(window, undefined) {
+(function(window) {
   // Function definitions
-  function getHtmlFileName() {
-    let htmlFilemame = null;
-    return htmlFilemame;
-  }
-
   function loadDocs(docsDestSelector, pageToLoad, handler = () => {}) {
-    const HTML_FILE = getHtmlFileName();
-    const DOCS_SELECTOR = `${HTML_FILE} #content`;
-
     $(docsDestSelector).load(pageToLoad, function() {
       handler();
     });

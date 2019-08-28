@@ -1,4 +1,4 @@
-(function(window, undefined) {
+(function(window) {
   // Function definitions
   function editSrc(searchValue, replaceValue) {
     let searchVal =
@@ -24,9 +24,22 @@
     return q;
   }
 
+  function loadIndex(searchData) {
+    $.getJSON('/website/docs-json.json', function(docsJson) {
+      searchData.documents = docsJson;
+
+      return ((docs) => {
+        $.getJSON('/website/index.json', function(idxJson) {
+          searchData.index = lunr.Index.load(idxJson);
+        });
+      })(searchData.documents);
+    });
+  }
+
   // List of functions accessibly by other scripts
   window.UtilsModule = {
     editSrc: editSrc,
     getParametersFromUrl: getParametersFromUrl,
+    loadIndex: loadIndex,
   };
 })(window);
