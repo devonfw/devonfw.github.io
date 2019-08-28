@@ -16,12 +16,12 @@
     });
   }
 
-  function getParametersFromUrl() {
+  function getParametersFromUrl(param = 'q') {
     let url_string = window.location.href;
     let url = new URL(url_string);
-    let q = url.searchParams.get('q');
+    let queryParam = url.searchParams.get(param);
 
-    return q;
+    return queryParam;
   }
 
   function loadIndex(searchData) {
