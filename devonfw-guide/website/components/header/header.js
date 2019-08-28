@@ -43,7 +43,7 @@
     queryBtn.addEventListener('click', clickFunction);
   }
 
-  function query(searchData, searchvalue, newvalue) {
+  function query(searchData) {
     let query = document.getElementById('search-field').value;
     let queryRes = searchData.index.search(query);
 
@@ -72,12 +72,12 @@
     $('.sr-content').each(function(item) {
       $(this).click(function() {
         location.href =
-          'pages/docs/page-docs.html' +
+          '/website/pages/docs/page-docs.html' +
           '?q=' +
           $(this)
             .text()
             .trim()
-            .replace(searchvalue, newvalue)
+            .replace('./devonfw-guide/', '../../../')
             .replace(/\.asciidoc$/, '.html');
       });
     });
