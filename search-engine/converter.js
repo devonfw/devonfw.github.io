@@ -1,5 +1,3 @@
-const util = require('util');
-const readline = require('readline');
 const fs = require('fs');
 const path = require('path');
 const lunr = require('lunr');
