@@ -3,7 +3,7 @@
   function editSrc(searchValue, replaceValue) {
     let searchVal =
       searchValue ||
-      'C:/Proyectos/devon-docgen-projects/devonfw-guide-fork-faster/devonfw-guide/target/generated-docs/';
+      'C:/Proyectos/devonfw-official-website-projects/devonfw-official-website/devonfw-guide/target/generated-docs/';
     let replaceVal = replaceValue || '../';
 
     $('img').each(function() {

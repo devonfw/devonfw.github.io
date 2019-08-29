@@ -67,9 +67,20 @@
               </div>`;
     }
 
+    if (queryRes.length > 5) {
+      results += `
+      <a
+      class="more-results"
+      href="/website/pages/search-results/search-results.html?search=${query}"
+      >
+        Show all the results(${queryRes.length})
+      </a>
+    `;
+    }
+
     $('#search-results').html(results);
     $('#search-results').removeClass('hidden');
-    $('.sr-content').each(function(item) {
+    $('.sr-content').each(function() {
       $(this).click(function() {
         location.href =
           '/website/pages/docs/page-docs.html' +

@@ -92,6 +92,16 @@
         return snippetsMap;
       }
 
+      function gotoArticle(destArticle) {
+        location.href =
+          '/website/pages/docs/page-docs.html' +
+          '?q=' +
+          destArticle
+            .trim()
+            .replace('./devonfw-guide/', '../../../')
+            .replace(/\.asciidoc$/, '.html');
+      }
+
       $(window).on('load', function() {
         const search = function() {
           let query = UtilsModule.getParametersFromUrl('search');
@@ -120,7 +130,9 @@
                   </div>
                     ${wordsHtml(metadataKeys, snippetsMap)}
                   <div class="docs-btn">
-                    <button>Go to docs</button>
+                    <button onclick="gotoArticle('${
+                      queryResult.ref
+                    }')">Go to docs</button>
                   </div>
                 </div>
                 `;
