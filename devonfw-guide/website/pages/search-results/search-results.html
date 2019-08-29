@@ -12,6 +12,9 @@
       href="//fonts.googleapis.com/css?family=Ubuntu"
     />
 
+    <!-- Style fort the cards -->
+    <link rel="stylesheet" type="text/css" href="search-results.css" />
+
     <!-- Script for the community -->
     <script src="../../shared/utils.js"></script>
 
@@ -26,26 +29,110 @@
     <script src="https://unpkg.com/lunr/lunr.js"></script>
   </head>
   <body>
-    <div></div>
+    <div id="search-results" class="search-results"></div>
     <script>
       let searchData = { index: null, documents: null };
       UtilsModule.loadIndex(searchData);
 
+      function wordsHtml(words, snippetsMap) {
+        const wordToSnippet = (word) => {
+          return `
+              <div class="snippet">
+                <div class="title">
+                  <strong>${word}:</strong>
+                </div>
+                <ul>
+                ${snippetsMap[word].map(
+                  (snippet) => '<li class="text">' + snippet + '</li>',
+                )}
+                </ul>
+              </div>
+              <hr/>
+              `;
+        };
+
+        return words.map((word) => wordToSnippet(word)).join('');
+      }
+
+      function textSnippets(doc, metadataMap) {
+        const metadataKeys = Object.keys(metadataMap);
+
+        const whereData = (key) => metadataMap[key];
+        const whereKeys = (key) => Object.keys(metadataMap[key]);
+
+        const snippetsMap = {};
+        metadataKeys.forEach((key) => {
+          snippets = [];
+
+          whereK = whereKeys(key);
+          whereK.forEach((k) => {
+            const text = doc[k];
+            const positions = whereData(key)[k].position;
+            const wordStart = positions[0][0];
+            const wordLen = positions[0][1];
+
+            const lowerLimit = Math.max(wordStart - 80, 0);
+            const upperLimit = Math.min(wordStart + 80, text.length - 1);
+            let highlighted =
+              text.substring(0, wordStart) +
+              `<mark>${text.substring(wordStart, wordStart + wordLen)}</mark>` +
+              text.substring(wordStart + wordLen, text.length);
+
+            const textSnippet = `...${highlighted.substring(
+              lowerLimit,
+              upperLimit,
+            )}...`;
+
+            snippets.push(textSnippet);
+          });
+
+          snippetsMap[key] = snippets;
+        });
+
+        return snippetsMap;
+      }
+
       $(window).on('load', function() {
         const search = function() {
           let query = UtilsModule.getParametersFromUrl('search');
+          const words = query.split(' ');
           let queryRes = searchData.index.search(query);
-          const findTitleById = (id, objects) => {
-            const obj = objects.find((obj) => '' + obj.id == '' + id);
-            return obj.title;
+          const findById = (id, docs) => {
+            return docs.find((doc) => '' + doc.id == '' + id);
           };
 
-          for (let i = 0; i < queryRes.length; i++) {
-            console.log(queryRes[i]);
-          }
+          const results = queryRes
+            .map((queryResult, i) => {
+              if (i > 10) return '';
+
+              const doc = findById(queryResult.ref, searchData.documents);
+              const metadataMap = queryResult.matchData.metadata;
+              const metadataKeys = Object.keys(metadataMap);
+              const snippetsMap = textSnippets(doc, metadataMap);
+
+              return `
+                <div class="result-card">
+                  <div class="sr-title">
+                    ${doc.title}
+                  </div>
+                  <div class="sr-content">
+                    ${queryResult.ref}
+                  </div>
+                    ${wordsHtml(metadataKeys, snippetsMap)}
+                  <div class="docs-btn">
+                    <button>Go to docs</button>
+                  </div>
+                </div>
+                `;
+            })
+            .join('');
+
+          const resBox = `${results}`;
+
+          $('#search-results').html(resBox);
         };
 
-        setTimeout(search, 5000);
+        setTimeout(search, 2000);
       });
     </script>
   </body>
