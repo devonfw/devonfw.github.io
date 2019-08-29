@@ -1,13 +1,13 @@
-function loadCards(
-  cardsHtmlUl,
-  cardDestSelector = '#logo-page',
+function loadLogo(
+  logoHtmlUl,
+  logoDestSelector = '#logo-page',
   handler = () => {},
 ) {
 
-  console.info('loading cards...');
-  $(cardDestSelector).load(cardsHtmlUl, function() {
+  console.info('loading logo page...');
+  $(logoDestSelector).load(logoHtmlUl, function() {
     let outmap = $.map(
-      $(cardDestSelector + ' [id$="_cards"]')
+      $(logoDestSelector + ' [id$="_logo"]')
         .siblings()
         .find('.sect3'),
       function(val, i) {
@@ -22,13 +22,13 @@ function loadCards(
         );
         mainDiv.append(content);
 
-        return mainDiv.addClass('website-card');
+        return mainDiv.addClass('website-logo');
       },
     );
 
     $(this).html(outmap);
     handler();
 
-    console.info('Cards loaded succesfully!');
+    console.info('Logo page loaded succesfully!');
   });
 }
