@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="//fonts.googleapis.com/css?family=Ubuntu"
+    />
+
+    <!-- Style for the header/navbar -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="../../components/header/header.css"
+    />
+
+    <!-- Script for the header/navbar -->
+    <script src="../../components/header/header.js"></script>
+
+    <!-- Style for the resources -->
+    <link rel="stylesheet" type="text/css" href="logo.css" />
+
+    <!-- Script for the resources -->
+    <script src="logo.js"></script>
+
+    <!-- Script for the community -->
+    <script src="../../shared/utils.js"></script>
+
+    <!-- JQuery -->
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Lunr -->
+    <script src="https://unpkg.com/lunr/lunr.js"></script>
+
+    <!-- General styles -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="../../shared/styles/styles.css"
+    />
+
+    <title>Logo page</title>
+  </head>
+  <body>
+    <div id="website-navbar" class="website-navbar"></div>
+    <div id="logo-page" class="logo-page "></div>
+    <script>
+      const LOGO_DEST = '#logo-page';
+      const NAVBAR_DEST = '#website-navbar';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.loadNavbar(NAVBAR_DEST, () => {
+          HeaderModule.searchOnClick(queryFun);
+        });
+
+        LogoModule.loadLogoPage(LOGO_DEST, () => {
+          UtilsModule.editSrc(undefined, '../../');
+        });
+      });
+    </script>
+  </body>
+</html>
