@@ -34,64 +34,6 @@
       let searchData = { index: null, documents: null };
       UtilsModule.loadIndex(searchData);
 
-      function wordsHtml(words, snippetsMap) {
-        const wordToSnippet = (word) => {
-          return `
-              <div class="snippet">
-                <div class="title">
-                  <strong>${word}:</strong>
-                </div>
-                <ul>
-                ${snippetsMap[word].map(
-                  (snippet) => '<li class="text">' + snippet + '</li>',
-                )}
-                </ul>
-              </div>
-              <hr/>
-              `;
-        };
-
-        return words.map((word) => wordToSnippet(word)).join('');
-      }
-
-      function textSnippets(doc, metadataMap) {
-        const metadataKeys = Object.keys(metadataMap);
-
-        const whereData = (key) => metadataMap[key];
-        const whereKeys = (key) => Object.keys(metadataMap[key]);
-
-        const snippetsMap = {};
-        metadataKeys.forEach((key) => {
-          snippets = [];
-
-          whereK = whereKeys(key);
-          whereK.forEach((k) => {
-            const text = doc[k];
-            const positions = whereData(key)[k].position;
-            const wordStart = positions[0][0];
-            const wordLen = positions[0][1];
-
-            const lowerLimit = Math.max(wordStart - 80, 0);
-            const upperLimit = Math.min(wordStart + 80, text.length - 1);
-            let highlighted =
-              text.substring(0, wordStart) +
-              `<mark>${text.substring(wordStart, wordStart + wordLen)}</mark>` +
-              text.substring(wordStart + wordLen, text.length);
-
-            const textSnippet = `...${highlighted.substring(
-              lowerLimit,
-              upperLimit,
-            )}...`;
-
-            snippets.push(textSnippet);
-          });
-
-          snippetsMap[key] = snippets;
-        });
-
-        return snippetsMap;
-      }
-
       function gotoArticle(destArticle) {
         location.href =
           '/website/pages/docs/page-docs.html' +
@@ -117,21 +59,39 @@
               const doc = findById(queryResult.ref, searchData.documents);
               const metadataMap = queryResult.matchData.metadata;
               const metadataKeys = Object.keys(metadataMap);
-              const snippetsMap = textSnippets(doc, metadataMap);
+
+              textSnippetsMap = getSnippets(metadataMap, 200, doc.body);
+              console.log('HELLO');
+              let snippetHtml = '';
+
+              let maxLen = -1;
+              for (let snippet in textSnippetsMap) {
+                nWordsInSnippet = textSnippetsMap[snippet].length;
+                if (nWordsInSnippet > maxLen) {
+                  maxLen = nWordsInSnippet;
+                  snippetHtml = `
+                  <div class="snippet">
+                    <div class="title">
+                      <strong>${
+                        textSnippetsMap[snippet]
+                      }</strong><span class="see-more">&nbsp;&nbsp;See more</span>
+                    </div>
+                    <div class="text">&quot;${snippet.trim()}(...)&quot;</div>  
+                  </div>`;
+                }
+              }
+
+              console.log('WORLDS');
 
               return `
                 <div class="result-card">
                   <h2 class="sr-title">
                     ${doc.title}
                   </h2>
-                  <div class="sr-content">
-                    ${queryResult.ref}
-                  </div>
-                    ${wordsHtml(metadataKeys, snippetsMap)}
+                    ${snippetHtml}
                   <div class="docs-btn">
-                    <button onclick="gotoArticle('${
-                      queryResult.ref
-                    }')">Go to docs</button>
+
+                    <button onclick="gotoArticle('${queryResult.ref}')">Go to docs</button>
                   </div>
                 </div>
                 `;
@@ -154,6 +114,78 @@
 
         searchAfterIdx();
       });
+
+      function removeFromIndex(occurrencesMap, start, end) {
+        for (let key in occurrencesMap) {
+          let occs = occurrencesMap[key].body.position;
+          let filtered = occs.filter((occ) => occ[0] < start || occ[0] > end);
+          occurrencesMap[key].body.position = filtered;
+        }
+
+        return occurrencesMap;
+      }
+
+      function getSnippets(occMap, range, text) {
+        let occurrencesMap = JSON.parse(JSON.stringify(occMap));
+        let occurrencesKeys = Object.keys(occurrencesMap);
+        let snippetStore = {};
+
+        // for each word in the search query
+        for (let i = 0; i < occurrencesKeys.length; i++) {
+          let key = occurrencesKeys[i];
+          let ocurrences = occurrencesMap[key].body.position;
+
+          // for each ocurrence of a word
+          for (let j = 0; j < ocurrences.length; j++) {
+            let ocurrence = ocurrences[j][0];
+            let start = ocurrence - range;
+            let end = ocurrence + range;
+            let txtWindow = text.substring(start, end);
+
+            let searchUntil = occurrencesKeys.length;
+
+            let regexpWords = [];
+
+            // Decrement the words searched
+            while (searchUntil > i) {
+              // Search how many words from the query are in the window
+              regexpWords = occurrencesKeys.slice(i, searchUntil);
+              let wordsRe = new RegExp(
+                '.*' + regexpWords.join('(.|\\n)*') + '.*',
+                'igm',
+              );
+
+              // Save if the snippet contains the words
+              // in ocurrencesKeys[i] ... ocurrencesKeys[searchUntil]
+              let containsTheWords = txtWindow.match(wordsRe) ? true : false;
+              if (containsTheWords) {
+                for (let w = 0; w < regexpWords.length; w++) {
+                  txtWindow = txtWindow.replace(
+                    new RegExp(regexpWords[w], 'ig'),
+                    `<span class="marked-word">${regexpWords[w]}</span>`,
+                  );
+                }
+                snippetStore[txtWindow] = regexpWords;
+              }
+
+              searchUntil--;
+
+              // If all the words are contained
+              if (
+                containsTheWords &&
+                regexpWords.length == occurrencesKeys.length
+              ) {
+                break;
+              }
+            }
+
+            // Remove found ocurrences from the index. "Normalize".
+            removeFromIndex(occurrencesMap, start, end);
+          }
+        }
+
+        return snippetStore;
+      }
     </script>
   </body>
 </html>

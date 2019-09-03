@@ -1,7 +1,7 @@
 (function(window) {
   // Function definitions
   function loadCommunity(
-    communityDestSelector = '#explore-page',
+    communityDestSelector = '#community-page',
     handler = () => {},
   ) {
     const HTML_FILE = getHtmlFileName();

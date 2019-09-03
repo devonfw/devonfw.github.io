@@ -6,10 +6,11 @@ function getLunrDoc(dirname, extension) {
   let files = getFilesFromDir(dirname, extension);
 
   let docs = [];
-  files.forEach((file) => docs.push(readFromFilename(file)));
+  files.forEach((file) =>
+    docs.push(readFromFilename(file, [removeHtml, removeTooMuchSpaces])),
+  );
 
-  let idxJson = generateIndexJson(docs);
-  query(idxJson);
+  generateIndexJson(docs);
 }
 
 function normalize(path) {
@@ -17,6 +18,14 @@ function normalize(path) {
     .replace('\\/', '/')
     .replace('//', '/')
     .replace('\\', '/');
+}
+
+function removeTooMuchSpaces(str) {
+  return str.replace(/\r\n\s*\r\n/g, '\n').replace(/( )+/g, ' ');
+}
+
+function removeHtml(htmlStr) {
+  return htmlStr.replace(/(<([^>]+)>)/gi, '');
 }
 
 function getFilesFromDir(dirname, extension) {
@@ -41,28 +50,30 @@ function getFilesFromDir(dirname, extension) {
   return result;
 }
 
-function readFromFilename(file) {
+function readFromFilename(file, pipeline = []) {
   let doc = { id: file, title: 'not found', body: '' };
 
   doc.body = fs.readFileSync(file, 'utf-8');
+
   let lines = doc.body.split('\n');
   let titleLevel = 10;
 
   lines.forEach(function(line) {
-    let matchRes = line.match(/^=+ (.*)/);
-    let lineLevel = occurrences(matchRes ? matchRes[0] : '', '=');
-
-    if (lineLevel == 0) {
-      matchRes = line.match(/^#+ (.*)/);
-      lineLevel = occurrences(matchRes ? matchRes[0] : '', '#');
-    }
-
-    let isTitle = lineLevel > 0;
-
-    if (isTitle && titleLevel > lineLevel) {
-      doc.title = matchRes[1];
+    let matchRes = line.match(/<h([0-9]).*>(.*|\n*)<\/h([0-9])>/);
+    if(matchRes && matchRes.length > 2 && matchRes[1] < titleLevel) {
+      console.log(matchRes)
+      titleLevel = matchRes[1]
+      doc.title = matchRes[2];
     }
   });
+
+  if (pipeline) {
+    for (let i = 0; i < pipeline.length; i++) {
+      doc.title = pipeline[i](doc.title);
+      doc.body = pipeline[i](doc.body);
+    }
+  }
+
   return doc;
 }
 
@@ -85,33 +96,6 @@ function generateIndexJson(documents) {
   console.log('The file was saved!');
 
   return idxJson;
-}
-
-function query(idxJson) {
-  let idx = lunr.Index.load(JSON.parse(idxJson));
-
-  let query = 'installed packet manager start';
-  let queryRes = idx.search(query);
-  console.log('QUERY RESULT: ');
-}
-
-function occurrences(string, subString) {
-  string += '';
-  subString += '';
-  if (subString.length <= 0) return string.length + 1;
-
-  let n = 0,
-    pos = 0,
-    step = subString.length;
-
-  while (true) {
-    pos = string.indexOf(subString, pos);
-    if (pos >= 0) {
-      ++n;
-      pos += step;
-    } else break;
-  }
-  return n;
 }
 
 if (process.argv.length > 3) {
