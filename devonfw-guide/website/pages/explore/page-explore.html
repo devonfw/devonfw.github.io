@@ -52,6 +52,30 @@
   <body>
     <div id="website-navbar" class="website-navbar"></div>
     <div id="explore-page" class="explore-page "></div>
+    <div class="dir-component">
+      <div class="dir-tree">
+        <div class="dir-column">
+          <ul class="bullet-folder-closed column-0"></ul>
+        </div>
+        <div class="dir-column">
+          <ul class="bullet-folder-closed column-1"></ul>
+        </div>
+        <div class="dir-column">
+          <ul class="bullet-folder-closed column-2"></ul>
+        </div>
+        <div class="dir-column">
+          <ul class="bullet-folder-closed column-3"></ul>
+        </div>
+        <div class="dir-column">
+          <ul class="bullet-folder-closed column-4"></ul>
+        </div>
+      </div>
+      <div class="dir-tree-detail">
+        <h2>More info -></h2>
+        <h2 class="details-title"></h2>
+        <p class="details-content"></p>
+      </div>
+    </div>
     <script>
       const EXPLORE_DEST = '#explore-page';
       const NAVBAR_DEST = '#website-navbar';
@@ -70,8 +94,79 @@
 
         ExploreModule.loadExplorePage(EXPLORE_DEST, () => {
           UtilsModule.editSrc(undefined, '../../');
+
+          getDirs('./dir-content', 'entry-point.html', 0);
         });
       });
+
+      function getDirs(dir, entryPoint, lvl) {
+        let aux = $("<div id='aux'></div>");
+
+        aux.load(`${dir}/${entryPoint} #content`, function() {
+          aux.find('.links-to-files a').each(function(index, el) {
+            let href = $(el).attr('href');
+            let aux2 = $("<div id='aux2'></div>");
+
+            aux2.load(`${dir}/${href} #content`, getDirInfo(aux2, el, lvl));
+          });
+        });
+      }
+
+      function getDirInfo(aux2, el, lvl) {
+        return () => {
+          let dir = aux2.find('.directory');
+          let links = aux2.find('.links-to-files');
+          let title = dir.find('h2').text();
+          let text = getText(dir);
+          let listItem = getListItem(title, el, lvl + 1);
+
+          if (!links.length) {
+            let afterClick = () => getDetails(title, text);
+            listItem = getListItem(title, el, lvl + 1, afterClick);
+            listItem.attr('class', 'bullet-file');
+          }
+
+          $('.column-' + (lvl + 1)).append(listItem);
+        };
+      }
+
+      function getText(dir) {
+        return dir
+          .find('p')
+          .map((index, el) => $(el).text() + '<br/>')
+          .get()
+          .join('');
+      }
+
+      function getDetails(title, content) {
+        $('.dir-component .details-title').html(title);
+        $('.dir-component .details-content').html(content);
+      }
+
+      function getListItem(text, el, lvlDest, afterClick = () => {}) {
+        function clickHandler() {
+          $(this)
+            .toggleClass('bullet-folder-open')
+            .siblings()
+            .removeClass('bullet-folder-open');
+
+          clearDir(lvlDest + 1);
+          afterClick();
+          getDirs('./dir-content', $(el).attr('href'), lvlDest);
+        }
+
+        let listItem = $(`<li>${text}</li>`).click(clickHandler);
+        return listItem;
+      }
+
+      function clearDir(fromLvl = 0) {
+        let howManyCols = $('[class*="column-"]').length;
+        for (let i = fromLvl; i < howManyCols; i++) {
+          $(`.column-${i}`).empty();
+        }
+        $('.dir-component .details-title').empty();
+        $('.dir-component .details-content').empty();
+      }
     </script>
   </body>
 </html>
