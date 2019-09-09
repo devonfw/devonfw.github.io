@@ -47,6 +47,9 @@
       href="../../shared/styles/styles.css"
     />
 
+    <!-- Script for checking mobile -->
+    <script src="detectmobilebrowser.js"></script>
+
     <title>Explore page</title>
   </head>
   <body>
@@ -183,8 +186,16 @@
       }
 
       function slideCols(pivot, maxVisible) {
+        let isMobile = jQuery.browser.mobile;
+        let hiddenBefore = 3;
+
+        if (isMobile) {
+          $('.dir-tree').addClass('mobile');
+          hiddenBefore = 2;
+          maxVisible = 1;
+        }
+
         $('.dir-column').each((index, elem) => {
-          let hiddenBefore = 3;
           if (index < pivot - hiddenBefore || index > pivot) {
             $(elem).addClass('hidden');
           } else {
