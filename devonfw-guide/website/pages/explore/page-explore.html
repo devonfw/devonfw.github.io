@@ -55,23 +55,11 @@
     <div class="dir-component">
       <div class="dir-tree">
         <div class="dir-column">
-          <ul class="bullet-folder-closed column-0"></ul>
-        </div>
-        <div class="dir-column">
           <ul class="bullet-folder-closed column-1"></ul>
-        </div>
-        <div class="dir-column">
-          <ul class="bullet-folder-closed column-2"></ul>
-        </div>
-        <div class="dir-column">
-          <ul class="bullet-folder-closed column-3"></ul>
-        </div>
-        <div class="dir-column">
-          <ul class="bullet-folder-closed column-4"></ul>
         </div>
       </div>
       <div class="dir-tree-detail">
-        <h2>More info -></h2>
+        <h2 class="details-first-title"></h2>
         <h2 class="details-title"></h2>
         <p class="details-content"></p>
       </div>
@@ -118,12 +106,10 @@
           let links = aux2.find('.links-to-files');
           let title = dir.find('h2').text();
           let text = getText(dir);
-          let listItem = getListItem(title, el, lvl + 1);
+          let listItem = getLiDir(title, el, lvl + 1);
 
           if (!links.length) {
-            let afterClick = () => getDetails(title, text);
-            listItem = getListItem(title, el, lvl + 1, afterClick);
-            listItem.attr('class', 'bullet-file');
+            listItem = getLiFile(title, text, lvl + 1);
           }
 
           $('.column-' + (lvl + 1)).append(listItem);
@@ -141,17 +127,19 @@
       function getDetails(title, content) {
         $('.dir-component .details-title').html(title);
         $('.dir-component .details-content').html(content);
+        $('.dir-component .details-first-title').html('More info ->');
       }
 
-      function getListItem(text, el, lvlDest, afterClick = () => {}) {
+      function getLiDir(text, el, lvlDest) {
         function clickHandler() {
           $(this)
-            .toggleClass('bullet-folder-open')
+            .addClass('bullet-folder-open')
             .siblings()
             .removeClass('bullet-folder-open');
-
           clearDir(lvlDest + 1);
-          afterClick();
+          createNewColumn();
+
+          slideCols(lvlDest + 1, 3);
           getDirs('./dir-content', $(el).attr('href'), lvlDest);
         }
 
@@ -159,13 +147,74 @@
         return listItem;
       }
 
-      function clearDir(fromLvl = 0) {
-        let howManyCols = $('[class*="column-"]').length;
-        for (let i = fromLvl; i < howManyCols; i++) {
-          $(`.column-${i}`).empty();
+      function getLiFile(title, content, lvlDest) {
+        function clickHandler() {
+          getDetails(title, content);
         }
+
+        let listItem = $(`<li class="bullet-file">${title}</li>`).click(
+          clickHandler,
+        );
+        return listItem;
+      }
+
+      function createNewColumn() {
+        let howManyCols = $('.dir-tree .dir-column').length;
+        $('.dir-tree').append(
+          `
+              <div class="dir-column">
+                <ul class="bullet-folder-closed column-${howManyCols + 1}"></ul>
+              </div>
+            `,
+        );
+      }
+
+      function clearDir(fromLvl = 1) {
+        let howManyCols = $('[class*="column-"]').length;
+        for (let i = fromLvl; i <= howManyCols; i++) {
+          $(`.column-${i}`)
+            .parent()
+            .remove();
+        }
+
         $('.dir-component .details-title').empty();
         $('.dir-component .details-content').empty();
+        $('.dir-component .details-first-title').empty();
+      }
+
+      function slideCols(pivot, maxVisible) {
+        $('.dir-column').each((index, elem) => {
+          let hiddenBefore = 3;
+          if (index < pivot - hiddenBefore || index > pivot) {
+            $(elem).addClass('hidden');
+          } else {
+            $(elem).removeClass('hidden');
+            let folder = $(elem).find('.bullet-folder-open');
+            let text = folder.text();
+            let splitted = text.split('/');
+            let isDotted = splitted.length >= 2 && splitted[0] === '..';
+
+            if (
+              index == pivot - hiddenBefore &&
+              index + hiddenBefore > maxVisible
+            ) {
+              if (!isDotted) {
+                text = '../' + text;
+              }
+
+              $(elem);
+              folder
+                .text(text)
+                .siblings()
+                .remove();
+            } else {
+              if (isDotted) {
+                $(elem);
+                folder.text(splitted[1]);
+              }
+            }
+          }
+        });
       }
     </script>
   </body>
