@@ -83,33 +83,47 @@
           HeaderModule.searchOnClick(queryFun);
         });
 
+        let isMobile = jQuery.browser.mobile;
+        if (isMobile) {
+          $('.dir-tree').addClass('mobile');
+        }
+
         ExploreModule.loadExplorePage(EXPLORE_DEST, () => {
           UtilsModule.editSrc(undefined, '../../');
 
-          getDirs('./dir-content', 'entry-point.html', 0);
+          getDirs(
+            {
+              dir: './dir-content',
+              file: 'entry-point.html',
+            },
+            0,
+          );
         });
       });
 
-      function getDirs(dir, entryPoint, lvl) {
+      function getDirs(path, lvl) {
         let aux = $("<div id='aux'></div>");
 
-        aux.load(`${dir}/${entryPoint} #content`, function() {
+        aux.load(`${path.dir}/${path.file} #content`, function() {
           aux.find('.links-to-files a').each(function(index, el) {
             let href = $(el).attr('href');
             let aux2 = $("<div id='aux2'></div>");
 
-            aux2.load(`${dir}/${href} #content`, getDirInfo(aux2, el, lvl));
+            aux2.load(
+              `${path.dir}/${href} #content`,
+              getDirInfo(aux2, el, lvl, path.file),
+            );
           });
         });
       }
 
-      function getDirInfo(aux2, el, lvl) {
+      function getDirInfo(aux2, el, lvl, parentFile) {
         return () => {
           let dir = aux2.find('.directory');
           let links = aux2.find('.links-to-files');
           let title = dir.find('h2').text();
           let text = getText(dir);
-          let listItem = getLiDir(title, el, lvl + 1);
+          let listItem = getLiDir(title, el, lvl + 1, parentFile);
 
           if (!links.length) {
             listItem = getLiFile(title, text, lvl + 1);
@@ -133,17 +147,38 @@
         $('.dir-component .details-first-title').html('More info ->');
       }
 
-      function getLiDir(text, el, lvlDest) {
+      function getLiDir(text, el, lvlDest, parentFile) {
         function clickHandler() {
           $(this)
             .addClass('bullet-folder-open')
             .siblings()
             .removeClass('bullet-folder-open');
-          clearDir(lvlDest + 1);
-          createNewColumn();
 
-          slideCols(lvlDest + 1, 3);
-          getDirs('./dir-content', $(el).attr('href'), lvlDest);
+          let nCols = $('.dir-tree.mobile .dir-column').length;
+
+          if (nCols - 1 == lvlDest) {
+            createNewColumn();
+            slideCols(lvlDest);
+            clearDir(lvlDest + 1);
+            getDirs(
+              {
+                dir: './dir-content',
+                file: parentFile,
+              },
+              lvlDest,
+            );
+          } else {
+            clearDir(lvlDest + 1);
+            createNewColumn();
+            slideCols(lvlDest + 1);
+            getDirs(
+              {
+                dir: './dir-content',
+                file: $(el).attr('href'),
+              },
+              lvlDest,
+            );
+          }
         }
 
         let listItem = $(`<li>${text}</li>`).click(clickHandler);
@@ -165,10 +200,10 @@
         let howManyCols = $('.dir-tree .dir-column').length;
         $('.dir-tree').append(
           `
-              <div class="dir-column">
-                <ul class="bullet-folder-closed column-${howManyCols + 1}"></ul>
-              </div>
-            `,
+            <div class="dir-column">
+              <ul class="bullet-folder-closed column-${howManyCols + 1}"></ul>
+            </div>
+          `,
         );
       }
 
@@ -185,12 +220,12 @@
         $('.dir-component .details-first-title').empty();
       }
 
-      function slideCols(pivot, maxVisible) {
+      function slideCols(pivot) {
         let isMobile = jQuery.browser.mobile;
         let hiddenBefore = 3;
+        let maxVisible = 3;
 
         if (isMobile) {
-          $('.dir-tree').addClass('mobile');
           hiddenBefore = 2;
           maxVisible = 1;
         }
@@ -213,15 +248,16 @@
                 text = '../' + text;
               }
 
-              $(elem);
               folder
                 .text(text)
                 .siblings()
-                .remove();
+                .addClass('hidden');
             } else {
               if (isDotted) {
-                $(elem);
-                folder.text(splitted[1]);
+                folder
+                  .text(splitted[1])
+                  .siblings()
+                  .removeClass('hidden');
               }
             }
           }
