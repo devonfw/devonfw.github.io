@@ -29,7 +29,6 @@
       <li>
         <div class="search-bar">
           <input id="search-field" type="text" placeholder="Search by keyword(s)..."/>
-          <button id="query-btn">Search</button>
           <div class="search-bar-results hidden" id="search-results">
           </div>
         </div>
@@ -39,13 +38,21 @@
   }
 
   function searchOnClick(clickFunction) {
-    let queryBtn = document.getElementById('query-btn');
-    queryBtn.addEventListener('click', clickFunction);
+    let searchField = document.getElementById('search-field');
+    let timer = null;
+    searchField.onkeypress = function(e) {
+      if (timer) {
+        console.log('clearing');
+        clearTimeout(timer);
+      }
+
+      timer = setTimeout(clickFunction, 1000);
+    };
   }
 
   function query(searchData) {
     let query = document.getElementById('search-field').value;
-    let queryRes = searchData.index.search(query);
+    let queryRes = query ? searchData.index.search(query) : [];
 
     const findById = (id, objects) => {
       const obj = objects.find((obj) => '' + obj.id == '' + id);
@@ -78,8 +85,10 @@
       `;
     }
 
-    $('#search-results').html(results);
-    $('#search-results').removeClass('hidden');
+    if (query) {
+      $('#search-results').html(results);
+      $('#search-results').removeClass('hidden');
+    }
     $('.sr-content').each(function() {
       $(this).click(function() {
         location.href =
@@ -88,7 +97,10 @@
           $(this)
             .text()
             .trim()
-            .replace(ConfigModule.indexJson.path, ConfigModule.devonfwGuide.path)
+            .replace(
+              ConfigModule.indexJson.path,
+              ConfigModule.devonfwGuide.path,
+            )
             .replace(/\.asciidoc$/, '.html');
       });
     });
