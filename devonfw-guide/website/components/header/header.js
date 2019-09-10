@@ -69,13 +69,13 @@
 
     if (queryRes.length > 5) {
       results += `
-      <a
-      class="more-results"
-      href="/website/pages/search-results/search-results.html?search=${query}"
-      >
-        Show all the results(${queryRes.length})
-      </a>
-    `;
+        <a
+        class="more-results"
+        href="${ConfigModule.pagesLocation.searchResultsPage.path}?search=${query}"
+        >
+          Show all the results(${queryRes.length})
+        </a>
+      `;
     }
 
     $('#search-results').html(results);
@@ -83,12 +83,12 @@
     $('.sr-content').each(function() {
       $(this).click(function() {
         location.href =
-          '/website/pages/docs/page-docs.html' +
+          ConfigModule.pagesLocation.docsPage.path +
           '?q=' +
           $(this)
             .text()
             .trim()
-            .replace('./devonfw-guide/', '../../../')
+            .replace(ConfigModule.indexJson.path, ConfigModule.devofwGuide.path)
             .replace(/\.asciidoc$/, '.html');
       });
     });

@@ -12,6 +12,9 @@
       href="//fonts.googleapis.com/css?family=Ubuntu"
     />
 
+    <!-- Configuration module -->
+    <script src="../../config/devonfw-site-conf.js"></script>
+
     <!-- Style fort the cards -->
     <link rel="stylesheet" type="text/css" href="search-results.css" />
 
@@ -36,11 +39,11 @@
 
       function gotoArticle(destArticle) {
         location.href =
-          '/website/pages/docs/page-docs.html' +
+          ConfigModule.pagesLocation.docsPage.path +
           '?q=' +
           destArticle
             .trim()
-            .replace('./devonfw-guide/', '../../../')
+            .replace(ConfigModule.indexJson.path, ConfigModule.devofwGuide.path)
             .replace(/\.asciidoc$/, '.html');
       }
 
@@ -61,7 +64,6 @@
               const metadataKeys = Object.keys(metadataMap);
 
               textSnippetsMap = getSnippets(metadataMap, 200, doc.body);
-              console.log('HELLO');
               let snippetHtml = '';
 
               let maxLen = -1;
@@ -80,8 +82,6 @@
                   </div>`;
                 }
               }
-
-              console.log('WORLDS');
 
               return `
                 <div class="result-card">

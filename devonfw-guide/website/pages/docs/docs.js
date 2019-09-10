@@ -85,7 +85,7 @@
               .attr('href')
               .replace(
                 /#([a-zA-Z0-9-]+)\.asciidoc$/,
-                `../../../${level0href}/$1.html`,
+                `${ConfigModule.devonfwGuide.path}${level0href}/$1.html`,
               ),
           );
 
@@ -104,10 +104,8 @@
   }
 
   function editSrc(searchValue, replaceValue) {
-    let searchVal =
-      searchValue ||
-      'C:/Proyectos/devonfw-official-website-projects/devonfw-official-website/devonfw-guide/target/generated-docs/';
-    let replaceVal = replaceValue || '../../../';
+    let searchVal = searchValue || ConfigModule.editSrc.searchValue;
+    let replaceVal = replaceValue || ConfigModule.editSrc.imgFolderPath;
 
     $('img').each(function() {
       $(this).attr(

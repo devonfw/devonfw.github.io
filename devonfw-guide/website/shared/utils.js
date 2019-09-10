@@ -1,10 +1,8 @@
 (function(window) {
   // Function definitions
   function editSrc(searchValue, replaceValue) {
-    let searchVal =
-      searchValue ||
-      'C:/Proyectos/devonfw-official-website-projects/devonfw-official-website/devonfw-guide/target/generated-docs/';
-    let replaceVal = replaceValue || '../';
+    let searchVal = searchValue || ConfigModule.editSrc.searchValue;
+    let replaceVal = replaceValue || ConfigModule.editSrc.imgFolderPath;
 
     $('img').each(function() {
       $(this).attr(
@@ -25,14 +23,14 @@
   }
 
   function loadIndex(searchData) {
-    $.getJSON('/website/docs-json.json', function(docsJson) {
+    const info = ConfigModule.searchInfo;
+
+    $.getJSON(info.docsPath, function(docsJson) {
       searchData.documents = docsJson;
 
-      return ((docs) => {
-        $.getJSON('/website/index.json', function(idxJson) {
-          searchData.index = lunr.Index.load(idxJson);
-        });
-      })(searchData.documents);
+      $.getJSON(info.indexPath, function(idxJson) {
+        searchData.index = lunr.Index.load(idxJson);
+      });
     });
   }
 
