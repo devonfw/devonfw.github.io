@@ -88,7 +88,7 @@
           $(this)
             .text()
             .trim()
-            .replace(ConfigModule.indexJson.path, ConfigModule.devofwGuide.path)
+            .replace(ConfigModule.indexJson.path, ConfigModule.devonfwGuide.path)
             .replace(/\.asciidoc$/, '.html');
       });
     });

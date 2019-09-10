@@ -16,7 +16,7 @@
     path: './',
   };
 
-  const devofwGuide = {
+  const devonfwGuide = {
     path: `${BASE_PATH}`,
   };
 
@@ -42,7 +42,7 @@
   window.ConfigModule = {
     searchInfo: searchInfo,
     editSrc: editSrc,
-    devofwGuide: devofwGuide,
+    devonfwGuide: devonfwGuide,
     pagesLocation: pagesLocation,
     indexJson: indexJson,
   };
