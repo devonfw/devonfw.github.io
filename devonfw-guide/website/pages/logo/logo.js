@@ -1,4 +1,5 @@
 import { landingPageModel, Link, Card, Slide, InfoBlock } from './model.js';
+import { renderModule } from './components.js';
 
 (function(window) {
     // Function definitions
@@ -68,7 +69,15 @@ import { landingPageModel, Link, Card, Slide, InfoBlock } from './model.js';
                 link.text = $(element).text();
                 link.href = getLinkPathByHref(element.href);
                 sh7.links.push(link);
-            })
+            });
+            // Rendering
+            renderModule.firstSection(landingPageModel.sections.first);
+            renderModule.secondSection(landingPageModel.sections.second);
+            renderModule.thirdSection(landingPageModel.sections.third);
+            renderModule.fourthSection(landingPageModel.sections.fourth);
+            renderModule.fifthSection(landingPageModel.sections.fifth);
+            renderModule.sixthSection(landingPageModel.sections.sixth);
+            renderModule.seventhSection(landingPageModel.sections.seventh);
         });
     }
 
@@ -112,6 +121,10 @@ import { landingPageModel, Link, Card, Slide, InfoBlock } from './model.js';
 
     function getLinkPathByHref(href) {
         return href.split('#')[1];
+    }
+
+    function renderPage() {
+
     }
 
     // List of functions accessibly by other scripts
