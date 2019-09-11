@@ -1,7 +1,11 @@
-(function(window) {
+import { ConfigModule } from '../../config/devonfw-site-conf.js';
+import { UtilsModule } from '../../shared/utils.js';
+
+const docsModule = (function(window) {
   // Function definitions
   function loadDocs(docsDestSelector, pageToLoad, handler = () => {}) {
     $(docsDestSelector).load(pageToLoad, function() {
+      UtilsModule.editSrc();
       handler();
     });
   }
@@ -118,9 +122,11 @@
   }
 
   // List of functions accessibly by other scripts
-  window.DocsModule = {
+  return {
     loadDocs: loadDocs,
     clickSidebar: clickSidebar,
     sidebarEditHref,
   };
 })(window);
+
+export const DocsModule = docsModule;

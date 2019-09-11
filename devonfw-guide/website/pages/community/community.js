@@ -1,4 +1,6 @@
-(function(window) {
+import { UtilsModule } from '../../shared/utils.js';
+
+const communityModule = (function(window) {
   // Function definitions
   function loadCommunity(
     communityDestSelector = '#community-page',
@@ -8,19 +10,19 @@
     const COMMUNITY_SELECTOR = `${HTML_FILE} #content .sect1`;
 
     $(communityDestSelector).load(COMMUNITY_SELECTOR, function() {
+      UtilsModule.editSrc();
       handler();
     });
   }
 
   function getHtmlFileName() {
-    let thisFile = $('script[src$="community.js"]')[0];
-    let thisFilename = thisFile.attributes.src.value;
-    let htmlFilemame = thisFilename.replace(/\.js$/g, '.html');
-    return htmlFilemame;
+    return 'community.html';
   }
 
   // List of functions accessibly by other scripts
-  window.CommunityModule = {
+  return {
     loadCommunity: loadCommunity,
   };
 })(window);
+
+export const CommunityModule = communityModule;

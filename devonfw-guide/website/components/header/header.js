@@ -1,4 +1,6 @@
-(function(window) {
+import { ConfigModule } from '../../config/devonfw-site-conf.js';
+
+const headerModule = (function(window) {
   // Function definitions
   function loadNavbar(navbarDestSelector, afterLoad = () => {}) {
     const HTML_FILE = getHtmlFileName();
@@ -7,16 +9,13 @@
     $(navbarDestSelector).load(NAVBAR_SELECTOR, () => {
       const searchBar = getSearchBar();
       HeaderModule.appendEnd(navbarDestSelector, searchBar);
-
       afterLoad();
     });
   }
 
   function getHtmlFileName() {
-    let thisFile = $('script[src$="header.js"]')[0];
-    let thisFilename = thisFile.attributes.src.value;
-    let htmlFilemame = thisFilename.replace(/\.js$/g, '.html');
-    return htmlFilemame;
+    const componentPath = ConfigModule.componentsLocation.header.path;
+    return componentPath;
   }
 
   function appendEnd(navbarDestSelector, element) {
@@ -29,7 +28,7 @@
       <li>
         <div class="search-bar">
           <input id="search-field" type="text" placeholder="Search by keyword(s)..."/>
-          <div class="search-bar-results hidden" id="search-results">
+          <div class="search-bar-results hidden" id="search-results-box">
           </div>
         </div>
       </li>`;
@@ -86,8 +85,8 @@
     }
 
     if (query) {
-      $('#search-results').html(results);
-      $('#search-results').removeClass('hidden');
+      $('#search-results-box').html(results);
+      $('#search-results-box').removeClass('hidden');
     }
     $('.sr-content').each(function() {
       $(this).click(function() {
@@ -107,10 +106,12 @@
   }
 
   // List of functions accessibly by other scripts
-  window.HeaderModule = {
+  return {
     loadNavbar: loadNavbar,
     appendEnd: appendEnd,
     searchOnClick: searchOnClick,
     queryFunction: query,
   };
 })(window);
+
+export const HeaderModule = headerModule;

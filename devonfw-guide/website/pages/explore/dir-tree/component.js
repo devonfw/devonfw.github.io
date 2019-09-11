@@ -61,7 +61,7 @@ class DirTree extends HTMLDivElement {
         let listItem = getLiDir(title, el, lvl + 1, parentFile);
 
         if (!links.length) {
-          listItem = getLiFile(title, text, lvl + 1);
+          listItem = getLiFile(title, text);
         }
 
         $('.column-' + (lvl + 1)).append(listItem);
@@ -71,7 +71,7 @@ class DirTree extends HTMLDivElement {
     function getText(dir) {
       return dir
         .find('p')
-        .map((index, el) => $(el).text() + '<br/>')
+        .map((_, el) => $(el).text() + '<br/>')
         .get()
         .join('');
     }
@@ -120,7 +120,7 @@ class DirTree extends HTMLDivElement {
       return listItem;
     }
 
-    function getLiFile(title, content, lvlDest) {
+    function getLiFile(title, content) {
       function clickHandler() {
         getDetails(title, content);
       }

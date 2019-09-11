@@ -1,4 +1,6 @@
-(function(window) {
+import { ConfigModule } from '../config/devonfw-site-conf.js';
+
+const utilsModule = (function(window) {
   // Function definitions
   function editSrc(searchValue, replaceValue) {
     let searchVal = searchValue || ConfigModule.editSrc.searchValue;
@@ -35,9 +37,11 @@
   }
 
   // List of functions accessibly by other scripts
-  window.UtilsModule = {
+  return {
     editSrc: editSrc,
     getParametersFromUrl: getParametersFromUrl,
     loadIndex: loadIndex,
   };
 })(window);
+
+export const UtilsModule = utilsModule;

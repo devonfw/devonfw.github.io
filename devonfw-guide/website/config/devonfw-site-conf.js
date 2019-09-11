@@ -1,4 +1,4 @@
-(function(window) {
+function configModule() {
   // configurations
   const BASE_PATH = '/';
 
@@ -23,11 +23,17 @@
   const pagesLocation = {
     docsPage: {
       path: `${BASE_PATH}website/pages/docs/page-docs.html`,
-      initialPage: `${BASE_PATH}devonfw-guide/devon4ng.wiki/architecture.html`,
+      initialPage: `${BASE_PATH}devon4ng.wiki/architecture.html`,
     },
 
     searchResultsPage: {
       path: `${BASE_PATH}website/pages/search-results/search-results.html`,
+    },
+  };
+
+  const componentsLocation = {
+    header: {
+      path: `${BASE_PATH}website/components/header/header.html`,
     },
   };
 
@@ -39,11 +45,14 @@
   };
 
   // List of configurations accessibly by other scripts
-  window.ConfigModule = {
+  return {
     searchInfo: searchInfo,
     editSrc: editSrc,
     devonfwGuide: devonfwGuide,
     pagesLocation: pagesLocation,
     indexJson: indexJson,
+    componentsLocation: componentsLocation,
   };
-})(window);
+}
+
+export const ConfigModule = configModule();

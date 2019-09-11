@@ -12,14 +12,22 @@
       href="//fonts.googleapis.com/css?family=Ubuntu"
     />
 
-    <!-- Configuration module -->
-    <script src="../../config/devonfw-site-conf.js"></script>
-
     <!-- Style fort the cards -->
     <link rel="stylesheet" type="text/css" href="search-results.css" />
 
-    <!-- Script for the community -->
-    <script src="../../shared/utils.js"></script>
+    <!-- Style for the header/navbar -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="../../components/header/header.css"
+    />
+
+    <!-- General styles -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="../../shared/styles/styles.css"
+    />
 
     <!-- JQuery -->
     <script
@@ -32,76 +40,97 @@
     <script src="https://unpkg.com/lunr/lunr.js"></script>
   </head>
   <body>
+    <div id="website-navbar" class="website-navbar"></div>
     <div id="search-results" class="search-results"></div>
-    <script>
-      let searchData = { index: null, documents: null };
-      UtilsModule.loadIndex(searchData);
+    <script type="module">
+      import { HeaderModule } from '../../components/header/header.js';
+      import { ConfigModule } from '../../config/devonfw-site-conf.js';
+      import { UtilsModule } from '../../shared/utils.js';
+      import { SearchModule } from './search-results.js';
 
-      function gotoArticle(destArticle) {
+      window.gotoArticle = function gotoArticle(destArticle) {
+        console.log('hello');
         location.href =
           ConfigModule.pagesLocation.docsPage.path +
           '?q=' +
           destArticle
             .trim()
-            .replace(ConfigModule.indexJson.path, ConfigModule.devonfwGuide.path)
+            .replace(
+              ConfigModule.indexJson.path,
+              ConfigModule.devonfwGuide.path,
+            )
             .replace(/\.asciidoc$/, '.html');
+      };
+
+      const NAVBAR_DEST = '#website-navbar';
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      function searchResult(queryResult, documents) {
+        const findById = (id, docs) => {
+          return docs.find((doc) => '' + doc.id == '' + id);
+        };
+        const doc = findById(queryResult.ref, documents);
+        const metadataMap = queryResult.matchData.metadata;
+        const textSnippetsMap = SearchModule.getSnippets(
+          metadataMap,
+          200,
+          doc.body,
+        );
+        const snippetHtml = SearchModule.getLongestSnippet(textSnippetsMap);
+
+        return searchResTemplate(
+          doc.title,
+          snippetHtml.text,
+          snippetHtml.nWords,
+          queryResult.ref,
+        );
       }
 
-      $(window).on('load', function() {
-        const search = function() {
-          let query = UtilsModule.getParametersFromUrl('search');
-          let queryRes = searchData.index.search(query);
-          const findById = (id, docs) => {
-            return docs.find((doc) => '' + doc.id == '' + id);
-          };
-
-          const results = queryRes
-            .map((queryResult, i) => {
-              if (i > 10) return '';
-
-              const doc = findById(queryResult.ref, searchData.documents);
-              const metadataMap = queryResult.matchData.metadata;
-              const metadataKeys = Object.keys(metadataMap);
-
-              textSnippetsMap = getSnippets(metadataMap, 200, doc.body);
-              let snippetHtml = '';
-
-              let maxLen = -1;
-              for (let snippet in textSnippetsMap) {
-                nWordsInSnippet = textSnippetsMap[snippet].length;
-                if (nWordsInSnippet > maxLen) {
-                  maxLen = nWordsInSnippet;
-                  snippetHtml = `
-                  <div class="snippet">
-                    <div class="title">
-                      <strong>${
-                        textSnippetsMap[snippet]
-                      }</strong><span class="see-more">&nbsp;&nbsp;See more</span>
-                    </div>
-                    <div class="text">&quot;${snippet.trim()}(...)&quot;</div>  
-                  </div>`;
-                }
-              }
-
-              return `
+      function searchResTemplate(title, text, nWords, ref) {
+        const searchRes = `
                 <div class="result-card">
                   <h2 class="sr-title">
-                    ${doc.title}
+                    ${title}
                   </h2>
-                    ${snippetHtml}
+                  <div class="snippet">
+                    <div class="title">
+                      <strong>${nWords}</strong>
+                      <span class="see-more">&nbsp;&nbsp;See more</span>
+                    </div>
+                    <div class="text">&quot;${text}(...)&quot;</div>  
+                  </div>
                   <div class="docs-btn">
-
-                    <button onclick="gotoArticle('${queryResult.ref}')">Go to docs</button>
+                    <button onclick="gotoArticle('${ref}')">Go to docs</button>
                   </div>
                 </div>
                 `;
+
+        return searchRes;
+      }
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.loadNavbar(NAVBAR_DEST, () => {
+          HeaderModule.searchOnClick(queryFun);
+        });
+
+        function search() {
+          let query = UtilsModule.getParametersFromUrl('search');
+          let queryResults = searchData.index.search(query);
+
+          const results = queryResults
+            .map((res, i) => {
+              if (i > 10) return '';
+              return searchResult(res, searchData.documents);
             })
             .join('');
 
-          const resBox = `${results}`;
-
-          $('#search-results').html(resBox);
-        };
+          $('#search-results').html(results);
+        }
 
         function searchAfterIdx() {
           if (!searchData.index) {
@@ -114,78 +143,6 @@
 
         searchAfterIdx();
       });
-
-      function removeFromIndex(occurrencesMap, start, end) {
-        for (let key in occurrencesMap) {
-          let occs = occurrencesMap[key].body.position;
-          let filtered = occs.filter((occ) => occ[0] < start || occ[0] > end);
-          occurrencesMap[key].body.position = filtered;
-        }
-
-        return occurrencesMap;
-      }
-
-      function getSnippets(occMap, range, text) {
-        let occurrencesMap = JSON.parse(JSON.stringify(occMap));
-        let occurrencesKeys = Object.keys(occurrencesMap);
-        let snippetStore = {};
-
-        // for each word in the search query
-        for (let i = 0; i < occurrencesKeys.length; i++) {
-          let key = occurrencesKeys[i];
-          let ocurrences = occurrencesMap[key].body.position;
-
-          // for each ocurrence of a word
-          for (let j = 0; j < ocurrences.length; j++) {
-            let ocurrence = ocurrences[j][0];
-            let start = ocurrence - range;
-            let end = ocurrence + range;
-            let txtWindow = text.substring(start, end);
-
-            let searchUntil = occurrencesKeys.length;
-
-            let regexpWords = [];
-
-            // Decrement the words searched
-            while (searchUntil > i) {
-              // Search how many words from the query are in the window
-              regexpWords = occurrencesKeys.slice(i, searchUntil);
-              let wordsRe = new RegExp(
-                '.*' + regexpWords.join('(.|\\n)*') + '.*',
-                'igm',
-              );
-
-              // Save if the snippet contains the words
-              // in ocurrencesKeys[i] ... ocurrencesKeys[searchUntil]
-              let containsTheWords = txtWindow.match(wordsRe) ? true : false;
-              if (containsTheWords) {
-                for (let w = 0; w < regexpWords.length; w++) {
-                  txtWindow = txtWindow.replace(
-                    new RegExp(regexpWords[w], 'ig'),
-                    `<span class="marked-word">$&</span>`,
-                  );
-                }
-                snippetStore[txtWindow] = regexpWords;
-              }
-
-              searchUntil--;
-
-              // If all the words are contained
-              if (
-                containsTheWords &&
-                regexpWords.length == occurrencesKeys.length
-              ) {
-                break;
-              }
-            }
-
-            // Remove found ocurrences from the index. "Normalize".
-            removeFromIndex(occurrencesMap, start, end);
-          }
-        }
-
-        return snippetStore;
-      }
     </script>
   </body>
 </html>
