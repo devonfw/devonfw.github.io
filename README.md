@@ -1,6 +1,8 @@
-# devonfw-website-tst
+# devonfw-website (next)
 
-Code for the devonfw website
+[![build status](https://travis-ci.com/devonfw/ts-merger.svg?branch=master)](https://travis-ci.org/oasp/ts-merger)
+
+Code for the devonfw website (beta)
 
 ## Dependencies
 
