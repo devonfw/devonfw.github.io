@@ -3,8 +3,8 @@ import { UtilsModule } from '../../shared/utils.js';
 
 const docsModule = (function(window) {
   // Function definitions
-  function loadDocs(docsDestSelector, pageToLoad, handler = () => {}) {
-    $(docsDestSelector).load(pageToLoad, function() {
+  function loadDocs(docsDestSelector, pageToLoadFrom, handler = () => {}) {
+    $(docsDestSelector).load(pageToLoadFrom, function() {
       UtilsModule.editSrc();
       handler();
     });
@@ -107,25 +107,12 @@ const docsModule = (function(window) {
     });
   }
 
-  function editSrc(searchValue, replaceValue) {
-    let searchVal = searchValue || ConfigModule.editSrc.searchValue;
-    let replaceVal = replaceValue || ConfigModule.editSrc.imgFolderPath;
-
-    $('img').each(function() {
-      $(this).attr(
-        'src',
-        $(this)
-          .attr('src')
-          .replace(searchVal, replaceVal),
-      );
-    });
-  }
-
   // List of functions accessibly by other scripts
   return {
     loadDocs: loadDocs,
+    loadSidebar: loadDocs,
     clickSidebar: clickSidebar,
-    sidebarEditHref,
+    sidebarEditHref: sidebarEditHref,
   };
 })(window);
 

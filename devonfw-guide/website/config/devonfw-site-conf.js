@@ -1,5 +1,6 @@
+// Get the configuration for the website
 function configModule() {
-  // configurations
+  
   const BASE_PATH = '/';
 
   const searchInfo = {
@@ -24,6 +25,7 @@ function configModule() {
     docsPage: {
       path: `${BASE_PATH}website/pages/docs/page-docs.html`,
       initialPage: `${BASE_PATH}devon4ng.wiki/architecture.html`,
+      sidebar: `${BASE_PATH}master.html`
     },
 
     searchResultsPage: {
