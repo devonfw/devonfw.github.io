@@ -1,12 +1,19 @@
 export let renderModule = (function() {
     function firstSection(model) {
         let content = `
-                        <div class="row pl-5">
-                            <div class="col-12 col-lg-5 offset-lg-1 mt-lg-5 pt-5 ml-lg-5 pl-lg-5">
-                                <p class="size-first-title-responsive font-weight-bold">${model.title1}</p>
-                                <p class="size-second-title-responsive">${model.title2}</p>
-                                <button type="button" class="btn custom-button mt-4 blue-button mr-4">${model.firstButtonText}</button>
-                                <button type="button" class="btn custom-button mt-4 white-button">${model.secondButtonText}</button>
+                        <div class="row">
+                            <div class="col-12 col-lg-6">
+                                <p class="size-first-title font-weight-bold">${model.title1}</p>
+                                <p class="size-second-title">${model.title2}</p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6 col-md-3 col-lg-2">
+                                <button type="button" class="btn btn-block custom-button blue-button">${model.firstButtonText}</button>
+                            </div>
+                            <div class="col-6 col-md-3 col-lg-2">
+                                <button type="button" class="btn btn-block custom-button white-button">${model.secondButtonText}</button>
                             </div>
                         </div>
                     `

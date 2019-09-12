@@ -78,6 +78,9 @@ import { renderModule } from './components.js';
             renderModule.fifthSection(landingPageModel.sections.fifth);
             renderModule.sixthSection(landingPageModel.sections.sixth);
             renderModule.seventhSection(landingPageModel.sections.seventh);
+
+            // Clean DOM
+            $(".sourceDataContainer.d-none").remove();
         });
     }
 
