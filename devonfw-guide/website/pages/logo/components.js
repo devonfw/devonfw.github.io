@@ -25,16 +25,16 @@ export let renderModule = (function() {
         let content = `
                         <div class="row">
                             <div class="col-12 col-lg-5">
-                                <p class="m-0 custom-text-blue">${model.title1}</p>
-                                <p class="font-weight-bold size-24">${model.title2}</p>
+                                <p class="m-0 custom-text-blue size-1">${model.title1}</p>
+                                <p class="font-weight-bold size-1-5">${model.title2}</p>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-12 col-lg-5">
-                                <p class="size-16">${model.text1}</p>
+                                <p class="size-1">${model.text1}</p>
                             </div>
                             <div class="col-12 col-lg-5 offset-lg-2">
-                                <p class="size-16">${model.text2}</p>
+                                <p class="size-1">${model.text2}</p>
                             </div>
                         </div>
                     `
@@ -46,7 +46,7 @@ export let renderModule = (function() {
 
         model.logoIcons.forEach(element => {
             images += `                            
-                        <div class="col-12 col-md-6 col-lg-3 pt-5 text-center">
+                        <div class="col-6 col-md-3 my-5 text-center">
                             <img src="../../images/${element}">
                         </div>
                     `
@@ -65,12 +65,12 @@ export let renderModule = (function() {
 
         model.cards.forEach(elem => {
             cards += `
-                        <div class="col-12 col-md-6 col-lg-4 py-4">
+                        <div class="col-12 col-md-6 col-lg-4 py-3">
                             <a class="custom-link-card" href="${elem.link.href}" target="_blank">
-                                <div class="card custom-card">
+                                <div class="card h-100 custom-card">
                                     <div class="row no-gutters m-auto">
                                         <div class="col-md-4 d-flex justify-content-center align-items-center">
-                                            <img src="../../images/${elem.image}" class="card-img custom-card-img custom-card-img">
+                                            <img src="../../images/${elem.image}" class="card-img custom-card-img">
                                         </div>
                                         <div class="col-md-8 m-auto">
                                             <div class="card-body">
@@ -89,7 +89,7 @@ export let renderModule = (function() {
         let content = `
                         <div class="row px-lg-5">
                             <div class="col-12">
-                                <p class="text-center font-weight-bold size-24">${model.title1}</p>
+                                <p class="text-center font-weight-bold size-1-5">${model.title1}</p>
                             </div>
                         ${cards}
                         </div>
@@ -110,13 +110,13 @@ export let renderModule = (function() {
                         <div class="carousel-item ${index === 0 ? 'active' : ''}">
                             <div class="container">
                                 <div class="row pb-5">
-                                    <div class="col-12">
+                                    <div class="col-12 col-md-10 offset-md-10 col-lg-8 offset-lg-2">
                                         <p class="text-center size-20 custom-slider-text-blue">${elem.text1}</p>
                                     </div>
-                                    <div class="col-12">
+                                    <div class="col-12 col-md-10 offset-md-10 col-lg-8 offset-lg-2">
                                         <p class="text-center size-20">${elem.text2}</p>
                                     </div>
-                                    <div class="col-12">
+                                    <div class="col-12 col-md-10 offset-md-10 col-lg-8 offset-lg-2">
                                         <p class="text-center size-13">${elem.text3}</p>
                                         <p class="text-center size-13 custom-grey">${elem.text4}</p>
                                     </div>
