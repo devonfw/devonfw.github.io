@@ -61,7 +61,7 @@ function getSnippets(occMap, range, text) {
           for (let w = 0; w < regexpWords.length; w++) {
             txtWindow = txtWindow.replace(
               new RegExp(regexpWords[w], 'ig'),
-              `<span class="marked-word">$&</span>`,
+              `<span class="font-weight-bold font-italic">$&</span>`,
             );
           }
           snippetStore[txtWindow] = regexpWords;

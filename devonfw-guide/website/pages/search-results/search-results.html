@@ -8,6 +8,13 @@
 
     <link
       rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+
+    <link
+      rel="stylesheet"
       type="text/css"
       href="//fonts.googleapis.com/css?family=Ubuntu"
     />
@@ -41,7 +48,15 @@
   </head>
   <body>
     <div id="website-navbar" class="website-navbar"></div>
-    <div id="search-results" class="search-results"></div>
+    <div class="pl-4 pl-sm-5 pr-4 pr-sm-5 pt-3 pt-sm-5 mt-4">
+      <h4 class="mb-4 font-weight-bold">
+        Results for &quot;<span id="query-words"></span>&quot; (<span
+          id="num-results"
+        ></span
+        >)
+      </h4>
+      <div id="search-results" class="search-results"></div>
+    </div>
     <script type="module">
       import { HeaderModule } from '../../components/header/header.js';
       import { ConfigModule } from '../../config/devonfw-site-conf.js';
@@ -66,7 +81,7 @@
       let searchData = { index: null, documents: null };
       UtilsModule.loadIndex(searchData);
 
-      function searchResult(queryResult, documents) {
+      function searchResult(id, queryResult, documents) {
         const findById = (id, docs) => {
           return docs.find((doc) => '' + doc.id == '' + id);
         };
@@ -80,31 +95,44 @@
         const snippetHtml = SearchModule.getLongestSnippet(textSnippetsMap);
 
         return searchResTemplate(
+          id,
           doc.title,
           snippetHtml.text,
-          snippetHtml.nWords,
           queryResult.ref,
         );
       }
 
-      function searchResTemplate(title, text, nWords, ref) {
+      function searchResTemplate(id, title, text, ref) {
         const searchRes = `
-                <div class="result-card">
-                  <h2 class="sr-title">
-                    ${title}
-                  </h2>
-                  <div class="snippet">
-                    <div class="title">
-                      <strong>${nWords}</strong>
-                      <span class="see-more">&nbsp;&nbsp;See more</span>
-                    </div>
-                    <div class="text">&quot;${text}(...)&quot;</div>  
-                  </div>
-                  <div class="docs-btn">
-                    <button onclick="gotoArticle('${ref}')">Go to docs</button>
+            <div class="collapseModule">
+              <div class="snippet">
+                <div class="mb-2">
+                  <h5
+                    class="btn-link font-weight-bold custom-blue pt-0 pl-0 mb-3 cursor-pointer"
+                    onclick="gotoArticle('${ref}')"
+                  >${title}
+                  </h5>
+                </div>
+                <div class="collapse" id="collapseResult${id}">
+                  <div class="text">&quot;${text}(...)&quot;
                   </div>
                 </div>
-                `;
+              </div>
+            </div>
+            <p>
+              <button
+                class="btn btn-link text-dark pl-0 text-underline"
+                type="button"
+                data-toggle="collapse"
+                data-target="#collapseResult${id}"
+                aria-expanded="false"
+                aria-controls="collapseResult${id}"
+              >
+                More
+              </button>
+            </p>
+            <div class="mt-3 mb-3 w-100 bg-dark" style="height: 1px;"></div>
+            `;
 
         return searchRes;
       }
@@ -123,12 +151,11 @@
           let queryResults = searchData.index.search(query);
 
           const results = queryResults
-            .map((res, i) => {
-              if (i > 10) return '';
-              return searchResult(res, searchData.documents);
-            })
+            .map((res, i) => searchResult(i, res, searchData.documents))
             .join('');
 
+          $('#query-words').html(query);
+          $('#num-results').html(queryResults.length);
           $('#search-results').html(results);
         }
 
@@ -144,5 +171,15 @@
         searchAfterIdx();
       });
     </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>
