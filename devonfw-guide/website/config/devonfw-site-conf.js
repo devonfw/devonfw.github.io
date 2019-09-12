@@ -1,6 +1,5 @@
 // Get the configuration for the website
 function configModule() {
-  
   const BASE_PATH = '/';
 
   const searchInfo = {
@@ -19,23 +18,39 @@ function configModule() {
 
   const devonfwGuide = {
     path: `${BASE_PATH}`,
+    masterDir: {
+      'master-devon4ng': 'devon4ng.wiki',
+      'master-cicdgen': 'cicdgen.wiki',
+      'master-devon4net': 'devon4net.wiki',
+      'master-devon4j': 'devon4j.wiki',
+      'master-devonfw-shop-floor': 'devonfw-shop-floor.wiki',
+      'master-devonfw-testing': 'devonfw-testing.wiki',
+      'master-my-thai-star': 'my-thai-star.wiki',
+      'master-tools-cobigen': 'tools-cobigen.wiki',
+      'master-general-start': 'general',
+      'master-general-end': 'general',
+    },
+  };
+
+  const website = {
+    path: `${BASE_PATH}website/`,
   };
 
   const pagesLocation = {
     docsPage: {
-      path: `${BASE_PATH}website/pages/docs/page-docs.html`,
+      path: `${website.path}pages/docs/page-docs.html`,
       initialPage: `${BASE_PATH}devon4ng.wiki/architecture.html`,
-      sidebar: `${BASE_PATH}master.html`
+      sidebar: `${BASE_PATH}master.html`,
     },
 
     searchResultsPage: {
-      path: `${BASE_PATH}website/pages/search-results/search-results.html`,
+      path: `${website.path}pages/search-results/search-results.html`,
     },
   };
 
   const componentsLocation = {
     header: {
-      path: `${BASE_PATH}website/components/header/header.html`,
+      path: `${website.path}components/header/header.html`,
     },
   };
 
