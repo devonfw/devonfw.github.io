@@ -1,29 +1,27 @@
 // See https://html.spec.whatwg.org/multipage/indices.html#element-interfaces
 // for the list of other DOM interfaces.
 class DirTree extends HTMLDivElement {
-
   get mobile() {
     return this.hasAttribute('mobile');
   }
 
-  constructor(mobile=false) {
+  constructor(mobile = false) {
     super();
     this.createComp(mobile);
   }
 
-
   createComp(mobile) {
     this.innerHTML = `
         <div class="dir-component">
-            <div class="dir-tree ${mobile? "mobile" : ""}">
+            <div class="dir-tree font-weight-bold ${mobile ? 'mobile' : ''}">
                 <div class="dir-column">
-                <ul class="bullet-folder-closed column-1"></ul>
+                <ul class="bullet-folder-closed column-1 pl-5"></ul>
                 </div>
             </div>
-            <div class="dir-tree-detail">
-                <h2 class="details-first-title"></h2>
-                <h2 class="details-title"></h2>
-                <p class="details-content"></p>
+            <div class="dir-tree-detail mt-5 pt-5">
+                <h4 class="details-first-title font-weight-bold"></h2>
+                <h4 class="details-title font-weight-bold mt-3"></h2>
+                <p class="details-content mt-4"></p>
             </div>
         </div>
       `;
@@ -85,9 +83,9 @@ class DirTree extends HTMLDivElement {
     function getLiDir(text, el, lvlDest, parentFile) {
       function clickHandler() {
         $(this)
-          .addClass('bullet-folder-open')
+          .addClass('bullet-folder-open bg-ligthgray')
           .siblings()
-          .removeClass('bullet-folder-open');
+          .removeClass('bullet-folder-open bg-ligthgray');
 
         let nCols = $('.dir-tree.mobile .dir-column').length;
 
@@ -116,16 +114,22 @@ class DirTree extends HTMLDivElement {
         }
       }
 
-      let listItem = $(`<li>${text}</li>`).click(clickHandler);
+      let listItem = $(`<li class="py-2 pl-3">${text}</li>`).click(
+        clickHandler,
+      );
       return listItem;
     }
 
     function getLiFile(title, content) {
       function clickHandler() {
         getDetails(title, content);
+        $(this).addClass('bg-ligthgray');
+        $(this)
+          .siblings()
+          .removeClass('bg-ligthgray');
       }
 
-      let listItem = $(`<li class="bullet-file">${title}</li>`).click(
+      let listItem = $(`<li class="bullet-file py-2 pl-3">${title}</li>`).click(
         clickHandler,
       );
       return listItem;
@@ -136,7 +140,8 @@ class DirTree extends HTMLDivElement {
       $('.dir-tree').append(
         `
             <div class="dir-column">
-              <ul class="bullet-folder-closed column-${howManyCols + 1}"></ul>
+              <ul class="bullet-folder-closed column-${howManyCols +
+                1} pl-5"></ul>
             </div>
           `,
       );
