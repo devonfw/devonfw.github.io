@@ -15,7 +15,7 @@ class DirTree extends HTMLDivElement {
         <div class="dir-component">
             <div class="dir-tree font-weight-bold ${mobile ? 'mobile' : ''}">
                 <div class="dir-column">
-                <ul class="bullet-folder-closed column-1 pl-5"></ul>
+                <ul class="list-unstyled cb-folder-closed column-1 pl-0"></ul>
                 </div>
             </div>
             <div class="dir-tree-detail mt-5 pt-5">
@@ -38,7 +38,7 @@ class DirTree extends HTMLDivElement {
       let aux = $("<div id='aux'></div>");
 
       aux.load(`${path.dir}/${path.file} #content`, function() {
-        aux.find('.links-to-files a').each(function(index, el) {
+        aux.find('.links-to-files a').each(function(_, el) {
           let href = $(el).attr('href');
           let aux2 = $("<div id='aux2'></div>");
 
@@ -59,7 +59,7 @@ class DirTree extends HTMLDivElement {
         let listItem = getLiDir(title, el, lvl + 1, parentFile);
 
         if (!links.length) {
-          listItem = getLiFile(title, text);
+          listItem = getLiFile(title, text, lvl + 1);
         }
 
         $('.column-' + (lvl + 1)).append(listItem);
@@ -83,9 +83,9 @@ class DirTree extends HTMLDivElement {
     function getLiDir(text, el, lvlDest, parentFile) {
       function clickHandler() {
         $(this)
-          .addClass('bullet-folder-open bg-ligthgray')
+          .addClass('folder-open bg-ligthgray')
           .siblings()
-          .removeClass('bullet-folder-open bg-ligthgray');
+          .removeClass('folder-open bg-ligthgray');
 
         let nCols = $('.dir-tree.mobile .dir-column').length;
 
@@ -114,14 +114,19 @@ class DirTree extends HTMLDivElement {
         }
       }
 
-      let listItem = $(`<li class="py-2 pl-3">${text}</li>`).click(
-        clickHandler,
-      );
+      let listItem = $(
+        `
+          <li class="py-2 px-4 d-flex align-items-center">
+            <div class="custom-bullet mr-3 mt-1"></div><span class="dir-item-text">${text}</span>
+          </li>
+        `,
+      ).click(clickHandler);
       return listItem;
     }
 
-    function getLiFile(title, content) {
+    function getLiFile(title, content, lvlDest) {
       function clickHandler() {
+        clearDir(lvlDest + 1);
         getDetails(title, content);
         $(this).addClass('bg-ligthgray');
         $(this)
@@ -129,9 +134,13 @@ class DirTree extends HTMLDivElement {
           .removeClass('bg-ligthgray');
       }
 
-      let listItem = $(`<li class="bullet-file py-2 pl-3">${title}</li>`).click(
-        clickHandler,
-      );
+      let listItem = $(
+        `
+          <li class="py-2 px-4 d-flex align-items-center bullet-file">
+            <div class="custom-bullet cb-file mr-3 mt-1"></div><span class="dir-item-text">${title}</span>
+          </li>
+        `,
+      ).click(clickHandler);
       return listItem;
     }
 
@@ -140,8 +149,8 @@ class DirTree extends HTMLDivElement {
       $('.dir-tree').append(
         `
             <div class="dir-column">
-              <ul class="bullet-folder-closed column-${howManyCols +
-                1} pl-5"></ul>
+              <ul class="list-unstyled cb-folder-closed column-${howManyCols +
+                1} pl-0"></ul>
             </div>
           `,
       );
@@ -172,11 +181,13 @@ class DirTree extends HTMLDivElement {
 
       $('.dir-column').each((index, elem) => {
         if (index < pivot - hiddenBefore || index > pivot) {
-          $(elem).addClass('hidden');
+          $(elem).addClass('d-none');
         } else {
-          $(elem).removeClass('hidden');
-          let folder = $(elem).find('.bullet-folder-open');
-          let text = folder.text();
+          $(elem).removeClass('d-none');
+          let folder = $(elem).find('.folder-open');
+          let folderImg = $(elem).find('.custom-bullet');
+          let folderText = folder.find('.dir-item-text');
+          let text = folderText.text();
           let splitted = text.split('/');
           let isDotted = splitted.length >= 2 && splitted[0] === '..';
 
@@ -186,18 +197,21 @@ class DirTree extends HTMLDivElement {
           ) {
             if (!isDotted) {
               text = '../' + text;
+              folderText.text(text);
+              folderImg.addClass('back-arrow');
+              folder
+                .siblings()
+                .addClass('d-none')
+                .removeClass('d-flex');
             }
-
-            folder
-              .text(text)
-              .siblings()
-              .addClass('hidden');
           } else {
             if (isDotted) {
+              folderText.text(splitted[1]);
+              folderImg.removeClass('back-arrow');
               folder
-                .text(splitted[1])
                 .siblings()
-                .removeClass('hidden');
+                .removeClass('d-none')
+                .addClass('d-flex');
             }
           }
         }
