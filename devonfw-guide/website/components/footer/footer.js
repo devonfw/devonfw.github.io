@@ -6,7 +6,7 @@ const footerModule = (function() {
     // Function definitions
 
     function loadFooter(selector) {
-        const HTML_FILE = ConfigModule.componentsLocation.footer.path;
+        const HTML_FILE = getHtmlFileName();
         const asciiHtmlOutcome = `${HTML_FILE} #content`;
         $('body').append('<div class="footerTemporal d-none">')
 
@@ -44,7 +44,7 @@ const footerModule = (function() {
     }
 
     function getHtmlFileName() {
-        const componentPath = ConfigModule.componentsLocation.header.path;
+        const componentPath = ConfigModule.componentsLocation.footer.path;
         return componentPath;
     }
 
