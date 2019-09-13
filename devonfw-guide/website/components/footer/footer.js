@@ -3,7 +3,7 @@
     // Function definitions
 
     function loadFooter(selector) {
-        const HTML_FILE = getHtmlFileName();
+        const HTML_FILE = window.UtilsModule.getHtmlFileName('footer.js');
         const asciiHtmlOutcome = `${HTML_FILE} #content`;
         $('body').append('<div class="footerTemporal d-none">')
 
@@ -16,7 +16,7 @@
                 $(element).find('.ulist > ul > li > p > a').each((i, linkElement) => {
                     let link = new Link();
                     link.text = $(linkElement).text();
-                    link.href = getLinkPathByHref(linkElement.href);
+                    link.href = window.UtilsModule.getLinkPathByHref(linkElement.href);
                     infoBlock.links.push(link);
                 });
                 sh1.infoBlocks.push(infoBlock);
@@ -27,7 +27,7 @@
             $('#content .source.footer-second-section .footer a').each((index, element) => {
                 let link = new Link();
                 link.text = $(element).text();
-                link.href = getLinkPathByHref(element.href);
+                link.href = window.UtilsModule.getLinkPathByHref(element.href);
                 sh2.links.push(link);
             });
 
@@ -38,17 +38,6 @@
             // Clean DOM
             $(".footerTemporal.d-none").remove();
         });
-    }
-
-    function getHtmlFileName() {
-        let thisFile = $('script[src$="footer.js"]')[0];
-        let thisFilename = thisFile.attributes.src.value;
-        let htmlFilemame = thisFilename.replace(/\.js$/g, '.html');
-        return htmlFilemame;
-    }
-
-    function getLinkPathByHref(href) {
-        return href.split('#')[1];
     }
 
     const Link = function() {

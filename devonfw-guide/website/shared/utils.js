@@ -24,6 +24,23 @@
         return queryParam;
     }
 
+    function getFileNameBySrc(filepath) {
+        let pathLength = filepath.split('/').length
+        let fileName = filepath.split('/')[pathLength - 1];
+        return fileName
+    }
+
+    function getLinkPathByHref(href) {
+        return href.split('#')[1];
+    }
+
+    function getHtmlFileName(fileName) {
+        let thisFile = $('script[src$="' + fileName + '"]')[0];
+        let thisFilename = thisFile.attributes.src.value;
+        let htmlFilemame = thisFilename.replace(/\.js$/g, '.html');
+        return htmlFilemame;
+    }
+
     function loadIndex(searchData) {
         $.getJSON('/website/docs-json.json', function(docsJson) {
             searchData.documents = docsJson;
@@ -41,5 +58,8 @@
         editSrc: editSrc,
         getParametersFromUrl: getParametersFromUrl,
         loadIndex: loadIndex,
+        getFileNameBySrc: getFileNameBySrc,
+        getLinkPathByHref: getLinkPathByHref,
+        getHtmlFileName: getHtmlFileName,
     };
 })(window);
