@@ -4,9 +4,11 @@ import { renderModule } from './components.js';
 (function(window) {
     // Function definitions
 
-    function loadModel() {
+    function loadLogoPage() {
         const HTML_FILE = getHtmlFileName();
         const asciiHtmlOutcome = `${HTML_FILE} #content`;
+        $('body').append('<div class="sourceDataContainer d-none">')
+
         $('.sourceDataContainer').load(asciiHtmlOutcome, () => {
             // Loading first section data
             let sh1 = landingPageModel.sections.first;
@@ -49,64 +51,17 @@ import { renderModule } from './components.js';
                 slide.text4 = $($(element).find('li > p')[3]).text();
                 sh5.slides.push(slide);
             });
-            // Loading sixth section data
-            let sh6 = landingPageModel.sections.sixth;
-            $('#content .source.sixth-section .infoBlock').each((index, element) => {
-                let infoBlock = new InfoBlock();
-                infoBlock.title = $($(element).find('.title')[0]).text();
-                $(element).find('.ulist > ul > li > p > a').each((i, linkElement) => {
-                    let link = new Link();
-                    link.text = $(linkElement).text();
-                    link.href = getLinkPathByHref(linkElement.href);
-                    infoBlock.links.push(link);
-                });
-                sh6.infoBlocks.push(infoBlock);
-            });
-            // Loading seventh section data
-            let sh7 = landingPageModel.sections.seventh;
-            $('#content .source.seventh-section .footer a').each((index, element) => {
-                let link = new Link();
-                link.text = $(element).text();
-                link.href = getLinkPathByHref(element.href);
-                sh7.links.push(link);
-            });
+
             // Rendering
             renderModule.firstSection(landingPageModel.sections.first);
             renderModule.secondSection(landingPageModel.sections.second);
             renderModule.thirdSection(landingPageModel.sections.third);
             renderModule.fourthSection(landingPageModel.sections.fourth);
             renderModule.fifthSection(landingPageModel.sections.fifth);
-            renderModule.sixthSection(landingPageModel.sections.sixth);
-            renderModule.seventhSection(landingPageModel.sections.seventh);
 
             // Clean DOM
             $(".sourceDataContainer.d-none").remove();
         });
-    }
-
-    function loadFirstSection(sectionDest = '.first-section-container', handler) {
-        const HTML_FILE = getHtmlFileName();
-        const LOGO_SELECTOR = `${HTML_FILE} #content`;
-        $('.sourceDataContainer').load(LOGO_SELECTOR,
-            () => {
-                handler()
-                    // Load bg image
-                bgImageFileName = getFileNameBySrc($('.source .devon-bg-image img')[0].src)
-                $('#logo-page .bg-image').css('background-image', 'url("../../images/' + bgImageFileName + '")')
-                console.info('First section loaded succesfully!')
-            })
-    }
-
-    function loadLogoPage(logoDestSelector = '#logo-page', handler = () => {}) {
-        const HTML_FILE = getHtmlFileName();
-        const LOGO_SELECTOR = `${HTML_FILE} #content .sect1`;
-        console.info('loading logo page...');
-        $(logoDestSelector).load(LOGO_SELECTOR, function() {
-            handler();
-            console.info('Logo page loaded succesfully!');
-            loadFirstSection();
-        });
-
     }
 
     function getHtmlFileName() {
@@ -126,14 +81,8 @@ import { renderModule } from './components.js';
         return href.split('#')[1];
     }
 
-    function renderPage() {
-
-    }
-
     // List of functions accessibly by other scripts
     window.LogoModule = {
-        loadLogoPage: loadLogoPage,
-        loadFirstSection: loadFirstSection,
-        loadModel: loadModel
+        loadLogoPage: loadLogoPage
     };
 })(window);
