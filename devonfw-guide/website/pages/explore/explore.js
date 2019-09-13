@@ -1,4 +1,6 @@
-(function(window) {
+import { UtilsModule } from '../../shared/utils.js';
+
+const exploreModule = (function(window) {
   // Function definitions
   function loadExplorePage(
     exploreDestSelector = '#explore-page',
@@ -8,19 +10,19 @@
     const EXPLORE_SELECTOR = `${HTML_FILE} #content .sect1`;
 
     $(exploreDestSelector).load(EXPLORE_SELECTOR, function() {
+      UtilsModule.editSrc();
       handler();
     });
   }
 
   function getHtmlFileName() {
-    let thisFile = $('script[src$="explore.js"]')[0];
-    let thisFilename = thisFile.attributes.src.value;
-    let htmlFilemame = thisFilename.replace(/\.js$/g, '.html');
-    return htmlFilemame;
+    return 'explore.html';
   }
 
   // List of functions accessibly by other scripts
-  window.ExploreModule = {
+  return {
     loadExplorePage: loadExplorePage,
   };
 })(window);
+
+export const ExploreModule = exploreModule;

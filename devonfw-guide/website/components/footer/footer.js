@@ -1,9 +1,12 @@
-(function(window) {
+import { UtilsModule } from '../../shared/utils.js';
+import { ConfigModule } from '../../config/devonfw-site-conf.js';
+
+const footerModule = (function() {
 
     // Function definitions
 
     function loadFooter(selector) {
-        const HTML_FILE = window.UtilsModule.getHtmlFileName('footer.js');
+        const HTML_FILE = ConfigModule.componentsLocation.footer.path;
         const asciiHtmlOutcome = `${HTML_FILE} #content`;
         $('body').append('<div class="footerTemporal d-none">')
 
@@ -16,7 +19,7 @@
                 $(element).find('.ulist > ul > li > p > a').each((i, linkElement) => {
                     let link = new Link();
                     link.text = $(linkElement).text();
-                    link.href = window.UtilsModule.getLinkPathByHref(linkElement.href);
+                    link.href = UtilsModule.getLinkPathByHref(linkElement.href);
                     infoBlock.links.push(link);
                 });
                 sh1.infoBlocks.push(infoBlock);
@@ -27,7 +30,7 @@
             $('#content .source.footer-second-section .footer a').each((index, element) => {
                 let link = new Link();
                 link.text = $(element).text();
-                link.href = window.UtilsModule.getLinkPathByHref(element.href);
+                link.href = UtilsModule.getLinkPathByHref(element.href);
                 sh2.links.push(link);
             });
 
@@ -38,6 +41,11 @@
             // Clean DOM
             $(".footerTemporal.d-none").remove();
         });
+    }
+
+    function getHtmlFileName() {
+        const componentPath = ConfigModule.componentsLocation.header.path;
+        return componentPath;
     }
 
     const Link = function() {
@@ -113,7 +121,9 @@
     }
 
     // List of functions accessibly by other scripts
-    window.FooterModule = {
+    return {
         loadFooter: loadFooter
     };
-})(window);
+})();
+
+export const FooterModule = footerModule;

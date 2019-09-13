@@ -1,10 +1,10 @@
-(function(window) {
+import { ConfigModule } from '../config/devonfw-site-conf.js';
+
+const utilsModule = (function(window) {
     // Function definitions
     function editSrc(searchValue, replaceValue) {
-        let searchVal =
-            searchValue ||
-            'C:/Users/jvelando/Desktop/devonfw-official-website/devonfw-guide/target/generated-docs/';
-        let replaceVal = replaceValue || '../';
+        let searchVal = searchValue || ConfigModule.editSrc.searchValue;
+        let replaceVal = replaceValue || ConfigModule.editSrc.imgFolderPath;
 
         $('img').each(function() {
             $(this).attr(
@@ -24,6 +24,18 @@
         return queryParam;
     }
 
+    function loadIndex(searchData) {
+        const info = ConfigModule.searchInfo;
+
+        $.getJSON(info.docsPath, function(docsJson) {
+            searchData.documents = docsJson;
+
+            $.getJSON(info.indexPath, function(idxJson) {
+                searchData.index = lunr.Index.load(idxJson);
+            });
+        });
+    }
+
     function getFileNameBySrc(filepath) {
         let pathLength = filepath.split('/').length
         let fileName = filepath.split('/')[pathLength - 1];
@@ -41,20 +53,8 @@
         return htmlFilemame;
     }
 
-    function loadIndex(searchData) {
-        $.getJSON('/website/docs-json.json', function(docsJson) {
-            searchData.documents = docsJson;
-
-            return ((docs) => {
-                $.getJSON('/website/index.json', function(idxJson) {
-                    searchData.index = lunr.Index.load(idxJson);
-                });
-            })(searchData.documents);
-        });
-    }
-
     // List of functions accessibly by other scripts
-    window.UtilsModule = {
+    return {
         editSrc: editSrc,
         getParametersFromUrl: getParametersFromUrl,
         loadIndex: loadIndex,
@@ -63,3 +63,5 @@
         getHtmlFileName: getHtmlFileName,
     };
 })(window);
+
+export const UtilsModule = utilsModule;

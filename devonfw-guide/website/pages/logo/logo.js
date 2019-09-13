@@ -1,11 +1,12 @@
 import { landingPageModel, Link, Card, Slide, InfoBlock } from './model.js';
 import { renderModule } from './components.js';
+import { UtilsModule } from '../../shared/utils.js';
 
 (function(window) {
     // Function definitions
 
     function loadLogoPage() {
-        const HTML_FILE = window.UtilsModule.getHtmlFileName('logo.js');
+        const HTML_FILE = UtilsModule.getHtmlFileName('logo.js');
         const asciiHtmlOutcome = `${HTML_FILE} #content`;
         $('body').append('<div class="sourceDataContainer d-none">')
 
@@ -14,7 +15,7 @@ import { renderModule } from './components.js';
             let sh1 = landingPageModel.sections.first;
             sh1.title1 = $('#content .source.first-section .title1>h3').text();
             sh1.title2 = $('#content .source.first-section .title2>h4').text();
-            sh1.bgImage = window.UtilsModule.getFileNameBySrc($('#content .source.first-section .bg-image img')[0].src)
+            sh1.bgImage = UtilsModule.getFileNameBySrc($('#content .source.first-section .bg-image img')[0].src)
             sh1.firstButtonText = $('#content .source.first-section .start>p>b').text();
             sh1.secondButtonText = $('#content .source.first-section .download>p>b').text();
             // Loading second section data
@@ -27,17 +28,17 @@ import { renderModule } from './components.js';
             let sh3 = landingPageModel.sections.third;
             $('#content .source.third-section .imageIcon').each((index, element) => {
                 let imgSrc = $(element).find('img')[0] != undefined ? $(element).find('img')[0].src : '';
-                sh3.logoIcons.push(window.UtilsModule.getFileNameBySrc(imgSrc));
+                sh3.logoIcons.push(UtilsModule.getFileNameBySrc(imgSrc));
             });
             // Loading fourth section data
             let sh4 = landingPageModel.sections.fourth;
             sh4.title1 = $('#content .source.fourth-section .title1>p').text();
             $('#content .source.fourth-section .card').each((index, element) => {
                 let card = new Card();
-                card.image = $(element).find('li img')[0] != undefined ? window.UtilsModule.getFileNameBySrc($(element).find('li img')[0].src) : '';
+                card.image = $(element).find('li img')[0] != undefined ? UtilsModule.getFileNameBySrc($(element).find('li img')[0].src) : '';
                 card.title = $($($(element).find('li')[1]).find('p')[0]).text();
                 card.description = $($($(element).find('li')[2]).find('p')[0]).text();
-                card.link.href = $(element).find('li a')[0] != undefined ? window.UtilsModule.getLinkPathByHref($(element).find('li a')[0].href) : '';
+                card.link.href = $(element).find('li a')[0] != undefined ? UtilsModule.getLinkPathByHref($(element).find('li a')[0].href) : '';
                 card.link.text = $(element).find('li a')[0] != undefined ? $($(element).find('li a')[0]).text() : '';
                 sh4.cards.push(card);
             });
