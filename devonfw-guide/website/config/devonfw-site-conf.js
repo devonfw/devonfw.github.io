@@ -52,6 +52,9 @@ function configModule() {
     header: {
       path: `${website.path}components/header/header.html`,
     },
+    footer: {
+      path: `${website.path}components/footer/footer.html`,
+    },
   };
 
   const editSrc = {

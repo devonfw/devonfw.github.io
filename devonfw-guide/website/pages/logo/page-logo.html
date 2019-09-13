@@ -1,72 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="//fonts.googleapis.com/css?family=Ubuntu"
-    />
+    <!-- Bootstrap css -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Ubuntu" />
+
 
     <!-- Style for the header/navbar -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="../../components/header/header.css"
-    />
+    <link rel="stylesheet" type="text/css" href="../../components/header/header.css" />
+    <link rel="stylesheet" type="text/css" href="../../components/footer/footer.css" />
 
     <!-- Style for the resources -->
     <link rel="stylesheet" type="text/css" href="logo.css" />
 
     <!-- Script for the resources -->
-    <script src="logo.js"></script>
+    <script src="components.js" type="module"></script>
+    <script src="logo.js" type="module"></script>
 
     <!-- JQuery -->
-    <script
-      src="https://code.jquery.com/jquery-3.4.1.min.js"
-      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-      crossorigin="anonymous"
-    ></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 
     <!-- Lunr -->
     <script src="https://unpkg.com/lunr/lunr.js"></script>
 
     <!-- General styles -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="../../shared/styles/styles.css"
-    />
+    <link rel="stylesheet" type="text/css" href="../../shared/styles/styles.css" />
 
     <title>Logo page</title>
-  </head>
-  <body>
+</head>
+
+<body>
     <div id="website-navbar" class="website-navbar"></div>
-    <div id="logo-page" class="logo-page "></div>
+
+
+    <div id="logo-page" class="logo-page position-relative">
+        <!-- First section -->
+        <div class="bg-image position-absolute"></div>
+        <div class="container first-section-container h-100 pt-md-5" id="first-section">
+
+        </div>
+
+        <div class="w-100 my-5"></div>
+
+        <!-- Second Section -->
+        <div class="container" id="second-section">
+
+        </div>
+
+        <div class="w-100 my-5"></div>
+
+        <!-- Third section -->
+        <div class="container" id="third-section">
+
+        </div>
+
+        <div class="w-100 my-5"></div>
+
+        <!-- Fourth Section -->
+        <div class="container" id="fourth-section">
+
+        </div>
+
+        <div class="w-100 mt-5"></div>
+
+        <!-- Fifth Section -->
+        <div class="container-fluid py-5 reset-bg-color" id="fifth-section">
+            <div id="cap-slider" class="carousel slide" data-ride="carousel">
+                <ol class="carousel-indicators">
+                </ol>
+                <div class="carousel-inner custom-carousel-height">
+                </div>
+            </div>
+        </div>
+
+    </div>
+
     <script type="module">
-      import { HeaderModule } from '../../components/header/header.js';
-      import { UtilsModule } from '../../shared/utils.js';
-  
-      const LOGO_DEST = '#logo-page';
-      const NAVBAR_DEST = '#website-navbar';
+        import { UtilsModule } from '../../shared/utils.js';
+        import { HeaderModule } from '../../components/header/header.js';
+        import { FooterModule } from '../../components/footer/footer.js';
 
-      let searchData = { index: null, documents: null };
-      UtilsModule.loadIndex(searchData);
-
-      $(window).on('load', function() {
-        const queryFun = () => {
-          HeaderModule.queryFunction(searchData);
+        const LOGO_DEST = '#logo-page';
+        const NAVBAR_DEST = '#website-navbar';
+        let searchData = {
+            index: null,
+            documents: null
         };
+        UtilsModule.loadIndex(searchData);
+        $(window).on('load', function() {
+            const queryFun = () => {
+                HeaderModule.queryFunction(searchData);
+            };
+            HeaderModule.loadNavbar(NAVBAR_DEST, () => {
+                HeaderModule.searchOnClick(queryFun);
+            });
+            LogoModule.loadLogoPage();
+            FooterModule.loadFooter(LOGO_DEST);
 
-        HeaderModule.loadNavbar(NAVBAR_DEST, () => {
-          HeaderModule.searchOnClick(queryFun);
         });
-
-        LogoModule.loadLogoPage(LOGO_DEST, UtilsModule.editSrc);
-      });
     </script>
-  </body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+
 </html>
