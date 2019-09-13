@@ -11,20 +11,7 @@ class DirTree extends HTMLDivElement {
   }
 
   createComp(mobile) {
-    this.innerHTML = `
-        <div class="dir-component">
-            <div class="dir-tree font-weight-bold ${mobile ? 'mobile' : ''}">
-                <div class="dir-column">
-                <ul class="list-unstyled cb-folder-closed column-1 pl-0"></ul>
-                </div>
-            </div>
-            <div class="dir-tree-detail mt-5 pt-5">
-                <h4 class="details-first-title font-weight-bold"></h2>
-                <h4 class="details-title font-weight-bold mt-3"></h2>
-                <p class="details-content mt-4"></p>
-            </div>
-        </div>
-      `;
+    this.innerHTML = baseTemplate(mobile);
 
     getDirs(
       {
@@ -33,6 +20,74 @@ class DirTree extends HTMLDivElement {
       },
       0,
     );
+
+    function baseTemplate(mobile) {
+      let template = `
+        <div class="dir-component">
+            <div class="dir-tree font-weight-bold ${mobile ? 'mobile' : ''}">
+                <div class="dir-column">
+                <ul class="list-unstyled pl-0 cb-folder-closed column-1"></ul>
+                </div>
+            </div>
+            <div class="mt-5 pt-5 row dir-tree-detail">
+            </div>
+        </div>
+      `;
+
+      return template;
+    }
+
+    function dirTemplate(text) {
+      let dir = `
+        <li class="py-2 px-4 d-flex align-items-center">
+          <div class="mr-3 mt-1 custom-bullet"></div><span class="dir-item-text">${text}</span>
+        </li>
+      `;
+
+      return dir;
+    }
+
+    function fileTemplate(title) {
+      let file = `
+        <li class="py-2 px-4 d-flex align-items-center bullet-file">
+          <div class="custom-bullet cb-file mr-3 mt-1"></div><span class="dir-item-text">${title}</span>
+        </li>
+      `;
+
+      return file;
+    }
+
+    function columnTemplate(colNum) {
+      let column = `
+        <div class="dir-column">
+          <ul class="list-unstyled pl-0 cb-folder-closed column-${colNum}"></ul>
+        </div>
+      `;
+
+      return column;
+    }
+
+    function detailsTemplate(fileInfo) {
+      let details = `
+        <div class="col-12 col-sm-8">
+          <h4 class="font-weight-bold details-first-title">
+            More info <div class="custom-bullet forward-arrow ml-3 mt-1"></div>
+          </h4>
+          <h4 class="font-weight-bold mt-3 details-title">${fileInfo.title}</h4>
+          <p class="mt-4 details-content">${fileInfo.text}</p>
+        </div>
+        <div class="col-12 col-sm-4 details-references">
+          <h4>Links</h4>
+          <p class="details-links custom-col">
+          </p>
+          <h4 class="mt-4">Videos</h4>
+          <p class="details-videos custom-col">
+          </p>
+        </div>
+      `;
+
+      return details;
+    }
 
     function getDirs(path, lvl) {
       let aux = $("<div id='aux'></div>");
@@ -44,22 +99,41 @@ class DirTree extends HTMLDivElement {
 
           aux2.load(
             `${path.dir}/${href} #content`,
-            getDirInfo(aux2, el, lvl, path.file),
+            showDirInfo(aux2, el, lvl, path.file),
           );
         });
       });
     }
 
-    function getDirInfo(aux2, el, lvl, parentFile) {
+    function showFileDetails(path) {
+      let aux = $("<div id='aux'></div>");
+
+      aux.load(`${path.dir}/${path.file} #content`, function() {
+        const dir = aux.find('.directory');
+        const title = dir.find('h2').text();
+        const text = getText(dir);
+        const commonLinks = aux.find('.common-links a');
+        const videosLinks = aux.find('.videos-links a');
+
+        const fileInfo = { title, text };
+        const details = detailsTemplate(fileInfo);
+        $('.dir-component .dir-tree-detail').html(details);
+        $('.dir-component .details-links').html(commonLinks);
+        $('.dir-component .details-videos').html(videosLinks);
+      });
+    }
+
+    function showDirInfo(aux2, el, lvl, parentFile) {
       return () => {
-        let dir = aux2.find('.directory');
-        let links = aux2.find('.links-to-files');
-        let title = dir.find('h2').text();
-        let text = getText(dir);
+        const dir = aux2.find('.directory');
+        const links = aux2.find('.links-to-files');
+        const title = dir.find('h2').text();
+        const text = getText(dir);
         let listItem = getLiDir(title, el, lvl + 1, parentFile);
 
         if (!links.length) {
-          listItem = getLiFile(title, text, lvl + 1);
+          const fileInfo = { title, text };
+          listItem = getLiFile(fileInfo, el, lvl + 1);
         }
 
         $('.column-' + (lvl + 1)).append(listItem);
@@ -74,20 +148,13 @@ class DirTree extends HTMLDivElement {
         .join('');
     }
 
-    function getDetails(title, content) {
-      $('.dir-component .details-title').html(title);
-      $('.dir-component .details-content').html(content);
-      $('.dir-component .details-first-title').html('More info ->');
-    }
-
     function getLiDir(text, el, lvlDest, parentFile) {
       function clickHandler() {
         $(this)
           .addClass('folder-open bg-ligthgray')
           .siblings()
           .removeClass('folder-open bg-ligthgray');
-
-        let nCols = $('.dir-tree.mobile .dir-column').length;
+        const nCols = $('.dir-tree.mobile .dir-column').length;
 
         if (nCols - 1 == lvlDest) {
           createNewColumn();
@@ -114,59 +181,40 @@ class DirTree extends HTMLDivElement {
         }
       }
 
-      let listItem = $(
-        `
-          <li class="py-2 px-4 d-flex align-items-center">
-            <div class="custom-bullet mr-3 mt-1"></div><span class="dir-item-text">${text}</span>
-          </li>
-        `,
-      ).click(clickHandler);
-      return listItem;
+      const dir = $(dirTemplate(text)).click(clickHandler);
+      return dir;
     }
 
-    function getLiFile(title, content, lvlDest) {
+    function getLiFile(fileInfo, el, lvlDest) {
       function clickHandler() {
         clearDir(lvlDest + 1);
-        getDetails(title, content);
+        // const details = detailsTemplate(fileInfo);
+        showFileDetails({ dir: './dir-content', file: $(el).attr('href') });
+
         $(this).addClass('bg-ligthgray');
         $(this)
           .siblings()
           .removeClass('bg-ligthgray');
       }
 
-      let listItem = $(
-        `
-          <li class="py-2 px-4 d-flex align-items-center bullet-file">
-            <div class="custom-bullet cb-file mr-3 mt-1"></div><span class="dir-item-text">${title}</span>
-          </li>
-        `,
-      ).click(clickHandler);
-      return listItem;
+      const file = $(fileTemplate(fileInfo.title)).click(clickHandler);
+      return file;
     }
 
     function createNewColumn() {
       let howManyCols = $('.dir-tree .dir-column').length;
-      $('.dir-tree').append(
-        `
-            <div class="dir-column">
-              <ul class="list-unstyled cb-folder-closed column-${howManyCols +
-                1} pl-0"></ul>
-            </div>
-          `,
-      );
+      $('.dir-tree').append(columnTemplate(howManyCols + 1));
     }
 
     function clearDir(fromLvl = 1) {
-      let howManyCols = $('[class*="column-"]').length;
+      const howManyCols = $('[class*="column-"]').length;
       for (let i = fromLvl; i <= howManyCols; i++) {
         $(`.column-${i}`)
           .parent()
           .remove();
       }
 
-      $('.dir-component .details-title').empty();
-      $('.dir-component .details-content').empty();
-      $('.dir-component .details-first-title').empty();
+      $('dir-component .dir-tree-detail').empty();
     }
 
     function slideCols(pivot) {
