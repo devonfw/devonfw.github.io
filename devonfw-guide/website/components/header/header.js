@@ -24,17 +24,8 @@ const headerModule = (function(window) {
 
   function navbarModel() {
     let model = {
-      brand: {
-        text: '',
-        img: '',
-      },
-
-      links: [
-        {
-          text: '',
-          href: '',
-        },
-      ],
+      brand: { text: '', img: ''},
+      links: [{text: '',href: ''}],
     };
 
     let links = [];
@@ -70,8 +61,7 @@ const headerModule = (function(window) {
         l += `
           <li class="nav-item">
             <a class="nav-link text-white" href="${links[i].href}">${links[i].text}</a>
-          </li>
-        `;
+          </li>`;
       }
 
       return l;
@@ -114,10 +104,35 @@ const headerModule = (function(window) {
               </div>
             </div>
           </form>
-      </nav>
-    `;
+      </nav>`;
 
     return template;
+  }
+
+  function searchResultTemplate(title, link) {
+    let template = `
+      <div class="px-3 mt-3">
+        <div class="sr-title">
+          ${title}
+        </div>
+        <div class="sr-content cursor-pointer">
+          ${link}
+        </div>
+      </div>
+      <div class="mt-2 mb-2 w-100 bg-dark hr-2"></div>`
+    return template;
+  }
+
+  function seeMoreTemplate(path, query, nRes) {
+    let template = `
+      <a
+        class="more-results d-block cursor-pointer"
+        href="${path}?search=${query}"
+      >
+        <u class="text-dark w-100 d-block text-center mb-3">see all results(${nRes})</u>
+      </a>`
+    
+      return template
   }
 
   function searchOnClick(clickFunction) {
@@ -143,31 +158,15 @@ const headerModule = (function(window) {
     };
 
     let results = '';
-    for (let i = 0; i < queryRes.length; i++) {
+    for (let i = 0; i < Math.min(queryRes.length, 5); i++) {
       let res = queryRes[i];
-      if (i > 5) break;
-      results += `
-              <div class="px-3 mt-3">
-                <div class="sr-title">
-                  ${findById(res.ref, searchData.documents)}
-                </div>
-                <div class="sr-content cursor-pointer">
-                  ${res.ref}
-                </div>
-              </div>
-              <div class="mt-2 mb-2 w-100 bg-dark hr-2"></div>
-              `;
+      let title = findById(res.ref, searchData.documents);
+      results += searchResultTemplate(title, res.ref);
     }
 
     if (queryRes.length > 5) {
-      results += `
-        <a
-        class="more-results d-block cursor-pointer"
-        href="${ConfigModule.pagesLocation.searchResultsPage.path}?search=${query}"
-        >
-          <u class="text-dark w-100 d-block text-center mb-3">see all results(${queryRes.length})</u>
-        </a>
-      `;
+      let path = ConfigModule.pagesLocation.searchResultsPage.path;
+      results += seeMoreTemplate(path, query, queryRes.length);
     }
 
     if (query) {
