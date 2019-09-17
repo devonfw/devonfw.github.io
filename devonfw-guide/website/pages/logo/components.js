@@ -1,3 +1,5 @@
+import { ConfigModule } from '../../conf/devonfw-site-conf.js';
+
 export let renderModule = (function() {
     function firstSection(model) {
         let content = `
@@ -47,7 +49,7 @@ export let renderModule = (function() {
         model.logoIcons.forEach(element => {
             images += `                            
                         <div class="col-6 col-md-3 my-5 text-center">
-                            <img src="../../images/${element}">
+                            <img src="${ConfigModule.editSrc.imgFolderPath}images/${element}">
                         </div>
                     `
         });
