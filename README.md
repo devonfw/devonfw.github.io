@@ -31,7 +31,7 @@ Option 2: (recomended):
 * run `python -m http.server -d target/generated-docs/  port-number`.
 
 
-The last command will open a page on http://localhost:port-number.
+Now you will be able to go to http://localhost:port-number/website/pages/logo/page-logo.html.
 
 ## During development
 
