@@ -1,6 +1,6 @@
 # devonfw-website (next)
 
-[![build status](https://travis-ci.com/devonfw/ts-merger.svg?branch=master)](https://travis-ci.org/oasp/ts-merger)
+[![build status](https://travis-ci.com/devonfw/devonfw-official-website.svg?branch=master)](https://travis-ci.com/devonfw/devonfw-official-website)
 
 Code for the devonfw website (beta)
 
