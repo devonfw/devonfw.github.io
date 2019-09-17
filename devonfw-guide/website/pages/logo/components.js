@@ -1,4 +1,4 @@
-import { ConfigModule } from '../../conf/devonfw-site-conf.js';
+import { ConfigModule } from '../../config/devonfw-site-conf.js';
 
 export let renderModule = (function() {
     function firstSection(model) {

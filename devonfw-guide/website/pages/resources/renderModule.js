@@ -1,4 +1,4 @@
-import { ConfigModule } from '../../conf/devonfw-site-conf.js';
+import { ConfigModule } from '../../config/devonfw-site-conf.js';
 
 const section1 = function(s1Model) {
     console.log(s1Model)
@@ -61,7 +61,7 @@ const section4 = function(s4Model) {
                     <div class="card h-100 custom-card">
                         <div class="row no-gutters m-auto">
                             <div class="col-md-4 d-flex justify-content-center align-items-center">
-                                <img src="${ConfigModule.editSrc.imgFolderPath}${elem.image}" class="card-img custom-card-img">
+                                <img src="${elem.image}" class="card-img custom-card-img">
                             </div>
                             <div class="col-md-8 m-auto">
                                 <div class="card-body">
