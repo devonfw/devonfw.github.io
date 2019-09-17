@@ -2,8 +2,8 @@
 const section1 = function(s1Model) {
     console.log(s1Model)
     let template = `
-        <div class="p-5 bg-ligthgray">
-            <div class="mx-5">
+        <div class="px-3 py-3 p-sm-5 bg-ligthgray">
+            <div class="mx-1 mx-md-5">
                 <h3 class="font-weight-bold">${s1Model.title1}</h3>
                 <h4 class="font-weight-bold">${s1Model.title2}</h4>
                 <p>${s1Model.text1}</p>
