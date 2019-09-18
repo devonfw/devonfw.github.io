@@ -58,8 +58,8 @@ function configModule() {
   };
 
   const editSrc = {
-    searchValue:
-      'C:/Proyectos/devonfw-official-website-projects/devonfw-official-website/devonfw-guide/target/generated-docs/',
+    searchValue: '/home/travis/build/devonfw/devonfw-official-website/devonfw-guide/target/generated-docs/',
+      //'C:/Proyectos/devonfw-official-website-projects/devonfw-official-website/devonfw-guide/target/generated-docs/',
     replaceValue: '../../',
     imgFolderPath: `${BASE_PATH}`,
   };
