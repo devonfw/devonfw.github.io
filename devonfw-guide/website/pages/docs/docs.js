@@ -1,7 +1,11 @@
-(function(window) {
+import { ConfigModule } from '../../config/devonfw-site-conf.js';
+import { UtilsModule } from '../../shared/utils.js';
+
+const docsModule = (function(window) {
   // Function definitions
-  function loadDocs(docsDestSelector, pageToLoad, handler = () => {}) {
-    $(docsDestSelector).load(pageToLoad, function() {
+  function loadDocs(docsDestSelector, pageToLoadFrom, handler = () => {}) {
+    $(docsDestSelector).load(pageToLoadFrom, function() {
+      UtilsModule.editSrc();
       handler();
     });
   }
@@ -17,7 +21,7 @@
       event.preventDefault();
       loadDocs(pageDest, page, () => {
         toSecondSidebar(clickedItem.find('.sectlevel1:first-child > li'));
-        editSrc();
+        UtilsModule.editSrc();
       });
 
       $('ul.sectlevel0 a').removeClass('active');
@@ -35,7 +39,7 @@
       event.preventDefault();
       loadDocs(pageDest, page, () => {
         toSecondSidebar(clickedItem);
-        editSrc();
+        UtilsModule.editSrc();
       });
       $('ul.sectlevel0 a').removeClass('active');
       link.addClass('active');
@@ -68,9 +72,11 @@
       $(this)
         .children('a')
         .each(function() {
-          level0href = $(this)
-            .attr('href')
-            .replace(/#master-([a-zA-Z0-9-]+)\.asciidoc$/, '$1.wiki');
+          const href = $(this).attr('href');
+          const match = href.match(/#([a-zA-Z0-9-]+)\.asciidoc/);
+          const devonDirs = ConfigModule.devonfwGuide.masterDir;
+          const dirName = devonDirs[match ? match[1] : ''];
+          level0href = href.replace(/#([a-zA-Z0-9-]+)\.asciidoc$/, dirName);
         });
 
       let firstPage = '';
@@ -81,11 +87,11 @@
         .each(function(index) {
           $(this).attr(
             'href',
-            $(this) 
+            $(this)
               .attr('href')
               .replace(
                 /#([a-zA-Z0-9-]+)\.asciidoc$/,
-                `../../../${level0href}/$1.html`,
+                `${ConfigModule.devonfwGuide.path}${level0href}/$1.html`,
               ),
           );
 
@@ -103,26 +109,13 @@
     });
   }
 
-  function editSrc(searchValue, replaceValue) {
-    let searchVal =
-      searchValue ||
-      'C:/Proyectos/devon-docgen-projects/devonfw-guide-fork-faster/devonfw-guide/target/generated-docs/';
-    let replaceVal = replaceValue || '../../../';
-
-    $('img').each(function() {
-      $(this).attr(
-        'src',
-        $(this)
-          .attr('src')
-          .replace(searchVal, replaceVal),
-      );
-    });
-  }
-
   // List of functions accessibly by other scripts
-  window.DocsModule = {
+  return {
     loadDocs: loadDocs,
+    loadSidebar: loadDocs,
     clickSidebar: clickSidebar,
-    sidebarEditHref,
+    sidebarEditHref: sidebarEditHref,
   };
 })(window);
+
+export const DocsModule = docsModule;

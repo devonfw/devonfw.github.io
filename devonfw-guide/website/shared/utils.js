@@ -1,45 +1,67 @@
-(function(window) {
-  // Function definitions
-  function editSrc(searchValue, replaceValue) {
-    let searchVal =
-      searchValue ||
-      'C:/Proyectos/devon-docgen-projects/devonfw-guide-fork-faster/devonfw-guide/target/generated-docs/';
-    let replaceVal = replaceValue || '../';
+import { ConfigModule } from '../config/devonfw-site-conf.js';
 
-    $('img').each(function() {
-      $(this).attr(
-        'src',
-        $(this)
-          .attr('src')
-          .replace(searchVal, replaceVal),
-      );
-    });
-  }
+const utilsModule = (function(window) {
+    // Function definitions
+    function editSrc(searchValue, replaceValue) {
+        let searchVal = searchValue || ConfigModule.editSrc.searchValue;
+        let replaceVal = replaceValue || ConfigModule.editSrc.imgFolderPath;
 
-  function getParametersFromUrl(param = 'q') {
-    let url_string = window.location.href;
-    let url = new URL(url_string);
-    let queryParam = url.searchParams.get(param);
-
-    return queryParam;
-  }
-
-  function loadIndex(searchData) {
-    $.getJSON('/website/docs-json.json', function(docsJson) {
-      searchData.documents = docsJson;
-
-      return ((docs) => {
-        $.getJSON('/website/index.json', function(idxJson) {
-          searchData.index = lunr.Index.load(idxJson);
+        $('img').each(function() {
+            $(this).attr(
+                'src',
+                $(this)
+                .attr('src')
+                .replace(searchVal, replaceVal),
+            );
         });
-      })(searchData.documents);
-    });
-  }
+    }
 
-  // List of functions accessibly by other scripts
-  window.UtilsModule = {
-    editSrc: editSrc,
-    getParametersFromUrl: getParametersFromUrl,
-    loadIndex: loadIndex,
-  };
+    function getParametersFromUrl(param = 'q') {
+        let url_string = window.location.href;
+        let url = new URL(url_string);
+        let queryParam = url.searchParams.get(param);
+
+        return queryParam;
+    }
+
+    function loadIndex(searchData) {
+        const info = ConfigModule.searchInfo;
+
+        $.getJSON(info.docsPath, function(docsJson) {
+            searchData.documents = docsJson;
+
+            $.getJSON(info.indexPath, function(idxJson) {
+                searchData.index = lunr.Index.load(idxJson);
+            });
+        });
+    }
+
+    function getFileNameBySrc(filepath) {
+        let pathLength = filepath.split('/').length
+        let fileName = filepath.split('/')[pathLength - 1];
+        return fileName
+    }
+
+    function getLinkPathByHref(href) {
+        return href.split('#')[1];
+    }
+
+    function getHtmlFileName(fileName) {
+        let thisFile = $('script[src$="' + fileName + '"]')[0];
+        let thisFilename = thisFile.attributes.src.value;
+        let htmlFilemame = thisFilename.replace(/\.js$/g, '.html');
+        return htmlFilemame;
+    }
+
+    // List of functions accessibly by other scripts
+    return {
+        editSrc: editSrc,
+        getParametersFromUrl: getParametersFromUrl,
+        loadIndex: loadIndex,
+        getFileNameBySrc: getFileNameBySrc,
+        getLinkPathByHref: getLinkPathByHref,
+        getHtmlFileName: getHtmlFileName,
+    };
 })(window);
+
+export const UtilsModule = utilsModule;
