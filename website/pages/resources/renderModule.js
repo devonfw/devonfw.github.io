@@ -43,10 +43,12 @@ const section2 = function(s2Model) {
 }
 
 const section3 = function(s3Model) {
+    let video = s3Model.videoEl && s3Model.videoEl.get(0);
+
     let template = `
         <div>
             <h4 class="font-weight-bold text-center">${s3Model.title1}</h4>
-            ${s3Model.videoEl.get(0).outerHTML}
+            ${video? s3Model.videoEl.get(0).outerHTML : ''}
         </div>`;
     return template;
 }
@@ -135,11 +137,13 @@ const section7 = function(s7Model) {
 }
 
 const section8 = function(s8Model) {
+    let table = s8Model.tableEl && s8Model.tableEl.get(0);
+
     let template = `
         <div class="overflow-x-auto">
             <h3 class="font-weight-bold">${s8Model.title1}</h3>
             <p>${s8Model.text1}</p>
-            ${s8Model.tableEl.get(0).outerHTML}
+            ${table ? s8Model.tableEl.get(0).outerHTML : ''}
         </div>`;
 
     return template;
