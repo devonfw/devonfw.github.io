@@ -59,7 +59,7 @@ function configModule() {
 
   const editSrc = {
     searchValue:
-      '/home/travis/build/devonfw/devonfw-official-website/devonfw-guide/target/generated-docs/',
+      '/home/travis/build/devonfw/devonfw-official-website/target/generated-docs/',
     //'C:/Proyectos/devonfw-official-website-projects/devonfw-official-website/devonfw-guide/target/generated-docs/',
     replaceValue: '../../',
     imgFolderPath: `${BASE_PATH}`,
