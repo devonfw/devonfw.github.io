@@ -60,7 +60,7 @@ The current value of editSrc.searchValue is '/home/travis/build/devonfw/devonfw-
 
 ![devonfw official website process](documentation/devonfw-official-website-proc.png)
 
-If you want this image you can go to [https://www.draw.io/](draw.io) and open the file documentation/devonfw-official-website-proc.drawio
+If you want to edit this image you can go to [https://www.draw.io/](draw.io) and open the file documentation/devonfw-official-website-proc.drawio
 
 1. Asciidoc files hosted on github. [https://github.com/devonfw/devonfw-guide](devonfw-guide) 
 
