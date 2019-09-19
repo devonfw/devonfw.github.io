@@ -17,7 +17,7 @@ function configModule() {
   };
 
   const devonfwGuide = {
-    path: `${BASE_PATH}`,
+    path: `${BASE_PATH}devonfw-guide/`,
     masterDir: {
       'master-devon4ng': 'devon4ng.wiki',
       'master-cicdgen': 'cicdgen.wiki',
@@ -39,7 +39,7 @@ function configModule() {
   const pagesLocation = {
     docsPage: {
       path: `${website.path}pages/docs/page-docs.html`,
-      initialPage: `${BASE_PATH}devon4ng.wiki/architecture.html`,
+      initialPage: `${devonfwGuide.path}devon4ng.wiki/architecture.html`,
       sidebar: `${BASE_PATH}master.html`,
     },
 
@@ -58,8 +58,9 @@ function configModule() {
   };
 
   const editSrc = {
-    searchValue: '/home/travis/build/devonfw/devonfw-official-website/devonfw-guide/target/generated-docs/',
-      //'C:/Proyectos/devonfw-official-website-projects/devonfw-official-website/devonfw-guide/target/generated-docs/',
+    searchValue:
+      '/home/travis/build/devonfw/devonfw-official-website/devonfw-guide/target/generated-docs/',
+    //'C:/Proyectos/devonfw-official-website-projects/devonfw-official-website/devonfw-guide/target/generated-docs/',
     replaceValue: '../../',
     imgFolderPath: `${BASE_PATH}`,
   };
