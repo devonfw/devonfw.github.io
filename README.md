@@ -56,4 +56,4 @@ Failed to load resource: the server responded with a status of 404 ()
 
 To overcome this problem, *editSrc.searchValue* contains a string that is replaced to *editSrc.imgFolderPath*'s value.
 
-The current value of editSrc.searchValue is '/home/travis/build/devonfw/devonfw-official-website/devonfw-guide/target/generated-docs/', but it must be replaced to the absolute path in your machine, usually something like 'C:/projects/devonfw-official-website/target/generated-docs/'.
+The current value of editSrc.searchValue is '/home/travis/build/devonfw/devonfw-official-website/target/generated-docs/', but it must be replaced to the absolute path in your machine, usually something like 'C:/projects/devonfw-official-website/target/generated-docs/'.
