@@ -38,3 +38,22 @@ Now you will be able to go to http://localhost:port-number/website/pages/logo/pa
 ## During development
 
 During development you may need to run `mvn clean package -D...`. If you are using _Option 1_ then you will need to shutdown the server first, otherwise maven won't be able to delete the _target_ folder
+
+### Configuration changes
+The file website/config/devonfw-site-conf.js stores variables for multiple configurations, here are the two most relevant:
+
+* *BASE_PATH*: const BASE_PATH = '/devonfw-official-website/';
+
+Due to the fact that the website is deployed to https://www.devonfw.com/devonfw-official-website/index.html, the base path is set to *'/devonfw-official-website/'*. If you are serving the website on your local machine localhost:port/index.html the path must be set to *'/'* 
+
+* *editSrc.searchValue*:
+
+The tool devon-docgen used to generate the html uses the absolute path of the compiling machine as the source of the images, so when it is deployed, this url is wrong.
+
+```
+Failed to load resource: the server responded with a status of 404 ()
+```
+
+To overcome this problem, *editSrc.searchValue* contains a string that is replaced to *editSrc.imgFolderPath*'s value.
+
+The current value of editSrc.searchValue is '/home/travis/build/devonfw/devonfw-official-website/devonfw-guide/target/generated-docs/', but it must be replaced to the absolute path in your machine, usually something like 'C:/projects/devonfw-official-website/target/generated-docs/'.
