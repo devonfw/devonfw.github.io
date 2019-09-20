@@ -104,6 +104,9 @@ const headerModule = (function(window) {
               </div>
             </div>
           </form>
+          <a class="navbar-brand text-white mr-auto ml-3 ml-lg-0" href="https://github.com/devonfw/devonfw-official-website">
+            <img src="${ConfigModule.editSrc.imgFolderPath}images/github-mark.png" width=auto height=auto alt="">
+          </a>
       </nav>`;
 
     return template;
