@@ -1,0 +1,33 @@
+name: build-and-deploy
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clone
+      uses: actions/checkout@master
+      
+    - name: Build
+      run: mvn clean package -Ddocgen.images.dir=images,documentation -Doutput.format=html
+    
+    - name: continue deployment only on master
+      uses: actions/bin/filter@master
+      with:
+        args: branch master
+
+    - name: Deploy
+      uses: JamesIves/github-pages-deploy-action@master
+      env:
+        ACCESS_TOKEN: ${{ secrets.DEVONFW_CORE_TOKEN }}
+        BASE_BRANCH: master # The branch the action should deploy from.
+        BRANCH: gh-pages # The branch the action should deploy to.
+        FOLDER: target/generated-docs # The folder the action should deploy.
+        BUILD_SCRIPT: mvn clean package -Ddocgen.images.dir=images,documentation -Doutput.format=html # The build script the action should run prior to deploying.
