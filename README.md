@@ -1,8 +1,8 @@
-# devonfw-website (next)
+:toc: right
+
+# Next version of devonfw website
 
 [![build status](https://travis-ci.com/devonfw/devonfw-official-website.svg?branch=master)](https://travis-ci.com/devonfw/devonfw-official-website)
-
-Code for the devonfw website (beta)
 
 ## Dependencies
 
