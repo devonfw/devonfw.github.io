@@ -98,7 +98,7 @@ const headerModule = (function(window) {
                 class="form-control mr-sm-2"
                 placeholder="Search by keyword(s)..."
                 aria-label="Search"/>
-              <div class="sb-res-pos px-4">
+              <div class="sb-res-pos px-4 z-100">
                 <div class="col rounded px-0 border bg-white hidden search-bar-results" id="search-results-box">
                 </div>
               </div>
