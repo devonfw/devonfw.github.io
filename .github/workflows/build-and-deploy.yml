@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build-and-deploy:
@@ -14,6 +17,10 @@ jobs:
       
     - name: Build
       run: mvn clean package -Ddocgen.images.dir=images,documentation -Doutput.format=html
+    
+    - name: continue deployment only on master
+      uses: actions/bin/filter@master
+      args: branch master
 
     - name: Deploy
       uses: JamesIves/github-pages-deploy-action@master
