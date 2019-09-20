@@ -13,7 +13,7 @@ function configModule() {
     use './' as value. In general, path value must be the second argument.
   */
   const indexJson = {
-    path: './',
+    path: '../devonfw-guide/',
   };
 
   const devonfwGuide = {
