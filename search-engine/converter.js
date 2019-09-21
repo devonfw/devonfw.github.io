@@ -3,6 +3,10 @@ const path = require("path");
 const lunr = require("lunr");
 
 function getLunrDoc(dirname, extension) {
+  console.log(getFilesFromDir(dirname, ".."));
+  console.log(getFilesFromDir(dirname, "../target/"));
+  console.log(getFilesFromDir(dirname, "../target/generated-docs/"));
+
   let files = getFilesFromDir(dirname, extension);
 
   let docs = [];
