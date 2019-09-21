@@ -1,13 +1,13 @@
-const fs = require('fs');
-const path = require('path');
-const lunr = require('lunr');
+const fs = require("fs");
+const path = require("path");
+const lunr = require("lunr");
 
 function getLunrDoc(dirname, extension) {
   let files = getFilesFromDir(dirname, extension);
 
   let docs = [];
-  files.forEach((file) =>
-    docs.push(readFromFilename(file, [removeHtml, removeTooMuchSpaces])),
+  files.forEach(file =>
+    docs.push(readFromFilename(file, [removeHtml, removeTooMuchSpaces]))
   );
 
   generateIndexJson(docs);
@@ -15,21 +15,21 @@ function getLunrDoc(dirname, extension) {
 
 function normalize(path) {
   return path
-    .replace('\\/', '/')
-    .replace('//', '/')
-    .replace('\\', '/');
+    .replace("\\/", "/")
+    .replace("//", "/")
+    .replace("\\", "/");
 }
 
 function removeTooMuchSpaces(str) {
-  return str.replace(/\r\n\s*\r\n/g, '\n').replace(/( )+/g, ' ');
+  return str.replace(/\r\n\s*\r\n/g, "\n").replace(/( )+/g, " ");
 }
 
 function removeHtml(htmlStr) {
-  return htmlStr.replace(/(<([^>]+)>)/gi, '');
+  return htmlStr.replace(/(<([^>]+)>)/gi, "");
 }
 
 function getFilesFromDir(dirname, extension) {
-  let dirContent = fs.readdirSync(dirname);
+  let dirContent = fs.readdirSync(path.join(__dirname, dirname));
   let fileStats;
   let item;
   let result = [];
@@ -51,18 +51,18 @@ function getFilesFromDir(dirname, extension) {
 }
 
 function readFromFilename(file, pipeline = []) {
-  let doc = { id: file, title: 'not found', body: '' };
+  let doc = { id: file, title: "not found", body: "" };
 
-  doc.body = fs.readFileSync(file, 'utf-8');
+  doc.body = fs.readFileSync(file, "utf-8");
 
-  let lines = doc.body.split('\n');
+  let lines = doc.body.split("\n");
   let titleLevel = 10;
 
   lines.forEach(function(line) {
     let matchRes = line.match(/<h([0-9]).*>(.*|\n*)<\/h([0-9])>/);
-    if(matchRes && matchRes.length > 2 && matchRes[1] < titleLevel) {
-      console.log(matchRes)
-      titleLevel = matchRes[1]
+    if (matchRes && matchRes.length > 2 && matchRes[1] < titleLevel) {
+      console.log(matchRes);
+      titleLevel = matchRes[1];
       doc.title = matchRes[2];
     }
   });
@@ -79,10 +79,10 @@ function readFromFilename(file, pipeline = []) {
 
 function generateIndexJson(documents) {
   let idx = lunr(function() {
-    this.ref('id');
-    this.field('title');
-    this.field('body');
-    this.metadataWhitelist = ['position'];
+    this.ref("id");
+    this.field("title");
+    this.field("body");
+    this.metadataWhitelist = ["position"];
 
     documents.forEach(function(doc) {
       this.add(doc);
@@ -91,9 +91,9 @@ function generateIndexJson(documents) {
 
   let idxJson = JSON.stringify(idx);
 
-  fs.writeFileSync('./docs-json.json', JSON.stringify(documents));
-  fs.writeFileSync('./index.json', idxJson);
-  console.log('The file was saved!');
+  fs.writeFileSync("./docs-json.json", JSON.stringify(documents));
+  fs.writeFileSync("./index.json", idxJson);
+  console.log("The file was saved!");
 
   return idxJson;
 }
