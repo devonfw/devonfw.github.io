@@ -79,9 +79,10 @@ const headerModule = (function(window) {
         >
           <span class="navbar-toggler-icon"></span>
         </button>
-        
-        <a class="navbar-brand text-white mr-auto ml-3 ml-lg-0" href="../logo/page-logo.html">
-          <img src="/images/Logo_devonfw.png" width="130" height="25" alt="">
+        <a class="navbar-brand text-white mr-auto ml-3 ml-lg-0" href="${
+          navbarModel.brand.href
+        }">
+          <img src="${navbarModel.brand.img}" width="130" height="30" alt="">
         </a>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
