@@ -82,7 +82,7 @@ const headerModule = (function(window) {
         <a class="navbar-brand text-white mr-auto ml-3 ml-lg-0" href="${
           navbarModel.brand.href
         }">
-          <img src="${navbarModel.brand.img}" width="130" height="30" alt="">
+          <img src="../../images/Logo_devonfw.png" width="130" height="25" alt="">
         </a>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
