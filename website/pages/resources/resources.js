@@ -47,7 +47,8 @@ const resourcesModule = (function(window) {
         let el = $(element);
         let card = {image: '', title: '', description: '', link: {href: '', text: ''}};
 
-        card.image = el.find('img').attr('src');
+        card.image = $(element).find('li img')[0] != undefined ? UtilsModule.getFileNameBySrc($(element).find('li img')[0].src) : '';
+        //card.image = el.find('img').attr('src');
         card.title = el.find('li:nth-child(2) p').text();
         card.description = el.find('li:nth-child(3) p').text();
         card.link.href = el.find('a').attr('href');
