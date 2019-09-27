@@ -112,13 +112,13 @@ export let renderModule = (function() {
                         <div class="carousel-item ${index === 0 ? 'active' : ''}">
                             <div class="container">
                                 <div class="row pb-5">
-                                    <div class="col-12 col-md-10 offset-md-10 col-lg-8 offset-lg-2">
+                                    <div class="col-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2">
                                         <p class="text-center size-20 custom-slider-text-blue">${elem.text1}</p>
                                     </div>
-                                    <div class="col-12 col-md-10 offset-md-10 col-lg-8 offset-lg-2">
+                                    <div class="col-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2">
                                         <p class="text-center size-20">${elem.text2}</p>
                                     </div>
-                                    <div class="col-12 col-md-10 offset-md-10 col-lg-8 offset-lg-2">
+                                    <div class="col-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2">
                                         <p class="text-center size-13">${elem.text3}</p>
                                         <p class="text-center size-13 custom-grey">${elem.text4}</p>
                                     </div>
