@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.devonfw</groupId>
-  <artifactId>devonfw-website</artifactId>
+  <groupId>com.devonfw.website</groupId>
+  <artifactId>parent</artifactId>
   <version>dev-SNAPSHOT</version>
   <packaging>pom</packaging>
 
@@ -12,13 +12,15 @@
     <version>4.1.0</version>
   </parent>
 
-  <properties>
-    <docgen.wiki.page>master</docgen.wiki.page>
-  </properties>
-
   <modules>
+    <module>website</module>
     <module>search-engine</module>
   </modules>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <docgen.wiki.page>master</docgen.wiki.page>
+  </properties>
 
   <!-- never deploy any poms -->
   <build>
@@ -26,9 +28,46 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
+        <version>3.0.0-M1</version>
         <configuration>
           <skip>true</skip>
         </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>copy-website-includes</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <useDefaultDelimiters>true</useDefaultDelimiters>
+              <outputDirectory>${project.build.directory}/generated-docs/website/_includes/</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${basedir}/website/target/generated-docs/component/</directory>
+                  <filtering>false</filtering>
+                  <includes>
+                    <include>**/*.html</include>
+                    <include>**/*.css</include>
+                    <include>**/*.js</include>
+                    <include>**/*.jpg</include>
+                    <include>**/*.jpeg</include>
+                    <include>**/*.png</include>
+                    <include>**/*.svg</include>
+                    <include>**/*.gif</include>
+                    <include>**/*.ico</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

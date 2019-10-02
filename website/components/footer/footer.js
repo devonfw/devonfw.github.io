@@ -1,12 +1,11 @@
-import { UtilsModule } from '../../shared/utils.js';
-import { ConfigModule } from '../../config/devonfw-site-conf.js';
+import { UtilsModule } from "../../shared/utils.js";
+import { ConfigModule } from "../../config/devonfw-site-conf.js";
 
 const footerModule = (function() {
+  // Function definitions
 
-    // Function definitions
-
-    function loadFooter(selector) {
-        const HTML_FILE = getHtmlFileName();
+  function loadFooter(selector) {
+    /*const HTML_FILE = getHtmlFileName();
         const asciiHtmlOutcome = `${HTML_FILE} #content`;
         $('body').append('<div class="footerTemporal d-none">')
 
@@ -40,44 +39,44 @@ const footerModule = (function() {
 
             // Clean DOM
             $(".footerTemporal.d-none").remove();
-        });
+        });*/
+  }
+
+  function getHtmlFileName() {
+    const componentPath = ConfigModule.componentsLocation.footer.path;
+    return componentPath;
+  }
+
+  const Link = function() {
+    this.href = "";
+    this.text = "";
+  };
+
+  const InfoBlock = function() {
+    this.title = "";
+    this.links = [];
+  };
+
+  const footerModel = {
+    sections: {
+      first: {
+        infoBlocks: []
+      },
+      second: {
+        links: []
+      }
     }
+  };
 
-    function getHtmlFileName() {
-        const componentPath = ConfigModule.componentsLocation.footer.path;
-        return componentPath;
-    }
+  function renderFirstFooterSection(model, selector) {
+    let infoBlocks = "";
 
-    const Link = function() {
-        this.href = '';
-        this.text = '';
-    }
-
-    const InfoBlock = function() {
-        this.title = '';
-        this.links = [];
-    }
-
-    const footerModel = {
-        sections: {
-            first: {
-                infoBlocks: []
-            },
-            second: {
-                links: []
-            }
-        }
-    }
-
-    function renderFirstFooterSection(model, selector) {
-        let infoBlocks = '';
-
-        model.infoBlocks.forEach(elem => {
-            let links = '';
-            elem.links.forEach(link => {
-                links += `<li><a class="custom-grey" href="${link.href}" target="_blank">${link.text}</a></li>`
-            })
-            infoBlocks += `                
+    model.infoBlocks.forEach(elem => {
+      let links = "";
+      elem.links.forEach(link => {
+        links += `<li><a class="custom-grey" href="${link.href}" target="_blank">${link.text}</a></li>`;
+      });
+      infoBlocks += `                
                             <div class="col-12 col-md-6 col-lg-3">
                                 <div class="col-9 offset-3">
                                     <h5>${elem.title}</h5>
@@ -86,27 +85,27 @@ const footerModule = (function() {
                                     </ul>
                                 </div>
                             </div>
-                        `
-        });
+                        `;
+    });
 
-        let content = ` 
+    let content = ` 
                         <div class="container-fluid py-5 reset-bg-color">           
                             <div class="row">
                                 ${infoBlocks}
                             </div>
                         </div>
-                    `
-        $(selector).append(content);
-    }
+                    `;
+    $(selector).append(content);
+  }
 
-    function renderSecondFooterSection(model, selector) {
-        let links = '';
+  function renderSecondFooterSection(model, selector) {
+    let links = "";
 
-        model.links.forEach(link => {
-            links += `<a class="custom-grey mr-3" href="${link.text}" target="_blank">${link.text}</a>`
-        });
+    model.links.forEach(link => {
+      links += `<a class="custom-grey mr-3" href="${link.text}" target="_blank">${link.text}</a>`;
+    });
 
-        let content = ` <div class="border"></div>
+    let content = ` <div class="border"></div>
                         <div class="container-fluid py-5 reset-bg-color"> 
                             <div class="row">
                                 <div class="col-12">
@@ -116,14 +115,14 @@ const footerModule = (function() {
                                 </div>
                             </div>
                         </div>
-                    `
-        $(selector).append(content);
-    }
+                    `;
+    $(selector).append(content);
+  }
 
-    // List of functions accessibly by other scripts
-    return {
-        loadFooter: loadFooter
-    };
+  // List of functions accessibly by other scripts
+  return {
+    loadFooter: loadFooter
+  };
 })();
 
 export const FooterModule = footerModule;

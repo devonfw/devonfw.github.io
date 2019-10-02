@@ -1,6 +1,6 @@
 // Get the configuration for the website
 function configModule() {
-  const BASE_PATH = '/devonfw-official-website/';
+  const BASE_PATH = '/';
 
   const searchInfo = {
     docsPath: `${BASE_PATH}website/docs-json.json`,
