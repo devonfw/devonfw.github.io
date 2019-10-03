@@ -13,13 +13,19 @@
   </parent>
 
   <modules>
+    <module>asciidoctor-stylesheet</module>
     <module>website</module>
     <module>search-engine</module>
   </modules>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <docgen.images.dir>images</docgen.images.dir>
+    <asciidoctor.templateDir>asciidoctor-backend/erb/html5/</asciidoctor.templateDir>
     <docgen.wiki.page>master</docgen.wiki.page>
+    <!-- has to be set by cli as profile activation cannot be done based on properties -->
+    <!-- <output.format>html</output.format> -->
+    <stylesheet.target.dir>${basedir}/asciidoctor-stylesheet/target/stylesheets/</stylesheet.target.dir>
   </properties>
 
   <!-- never deploy any poms -->
@@ -62,6 +68,26 @@
                     <include>**/*.svg</include>
                     <include>**/*.gif</include>
                     <include>**/*.ico</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-css</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <useDefaultDelimiters>true</useDefaultDelimiters>
+              <outputDirectory>${project.build.directory}/generated-docs/</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${stylesheet.target.dir}</directory>
+                  <filtering>false</filtering>
+                  <includes>
+                    <include>devonfw.css</include>
                   </includes>
                 </resource>
               </resources>

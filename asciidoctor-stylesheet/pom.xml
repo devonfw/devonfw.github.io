@@ -1,0 +1,189 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.devonfw.website</groupId>
+  <artifactId>stylesheet</artifactId>
+  <version>dev-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <properties>
+    <node.version>v10.16.2</node.version>
+    <npm.version>6.9.0</npm.version>
+    <frontend-maven-plugin.version>1.6</frontend-maven-plugin.version>
+    <stylesheet.build.dir>${basedir}/stylesheets/</stylesheet.build.dir>
+    <stylesheet.target.dir>${project.build.directory}/stylesheets/</stylesheet.target.dir>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>rubygems</groupId>
+      <artifactId>compass</artifactId>
+      <version>0.12.7</version>
+      <type>gem</type>
+    </dependency>
+    <dependency>
+      <groupId>rubygems</groupId>
+      <artifactId>zurb-foundation</artifactId>
+      <version>4.3.2</version>
+      <type>gem</type>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>${frontend-maven-plugin.version}</version>
+        <configuration>
+          <workingDirectory>./</workingDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <id>install node and npm</id>
+            <goals>
+              <goal>install-node-and-npm</goal>
+            </goals>
+            <configuration>
+              <nodeVersion>${node.version}</nodeVersion>
+              <npmVersion>${npm.version}</npmVersion>
+            </configuration>
+          </execution>
+          <execution>
+            <id>npm install</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <configuration>
+              <arguments>install</arguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>de.saumya.mojo</groupId>
+        <artifactId>gem-maven-plugin</artifactId>
+        <version>1.1.8</version>
+        <executions>
+          <execution>
+            <id>install-ruby-gems</id>
+            <goals>
+              <goal>initialize</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>run-compass-compile</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <configuration>
+              <execArgs>${project.build.directory}/rubygems/bin/compass compile -s compact ${basedir}</execArgs>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.8</version>
+        <dependencies>
+          <dependency>
+            <groupId>ant-contrib</groupId>
+            <artifactId>ant-contrib</artifactId>
+            <version>1.0b3</version>
+            <exclusions>
+              <exclusion>
+                <groupId>ant</groupId>
+                <artifactId>ant</artifactId>
+              </exclusion>
+            </exclusions>
+          </dependency>
+          <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-nodeps</artifactId>
+            <version>1.8.1</version>
+          </dependency>
+          <dependency>
+            <groupId>org.beanshell</groupId>
+            <artifactId>bsh</artifactId>
+            <version>2.0b5</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>pre-process-asciidoc</id>
+            <phase>prepare-package</phase>
+            <configuration>
+              <target>
+                <taskdef resource="net/sf/antcontrib/antlib.xml"/>
+
+                <for param="css-file">
+                  <path>
+                    <fileset dir="${stylesheet.build.dir}" casesensitive="yes">
+                      <include name="*.css"/>
+                    </fileset>
+                  </path>
+                  <sequential>
+
+                    <!-- unset variable to ensure it is properly updated in next property and dirname tasks -->
+                    <var name="file_path" unset="true"/>
+                    <dirname property="file_path" file="@{css-file}"/>
+
+                    <!-- unset variable to ensure it is properly updated in next basename task -->
+                    <var name="filename" unset="true"/>
+                    <basename property="filename" file="@{css-file}"/>
+                    <copy file="@{css-file}" todir="${stylesheet.target.dir}"
+                      encoding="${project.build.sourceEncoding}" outputencoding="${project.build.sourceEncoding}"
+                      verbose="true">
+                      <filterchain>
+                        <tokenfilter>
+                          <linetokenizer/>
+                          <!-- reimplemented optimizations from build-stylesheet.sh -->
+                          <replaceregex pattern=" */\*\+!\? [^*]\+\($\| \*/\)" replace="" flags="g"/>
+                          <replaceregex pattern="^/\*\* .* \*/$" replace=""/>
+                          <replaceregex pattern="^\(*/\|\) *$" replace=""/>
+                          <replaceregex pattern="^@media only" replace="@media"/>
+                          <replaceregex pattern="\.antialiased \{" replace=""/>
+                          <replaceregex pattern="^body \{ margin: 0;" replace=""/>
+                          <replaceregex pattern="^body \{ background:[^}]*" replace="&amp;tab-size: 4; -moz-osx-font-smoothing: grayscale; -webkit-font-smoothing: antialiased;"/>
+                          <replaceregex pattern="^body \{ -moz-osx-font-smoothing:" replace=""/>
+                          <replaceregex pattern=", \(summary\|canvas\)" replace=""/>
+                          <replaceregex pattern="^script " replace=""/>
+                          <replaceregex pattern="object, svg \{ display: inline-block;" replace=""/>
+                          <replaceregex pattern="img \{ display: inline-block;" replace="img, object, svg { display: inline-block;"/>
+                          <replaceregex pattern="table thead, table tfoot \{\(.*\) font-weight: bold;\(.*\)\}" replace="table thead, table tfoot {\1\2}"/>
+                          <replaceregex pattern=", table tr:nth-of-type(even)" replace=""/>
+                          <replaceregex pattern="^p\.lead \{" replace=""/>
+                          <replaceregex pattern="^ul\.no-bullet, ol\.no-bullet \{ margin-left: 1.5em; \}$" replace=""/>
+                          <replaceregex pattern="^ul\.no-bullet \{ list-style: none; \}$" replace=""/>
+                          <replaceregex pattern="\(meta\.\|\.vcard\|\.vevent\|#map_canvas\|&quot;search&quot;\|\[hidden\]\)" replace=""/>
+                          <replaceregex pattern="object, svg \{ display: inline-block;" replace=""/>
+                          <replaceregex pattern="^font-awesome" replace=""/>
+                        </tokenfilter>
+                      </filterchain>
+                    </copy>
+                  </sequential>
+                </for>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <repositories>
+    <repository>
+      <id>rubygems-release</id>
+      <url>http://rubygems-proxy.torquebox.org/releases</url>
+    </repository>
+  </repositories>
+
+</project>
