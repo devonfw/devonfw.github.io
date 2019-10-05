@@ -170,34 +170,17 @@ end %><%
 unless nofooter %>
 <div id="footer" class="footer"><%= Nokogiri::HTML(open(normalize_system_path('footer.html', '../../target/generated-docs/website/_includes/footer/'))).at_css('div#content').inner_html %></div>
     <script type="module">
-      import { HeaderModule } from '/website/components/header/header.js';
-      import { ConfigModule } from '/website/config/devonfw-site-conf.js';
       import { UtilsModule } from '/website/shared/utils.js';
 
-      const DOCS_DEST = '#wiki-content';
-      const NAVBAR_DEST = '#website-navbar';
-      const INITAL_PAGE_URL = ConfigModule.pagesLocation.docsPage.initialPage;
-      const SIDEBAR_URL = ConfigModule.pagesLocation.docsPage.sidebar;
-      const SIDEBAR_NAME = 'Features';
-      const FOOTER_DEST = '#footer';
       let searchData = { index: null, documents: null };
       UtilsModule.loadIndex(searchData);
 
       $(window).on('load', function() {
-        //let urlParam = UtilsModule.getParametersFromUrl();
-        //let loadUrl = urlParam
-        //  ? `${urlParam} #content`
-        //  : `${INITAL_PAGE_URL} #content`;
-
         const queryFun = () => {
           HeaderModule.queryFunction(searchData);
         };
 
-        //HeaderModule.loadNavbar(NAVBAR_DEST, () => {
-          HeaderModule.searchOnClick(queryFun);
-        //});
-
-        //DocsModule.loadSidebar('#sidebar', `${SIDEBAR_URL} #toc`, function() {
+        HeaderModule.searchOnClick(queryFun);
       });
     </script>
     <script
