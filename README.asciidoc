@@ -12,16 +12,18 @@ In addition to the github issues, we are maintaining a project board on https://
 
 * http://de-mucevolve02/files/devonfw/current/[devonfw distribution]
 
-## Initial setup
+## Development
+
+### Initial setup
 
 * Open the console in your devonfw distribution (console.bat).
 * Clone this project `git clone --recurse-submodules https://github.com/devonfw/devonfw-official-website.git`.
 
-## Build
+### Build
 * Inside `/devonfw-official-website/` run `mvn clean package -Doutput.format=html`.
 ** _Remark_: for your own trials, it might be worth, to go into `/devonfw-official-website/devonfw-guide/` and delete all *.wiki folders to speed up build as you might not want to generate the complete docs section of the website.
 
-## Run
+### Run
 * Option 1:
 ** Install http-server from npm: `npm install -g http-server`
 ** run `http-server target/generated-docs/ -o`. The default port used will be 8080 but a different one can be specified using the argument `-p port-number`.
@@ -29,6 +31,14 @@ In addition to the github issues, we are maintaining a project board on https://
 ** run `python -m http.server -d target/generated-docs/  port-number`.
 
 Now you will be able to go to http://localhost:<port-number>/index.html.
+
+### Adapt Styles
+
+The entire stylesheet is maintained based on SASS in `asciidoctor-stylesheet/sass` folder with `devonfw.scss` file as an entry point. You can build the stylesheet only by running `mvn clean package` in the `asciidoctor-stylesheet` folder, which will generate the resulting CSS file to `asciidoctor-stylesheet/stylesheets/devonfw.css`.
+
+Building the style locally, you can copy this file by hand to `/target/generate-docs/` of your cloned repository, where you might already have a version of the website running. Overwriting the already existing `devonfw.css` will result in a change of your locally served website.
+
+NOTE: This process is automatically done if you execute a complete build of the repository. 
 
 ## Deployment
 
