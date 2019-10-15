@@ -15,10 +15,24 @@ jobs:
       - name: Clone
         uses: actions/checkout@master
         with:
-          submodules: recursive
+          submodules: recursive:
+
+      - name: SetupRuby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.x'
+      
+      - name: InstallAsciidoctorGem
+        run: gem install asciidoctor -v 1.5.7.1
 
       - name: Build
         run: mvn clean package -Doutput.format=html
+        
+      - name: SplitHtml
+        run: asciidoctor -r asciidoctor-extensions/multipage-html5-converter.rb -b  multipage_html5 target/asciidoc/devonfw-guide/master.asciidoc
+        
+      - name: Log
+        run: ls -l target/asciidoc/devonfw-guide/
 
       - name: Cleanup
         run: | 
