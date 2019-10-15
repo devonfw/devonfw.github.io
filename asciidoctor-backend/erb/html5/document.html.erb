@@ -75,7 +75,7 @@ end
 %><%= (docinfo_content = docinfo).empty? ? nil : %(
 #{docinfo_content}) %>
 </head>
-<body<%= @id && %( id="#{@id}") %> class="<%= [(attr :doctype),((attr? 'toc-class') && (attr? :toc) && (attr? 'toc-placement', 'auto') ? %(#{attr 'toc-class'} toc-#{attr 'toc-position', 'left'}) : nil)].compact * ' ' %>"<%= (attr? 'max-width') ? %( style="max-width: #{attr 'max-width'};") : nil %>><%
+<body<%= @id && %( id="#{@id}") %> class="<%= [(attr :doctype)].compact * ' ' %>"<%= (attr? 'max-width') ? %( style="max-width: #{attr 'max-width'};") : nil %>><%
 unless noheader %>
 <div id="website-navbar" class="website-navbar"><%= Nokogiri::HTML(open(normalize_system_path('header.html', '../../target/generated-docs/website/_includes/header/'))).at_css('div.website-navbar').inner_html %>
 <form class="form-inline my-2 my-lg-0">
@@ -96,63 +96,7 @@ unless noheader %>
   <img src="/images/github-mark.png" width=auto height=auto alt="">
 </a></div>
 <div id="sidebar" class="wiki-sidebar"></div>
-<div id="header"><%
-  if doctype == 'manpage' %>
-<h1><%= doctitle %> Manual Page</h1><%
-    if (attr? :toc) && (attr? 'toc-placement', 'auto') %>
-<div id="toc" class="<%= attr 'toc-class', 'toc' %>">
-<div id="toctitle"><%= attr 'toc-title' %></div>
-<%= converter.convert self, 'outline' %>
-</div><%
-    end %>
-<h2><%= attr 'manname-title' %></h2>
-<div class="sectionbody">
-<p><%= %(#{attr :manname} - #{attr :manpurpose}) %></p>
-</div><%
-  else %>
-  <div id="wiki-content" class="wiki-content"><%
-    if has_header?
-      unless notitle %>
-<h1><%= @header.title %></h1><%
-      end
-      if (attr? :author) || (attr? :revnumber) || (attr? :revdate) || (attr? :revremark) %>
-<div class="details"><%
-        if attr? :author %>
-<span id="author" class="author"><%= attr :author %></span><br><%
-          if attr? :email %>
-<span id="email" class="email"><%= sub_macros(attr :email) %></span><br><%
-          end
-          if (authorcount = (attr :authorcount).to_i) > 1
-            (2..authorcount).each do |idx| %>
-<span id="author<%= idx %>" class="author"><%= attr %(author_#{idx}) %></span><br><%
-              if attr?  %(email_#{idx}) %>
-<span id="email<%= idx %>" class="email"><%= sub_macros(attr %(email_#{idx})) %></span><br><%
-              end
-            end
-          end
-        end
-        if attr? :revnumber %>
-<span id="revnumber"><%= ((attr 'version-label') || '').downcase %> <%= attr :revnumber %><%= attr?(:revdate) ? ',' : '' %></span><%
-        end
-        if attr? :revdate %>
-<span id="revdate"><%= attr :revdate %></span><%
-        end
-        if attr? :revremark %>
-<br>
-<span id="revremark"><%= attr :revremark %></span><%
-        end %>
-</div><%
-      end
-    end %>
-  </div><%
-    if (attr? :toc) && (attr? 'toc-placement', 'auto') %>
-<div id="toc" class="<%= attr 'toc-class', 'toc' %>">
-<div id="toctitle"><%= attr 'toc-title' %></div>
-<%= converter.convert self, 'outline' %>
-</div><%
-    end
-  end %>
-</div><%
+<%
 end %>
 <div id="content">
 <%= content %>
@@ -171,6 +115,7 @@ unless nofooter %>
 <div id="footer" class="footer"><%= Nokogiri::HTML(open(normalize_system_path('footer.html', '../../target/generated-docs/website/_includes/footer/'))).at_css('div#content').inner_html %></div>
     <script type="module">
       import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
 
       let searchData = { index: null, documents: null };
       UtilsModule.loadIndex(searchData);
