@@ -45,7 +45,7 @@ function mergeHeader(fileWithHeader, dir, dirOut) {
 
 	for(let i = 0; i < files.length; i++) {
 		let $ = cheerio.load(fs.readFileSync(files[i]))
-		let $header = cheerio.load(fs.readFileSync(fileWithHeader))
+		let $header = cheerio.load(fs.readFileSync(path.join(__dirname, fileWithHeader)))
 		let fileToWriteIn = `${dirOut}${files[i].replace(dir, '')}`
 
 		console.log(`--> processing file ${i}/${files.length - 1}: ${files[i]}`)
