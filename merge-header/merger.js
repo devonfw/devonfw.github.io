@@ -28,6 +28,7 @@ function getFilesFromDir(dirname, extension) {
 }
 
 function mergeHeader(fileWithHeader, dir, dirOut) {
+	const devonfwStyles = '<link rel="stylesheet" type="text/css" href="/devonfw.css">';
 	let files = getFilesFromDir(dir, '.html');
 
 	for(let i = 0; i < files.length; i++) {
@@ -37,7 +38,7 @@ function mergeHeader(fileWithHeader, dir, dirOut) {
 
 		console.log(`--> processing file ${i}/${files.length - 1}: ${files[i]}`)
 		$header('div#content').replaceWith([$('div#header'), $('div#content')])
-		$header('head').append($('head > style'));
+		$header('head').prepend($('head > style'));
 		$header('body').addClass('toc2 toc-left');
 		
 		
