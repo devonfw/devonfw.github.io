@@ -14,11 +14,19 @@ function moveBodyContents(file, fileWithHeader, dir, dirOut, fileOut) {
 	if(alreadyModified) {
 		console.log(`... file ${file} already modified!\n`)
 	} else {
+		
+		// Get JS
 		let scriptCode = $('body').children('script[type="module"]').contents();
 		$header('div#content').html($('body').children(':not(script[type="module"])'))
+		
+		// add modification flag
 		$header('body').append('<div id="modified-by-merge-search-results"></div>')
+		
+		// add JS
 		$header('script[type="module"]').append(scriptCode)
-		$header('head').append($('head script'))
+		
+		// get <head> content
+		$header('head').append($('head'))
 
 		fs.writeFileSync(fileToWriteIn, $header.html(), {encoding: 'utf-8'});
 		console.log(`... file ${fileToWriteIn} processed!\n`)
