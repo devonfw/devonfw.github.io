@@ -27,21 +27,8 @@ function getFilesFromDir(dirname, extension) {
   return result;
 }
 
-/*
-let $ = cheerio.load(
-					`<div id="has-content-header">
-						<div id="header">hello</div>
-						<div id="content">world</div>
-					</div>`)
-					
-let $header = cheerio.load(
-					`<div id="has-styled-header">
-						<div>this is my styled header</div>
-						<div id="content">replace me</div>
-					</div>`)*/
-
 function mergeHeader(fileWithHeader, dir, dirOut) {
-	files = getFilesFromDir(dir, '.html');
+	let files = getFilesFromDir(dir, '.html');
 
 	for(let i = 0; i < files.length; i++) {
 		let $ = cheerio.load(fs.readFileSync(files[i]))
@@ -61,9 +48,9 @@ function mergeHeader(fileWithHeader, dir, dirOut) {
 }
 
 if (process.argv.length > 4) {
-  dir = './docs/'; // argv2
-  fileWithHeader = './master/master.html'; // argv3
-  dirOut = './docs-processed/' // argv4
+  const dir = './docs/'; // argv3
+  const fileWithHeader = './master/master.html'; // argv3
+  const dirOut = './docs-processed/' // argv4
   
   mergeHeader(process.argv[2], process.argv[3], process.argv[4]);
 }
