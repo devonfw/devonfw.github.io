@@ -54,7 +54,7 @@ const headerModule = (function(window) {
     for (let i = 0; i < Math.min(queryRes.length, 5); i++) {
       let res = queryRes[i];
       let title = findById(res.ref, searchData.documents);
-      results += searchResultTemplate(title, res.ref);
+      results += searchResultTemplate(title, res.ref.replace('..', ''));
     }
 
     if (queryRes.length > 5) {
