@@ -9,7 +9,7 @@ const headerModule = (function(window) {
           ${title}
         </div>
         <div class="sr-content cursor-pointer">
-          ${link}
+          <a href="${link}">${link}</a>
         </div>
       </div>
       <div class="mt-2 mb-2 w-100 bg-dark hr-2"></div>`;
