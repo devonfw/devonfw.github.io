@@ -25,7 +25,9 @@ function normalize(path) {
 }
 
 function removeTooMuchSpaces(str) {
-  return str.replace(/\r\n\s*\r\n/g, "\n").replace(/( )+/g, " ");
+  let withoutRN = str.replace(/\r\n\s*\r\n/g, "\n").replace(/( )+/g, " ");
+  let noMultipleN = withoutRN.replace(/\n\s*\n*/g, "\n")
+  return noMultipleN;
 }
 
 function removeHtml(htmlStr) {

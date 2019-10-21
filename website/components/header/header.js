@@ -9,7 +9,7 @@ const headerModule = (function(window) {
           ${title}
         </div>
         <div class="sr-content cursor-pointer">
-          ${link}
+          <a href="${link}">${link}</a>
         </div>
       </div>
       <div class="mt-2 mb-2 w-100 bg-dark hr-2"></div>`;
@@ -54,7 +54,7 @@ const headerModule = (function(window) {
     for (let i = 0; i < Math.min(queryRes.length, 5); i++) {
       let res = queryRes[i];
       let title = findById(res.ref, searchData.documents);
-      results += searchResultTemplate(title, res.ref);
+      results += searchResultTemplate(title, res.ref.replace('..', ''));
     }
 
     if (queryRes.length > 5) {

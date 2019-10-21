@@ -34,7 +34,7 @@ jobs:
       - name: SplitHtml
         run: |
           asciidoctor -r ./asciidoctor-extensions/multipage-html5-converter.rb -b  multipage_html5 ./target/asciidoc/devonfw-guide/master.asciidoc -a toc=left -D ./target/generated-docs/website/pages/docs
-          ls -l target/generated-docs/website/pages/docs
+          cp -avr target/generated-docs/images/ target/generated-docs/website/pages/docs/
           
       - name: AddHeaderToSplittedHtml
         run: |
@@ -44,6 +44,15 @@ jobs:
           node merge-search-results.js search-results.html ../target/generated-docs/devonfw-guide/master.html ../target/generated-docs/website/pages/search-results/ ../target/generated-docs/website/pages/search-results/
           node merge-explore.js page-explore.html ../target/generated-docs/devonfw-guide/master.html ../target/generated-docs/website/pages/explore/ ../target/generated-docs/website/pages/explore/ explore.html
           cd ..
+       
+      - name: Reindex
+        run: |
+          cd target/generated-docs/search-engine
+          npm install
+          node ./converter.js ../website/pages/docs/ .html
+          cp {index.json,docs-json.json} ../website
+          cd ../../..
+          
           
 
       - name: Cleanup
