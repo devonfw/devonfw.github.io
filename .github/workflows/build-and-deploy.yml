@@ -44,6 +44,14 @@ jobs:
           node merge-search-results.js search-results.html ../target/generated-docs/devonfw-guide/master.html ../target/generated-docs/website/pages/search-results/ ../target/generated-docs/website/pages/search-results/
           node merge-explore.js page-explore.html ../target/generated-docs/devonfw-guide/master.html ../target/generated-docs/website/pages/explore/ ../target/generated-docs/website/pages/explore/ explore.html
           cd ..
+       
+       - name: Reindex
+         run: |
+          cd target/generated-docs/search-engine
+          node .\converter.js ..\website\pages\docs\ .html
+          cp {index.json,docs-json.json} ../website
+          cd ../../..
+          
           
 
       - name: Cleanup
