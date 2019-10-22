@@ -1,37 +1,42 @@
-const fs = require("fs");
-const path = require("path");
-const lunr = require("lunr");
+const fs = require('fs');
+const path = require('path');
+const lunr = require('lunr');
+const cheerio = require('cheerio');
 
 function getLunrDoc(dirname, extension) {
-  console.log(getFilesFromDir(dirname, ".."));
-  console.log(getFilesFromDir(dirname, "../target/"));
-  console.log(getFilesFromDir(dirname, "../target/generated-docs/"));
-
   let files = getFilesFromDir(dirname, extension);
 
   let docs = [];
-  files.forEach(file =>
-    docs.push(readFromFilename(file, [removeHtml, removeTooMuchSpaces]))
-  );
+  let processing = {
+    preprocessing: [getContent],
+    postprocessing: [removeHtml, removeTooMuchSpaces],
+  };
+  files.forEach((file) => docs.push(readFromFilename(file, processing)));
 
   generateIndexJson(docs);
 }
 
 function normalize(path) {
   return path
-    .replace("\\/", "/")
-    .replace("//", "/")
-    .replace("\\", "/");
+    .replace('\\/', '/')
+    .replace('//', '/')
+    .replace('\\', '/');
 }
 
 function removeTooMuchSpaces(str) {
-  let withoutRN = str.replace(/\r\n\s*\r\n/g, "\n").replace(/( )+/g, " ");
-  let noMultipleN = withoutRN.replace(/\n\s*\n*/g, "\n")
+  let withoutRN = str.replace(/\r\n\s*\r\n/g, '\n').replace(/( )+/g, ' ');
+  let noMultipleN = withoutRN.replace(/\n\s*\n*/g, '\n');
   return noMultipleN;
 }
 
 function removeHtml(htmlStr) {
-  return htmlStr.replace(/(<([^>]+)>)/gi, "");
+  return htmlStr.replace(/(<([^>]+)>)/gi, '');
+}
+
+function getContent(htmlStr) {
+  let $ = cheerio.load(htmlStr);
+  let content = $('div#content');
+  return content.html() || '';
 }
 
 function getFilesFromDir(dirname, extension) {
@@ -56,12 +61,24 @@ function getFilesFromDir(dirname, extension) {
   return result;
 }
 
-function readFromFilename(file, pipeline = []) {
-  let doc = { id: file, title: "not found", body: "" };
+function readFromFilename(
+  file,
+  processing = { preprocessing: [], postprocessing: [] },
+) {
+  let doc = {
+    id: file,
+    title: 'not found',
+    body: fs.readFileSync(file, 'utf-8'),
+  };
 
-  doc.body = fs.readFileSync(file, "utf-8");
+  const preprocessing = processing.preprocessing;
+  if (preprocessing) {
+    for (let i = 0; i < preprocessing.length; i++) {
+      doc.body = preprocessing[i](doc.body);
+    }
+  }
 
-  let lines = doc.body.split("\n");
+  let lines = doc.body.split('\n');
   let titleLevel = 10;
 
   lines.forEach(function(line) {
@@ -73,10 +90,11 @@ function readFromFilename(file, pipeline = []) {
     }
   });
 
-  if (pipeline) {
-    for (let i = 0; i < pipeline.length; i++) {
-      doc.title = pipeline[i](doc.title);
-      doc.body = pipeline[i](doc.body);
+  const postprocessing = processing.postprocessing;
+  if (postprocessing) {
+    for (let i = 0; i < postprocessing.length; i++) {
+      doc.title = postprocessing[i](doc.title);
+      doc.body = postprocessing[i](doc.body);
     }
   }
 
@@ -85,10 +103,10 @@ function readFromFilename(file, pipeline = []) {
 
 function generateIndexJson(documents) {
   let idx = lunr(function() {
-    this.ref("id");
-    this.field("title");
-    this.field("body");
-    this.metadataWhitelist = ["position"];
+    this.ref('id');
+    this.field('title');
+    this.field('body');
+    this.metadataWhitelist = ['position'];
 
     documents.forEach(function(doc) {
       this.add(doc);
@@ -97,9 +115,9 @@ function generateIndexJson(documents) {
 
   let idxJson = JSON.stringify(idx);
 
-  fs.writeFileSync("./docs-json.json", JSON.stringify(documents));
-  fs.writeFileSync("./index.json", idxJson);
-  console.log("The file was saved!");
+  fs.writeFileSync('./docs-json.json', JSON.stringify(documents));
+  fs.writeFileSync('./index.json', idxJson);
+  console.log('The file was saved!');
 
   return idxJson;
 }
