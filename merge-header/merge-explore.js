@@ -17,7 +17,9 @@ function moveBodyContents(file, fileWithHeader, dir, dirOut, fileOut) {
 		
 		// Get JS
 		let scriptCode = $('body').children('script[type="module"]').contents();
-		$header('div#content').html($('body').children(':not(script[type="module"])'))
+
+		// Add content
+		$header('div#content').append($('body').children(':not(script[type="module"])'))
 		
 		// add modification flag
 		$header('body').append('<div id="modified-by-merge-search-results"></div>')
