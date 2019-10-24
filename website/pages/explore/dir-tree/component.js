@@ -28,7 +28,7 @@ class DirTree extends HTMLDivElement {
               mobile ? 'mobile' : ''
             }">
                 <div class="dir-column col-12 col-4 px-0">
-                <ul class="list-unstyled pl-0 cb-folder-closed column-1"></ul>
+                <ul class="list-unstyled ml-0 cb-folder-closed column-1"></ul>
                 </div>
             </div>
             <div class="mt-5 pt-5 row dir-tree-detail">
@@ -62,7 +62,7 @@ class DirTree extends HTMLDivElement {
     function columnTemplate(colNum) {
       let column = `
         <div class="dir-column col-12 col-sm-4 px-0">
-          <ul class="list-unstyled pl-0 cb-folder-closed column-${colNum}"></ul>
+          <ul class="list-unstyled ml-0 cb-folder-closed column-${colNum}"></ul>
         </div>
       `;
 
