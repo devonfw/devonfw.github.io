@@ -107,11 +107,11 @@
 }
 
 b.button:before {
-  content: "";
+  content: '';
 }
 
 b.button:after {
-  content: "";
+  content: '';
 }
 
 .imageblock.bg-image {
@@ -324,4 +324,80 @@ b.button:after {
 
 .footerFooter ul li {
   margin: 1rem;
+}
+
+/********* Carousel *********/
+$max-slides-allowed: 4;
+
+@mixin create-n-slides($n-slides) {
+  .slide {
+    position: absolute;
+    animation: carousel #{$n-slides * 5s} infinite;
+    opacity: 0;
+    width: 100%;
+    height: auto;
+  }
+
+  @for $i from 1 through $n-slides {
+    .slide:nth-child(#{$i}) {
+      animation-delay: #{($i - 1) * 5s};
+    }
+
+    $hide-from: $n-slides + 1;
+    .slide:nth-child(n + #{$hide-from}) {
+      display: none;
+    }
+  }
+}
+
+@keyframes carousel {
+  25% {
+    opacity: 1;
+  }
+  40% {
+    opacity: 0;
+  }
+}
+
+.carousel {
+  max-width: 42rem;
+  height: 17rem;
+  margin-left: auto;
+  margin-right: auto;
+  overflow: hidden;
+  position: relative;
+  text-align: center;
+
+  ul {
+    list-style: none;
+    margin-left: 0;
+
+    & > li:nth-child(1) * {
+      color: #4cbdec;
+      font-size: 1.15em;
+      line-height: 1.7;
+      font-weight: 600;
+    }
+
+    & > li:nth-child(2) * {
+      font-size: 1.15em;
+      line-height: 1.7;
+      font-weight: 600;
+    }
+
+    & > li:nth-child(3) * {
+      font-size: 0.9em;
+      font-weight: 600;
+    }
+
+    & > li:nth-child(4) * {
+      font-size: 0.9em;
+    }
+  }
+
+  @for $i from 1 through $max-slides-allowed {
+    &.slides-#{$i} {
+      @include create-n-slides($i);
+    }
+  }
 }
