@@ -39,6 +39,24 @@ const headerModule = (function(window) {
 
       timer = setTimeout(clickFunction, 1000);
     };
+
+    searchField.onpaste = function(e) {
+      if (timer) {
+        console.log("clearing");
+        clearTimeout(timer);
+      }
+
+      timer = setTimeout(clickFunction, 1000);
+    };
+
+    $("#search-field").change(function () {
+      if (timer) {
+        console.log("clearing");
+        clearTimeout(timer);
+      }
+
+      timer = setTimeout(clickFunction, 1000);
+    });
   }
 
   function query(searchData) {
