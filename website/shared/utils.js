@@ -2,19 +2,6 @@ import { ConfigModule } from "../config/devonfw-site-conf.js";
 
 const utilsModule = (function(window) {
   // Function definitions
-  /**function editSrc(searchValue, replaceValue) {
-        let searchVal = searchValue || ConfigModule.editSrc.searchValue;
-        let replaceVal = replaceValue || ConfigModule.editSrc.imgFolderPath;
-
-        $('img').each(function() {
-            $(this).attr(
-                'src',
-                $(this)
-                .attr('src')
-                .replace(searchVal, replaceVal),
-            );
-        });
-    }*/
 
   function getParametersFromUrl(param = "q") {
     let url_string = window.location.href;
@@ -54,7 +41,6 @@ const utilsModule = (function(window) {
   }
 
   // List of functions accessibly by other scripts
-  // editSrc: editSrc,
   return {
     getParametersFromUrl: getParametersFromUrl,
     loadIndex: loadIndex,

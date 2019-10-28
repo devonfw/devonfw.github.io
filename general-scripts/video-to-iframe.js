@@ -4,7 +4,7 @@ const path = require('path');
 
 function iframeTemplate(videoId) {
   let template = `
-            <iframe src="https://www.youtube.com/embed/${videoId}?loop=1&amp;modestbranding=1" width="560" height="315" frameborder="0" allowfullscreen="">
+            <iframe src="https://www.youtube.com/embed/${videoId}?loop=1&amp;modestbranding=1" frameborder="0" allowfullscreen="">
                 <script>
                     function execute_YTvideo(){return youtube.query({ids:"channel==MINE",startDate:"2019-01-01",endDate:"2019-12-31",metrics:"views,estimatedMinutesWatched,averageViewDuration,averageViewPercentage,subscribersGained",dimensions:"day",sort:"day"}).then(function(e){},function(e){console.error("Execute error",e)})}
                 </script>
