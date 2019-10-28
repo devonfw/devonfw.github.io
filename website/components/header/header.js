@@ -40,8 +40,11 @@ const headerModule = (function(window) {
     let timer = null;
     searchField.onkeypress = function(e) {
       if (timer) {
-        console.log('clearing');
         clearTimeout(timer);
+      }
+
+      if (event.key == 'Enter') {
+        e.preventDefault();
       }
 
       timer = setTimeout(clickFunction, 1000);
@@ -49,7 +52,6 @@ const headerModule = (function(window) {
 
     searchField.onpaste = function(e) {
       if (timer) {
-        console.log('clearing');
         clearTimeout(timer);
       }
 
@@ -58,7 +60,6 @@ const headerModule = (function(window) {
 
     $('#search-field').change(function() {
       if (timer) {
-        console.log('clearing');
         clearTimeout(timer);
       }
 
