@@ -1,7 +1,6 @@
-import { ConfigModule } from "../../config/devonfw-site-conf.js";
+import { ConfigModule } from '../../config/devonfw-site-conf.js';
 
 const headerModule = (function(window) {
-
   function searchResultTemplate(title, link) {
     let template = `
       <div class="px-3 mt-3">
@@ -28,12 +27,20 @@ const headerModule = (function(window) {
     return template;
   }
 
+  function onClickOutside(showId, hideId) {
+    document.getElementById(showId).addEventListener('click', function(event) {
+      $(`#${showId}`).addClass('hidden');
+      $(`#${hideId}`).addClass('hidden');
+      event.stopPropagation();
+    });
+  }
+
   function searchOnClick(clickFunction) {
-    let searchField = document.getElementById("search-field");
+    let searchField = document.getElementById('search-field');
     let timer = null;
     searchField.onkeypress = function(e) {
       if (timer) {
-        console.log("clearing");
+        console.log('clearing');
         clearTimeout(timer);
       }
 
@@ -42,16 +49,16 @@ const headerModule = (function(window) {
 
     searchField.onpaste = function(e) {
       if (timer) {
-        console.log("clearing");
+        console.log('clearing');
         clearTimeout(timer);
       }
 
       timer = setTimeout(clickFunction, 1000);
     };
 
-    $("#search-field").change(function () {
+    $('#search-field').change(function() {
       if (timer) {
-        console.log("clearing");
+        console.log('clearing');
         clearTimeout(timer);
       }
 
@@ -60,15 +67,15 @@ const headerModule = (function(window) {
   }
 
   function query(searchData) {
-    let query = document.getElementById("search-field").value;
+    let query = document.getElementById('search-field').value;
     let queryRes = query ? searchData.index.search(query) : [];
 
     const findById = (id, objects) => {
-      const obj = objects.find(obj => "" + obj.id == "" + id);
+      const obj = objects.find((obj) => '' + obj.id == '' + id);
       return obj.title;
     };
 
-    let results = "";
+    let results = '';
     for (let i = 0; i < Math.min(queryRes.length, 5); i++) {
       let res = queryRes[i];
       let title = findById(res.ref, searchData.documents);
@@ -81,14 +88,16 @@ const headerModule = (function(window) {
     }
 
     if (query) {
-      $("#search-results-box").html(results);
-      $("#search-results-box").removeClass("hidden");
+      $('#search-results-box').html(results);
+      $('#search-results-box').removeClass('hidden');
+      $('#click-outside').removeClass('hidden');
+      onClickOutside('click-outside', 'search-results-box');
     }
   }
 
   return {
     searchOnClick: searchOnClick,
-    queryFunction: query
+    queryFunction: query,
   };
 })(window);
 
