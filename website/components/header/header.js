@@ -84,21 +84,6 @@ const headerModule = (function(window) {
       $("#search-results-box").html(results);
       $("#search-results-box").removeClass("hidden");
     }
-    $(".sr-content").each(function() {
-      $(this).click(function() {
-        location.href =
-          ConfigModule.pagesLocation.docsPage.path +
-          "?q=" +
-          $(this)
-            .text()
-            .trim()
-            .replace(
-              ConfigModule.indexJson.path,
-              ConfigModule.devonfwGuide.path
-            )
-            .replace(/\.asciidoc$/, ".html");
-      });
-    });
   }
 
   return {

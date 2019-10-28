@@ -38,7 +38,7 @@ function configModule() {
 
   const pagesLocation = {
     docsPage: {
-      path: `${website.path}pages/docs/page-docs.html`,
+      path: `${website.path}pages/docs/master.html`,
       initialPage: `${devonfwGuide.path}devon4ng.wiki/architecture.html`,
       sidebar: `${BASE_PATH}master.html`,
     },
