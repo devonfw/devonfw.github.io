@@ -49,9 +49,7 @@ jobs:
           npm install
           node ./converter.js ../website/pages/docs/ .html
           cp {index.json,docs-json.json} ../website
-          cd ../../..
-          
-          
+          cd ../../..   
 
       - name: Cleanup
         run: | 
@@ -59,9 +57,8 @@ jobs:
           rm -Rf asciidoctor* documentation pom.xml README.html
 
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@master
+        uses: peaceiris/actions-gh-pages@v2.5.0
         env:
-          ACCESS_TOKEN: ${{ secrets.DEVONFW_CORE_TOKEN }}
-          BASE_BRANCH: develop # The branch the action should deploy from.
-          BRANCH: master # The branch the action should deploy to.
-          FOLDER: target/generated-docs # The folder the action should deploy.
+          ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          PUBLISH_BRANCH: master
+          PUBLISH_DIR: ./target/generated-docs
