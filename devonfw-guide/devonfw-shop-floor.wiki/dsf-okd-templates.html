@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>devonfw templates</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body id="dsf-okd-templates.asciidoc" class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>This are the devonfw templates to build devonfw apps for Openshift using the s2i images. They are based on the work of Mickuehl in Oasp templates/mythaistar for deploy My Thai Star.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Inside the <code>example-mythaistar</code> we have an example to deploy My Thai Star application using devonfw templates.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>All this information is used as a part of the <a href="#dsf-okd-initial-setup.asciidoc">initial setup</a> for openshift.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dsf-okd-templates.asciidoc_how-to-use">How to use</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="dsf-okd-templates.asciidoc_previous-requirements">Previous requirements</h3>
+<div class="sect3">
+<h4 id="dsf-okd-templates.asciidoc_deploy-the-source-2-image-builder-images">Deploy the Source-2-Image builder images</h4>
+<div class="paragraph">
+<p>Remember that this templates need a build image from s2i-devonfw-angular and s2i-devonfw-java. More information:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="dsf-okd-s2i.html#deploy-the-source-2-image-builder-images">Deploy the Source-2-Image builder images</a>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dsf-okd-templates.asciidoc_customize-openshift">Customize Openshift</h4>
+<div class="paragraph">
+<p>Remember that this templates also have custom icons, and to use it, we must modify the master-config.yml inside openshift. More information:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#dsf-okd-customize.asciidoc">Customize Openshift</a>.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-okd-templates.asciidoc_deploy-devonfw-templates">Deploy devonfw templates</h3>
+<div class="paragraph">
+<p>Now, it&#8217;s time to create devonfw templates to use this s2i and add it to the browse catalog.</p>
+</div>
+<div class="paragraph">
+<p>To let all user to use these templates in all openshift projects, we should create it in an openshift namespace. To do that, we must log in as an admin.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="Shell language-Shell">oc create -f https://raw.githubusercontent.com/devonfw/devonfw-shop-floor/master/dsf4openshift/openshift-devonfw-deployment/templates/devonfw-java-template.json --namespace=openshift
+oc create -f https://raw.githubusercontent.com/devonfw/devonfw-shop-floor/master/dsf4openshift/openshift-devonfw-deployment/templates/devonfw-angular-template.json --namespace=openshift</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When it finishes, remember to logout as an admin and enter with our normal user.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="Shell language-Shell">$ oc login</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-okd-templates.asciidoc_how-to-use-devonfw-templates-in-openshift">How to use devonfw templates in openshift</h3>
+<div class="paragraph">
+<p>To use these templates with openshift, we can override any parameter values defined in the file by adding the --param-file=paramfile option.</p>
+</div>
+<div class="paragraph">
+<p>This file must be a list of &lt;name&gt;=&lt;value&gt; pairs. A parameter reference may appear in any text field inside the template items.</p>
+</div>
+<div class="paragraph">
+<p><strong>The parameters that we must override are the following</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="Shell language-Shell">$ cat paramfile
+  APPLICATION_NAME=app-Name
+  APPLICATION_GROUP_NAME=group-Name
+  GIT_URI=Git uri
+  GIT_REF=master
+  CONTEXT_DIR=/context</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>The following parameters are optional</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="Shell language-Shell">$ cat paramfile
+  APPLICATION_HOSTNAME=Custom hostname for service routes. Leave blank for default hostname, e.g.: &lt;application-name&gt;.&lt;project&gt;.&lt;default-domain-suffix&gt;,
+  # Only for angular
+  REST_ENDPOINT_URL=The URL of the backend's REST API endpoint. This can be declared after,
+  REST_ENDPOINT_PATTERN=The pattern URL of the backend's REST API endpoint that must be modify by the REST_ENDPOINT_URL variable,</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>For example, to deploy My Thai Star Java</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="Shell language-Shell">$ cat paramfile
+  APPLICATION_NAME="mythaistar-java"
+  APPLICATION_GROUP_NAME="My-Thai-Star"
+  GIT_URI="https://github.com/oasp/my-thai-star.git"
+  GIT_REF="develop"
+  CONTEXT_DIR="/java/mtsj"
+
+$ oc new-app --template=devonfw-java --namespace=mythaistar --param-file=paramfile</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:16:14 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angular design</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#angular-design.asciidoc">Angular design</a>
+<ul class="sectlevel1">
+<li><a href="#angular-design.asciidoc_introduction">Introduction</a></li>
+<li><a href="#angular-design.asciidoc_basic-project-structure">Basic project structure</a></li>
+<li><a href="#angular-design.asciidoc_main-views-and-components">Main Views and components</a>
+<ul class="sectlevel2">
+<li><a href="#angular-design.asciidoc_public-area">Public area</a></li>
+<li><a href="#angular-design.asciidoc_waiter-cockpit-area">Waiter cockpit area</a></li>
+<li><a href="#angular-design.asciidoc_email-management">Email Management</a></li>
+</ul>
+</li>
+<li><a href="#angular-design.asciidoc_services-and-directives">Services and directives</a>
+<ul class="sectlevel2">
+<li><a href="#angular-design.asciidoc_price-calculator-service">Price-calculator-service</a></li>
+<li><a href="#angular-design.asciidoc_authentication">Authentication</a></li>
+<li><a href="#angular-design.asciidoc_snackservice">SnackService</a></li>
+<li><a href="#angular-design.asciidoc_windowservice">WindowService</a></li>
+<li><a href="#angular-design.asciidoc_equal-validator-directive">Equal-validator-directive</a></li>
+</ul>
+</li>
+<li><a href="#angular-design.asciidoc_mock-backend">Mock Backend</a>
+<ul class="sectlevel2">
+<li><a href="#angular-design.asciidoc_booking">Booking</a></li>
+<li><a href="#angular-design.asciidoc_orders">Orders</a></li>
+<li><a href="#angular-design.asciidoc_dishes">Dishes</a></li>
+<li><a href="#angular-design.asciidoc_login">Login</a></li>
+</ul>
+</li>
+<li><a href="#angular-design.asciidoc_security">Security</a>
+<ul class="sectlevel2">
+<li><a href="#angular-design.asciidoc_auth-guard">Auth-guard</a></li>
+<li><a href="#angular-design.asciidoc_jwt">JWT</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="angular-design.asciidoc" class="sect0">Angular design</h1>
+<div class="sect1">
+<h2 id="angular-design.asciidoc_introduction">Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>MyThaiStar client side has been built using latest frameworks, component libraries and designs:</p>
+</div>
+<div class="paragraph">
+<p><strong>Angular</strong> <em>4</em> as main front-end Framework. <a href="https://angular.io/" class="bare">https://angular.io/</a></p>
+</div>
+<div class="paragraph">
+<p><strong>Angular/CLI</strong> <em>1.0.5</em> as Angular tool helper. <a href="https://github.com/angular/angular-cli" class="bare">https://github.com/angular/angular-cli</a></p>
+</div>
+<div class="paragraph">
+<p><strong>Covalent Teradata</strong> <em>1.0.0-beta4</em> as Angular native component library based on Material Design. <a href="https://teradata.github.io/covalent/#/" class="bare">https://teradata.github.io/covalent/#/</a></p>
+</div>
+<div class="paragraph">
+<p><strong>Angular/Material2</strong> <em>1.0.0-beta5</em> used by Covalent Teradata. <a href="https://github.com/angular/material2" class="bare">https://github.com/angular/material2</a></p>
+</div>
+<div class="paragraph">
+<p><em>Note: this dependencies are evolving at this moment and if it is possible, we are updating it on the project.</em></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="angular-design.asciidoc_basic-project-structure">Basic project structure</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The project is using the basic project seed that Angular/CLI provides with “ng new &lt;project name&gt;”. Then the app folder has been organized as Angular recommends and goes as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>app</p>
+<div class="ulist">
+<ul>
+<li>
+<p>components</p>
+<div class="ulist">
+<ul>
+<li>
+<p>sub-components</p>
+</li>
+<li>
+<p>shared</p>
+</li>
+<li>
+<p>component files</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>main app component</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>assets folder</p>
+</li>
+<li>
+<p>environments folder</p>
+</li>
+<li>
+<p>rest of angular files</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This structure can be shown in the following example image:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/angular/folder_organization.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/angular/folder_organization.png" alt="folder organization"></a>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="angular-design.asciidoc_main-views-and-components">Main Views and components</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>List of components that serve as a main view to navigate or components developed to make atomically a group of functionalities which given their nature, can be highly reusable through the app.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/angular/routes.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/angular/routes.png" alt="routes"></a>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Note: no-name-route corresponds to whatever URL the user introduced and does not exist, it redirects to HomeComponent.</em></p>
+</div>
+<div class="sect2">
+<h3 id="angular-design.asciidoc_public-area">Public area</h3>
+<div class="sect3">
+<h4 id="angular-design.asciidoc_appcomponent">AppComponent</h4>
+<div class="paragraph">
+<p>Contains the components that are on top of all views, including:</p>
+</div>
+<div class="sect4">
+<h5 id="angular-design.asciidoc_order-sidenav">Order sidenav</h5>
+<div class="paragraph">
+<p>Sidenav where selected orders are displayed with their total price and some comments.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="angular-design.asciidoc_navigation-sidenav-only-for-mobile">Navigation sidenav (only for mobile)</h5>
+<div class="paragraph">
+<p>This sidenav proposal is to let user navigate through the app when the screen is too small to show the navigation buttons on the header.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="angular-design.asciidoc_header">Header</h5>
+<div class="paragraph">
+<p>It contains the title, and some other basic functions regarding open and close sidenavs.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="angular-design.asciidoc_footer-only-for-desktop">Footer (only for desktop)</h5>
+<div class="paragraph">
+<p>At the end of the page that shows only when open on desktop.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="angular-design.asciidoc_homecomponent">HomeComponent</h4>
+<div class="paragraph">
+<p>Main view that shows up when the app initializes.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="angular-design.asciidoc_menucomponent">MenuComponent</h4>
+<div class="paragraph">
+<p>View where the users can view, filter and select the dishes (with their extras) they want to order it contains a component to each menu entry:</p>
+</div>
+<div class="sect4">
+<h5 id="angular-design.asciidoc_menu-card">Menu-card</h5>
+<div class="paragraph">
+<p>This component composes all the data of a dish in a card. Component made to display indeterminate number of dishes easily.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="angular-design.asciidoc_booktablecomponent">BookTableComponent</h4>
+<div class="paragraph">
+<p>View to make book a table in a given data with a given number of assistants or create a reservation with a number of invitations via email.</p>
+</div>
+<div class="sect4">
+<h5 id="angular-design.asciidoc_book-table-dialog">Book-table-dialog</h5>
+<div class="paragraph">
+<p>Dialog which opens as a result of fulfilling the booking form, it displays all the data of the booking attempt, if everything is correct, the user can send the information or cancel if something is wrong.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="angular-design.asciidoc_invitation-dialog">Invitation-dialog</h5>
+<div class="paragraph">
+<p>Dialog which opens as a result of fulfilling the invitation form, it displays all the data of the booking with friends attempt, if everything is correct, the user can send the information or cancel if something is wrong.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="angular-design.asciidoc_userarea">UserArea</h4>
+<div class="paragraph">
+<p>Group of dialogs with the proposal of giving some functionalities to the user, as login, register, change password or connect with Twitter.</p>
+</div>
+<div class="sect4">
+<h5 id="angular-design.asciidoc_login-dialog">Login-dialog</h5>
+<div class="paragraph">
+<p>Dialog with a tab to navigate between login and register.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="angular-design.asciidoc_password-dialog">Password-dialog</h5>
+<div class="paragraph">
+<p>Functionality reserved to already logged users, in this dialog the user can change freely their password.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="angular-design.asciidoc_twitter-dialog">Twitter-dialog</h5>
+<div class="paragraph">
+<p>Dialog designed specifically to connect your user account with Twitter.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="angular-design.asciidoc_waiter-cockpit-area">Waiter cockpit area</h3>
+<div class="paragraph">
+<p>Restricted area to workers of the restaurant, here we can see all information about booked tables with the selected orders and the reservations with all the guests and their acceptance or decline of the event.</p>
+</div>
+<div class="sect3">
+<h4 id="angular-design.asciidoc_ordercockpitcomponent">OrderCockpitComponent</h4>
+<div class="paragraph">
+<p>Data table with all the booked tables and a filter to search them, to show more info about that table you can click on it and open a dialog.</p>
+</div>
+<div class="sect4">
+<h5 id="angular-design.asciidoc_order-dialog">Order-dialog</h5>
+<div class="paragraph">
+<p>Complete display of data regarding the selected table and its orders.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="angular-design.asciidoc_reservationcockpitcomponent">ReservationCockpitComponent</h4>
+<div class="paragraph">
+<p>Data table with all the reservations and a filter to search them, to show more info about that table you can click on it and open a dialog.</p>
+</div>
+<div class="sect4">
+<h5 id="angular-design.asciidoc_reservation-dialog">Reservation-dialog</h5>
+<div class="paragraph">
+<p>Complete display of data regarding the selected table and its guests.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="angular-design.asciidoc_email-management">Email Management</h3>
+<div class="paragraph">
+<p>As the application send emails to both guests and hosts, we choose an approach based on URL’s where the email contain a button with an URL to a service in the app and a token, front-end read that token and depending on the URL, will redirect to one service or another. For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>http://localhost:4200/booking/cancel/CB_20170605_8fb5bc4c84a1c5049da1f6beb1968afc</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This URL will tell the app that is a cancelation of a booking with the token <em>CB_20170605_8fb5bc4c84a1c5049da1f6beb1968afc</em>. The app will process this information, send it to back-end with the correct headers, show the confirmation of the event and redirect to home page.</p>
+</div>
+<div class="paragraph">
+<p>The main cases at the moment are:</p>
+</div>
+<div class="sect3">
+<h4 id="angular-design.asciidoc_accept-invite">Accept Invite</h4>
+<div class="paragraph">
+<p>A guest accept an invitation sent by a host. It will receive another email to decline if it change its mind later on.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="angular-design.asciidoc_reject-invite">Reject Invite</h4>
+<div class="paragraph">
+<p>A guest decline the invitation.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="angular-design.asciidoc_cancel-reservation">Cancel Reservation</h4>
+<div class="paragraph">
+<p>A host cancel the reservation, everybody that has accepted or not already answered will receive an email notifying this event is canceled. Also all the orders related to this reservations will be removed.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="angular-design.asciidoc_cancel-orders">Cancel Orders</h4>
+<div class="paragraph">
+<p>When you have a reservation, you will be assigned to a token, with that token you can save your order in the restaurant. When sent, you will receive an email confirming the order and the possibility to remove it.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="angular-design.asciidoc_services-and-directives">Services and directives</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Services are where all the main logic between components of that view should be. This includes calling a remote server, composing objects, calculate prices, etc.</p>
+</div>
+<div class="paragraph">
+<p>Directives are a single functionality that are related to a component.</p>
+</div>
+<div class="paragraph">
+<p>As it can be seen in the basic structure, every view that has a minimum of logic or need to call a server has its own service located in the shared folder.</p>
+</div>
+<div class="paragraph">
+<p>Also, services and directives can be created to compose a reusable piece of code that will be reused in some parts of the code:</p>
+</div>
+<div class="sect2">
+<h3 id="angular-design.asciidoc_price-calculator-service">Price-calculator-service</h3>
+<div class="paragraph">
+<p>This service located in the shared folder of sidenav contains the basic logic to calculate the price of a single order (with all the possibilities) and to calculate the price of a full list of orders for a table. As this is used in the sidenav and in the waiter cockpit, it has been exported as a service to be imported where needed and easily testable.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="angular-design.asciidoc_authentication">Authentication</h3>
+<div class="paragraph">
+<p>Authentication services serves as a validator of roles and login and, at the same time, stores the basic data regarding security and authentication.</p>
+</div>
+<div class="paragraph">
+<p>Main task of this services is to provide visibility at app level of the current user information:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Check if the user is logged or not.</p>
+</li>
+<li>
+<p>Check the permissions of the current user.</p>
+</li>
+<li>
+<p>Store the username and the JWT token.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="angular-design.asciidoc_snackservice">SnackService</h3>
+<div class="paragraph">
+<p>Service created to serve as a factory of Angular Material Snackbars, which are used commonly through the app. This service accepts some parameters to customize the snackBar and opens it with this parameters.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="angular-design.asciidoc_windowservice">WindowService</h3>
+<div class="paragraph">
+<p>For responsiveness reasons, the dialogs have to accept a width parameter to adjust to screen width and this information is given by Window object, as it is a good practice to have it in an isolated service, which also calculates the width percentage to apply on the dialogs.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="angular-design.asciidoc_equal-validator-directive">Equal-validator-directive</h3>
+<div class="paragraph">
+<p>This directive located in the shared folder of userArea is used in 2 fields to make sure they have the same value. This directive is used in confirm password fields in register and change password.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="angular-design.asciidoc_mock-backend">Mock Backend</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To develop meanwhile a real back-end is being developed let us to make a more realistic application and to make easier the adaptation when the backend is able to be connected and called. Its structure is as following:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/angular/back-end.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/angular/back-end.png" alt="back end"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>Contains the three main groups of functionalities in the application. Every group is composed by:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>An <strong>interface</strong> with all the methods to implement.</p>
+</li>
+<li>
+<p>A <strong>service</strong> that implements that interface, the main task of this service is to choose between real backend and mock backend depending on an environment variable.</p>
+</li>
+<li>
+<p><strong>Mock backend service</strong> which implements all the methods declared in the interface using mock data stored in a local file and mainly uses Lodash to operate the arrays.</p>
+</li>
+<li>
+<p><strong>Real backend service</strong> works as Mock backend but in this case the methods call for server rest services through http.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="angular-design.asciidoc_booking">Booking</h3>
+<div class="paragraph">
+<p>The booking group of functionalities manages the calls to reserve a table with a given time and assistants or with guests, get reservations filtered, accept or decline invitations or cancel the reservation.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="angular-design.asciidoc_orders">Orders</h3>
+<div class="paragraph">
+<p>Management of the orders, including saving, filtering and cancel an order.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="angular-design.asciidoc_dishes">Dishes</h3>
+<div class="paragraph">
+<p>The dishes group of functionalities manages the calls to get and filter dishes.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="angular-design.asciidoc_login">Login</h3>
+<div class="paragraph">
+<p>Login manages the userArea logic: login, register and change password.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="angular-design.asciidoc_security">Security</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>My Thai Star security is composed by two main security services:</p>
+</div>
+<div class="sect2">
+<h3 id="angular-design.asciidoc_auth-guard">Auth-guard</h3>
+<div class="paragraph">
+<p>Front-end security approach, this service implements an interface called CanActivate that comes from angular/router module. CanActivate interface forces you to implement a canActivate() function which returns a Boolean.
+This service checks with the AuthService stored data if the user is logged and if he has enough permission to access the waiter cockpit. This prevents that a forbidden user could access to waiter cockpit just by editing the URL in the browser.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="angular-design.asciidoc_jwt">JWT</h3>
+<div class="paragraph">
+<p>Jason Web Token consist in a token that is generated by the server when the user logs in, once provided, the token has to be included in an Authentication header on every Http call to the rest service, otherwise it will be forbidden.
+JWT also has an expiration date and a role checking, so if a user has not enough permissions or keeps logged for a long certain amount of time that exceeds this expiration date, the next time he calls for a service call, the server will return an error and forbid the call. You can log again to restore the token.</p>
+</div>
+<div class="sect3">
+<h4 id="angular-design.asciidoc_httpclient">HttpClient</h4>
+<div class="paragraph">
+<p>To implement this Authorization header management, an HttpClient service has been implemented.
+This services works as an envelope of Http, providing some more functionalities, likes a header management and an automatically management of a server token error in case the JWT has expired, corrupted or not permitted.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:17:42 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

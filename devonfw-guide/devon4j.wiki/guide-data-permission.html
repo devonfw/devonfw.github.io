@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data-permissions</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-data-permission.asciidoc">Data-permissions</a>
+<ul class="sectlevel1">
+<li><a href="#guide-data-permission.asciidoc_structuring-your-data">Structuring your data</a></li>
+<li><a href="#guide-data-permission.asciidoc_permissions-for-processing-data">Permissions for processing data</a>
+<ul class="sectlevel2">
+<li><a href="#guide-data-permission.asciidoc_beware-of-aop">Beware of AOP</a></li>
+</ul>
+</li>
+<li><a href="#guide-data-permission.asciidoc_permissions-for-reading-data">Permissions for reading data</a></li>
+<li><a href="#guide-data-permission.asciidoc_managing-and-granting-the-data-permissions">Managing and granting the data-permissions</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-data-permission.asciidoc" class="sect0">Data-permissions</h1>
+<div class="paragraph">
+<p>In some projects there are demands for permissions and authorization that is dependent on the processed data. E.g. a user may only be allowed to read or write data for a specific region. This is adding some additional complexity to your authorization. If you can avoid this it is always best to keep things simple. However, in various cases this is a requirement. Therefore the following sections give you guidance and patterns how to solve this properly.</p>
+</div>
+<div class="sect1">
+<h2 id="guide-data-permission.asciidoc_structuring-your-data">Structuring your data</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For all your business objects (entities) that have to be secured regarding to data permissions we recommend that you create a separate interface that provides access to the relevant data required to decide about the permission. Here is a simple example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public interface SecurityDataPermissionCountry {
+
+  /**
+   * @return the 2-letter ISO code of the country this object is associated with. Users need
+   *         a data-permission for this country in order to read and write this object.
+   */
+  String getCountry();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now related business objects (entities) can implement this interface. Often such data-permissions have to be applied to an entire object-hierarchy. For security reasons we recommend that also all child-objects implement this interface. For performance reasons we recommend that the child-objects redundantly store the data-permission properties (such as <code>country</code> in the example above) and this gets simply propagated from the parent, when a child object is created.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-data-permission.asciidoc_permissions-for-processing-data">Permissions for processing data</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When saving or processing objects with a data-permission, we recommend to provide dedicated methods to verify the permission in an abstract base-class such as <code>AbstractUc</code> and simply call this explicitly from your business code. This makes it easy to understand and debug the code. Here is a simple example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">protected void verifyPermission(SecurityDataPermissionCountry entity) throws AccessDeniedException;</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-data-permission.asciidoc_beware-of-aop">Beware of AOP</h3>
+<div class="paragraph">
+<p>For simple but cross-cutting data-permissions you may also use <a href="#guide-aop.asciidoc">AOP</a>. This leads to programming aspects that reflectively scan method arguments and magically decide what to do. Be aware that this quickly gets tricky:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>What if multiple of your method arguments have data-permissions (e.g. implement <code>SecurityDataPermission*</code>)?</p>
+</li>
+<li>
+<p>What if the object to authorize is only provided as reference (e.g. <code>Long</code> or <code>IdRef</code>) and only loaded and processed inside the implementation where the AOP aspect does not apply?</p>
+</li>
+<li>
+<p>How to express advanced data-permissions in annotations?</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>What we have learned is that annotations like <code>@PreAuthorize</code> from <code>spring-security</code> easily lead to the "programming in string literals" anti-pattern. We strongly discourage to use this anti-pattern. In such case writing your own <code>verifyPermission</code> methods that you manually call in the right places of your business-logic is much better to understand, debug and maintain.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-data-permission.asciidoc_permissions-for-reading-data">Permissions for reading data</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When it comes to restrictions on the data to read it becomes even more tricky. In the context of a user only entities shall be loaded from the database he is permitted to read. This is simple for loading a single entity (e.g. by its ID) as you can load it and then if not permitted throw an exception to secure your code. But what if the user is performing a search query to find many entities? For performance reasons we should only find data the user is permitted to read and filter all the rest already via the database query. But what if this is not a requirement for a single query but needs to be applied cross-cutting to tons of queries? Therefore we have the following pattern that solves your problem:</p>
+</div>
+<div class="paragraph">
+<p>For each data-permission attribute (or set of such) we create an abstract base entity:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@MappedSuperclass
+@EntityListeners(PermissionCheckListener.class)
+@FilterDef(name = "country", parameters = {@ParamDef(name = "countries", type = "string")})
+@Filter(name = "country", condition = "country in (:countries)")
+public abstract class SecurityDataPermissionCountryEntity extends ApplicationPersistenceEntity
+    implements SecurityDataPermissionCountry {
+
+  private String country;
+
+  @Override
+  public String getCountry() {
+    return this.country;
+  }
+
+  public void setCountry(String country) {
+    this.country = country;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>There are some special hibernate annotations <code>@EntityListeners</code>, <code>@FilterDef</code>, and <code>@Filter</code> used here allowing to apply a filter on the <code>country</code> for any (non-native) query performed by hibernate. The entity listener may look like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public class PermissionCheckListener {
+
+  @PostLoad
+  public void read(SecurityDataPermissionCountryEntity entity) {
+    PermissionChecker.getInstance().requireReadPermission(entity);
+  }
+
+  @PrePersist
+  @PreUpdate
+  public void write(SecurityDataPermissionCountryEntity entity) {
+    PermissionChecker.getInstance().requireWritePermission(entity);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will ensure that hibernate implicitly will call these checks for every such entity when it is read from or written to the database. Further to avoid reading entities from the database the user is not permitted to (and ending up with exceptions), we create an AOP aspect that automatically activates the above declared hibernate filter:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Named
+public class PermissionCheckerAdvice implements MethodBeforeAdvice {
+
+  @Inject
+  private PermissionChecker permissionChecker;
+
+  @PersistenceContext
+  private EntityManager entityManager;
+
+  @Override
+  public void before(Method method, Object[] args, Object target) {
+
+    Collection&lt;String&gt; permittedCountries = this.permissionChecker.getPermittedCountriesForReading();
+    if (permittedCountries != null) { // null is returned for admins that may access all countries
+      if (permittedCountries.isEmpty()) {
+        throw new AccessDeniedException("Not permitted for any country!");
+      }
+      Session session = this.entityManager.unwrap(Session.class);
+      session.enableFilter("country").setParameterList("countries", permittedCountries.toArray());
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally to apply this aspect to all Repositories (can easily be changed to DAOs) implement the following advisor:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Named
+public class PermissionCheckerAdvisor implements PointcutAdvisor, Pointcut, ClassFilter, MethodMatcher {
+
+  @Inject
+  private PermissionCheckerAdvice advice;
+
+  @Override
+  public Advice getAdvice() {
+    return this.advice;
+  }
+
+  @Override
+  public boolean isPerInstance() {
+    return false;
+  }
+
+  @Override
+  public Pointcut getPointcut() {
+    return this;
+  }
+
+  @Override
+  public ClassFilter getClassFilter() {
+    return this;
+  }
+
+  @Override
+  public MethodMatcher getMethodMatcher() {
+    return this;
+  }
+
+  @Override
+  public boolean matches(Method method, Class&lt;?&gt; targetClass) {
+    return true; // apply to all methods
+  }
+
+  @Override
+  public boolean isRuntime() {
+    return false;
+  }
+
+  @Override
+  public boolean matches(Method method, Class&lt;?&gt; targetClass, Object... args) {
+    throw new IllegalStateException("isRuntime()==false");
+  }
+
+  @Override
+  public boolean matches(Class&lt;?&gt; clazz) {
+    // when using DAOs simply change to some class like ApplicationDao
+    return DefaultRepository.class.isAssignableFrom(clazz);
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-data-permission.asciidoc_managing-and-granting-the-data-permissions">Managing and granting the data-permissions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Following our <a href="guide-access-control.html#authorization">authorization guide</a> we can simply create a permission for each country. We might simply reserve a prefix (as virtual <code>«app-id»</code>) for each data-permission to allow granting data-permissions to end-users across all applications of the IT landscape. In our example we could create access controls <code>country.DE</code>, <code>country.US</code>, <code>country.ES</code>, etc. and assign those to the users. The method <code>permissionChecker.getPermittedCountriesForReading()</code> would then scan for these access controls and only return the 2-letter country code from it.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-caution" title=""></i>
+</td>
+<td class="content">
+Before you make your decisions how to design your access controls please clarify the following questions:
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Do you need to separate data-permissions independent of the functional permissions? E.g. may it be required to express that a user can read data from the countries <code>ES</code> and <code>PL</code> but is only permitted to modify data from <code>PL</code>? In such case a single assignment of "country-permissions" to users is insufficient.</p>
+</li>
+<li>
+<p>Do you want to grant data-permissions individually for each application (higher flexibility and complexity) or for the entire application landscape (simplicity, better maintenance for administrators)? In case of the first approach you would rather have access controls like <code>app1.country.GB</code> and <code>app2.country.GB</code>.</p>
+</li>
+<li>
+<p>Do your data-permissions depend on objects that can be created dynamically inside your application?</p>
+</li>
+<li>
+<p>If you want to grant data-permissions on other business objects (entities), how do you want to reference them (primary keys, business keys, etc.)? What reference is most stable? Which is most readable?</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:13:21 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angular 6 Client Generation</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#howto_angular-client-generation.asciidoc">Angular 6 Client Generation</a>
+<ul class="sectlevel1">
+<li><a href="#howto_angular-client-generation.asciidoc_requisites">Requisites</a></li>
+<li><a href="#howto_angular-client-generation.asciidoc_angular-6-workspace">Angular 6 workspace</a></li>
+<li><a href="#howto_angular-client-generation.asciidoc_install-node-dependencies">Install Node dependencies</a></li>
+<li><a href="#howto_angular-client-generation.asciidoc_generating">Generating</a></li>
+<li><a href="#howto_angular-client-generation.asciidoc_routing">Routing</a></li>
+<li><a href="#howto_angular-client-generation.asciidoc_jwt-authentication">JWT Authentication</a></li>
+<li><a href="#howto_angular-client-generation.asciidoc_running">Running</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="howto_angular-client-generation.asciidoc" class="sect0">Angular 6 Client Generation</h1>
+<div class="paragraph">
+<p>The generation can create a full Angular 6 client using the devon4ng-application-template package located at workspaces/examples folder of the distribution. For more details about this package, please refer <a href="https://github.com/devonfw/devon4ng-application-template">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>Take into account that the TypeScript merging for CobiGen needs Node 6 or higher to be installed at your machine.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+This is a short introduction to the Angular generation. For a deeper tutorial including the generation of the backend, we strongly recommend you to follow <a href="#files/HOW-TO-Devonfw-3.0.0-CobiGen-PoC-E2E_v3.11.pdf">this document</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect1">
+<h2 id="howto_angular-client-generation.asciidoc_requisites">Requisites</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Install yarn globally:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="cmd language-cmd">npm install -g yarn</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="howto_angular-client-generation.asciidoc_angular-6-workspace">Angular 6 workspace</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The output location of the generation can be defined editing the <strong><em>cobigen.properties</em></strong> file located at <strong><em>crud_angular_client_app/templates</em></strong> folder of the <strong><em>CobiGen_Templates</em></strong> project.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/howtos/angular4-gen/ng4gen_7.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/angular4-gen/ng4gen_7.png" alt="cobigen.properties file" width="450"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>By default, the output path would be into the <em>devon4ng-application-template</em> folder at the root of the devon4j project parent folder:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>root/
+ |- devon4ng-application-template/
+ |- devon4j-project-parent/
+   |- core/
+   |- server/</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>However, this path can be changed, for example to <em>src/main/client</em> folder of the devon4j project:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="txt language-txt">relocate: ./src/main/client/${cwd}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>root/
+ |- devon4j-project-parent/
+   |- core/
+      |- src
+        |- main
+          |- client
+   |- server/</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once the output path is chosen, copy the files of <a href="https://github.com/devonfw/devon4ng-application-template">DEVON4NG-APPLICATION-TEMPLATE</a> repository into this output path.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="howto_angular-client-generation.asciidoc_install-node-dependencies">Install Node dependencies</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Open a terminal into devon4ng-application-template copied and just run the command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">yarn</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will start the installation of all node packages needed by the project into the node_modules folder.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="howto_angular-client-generation.asciidoc_generating">Generating</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>From an Eto object, right click, CobiGen &#8594; Generate will show the CobiGen wizard relative to client generation:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/howtos/angular4-gen/ng4gen_1.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/angular4-gen/ng4gen_1.png" alt="CobiGen Client Generation Wizard" width="450"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>Check all the increments realtive to Angular:</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The Angular devon4j URL increment is only needed for the first generations however, checking it again on next generation will not cause any problem.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>As we done on other generations, we click Next to choose which fields to include at the generation or simply clicking Finish will start the generation.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/howtos/angular4-gen/ng4gen_3.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/angular4-gen/ng4gen_3.png" alt="CobiGen Client Generation Wizard 3" width="450"></a>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="howto_angular-client-generation.asciidoc_routing">Routing</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Due to the nature of the TypeScript merger, currently is not possible to merge properly the array of paths objects of the routings at app.routing.ts file so, this modification should be done by hand on this file. However, the import related to the new component generated is added.</p>
+</div>
+<div class="paragraph">
+<p>This would be the generated <code>app-routing.module</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">import { Routes, RouterModule } from '@angular/router';
+import { LoginComponent } from './login/login.component';
+import { AuthGuard } from './shared/security/auth-guard.service';
+import { InitialPageComponent } from './initial-page/initial-page.component';
+import { HomeComponent } from './home/home.component';
+import { SampleDataGridComponent } from './sampledata/sampledata-grid/sampledata-grid.component';
+//Routing array
+const appRoutes: Routes = [{
+    path: 'login',
+    component: LoginComponent
+}, {
+    path: 'home',
+    component: HomeComponent,
+    canActivate: [AuthGuard],
+    children: [{
+        path: '',
+        redirectTo: '/home/initialPage',
+        pathMatch: 'full',
+        canActivate: [AuthGuard]
+    }, {
+        path: 'initialPage',
+        component: InitialPageComponent,
+        canActivate: [AuthGuard]
+    }]
+}, {
+    path: '**',
+    redirectTo: '/login',
+    pathMatch: 'full'
+}];
+export const routing = RouterModule.forRoot(appRoutes);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Adding the following into the children object of <code>home</code>, will add into the side menu the entry for the component generated:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">{
+    path: 'sampleData',
+    component: SampleDataGridComponent,
+    canActivate: [AuthGuard],
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">import { Routes, RouterModule } from '@angular/router';
+import { LoginComponent } from './login/login.component';
+import { AuthGuard } from './shared/security/auth-guard.service';
+import { InitialPageComponent } from './initial-page/initial-page.component';
+import { HomeComponent } from './home/home.component';
+import { SampleDataGridComponent } from './sampledata/sampledata-grid/sampledata-grid.component';
+//Routing array
+const appRoutes: Routes = [{
+    path: 'login',
+    component: LoginComponent
+}, {
+    path: 'home',
+    component: HomeComponent,
+    canActivate: [AuthGuard],
+    children: [{
+        path: '',
+        redirectTo: '/home/initialPage',
+        pathMatch: 'full',
+        canActivate: [AuthGuard]
+    }, {
+        path: 'initialPage',
+        component: InitialPageComponent,
+        canActivate: [AuthGuard]
+    }, {
+        path: 'sampleData',
+        component: SampleDataGridComponent,
+        canActivate: [AuthGuard],
+    }]
+}, {
+    path: '**',
+    redirectTo: '/login',
+    pathMatch: 'full'
+}];
+export const routing = RouterModule.forRoot(appRoutes);</code></pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/howtos/angular4-gen/ng4gen_6.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/angular4-gen/ng4gen_6.png" alt="APP SideMenu" width="450"></a>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="howto_angular-client-generation.asciidoc_jwt-authentication">JWT Authentication</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you are using a back end server with JWT Authentication (there is a sample in workspaces/folder called <strong>sampleJwt</strong>) you have to specify the Angular application to use this kind of authentication.</p>
+</div>
+<div class="paragraph">
+<p>By default the variable is set to ‘csrf’ but you can change it to JWT by going to the <a href="https://github.com/devonfw/devon4ng-application-template/blob/develop/src/environments/environment.ts#L10">Enviroment.ts</a> and setting <code>security: 'jwt'</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="howto_angular-client-generation.asciidoc_running">Running</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>First of all, run your devon4j java server by right clicking over SpringBootApp.java Run As &#8594; Java Application. This will start to run the SpringBoot server. Once you see the Started SpringBoot in XX seconds, the backend is running.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/howtos/angular4-gen/ng4gen_4.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/angular4-gen/ng4gen_4.png" alt="Starting SpringBoot" width="450"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>Once the the server is running, open a Devon console at the output directory defined previously and run:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="cmd language-cmd">ng serve --open</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will run the Angular 6 application at:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="URL language-URL">http://localhost:4200</code></pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/howtos/angular4-gen/ng4gen_5.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/angular4-gen/ng4gen_5.png" alt="Running Angular 6 app" width="450"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>Once finished, the browser will open automatically at the previous localhost URL showing the Angular 6 application, using the credentials set at the devon4j java server you will be able to access.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:18:30 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

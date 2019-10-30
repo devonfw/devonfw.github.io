@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Database Migration</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-database-migration.asciidoc">Database Migration</a>
+<ul class="sectlevel1">
+<li><a href="#guide-database-migration.asciidoc_organizational-advice">Organizational Advice</a></li>
+<li><a href="#guide-database-migration.asciidoc_technical-configuration">Technical Configuration</a></li>
+<li><a href="#guide-database-migration.asciidoc_naming-conventions">Naming Conventions</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-database-migration.asciidoc" class="sect0">Database Migration</h1>
+<div class="paragraph">
+<p>For database migrations we use <a href="http://flywaydb.org/">Flyway</a>.
+As illustrated <a href="https://flywaydb.org/getstarted/why">here</a> database migrations have three advantages:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Recreate a database from scratch</p>
+</li>
+<li>
+<p>Make it clear at all times what state a database is in</p>
+</li>
+<li>
+<p>Migrate in a deterministic way from your current version of the database to a newer one</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Flyway can be used standalone or can be integrated via its <a href="https://flywaydb.org/documentation/api/javadoc/index.html?org/flywaydb/core/Flyway.html">API</a> to make sure the database migration takes place on startup.</p>
+</div>
+<div class="sect1">
+<h2 id="guide-database-migration.asciidoc_organizational-advice">Organizational Advice</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A few considerations with respect to project organization will help to implement maintainable Flyway migrations.</p>
+</div>
+<div class="paragraph">
+<p>At first, testing and production environments must be clearly and consistently distinguished. Use the following directory structure to achieve this distinction:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="text language-text">  src/main/resources/db
+  src/test/resources/db</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Although this structure introduces redundancies, the benefit overweights this disadvantage.
+An even more fine-grained production directory structure which contains one subfolder per release should be implemented:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="text language-text">  src/main/resources/db/migration/releases/X.Y/x.sql</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Emphasizing that migration scripts below the current version must never be changed will aid the second advantage of migrations: it will always be clearly reproducible in which state the database currently is.
+Here, it is important to mention that, if test data is required, it must be managed separately from the migration data in the following directory:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="text language-text">  src/test/resources/db/migration/</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>migration</code> directory is added to aid easy usage of Flyway defaults.
+Of course, test data should also be managed per release as like production data.</p>
+</div>
+<div class="paragraph">
+<p>With regard to content, separation of concerns (SoC) is an important goal. SoC can be achieved by distinguishing and writing multiple scripts with respect to business components/use cases (or database tables in case of large volumes of master data <span class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</span>. Comprehensible file names aid this separation.</p>
+</div>
+<div class="paragraph">
+<p>It is important to have clear responsibilities regarding the database, the persistence layer (JPA), and migrations. Therefore a dedicated database expert should be in charge of any migrations performed or she should at least be informed before any change to any of the mentioned parts is applied.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-database-migration.asciidoc_technical-configuration">Technical Configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Database migrations can be <a href="http://flywaydb.org/documentation/migration/sql.html">SQL</a> based or <a href="http://flywaydb.org/documentation/migration/java.html">Java</a> based.</p>
+</div>
+<div class="paragraph">
+<p>To enable auto migration on startup (not recommended for productive environment) set the following property in the <code>application.properties</code> file for an environment.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="properties language-properties">flyway.enabled=true
+flyway.clean-on-validation-error=false</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For development environment it is helpful to set both properties to <code>true</code> in order to simplify development. For regular environments <code>flyway.clean-on-validation-error</code> should be <code>false</code>.</p>
+</div>
+<div class="paragraph">
+<p>If you want to use Flyway set the following property in any case to prevent Hibernate from doing changes on the database (pre-configured by default in devonfw):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="properties language-properties">spring.jpa.hibernate.ddl-auto=validate</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The setting must be communicated to and coordinated with the customer and their needs.
+In acceptance testing the same configuration as for the production environment should be enabled.</p>
+</div>
+<div class="paragraph">
+<p>Since migration scripts will also be versioned the end-of-line (EOL) style must be fixated according to <a href="https://github.com/flyway/flyway/issues/253">this issue</a>. This is however solved in flyway 4.0+ and the latest devonfw release.
+Also, the version numbers of migration scripts should not consist of simple ascending integer numbers like V0001<em>&#8230;&#8203;, V0002</em>&#8230;&#8203;, &#8230;&#8203; This naming may lead to problems when merging branches. Instead the usage of timestamps as version numbers will help to avoid such problems.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-database-migration.asciidoc_naming-conventions">Naming Conventions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Database migrations should follow this naming convention:
+V&lt;version&gt;__&lt;description&gt; (e.g.: V12345__Add_new_table.sql).</p>
+</div>
+<div class="paragraph">
+<p>It is also possible to use Flyway for test data. To do so place your test data migrations in src/main/resources/db/testdata/ and set property</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="properties language-properties">flyway.locations=classpath:db/migration/releases,classpath:db/migration/testdata</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then Flyway scans the additional location for migrations and applies all in the order specified by their version. If migrations V0001__... and V0002__... exist and a test data migration should be applied in between you can name it V0001_1__....</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnote_1">
+<a href="#_footnoteref_1">1</a>. "Stammdaten" in German.
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:13:22 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

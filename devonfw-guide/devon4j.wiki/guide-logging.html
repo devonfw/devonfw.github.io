@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logging</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-logging.asciidoc">Logging</a>
+<ul class="sectlevel1">
+<li><a href="#guide-logging.asciidoc_usage">Usage</a>
+<ul class="sectlevel2">
+<li><a href="#guide-logging.asciidoc_maven-integration">Maven Integration</a></li>
+<li><a href="#guide-logging.asciidoc_configuration">Configuration</a></li>
+<li><a href="#guide-logging.asciidoc_logger-access">Logger Access</a></li>
+<li><a href="#guide-logging.asciidoc_how-to-log">How to log</a></li>
+</ul>
+</li>
+<li><a href="#guide-logging.asciidoc_operations">Operations</a>
+<ul class="sectlevel2">
+<li><a href="#guide-logging.asciidoc_log-files">Log Files</a></li>
+<li><a href="#guide-logging.asciidoc_output-format">Output format</a></li>
+</ul>
+</li>
+<li><a href="#guide-logging.asciidoc_security">Security</a></li>
+<li><a href="#guide-logging.asciidoc_correlation-id">Correlation ID</a></li>
+<li><a href="#guide-logging.asciidoc_monitoring">Monitoring</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-logging.asciidoc" class="sect0">Logging</h1>
+<div class="paragraph">
+<p>We use <a href="http://www.slf4j.org/">SLF4J</a> as API for logging. The recommended implementation is <a href="http://logback.qos.ch/">Logback</a> for which we provide additional value such as configuration templates and an appender that prevents log-forging and reformatting of stack-traces for operational optimizations.</p>
+</div>
+<div class="sect1">
+<h2 id="guide-logging.asciidoc_usage">Usage</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="guide-logging.asciidoc_maven-integration">Maven Integration</h3>
+<div class="paragraph">
+<p>In the pom.xml of your application add this dependency (that also adds transitive dependencies to SLF4J and logback):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.devonfw.java&lt;/groupId&gt;
+  &lt;artifactId&gt;devon4j-logging&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-logging.asciidoc_configuration">Configuration</h3>
+<div class="paragraph">
+<p>The configuration file is logback.xml and is to put in the directory src/main/resources of your main application. For details consult the <a href="http://logback.qos.ch/manual/configuration.html">logback configuration manual</a>. devon4j provides a production ready configuration <a href="https://github.com/devonfw/devon4j/blob/develop/templates/server/src/main/resources/archetype-resources/server/src/main/resources/logback.xml">here</a>. Simply copy this configuration into your application in order to benefit from the provided <a href="#guide-logging.asciidoc_operations">operational</a> and <a href="#guide-logging.asciidoc_guide-logging.asciidoc_security">security</a> aspects. We do not include the configuration into the devon4j-logging module to give you the freedom of customizations (e.g. tune log levels for components and integrated products and libraries of your application).</p>
+</div>
+<div class="paragraph">
+<p>The provided logback.xml is configured to use variables defined on the config/application.properties file. On our example, the log files path point to ../logs/ in order to log to tomcat log directory when starting tomcat on the bin folder. Change it according to your custom needs.</p>
+</div>
+<div class="listingblock">
+<div class="title">config/application.properties</div>
+<div class="content">
+<pre class="highlight"><code class="properties language-properties">log.dir=../logs/</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-logging.asciidoc_logger-access">Logger Access</h3>
+<div class="paragraph">
+<p>The general pattern for accessing loggers from your code is a static logger instance per class. We pre-configured the development environment so you can just type LOG and hit [ctrl][space] (and then [arrow up]) to insert the code pattern line into your class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public class MyClass {
+  private static final Logger LOG = LoggerFactory.getLogger(MyClass.class);
+  ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Please note that in this case we are not using injection pattern but use the convenient static alternative. This is already a common solution and also has performance benefits.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-logging.asciidoc_how-to-log">How to log</h3>
+<div class="paragraph">
+<p>We use a common understanding of the log-levels as illustrated by the following table. This helps for better maintenance and operation of the systems by combining both views.</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<caption class="title">Table 1. Log-levels</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Log-level</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Description</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Impact</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Active Environments</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FATAL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Only used for fatal errors that prevent the application to work at all (e.g. startup fails or shutdown/restart required)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Operator has to react immediately</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">all</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ERROR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An abnormal error indicating that the processing failed due to technical problems.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Operator should check for known issue and otherwise inform development</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">all</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">WARNING</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A situation where something worked not as expected. E.g. a business exception or user validation failure occurred.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No direct reaction required. Used for problem analysis.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">all</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">INFO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Important information such as context, duration, success/failure of request or process</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No direct reaction required. Used for analysis.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">all</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DEBUG</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Development information that provides additional context for debugging problems.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No direct reaction required. Used for analysis.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">development and testing</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TRACE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Like DEBUG but exhaustive information and for code that is run very frequently. Will typically cause large log-files.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No direct reaction required. Used for problem analysis.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">none (turned off by default)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Exceptions (with their stacktrace) should only be logged on FATAL or ERROR level. For business exceptions typically a WARNING including the message of the exception is sufficient.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-logging.asciidoc_operations">Operations</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="guide-logging.asciidoc_log-files">Log Files</h3>
+<div class="paragraph">
+<p>We always use the following log files:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Error Log</strong>: Includes log entries to detect errors.</p>
+</li>
+<li>
+<p><strong>Info Log</strong>: Used to analyze system status and to detect bottlenecks.</p>
+</li>
+<li>
+<p><strong>Debug Log</strong>: Detailed information for error detection.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The log file name pattern is as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>«LOGTYPE»_log_«HOST»_«APPLICATION»_«TIMESTAMP».log</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<caption class="title">Table 2. Segments of Logfilename</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Element</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Value</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">«LOGTYPE»</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">info, error, debug</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type of log file</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">«HOST»</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">e.g. mywebserver01</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of server, where logs are generated</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">«APPLICATION»</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">e.g. myapp</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Name of application, which causes logs</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">«TIMESTAMP»</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">YYYY-MM-DD_HH00</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">date of log file</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Example:
+error_log_mywebserver01_myapp_2013-09-16_0900.log</p>
+</div>
+<div class="paragraph">
+<p>Error log from mywebserver01 at application myapp at 16th September 2013 9pm.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-logging.asciidoc_output-format">Output format</h3>
+<div class="paragraph">
+<p>We use the following output format for all log entries to ensure that searching and filtering of log entries work consistent for all logfiles:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code> [D: «timestamp»] [P: «priority»] [C: «NDC»][T: «thread»][L: «logger»]-[M: «message»]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>D</strong>: Date (Timestamp in ISO8601 format e.g. 2013-09-05 16:40:36,464)</p>
+</li>
+<li>
+<p><strong>P</strong>: Priority (the log level)</p>
+</li>
+<li>
+<p><strong>C</strong>: <a href="#guide-logging.asciidoc_correlation-id">Correlation ID</a> (ID to identify users across multiple systems, needed when application is distributed)</p>
+</li>
+<li>
+<p><strong>T</strong>: Thread (Name of thread)</p>
+</li>
+<li>
+<p><strong>L</strong>: Logger name (use class name)</p>
+</li>
+<li>
+<p><strong>M</strong>: Message (log message)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code> [D: 2013-09-05 16:40:36,464] [P: DEBUG] [C: 12345] [T: main] [L: my.package.MyClass]-[M: My message...]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-logging.asciidoc_security">Security</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order to prevent <a href="https://www.owasp.org/index.php/Log_Forging">log forging</a> attacks we provide a special appender for logback in <a href="#guide-logging.asciidoc">devonfw-logging</a>. If you use it (see <a href="#guide-logging.asciidoc_guide-logging.asciidoc_configuration">configuration</a>) you are safe from such attacks.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-logging.asciidoc_correlation-id">Correlation ID</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order to correlate separate HTTP requests to services belonging to the same user / session, we provide a servlet filter called <code>DiagnosticContextFilter</code>. This filter takes a provided correlation ID from the HTTP header <code>X-Correlation-Id</code>. If none was found, it will generate a new correlation id as <code>UUID</code>. This correlation ID is added as MDC to the logger. Therefore, it will then be included to any log message of the current request (thread). Further concepts such as <a href="#guide-service-client.asciidoc">service invocations</a> will pass this correlation ID to subsequent calls in the application landscape. Hence you can find all log messages related to an initial request simply via the correlation ID even in highly distributed systems.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-logging.asciidoc_monitoring">Monitoring</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In highly distributed systems (from clustering up to microservices) it might get tedious to search for problems and details in log files. Therefore, we recommend to setup a central log and analysis server for your application landscape. Then you feed the logs from all your applications (using <a href="http://logstash.net/">logstash</a>) into that central server that adds them to a search index to allow fast searches (using <a href="http://www.elasticsearch.org/">elasticsearch</a>). This should be completed with a UI that allows dashboards and reports based on data aggregated from all the logs.
+This is addressed by <a href="https://www.elastic.co/webinars/introduction-elk-stack">ELK</a> or <a href="https://www.graylog.org/">Graylog</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:13:36 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

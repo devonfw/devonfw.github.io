@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exception Handling</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-exceptions.asciidoc">Exception Handling</a>
+<ul class="sectlevel1">
+<li><a href="#guide-exceptions.asciidoc_exception-principles">Exception Principles</a></li>
+<li><a href="#guide-exceptions.asciidoc_exception-example">Exception Example</a></li>
+<li><a href="#guide-exceptions.asciidoc_handling-exceptions">Handling Exceptions</a></li>
+<li><a href="#guide-exceptions.asciidoc_common-errors">Common Errors</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-exceptions.asciidoc" class="sect0">Exception Handling</h1>
+<div class="sect1">
+<h2 id="guide-exceptions.asciidoc_exception-principles">Exception Principles</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For exceptions we follow these principles:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>We only use exceptions for <em>exceptional</em> situations and not for programming control flows, etc. Creating an exception in Java is expensive and hence you should not do it just for testing if something is present, valid or permitted. In the latter case design your API to return this as a regular result.</p>
+</li>
+<li>
+<p>We use unchecked exceptions (RuntimeException)</p>
+</li>
+<li>
+<p>We distinguish <em>internal exceptions</em> and <em>user exceptions</em>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Internal exceptions have technical reasons. For unexpected and exotic situations it is sufficient to throw existing exceptions such as IllegalStateException. For common scenarios a own exception class is reasonable.</p>
+</li>
+<li>
+<p>User exceptions contain a message explaining the problem for end users. Therefore we always define our own exception classes with a clear, brief but detailed message.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Our own exceptions derive from an exception base class supporting</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="http://m-m-m.sourceforge.net/apidocs/net/sf/mmm/util/exception/api/NlsRuntimeException.html#getUuid%28%29">unique ID per instance</a></p>
+</li>
+<li>
+<p><a href="http://m-m-m.sourceforge.net/apidocs/net/sf/mmm/util/exception/api/NlsRuntimeException.html#getCode%28%29">Error code per class</a></p>
+</li>
+<li>
+<p><a href="http://m-m-m.sourceforge.net/apidocs/net/sf/mmm/util/exception/api/NlsThrowable.html#getNlsMessage%28%29">message templating</a> (see <a href="#guide-i18n.asciidoc">I18N</a>)</p>
+</li>
+<li>
+<p><a href="http://m-m-m.sourceforge.net/apidocs/net/sf/mmm/util/exception/api/NlsRuntimeException.html#isForUser%28%29">distinguish between <em>user exceptions</em> and <em>internal exceptions</em></a></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>All this is offered by <a href="http://m-m-m.sourceforge.net/apidocs/net/sf/mmm/util/exception/api/package-summary.html#documentation">mmm-util-core</a> that we propose as solution.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-exceptions.asciidoc_exception-example">Exception Example</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Here is an exception class from our sample application:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public class IllegalEntityStateException extends ApplicationBusinessException {
+
+  private static final long serialVersionUID = 1L;
+
+  public IllegalEntityStateException(Object entity, Object state) {
+
+    this((Throwable) null, entity, state);
+  }
+
+
+  public IllegalEntityStateException(Object entity, Object currentState, Object newState) {
+
+    this(null, entity, currentState, newState);
+  }
+
+  public IllegalEntityStateException(Throwable cause, Object entity, Object state) {
+
+    super(cause, createBundle(NlsBundleApplicationRoot.class).errorIllegalEntityState(entity, state));
+  }
+
+  public IllegalEntityStateException(Throwable cause, Object entity, Object currentState, Object newState) {
+
+    super(cause, createBundle(NlsBundleApplicationRoot.class).errorIllegalEntityStateChange(entity, currentState,
+        newState));
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The message templates are defined in the interface NlsBundleRestaurantRoot as following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public interface NlsBundleApplicationRoot extends NlsBundle {
+
+
+  @NlsBundleMessage("The entity {entity} is in state {state}!")
+  NlsMessage errorIllegalEntityState(@Named("entity") Object entity, @Named("state") Object state);
+
+
+  @NlsBundleMessage("The entity {entity} in state {currentState} can not be changed to state {newState}!")
+  NlsMessage errorIllegalEntityStateChange(@Named("entity") Object entity, @Named("currentState") Object currentState,
+      @Named("newState") Object newState);
+
+
+  @NlsBundleMessage("The property {property} of object {object} can not be changed!")
+  NlsMessage errorIllegalPropertyChange(@Named("object") Object object, @Named("property") Object property);
+
+  @NlsBundleMessage("There is currently no user logged in")
+  NlsMessage errorNoActiveUser();</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-exceptions.asciidoc_handling-exceptions">Handling Exceptions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For catching and handling exceptions we follow these rules:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>We do not catch exceptions just to wrap or to re-throw them.</p>
+</li>
+<li>
+<p>If we catch an exception and throw a new one, we always <strong>have</strong> to provide the original exception as <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Throwable.html#getCause%28%29">cause</a> to the constructor of the new exception.</p>
+</li>
+<li>
+<p>At the entry points of the application (e.g. a service operation) we have to catch and handle all throwables. This is done via the <em>exception-facade-pattern</em> via an explicit facade or aspect. The devon4j already provides ready-to-use implementations for this such as <a href="https://github.com/devonfw/devon4j/blob/develop/modules/rest/src/main/java/com/devonfw/module/rest/service/impl/RestServiceExceptionFacade.java">RestServiceExceptionFacade</a>. The exception facade has to&#8230;&#8203;</p>
+<div class="ulist">
+<ul>
+<li>
+<p>log all errors (user errors on info and technical errors on error level)</p>
+</li>
+<li>
+<p>convert the error to a result appropriable for the client and secure for <a href="https://www.owasp.org/index.php/Top_10_2013-A6-Sensitive_Data_Exposure">Sensitive Data Exposure</a>. Especially for security exceptions only a generic security error code or message may be revealed but the details shall only be logged but <strong>not</strong> be exposed to the client. All <em>internal exceptions</em> are converted to a generic error with a message like:</p>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>An unexpected technical error has occurred. We apologize any inconvenience. Please try again later.</p>
+</div>
+</blockquote>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-exceptions.asciidoc_common-errors">Common Errors</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following errors may occur in any devon application:</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<caption class="title">Table 1. Common Exceptions</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Code</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Message</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Link</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>TechnicalError</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An unexpected error has occurred! We apologize any inconvenience. Please try again later.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/m-m-m/util/blob/master/exception/src/main/java/net/sf/mmm/util/exception/api/TechnicalErrorUserException.java">TechnicalErrorUserException.java</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ServiceInvoke</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">«original message of the cause»</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/m-m-m/util/blob/master/exception/src/main/java/net/sf/mmm/util/exception/api/ServiceInvocationFailedException.java">ServiceInvocationFailedException.java</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:13:24 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

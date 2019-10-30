@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Introduction</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="paragraph">
+<p><em>[Under construction]</em></p>
+</div>
+<hr>
+<div class="paragraph">
+<p>The purpose of the present document is to provide the basic steps carried out to setup a BitBucket server in OpenShift.</p>
+</div>
+<div class="sect1">
+<h2 id="dsf-openshift-services-bitbucket-basic-server-setup.asciidoc_introduction">Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>BitBucket is the Atlassian tool that extends the Git functionality, by adding integration with JIRA, Confluence, or Trello, as well as incorporates extra features for security or management of user accounts (See <a href="https://www.atlassian.com/software/bitbucket/features">BitBucket</a>).</p>
+</div>
+<div class="paragraph">
+<p>BitBucket server is the Atlassian tool that runs the BitBucket services (See <a href="https://www.atlassian.com/software/bitbucket/server">BitBucket server</a>).</p>
+</div>
+<div class="paragraph">
+<p>The followed approach has been not using command line, but OpenShift Web Console, by deploying the Docker image <strong>atlassian/bitbucket-server</strong> (available in <a href="https://hub.docker.com/r/atlassian/bitbucket-server/">Docker Hub</a>) in the existing project <strong>Deployment</strong>.</p>
+</div>
+<div class="paragraph">
+<p>The procedure below exposed consists basically in three main steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Deploy the BitBucket server image (from OpenShift web console)</p>
+</li>
+<li>
+<p>Add a route for the external traffic (from OpenShift web console)</p>
+</li>
+<li>
+<p>Configure the BitBucket server (from BitBucket server web console)</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dsf-openshift-services-bitbucket-basic-server-setup.asciidoc_prerequisites">Prerequisites</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>OpenShift up &amp; running</p>
+</li>
+<li>
+<p>Atlassian account (with personal account key). Not required for OpenShift, but for the initial BitBucket server configuration.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dsf-openshift-services-bitbucket-basic-server-setup.asciidoc_procedure">Procedure</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a id="dsf-openshift-services-bitbucket-basic-server-setup.asciidoc_step-0-log-into-our-linkhttps10.68.26.1638443consolelogoutopenshift-web-console"></a>]
+=== Step 0: Log into our <a href="https://10.68.26.163:8443/console/logout">OpenShift Web console</a></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/bitbucket/step0.png" alt="step0">
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-openshift-services-bitbucket-basic-server-setup.asciidoc_step-1-get-into-development-project">Step 1: Get into Development project</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/bitbucket/step1.png" alt="]">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-openshift-services-bitbucket-basic-server-setup.asciidoc_step-2.1-deploy-a-new-image-to-the-project">Step 2.1: Deploy a new image to the project</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/bitbucket/step2.1.png" alt="step2.1">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-openshift-services-bitbucket-basic-server-setup.asciidoc_step-2.2-introduce-the-image-name-available-in-linkhttpshub.docker.comratlassianbitbucket-serverdocker-hub-and-search">Step 2.2: Introduce the image name (available in <a href="https://hub.docker.com/r/atlassian/bitbucket-server/">Docker Hub</a>) and search</h3>
+<div class="paragraph">
+<p>Image name: <strong>atlassian/bitbucket-server</strong></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/bitbucket/step2.2.png" alt="step2.2">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-openshift-services-bitbucket-basic-server-setup.asciidoc_step-2.3-leave-by-the-moment-the-default-config.-since-it-is-enough-for-the-basic-setup.-press-create">Step 2.3: Leave by the moment the default config. since it is enough for the basic setup. Press Create</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/bitbucket/step2.3.png" alt="step2.3">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-openshift-services-bitbucket-basic-server-setup.asciidoc_step-2.4-copy-the-oc-commands-in-case-it-is-required-to-work-via-command-line">Step 2.4: Copy the oc commands in case it is required to work via command line, and Go to overview</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/bitbucket/step2.4.png" alt="step2.4">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-openshift-services-bitbucket-basic-server-setup.asciidoc_step-2.5-wait-until-openshift-deploys-and-starts-up-the-image.-all-the-info-will-be-available.">Step 2.5: Wait until OpenShift deploys and starts up the image. All the info will be available.</h3>
+<div class="paragraph">
+<p>Please notice that there are no pre-configured routes, hence the application is not accessible from outside the cluster.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/bitbucket/step2.5.png" alt="step2.5">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-openshift-services-bitbucket-basic-server-setup.asciidoc_step-3-create-a-route-in-order-for-the-application-to-be-accessible-from-outside-the-cluster-external-traffic.-press-create">Step 3: Create a route in order for the application to be accessible from outside the cluster (external traffic). Press Create</h3>
+<div class="paragraph">
+<p>Please notice that there are different fields that can be specified (hostname, port). If required, the value of those fields can be modified later.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/bitbucket/step3a.png" alt="step3a">
+</div>
+</div>
+<div class="paragraph">
+<p>Leave by the moment the default config. as it is enough for the basic setup.</p>
+</div>
+<div class="paragraph">
+<p>The route for external traffic is now available.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/bitbucket/step3b.png" alt="step3b">
+</div>
+</div>
+<hr>
+<div class="paragraph">
+<p>Now the BitBucker server container is up &amp; running in our cluster.</p>
+</div>
+<div class="paragraph">
+<p>The below steps correspond to the basic configuration of our BitBucket server.</p>
+</div>
+<hr>
+</div>
+<div class="sect2">
+<h3 id="dsf-openshift-services-bitbucket-basic-server-setup.asciidoc_step-4.1-click-on-the-link-of-the-external-traffic-route.-this-will-open-our-bitbucket-server-setup-wizard">Step 4.1: Click on the link of the external traffic route. This will open our BitBucket server setup wizard</h3>
+
+</div>
+<div class="sect2">
+<h3 id="dsf-openshift-services-bitbucket-basic-server-setup.asciidoc_step-4.2-leave-by-the-moment-the-internal-database-since-it-is-enough-for-the-basic-setup-and-it-can-be-modified-later">Step 4.2: Leave by the moment the Internal database since it is enough for the basic setup (and it can be modified later), and click Next</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/bitbucket/step4.2.png" alt="step4.2">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-openshift-services-bitbucket-basic-server-setup.asciidoc_step-4.3-select-the-evaluation-license">Step 4.3: Select the evaluation license, and click I have an account</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/bitbucket/step4.3.png" alt="step4.3">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-openshift-services-bitbucket-basic-server-setup.asciidoc_step-4.4-select-the-option-bitbucker-server">Step 4.4: Select the option Bitbucker (Server)</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/bitbucket/step4.4.png" alt="step4.4">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-openshift-services-bitbucket-basic-server-setup.asciidoc_step-4.5-introduce-your-organization-capgemini">Step 4.5: Introduce your organization (Capgemini), and click Generate License</h3>
+
+</div>
+<div class="sect2">
+<h3 id="dsf-openshift-services-bitbucket-basic-server-setup.asciidoc_step-4.6-confirm-that-you-want-to-install-the-license-on-the-bitbucket-server">Step 4.6: Confirm that you want to install the license on the BitBucket server</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/bitbucket/step4.6.png" alt="step4.6">
+</div>
+</div>
+<div class="paragraph">
+<p>The license key will be automatically generated. Click <strong>Next</strong></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-openshift-services-bitbucket-basic-server-setup.asciidoc_step-4.7-introduce-the-details-of-the-administration-account.">Step 4.7: Introduce the details of the Administration account.</h3>
+<div class="paragraph">
+<p>Since our BitBucket server is not going to be integrated with JIRA, click on Go to Bitbucket. The integration with JIRA can be configured later.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/bitbucket/step4.7.png" alt="step4.7">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-openshift-services-bitbucket-basic-server-setup.asciidoc_step-4.8-log-in-with-the-admin-account-that-has-been-just-created">Step 4.8: Log in with the admin account that has been just created</h3>
+
+</div>
+<div class="sect2">
+<h3 id="dsf-openshift-services-bitbucket-basic-server-setup.asciidoc_done-">DONE !!</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/bitbucket/done.png" alt="done">
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:16:15 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

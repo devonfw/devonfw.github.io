@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angular Electron</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-add-electron.asciidoc">Angular Electron</a>
+<ul class="sectlevel1">
+<li><a href="#guide-add-electron.asciidoc_add-electron-to-an-angular-application">Add Electron to an Angular application</a>
+<ul class="sectlevel2">
+<li><a href="#guide-add-electron.asciidoc_add-electron-and-other-relevant-dependencies">Add Electron and other relevant dependencies</a></li>
+<li><a href="#guide-add-electron.asciidoc_add-electron-build-configuration">Add Electron build configuration</a></li>
+<li><a href="#guide-add-electron.asciidoc_create-the-necessary-typescript-configurations">Create the necessary typescript configurations</a></li>
+<li><a href="#guide-add-electron.asciidoc_modify-angular.json">Modify angular.json</a></li>
+<li><a href="#guide-add-electron.asciidoc_add-angular-electron-directives">Add Angular Electron directives</a></li>
+<li><a href="#guide-add-electron.asciidoc_add-access-electron-apis">Add access Electron APIs</a></li>
+<li><a href="#guide-add-electron.asciidoc_create-the-electron-window-in-main.ts">Create the electron window in <code>main.ts</code></a></li>
+<li><a href="#guide-add-electron.asciidoc_add-the-electron-window-and-improve-the-package.json-scripts">Add the electron window and improve the <code>package.json</code> scripts</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-add-electron.asciidoc" class="sect0">Angular Electron</h1>
+<div class="sect1">
+<h2 id="guide-add-electron.asciidoc_add-electron-to-an-angular-application">Add Electron to an Angular application</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This cookbook recipe explains how to integrate Electron in an Angular 6+ application. <a href="https://electronjs.org/">Electron</a> is a framework for creating native applications with web technologies like JavaScript, HTML, and CSS. As an example, very well known applications as Visual Studio Code, Atom, Slack or Skype (and many more) are using Electron too.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+At the moment of this writing Angular 7.2.3 and Electron 4.0.2 were the versions available.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Here are the steps to achieve this goal. Follow them in order.</p>
+</div>
+<div class="sect2">
+<h3 id="guide-add-electron.asciidoc_add-electron-and-other-relevant-dependencies">Add Electron and other relevant dependencies</h3>
+<div class="paragraph">
+<p>There are two different approaches to add the dependencies in the <code>package.json</code> file:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Writing the dependencies directly in that file.</p>
+</li>
+<li>
+<p>Installing using <code>npm install</code> or <code>yarn add</code>.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-important" title=""></i>
+</td>
+<td class="content">
+Please remember if the project has a <code>package-lock.json</code> or <code>yarn.lock</code> file use <code>npm</code> or <code>yarn</code> respectively.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In order to add the dependencies directly in the <code>package.json</code> file, include the following lines in the <code>devDependencies</code> section:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"devDependencies": {
+...
+    "electron": "^4.0.2",
+    "electron-builder": "^20.38.5",
+    "electron-reload": "^1.4.0",
+    "npm-run-all": "^4.1.5",
+    "npx": "^10.2.0",
+    "wait-on": "^3.2.0",
+    "webdriver-manager": "^12.1.1"
+...
+},</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As indicated above, instead of this <code>npm install</code> can be used:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">$ npm install -D electron electron-builder electron-reload npm-run-all npx wait-on webdriver-manager</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or with <code>yarn</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">$ yarn add -D electron electron-builder electron-reload npm-run-all npx wait-on webdriver-manager</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-add-electron.asciidoc_add-electron-build-configuration">Add Electron build configuration</h3>
+<div class="paragraph">
+<p>In order to configure electron builds properly a <code>electron-builder.json</code> must be included in the root folder of the application. For more information and fine tuning please refer to the <a href="https://www.electron.build/configuration/configuration">Electron Builder official documentation</a>.</p>
+</div>
+<div class="paragraph">
+<p>The contents of the file will be something similar to the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+  "productName": "app-name",
+  "directories": {
+    "output": "release/"
+  },
+  "files": [
+    "**/*",
+    "!**/*.ts",
+    "!*.code-workspace",
+    "!LICENSE.md",
+    "!package.json",
+    "!package-lock.json",
+    "!src/",
+    "!e2e/",
+    "!hooks/",
+    "!angular.json",
+    "!_config.yml",
+    "!karma.conf.js",
+    "!tsconfig.json",
+    "!tslint.json"
+  ],
+  "win": {
+    "icon": "dist/assets/icons",
+    "target": ["portable"]
+  },
+  "mac": {
+    "icon": "dist/assets/icons",
+    "target": ["dmg"]
+  },
+  "linux": {
+    "icon": "dist/assets/icons",
+    "target": ["AppImage"]
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Theres two important things in this file:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>"output": this is where electron builder is going to build our application</p>
+</li>
+<li>
+<p>"icon": in every OS possible theres an icon parameter, the route to the icon folder that will be created after building with angular needs to be used here. This will make it so the electron builder can find the icons and build.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-add-electron.asciidoc_create-the-necessary-typescript-configurations">Create the necessary typescript configurations</h3>
+<div class="paragraph">
+<p>In order to initiate electron in an angular app we need to modify the <code>tsconfig.json</code> file and create a new one named <code>tsconfig-serve.json</code> in the root folder.</p>
+</div>
+<div class="sect3">
+<h4 id="guide-add-electron.asciidoc_tsconfig.json">tsconfig.json</h4>
+<div class="paragraph">
+<p>This file needs to be modified to add the <code>main.ts</code> and <code>src/**/*</code> folders excluding the <code>node_modules</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+....
+  },
+  "include": [
+    "main.ts",
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+....
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-add-electron.asciidoc_tsconfig-serve.json">tsconfig-serve.json</h4>
+<div class="paragraph">
+<p>In the root, <code>tsconfig-serve.json</code> needs to be created. This typescript config file is going to be used when we serve electron:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+  "compilerOptions": {
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "es5",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "es2017",
+      "es2016",
+      "es2015",
+      "dom"
+    ]
+  },
+  "include": [
+    "main.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-add-electron.asciidoc_modify-angular.json">Modify angular.json</h3>
+<div class="paragraph">
+<p><code>angular.json</code> has to to be modified so the project is build inside <em>/dist</em> without an intermediate folder.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="TypeScript language-TypeScript">{
+....
+  "architect": {
+    ....
+    "build": {
+      outputPath": "dist",
+      ....
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-add-electron.asciidoc_add-angular-electron-directives">Add Angular Electron directives</h3>
+<div class="paragraph">
+<p>In order to use Electron&#8217;s webview tag and its methods inside an Angular application our project needs the directive <code>webview.directive.ts</code> file. We recommend to create this file inside a <strong>shared</strong> module folder, although it has to be declared inside the main module <code>app.module.ts</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 1. File webview.directive.ts</div>
+<div class="content">
+<pre class="highlight"><code class="TypeScript language-TypeScript">import { Directive } from '@angular/core';
+
+@Directive({
+  selector: '[webview]',
+})
+export class WebviewDirective {}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-add-electron.asciidoc_add-access-electron-apis">Add access Electron APIs</h3>
+<div class="paragraph">
+<p>To call Electron APIs from the Renderer process, install ngx-electron module.</p>
+</div>
+<div class="paragraph">
+<p>With <code>npm</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">$ npm install ngx-electron --save</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or with <code>yarn</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">$ yarn add ngx-electron --save</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This package contains a module named <strong>NgxElectronModule</strong> which exposes Electron APIs through a service called <strong>ElectronService</strong></p>
+</div>
+<div class="sect3">
+<h4 id="guide-add-electron.asciidoc_update-app.module.ts-and-app-routing.module.ts">Update <code>app.module.ts</code> and <code>app-routing.module.ts</code></h4>
+<div class="paragraph">
+<p>As an example, the <code>webview.directive.ts</code> file is located inside a <code>shared</code> module:</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 2. File app.module.ts</div>
+<div class="content">
+<pre class="highlight"><code class="TypeScript language-TypeScript">// imports
+import { NgxElectronModule } from 'ngx-electron';
+import { WebviewDirective } from './shared/directives/webview.directive';
+
+@NgModule({
+  declarations: [AppComponent, WebviewDirective],
+  imports: [
+    ...
+    NgxElectronModule
+    ...
+    ],
+  providers: [],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here NgxElectronModule is also added so ElectronService can be injected wherever is needed.</p>
+</div>
+<div class="paragraph">
+<p>After that is done, the use of hash has to be allowed so electron can reload content properly. On the <code>app-routing.module.ts</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="TypeScript language-TypeScript">....
+  imports: [RouterModule.forRoot(routes,
+    {
+      ....
+      useHash: true,
+    },
+  )],</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-add-electron.asciidoc_usage">Usage</h4>
+<div class="paragraph">
+<p>In order to use Electron in any component class the ElectronService must be injected:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="TypeScript language-TypeScript">import { ElectronService } from 'ngx-electron';
+
+...
+
+constructor(
+  // other injected services
+  public electronService: ElectronService,
+) {
+  // previous code...
+
+  if (electronService.isElectronApp) {
+    // Do electron stuff
+  } else {
+    // Do other web stuff
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-tip" title=""></i>
+</td>
+<td class="content">
+A list of all accesible APIs can be found at <a href="https://github.com/ThorstenHans/ngx-electron">Thorsten Hans' ngx-electron repository</a>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-add-electron.asciidoc_create-the-electron-window-in-main.ts">Create the electron window in <code>main.ts</code></h3>
+<div class="paragraph">
+<p>In order to use electron, a file needs to be created at the root of the application (<code>main.ts</code>). This file will create a window with different settings checking if we are using <code>--serve</code> as an argument:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">import { app, BrowserWindow, screen } from 'electron';
+import * as path from 'path';
+import * as url from 'url';
+
+let win: any;
+let serve: any;
+const args: any = process.argv.slice(1);
+serve = args.some((val) =&gt; val === '--serve');
+
+ function createWindow(): void {
+  const electronScreen: any = screen;
+  const size: any = electronScreen.getPrimaryDisplay().workAreaSize;
+
+   // Create the browser window.
+  win = new BrowserWindow({
+    x: 0,
+    y: 0,
+    width: size.width,
+    height: size.height,
+
+    // Needed if you are using service workers
+    webPreferences: {
+      nodeIntegration: true,
+      nodeIntegrationInWorker: true,
+    }
+  });
+
+   if (serve) {
+    // tslint:disable-next-line:no-require-imports
+    require('electron-reload')(__dirname, {
+      electron: require(`${__dirname}/node_modules/electron`),
+    });
+    win.loadURL('http://localhost:4200');
+  } else {
+    win.loadURL(
+      url.format({
+        pathname: path.join(__dirname, 'dist/index.html'),
+        protocol: 'file',
+        slashes: true,
+      }),
+    );
+  }
+
+   // Uncoment the following line if you want to open the DevTools by default
+  // win.webContents.openDevTools();
+
+   // Emitted when the window is closed.
+  win.on('closed', () =&gt; {
+    // Dereference the window object, usually you would store window
+    // in an array if your app supports multi windows, this is the time
+    // when you should delete the corresponding element.
+    // tslint:disable-next-line:no-null-keyword
+    win = null;
+  });
+}
+
+ try {
+  // This method will be called when Electron has finished
+  // initialization and is ready to create browser windows.
+  // Some APIs can only be used after this event occurs.
+  app.on('ready', createWindow);
+
+   // Quit when all windows are closed.
+  app.on('window-all-closed', () =&gt; {
+    // On OS X it is common for applications and their menu bar
+    // to stay active until the user quits explicitly with Cmd + Q
+    if (process.platform !== 'darwin') {
+      app.quit();
+    }
+  });
+
+   app.on('activate', () =&gt; {
+    // On OS X it's common to re-create a window in the app when the
+    // dock icon is clicked and there are no other windows open.
+    if (win === null) {
+      createWindow();
+    }
+  });
+} catch (e) {
+  // Catch Error
+  // throw e;
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-add-electron.asciidoc_add-the-electron-window-and-improve-the-package.json-scripts">Add the electron window and improve the <code>package.json</code> scripts</h3>
+<div class="paragraph">
+<p>Inside <code>package.json</code> the electron window that will be transformed to <code>main.js</code> when building needs to be added.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+  ....
+  "main": "main.js",
+  "scripts": {
+  ....
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>scripts</code> section in the <code>package.json</code> can be improved to avoid running too verbose commands. As a very complete example we can take a look to the My Thai Star&#8217;s <code>scripts</code> section and copy the lines useful in your project.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">  "scripts": {
+    "postinstall": "npx electron-builder install-app-deps",
+    ".": "sh .angular-gui/.runner.sh",
+    "ng": "ng",
+    "start": "ng serve --proxy-config proxy.conf.json -o",
+    "start:electron": "npm-run-all -p serve electron:serve",
+    "compodoc": "compodoc -p src/tsconfig.app.json -s",
+    "test": "ng test --browsers Chrome",
+    "test:ci": "ng test --browsers ChromeHeadless --watch=false",
+    "test:firefox": "ng test --browsers Firefox",
+    "test:ci:firefox": "ng test --browsers FirefoxHeadless --watch=false",
+    "test:firefox-dev": "ng test --browsers FirefoxDeveloper",
+    "test:ci:firefox-dev": "ng test --browsers FirefoxDeveloperHeadless --watch=false",
+    "test:electron": "ng test",
+    "lint": "ng lint",
+    "e2e": "ng e2e",
+    "ngsw-config": "npx ngsw-config dist ngsw-config.json",
+    "ngsw-copy": "cp node_modules/@angular/service-worker/ngsw-worker.js dist/",
+    "serve": "ng serve",
+    "serve:open": "npm run start",
+    "serve:pwa": "npm run build:pwa &amp;&amp; http-server dist -p 8080",
+    "serve:prod": "ng serve --open --prod",
+    "serve:prodcompose": "ng serve --open --configuration=prodcompose",
+    "serve:node": "ng serve --open --configuration=node",
+    "build": "ng build",
+    "build:pwa": "ng build --configuration=pwa --prod --build-optimizer &amp;&amp; npm run ngsw-config &amp;&amp; npm run ngsw-copy",
+    "build:prod": "ng build --prod --build-optimizer",
+    "build:prodcompose": "ng build --configuration=prodcompose ",
+    "build:electron": "npm run electron:serve-tsc &amp;&amp; ng build --base-href ./",
+    "build:electron:dev": "npm run build:electron -- -c dev",
+    "build:electron:prod": "npm run build:electron -- -c production",
+    "electron:start": "npm-run-all -p serve electron:serve",
+    "electron:serve-tsc": "tsc -p tsconfig-serve.json",
+    "electron:serve": "wait-on http-get://localhost:4200/ &amp;&amp; npm run electron:serve-tsc &amp;&amp; electron . --serve",
+    "electron:local": "npm run build:electron:prod &amp;&amp; electron .",
+    "electron:linux": "npm run build:electron:prod &amp;&amp; npx electron-builder build --linux",
+    "electron:windows": "npm run build:electron:prod &amp;&amp; npx electron-builder build --windows",
+    "electron:mac": "npm run build:electron:prod &amp;&amp; npx electron-builder build --mac"
+  },</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here the important thing to look out for is that the base href when building electron can be changed as needed. In our case:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">    "build:electron": "npm run postinstall:electron &amp;&amp; npm run electron:serve-tsc &amp;&amp; ng build --base-href \"\" ",</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+Some of these lines are intended to be shortcuts used in other scripts. Do not hesitate to modify them depending on your needs.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Some usage examples:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">$ npm run electron:start                # Serve Angular app and run it inside electron
+$ npm run electron:local                # Serve Angular app for production and run it inside electron
+$ npm run electron:windows              # Build Angular app for production and package it for Windows OS</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">$ yarn run electron:start                # Serve Angular app and run it inside electron
+$ yarn run electron:local                # Serve Angular app for production and run it inside electron
+$ yarn run electron:windows              # Build Angular app for production and package it for Windows OS</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:14:40 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Internationalization</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-internationalization.asciidoc">Internationalization</a>
+<ul class="sectlevel1">
+<li><a href="#guide-internationalization.asciidoc_devon4ng-i18n-approach">devon4ng i18n approach</a>
+<ul class="sectlevel2">
+<li><a href="#guide-internationalization.asciidoc_install-ngx-translate">Install NGX Translate</a></li>
+<li><a href="#guide-internationalization.asciidoc_configure-ngx-translate">Configure NGX Translate</a></li>
+<li><a href="#guide-internationalization.asciidoc_usage">Usage</a></li>
+<li><a href="#guide-internationalization.asciidoc_using-the-service">Using the service, pipe or directive</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-internationalization.asciidoc" class="sect0">Internationalization</h1>
+<div class="paragraph">
+<p>Nowadays, a common scenario in front-end applications is to have the ability to translate labels and locate numbers, dates, currency and so on when the user clicks over a language selector or similar. devon4ng and specifically Angular has a default mechanism in order to fill the gap of such features, and besides there are some wide used libraries that make even easier to translate applications.</p>
+</div>
+<div class="paragraph">
+<p>More info at <a href="https://angular.io/guide/i18n">Angular i18n official documentation</a></p>
+</div>
+<div class="sect1">
+<h2 id="guide-internationalization.asciidoc_devon4ng-i18n-approach">devon4ng i18n approach</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The official approach could be a bit complicated, therefore the recommended one is to use the recommended library <strong>NGX Translate</strong> from <a href="http://www.ngx-translate.com/" class="bare">http://www.ngx-translate.com/</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="guide-internationalization.asciidoc_install-ngx-translate">Install NGX Translate</h3>
+<div class="paragraph">
+<p>In order to include this library in your devon4ng <strong>Angular &gt;= 4.3</strong> project you will need to execute in a terminal:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">$ npm install @ngx-translate/core @ngx-translate/http-loader --save
+# or if you use yarn
+$ yarn add @ngx-translate/core @ngx-translate/http-loader</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>@ngx-translate/core</strong> is the core library to provide i18n capabilities.</p>
+</li>
+<li>
+<p><strong>@ngx-translate/http-loader</strong> is a loader for ngx-translate that loads translations using http.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-internationalization.asciidoc_configure-ngx-translate">Configure NGX Translate</h3>
+<div class="paragraph">
+<p>Depending on the volume of the devon4ng application we will include the NGX Translate library in the <code>app.module.ts</code> or in the <code>core.module.ts</code> transversal to the application.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Next, an exported function for factories has to be created:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">// AoT requires an exported function for factories
+export function HttpLoaderFactory(http: HttpClient) {
+    return new TranslateHttpLoader(http);
+}
+
+@NgModule({
+    imports: [
+        BrowserModule,
+        HttpClientModule,
+        TranslateModule.forRoot({
+            loader: {
+                provide: TranslateLoader,
+                useFactory: HttpLoaderFactory,
+                deps: [HttpClient]
+            }
+        })
+    ],
+    bootstrap: [AppComponent]
+})
+export class AppModule { } // or CoreModule</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>TranslateHttpLoader</code> also has two optional parameters:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>prefix: string = "/assets/i18n/"</p>
+</li>
+<li>
+<p>suffix: string = ".json"</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>By using those default parameters, it will load the translations files for the lang "en" from: <code>/assets/i18n/en.json</code>. In general, any translation file will loaded from the <code>/assets/i18n/</code> folder.</p>
+</div>
+<div class="paragraph">
+<p>Those parameters can be changed in the <code>HttpLoaderFactory</code> method just defined. For example if you want to load the "en" translations from <code>/public/lang-files/en-lang.json</code> you would use:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">export function HttpLoaderFactory(http: HttpClient) {
+    return new TranslateHttpLoader(http, "/public/lang-files/", "-lang.json");
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For now this loader only support the json format.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+If you&#8217;re still on Angular &lt; 4.3, please use <code>Http</code> from <code>@angular/http</code> with <code>http-loader@0.1.0</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-internationalization.asciidoc_usage">Usage</h3>
+<div class="paragraph">
+<p>In order to translate any label in any HTML template you will need to use the <code>translate</code> pipe available:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="html language-html">{{ 'HELLO' | translate }}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>An <strong>optional</strong> parameter from the component TypeScript class could be included as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="html language-html">{{ 'HELLO' | translate:param }}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>So, <code>param</code> has to be defined in the class. The default language used is defined as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">// imports
+
+@Component({
+    selector: 'app',
+    template: `
+        &lt;div&gt;{{ 'HELLO' | translate }}&lt;/div&gt;            // Without param
+        &lt;div&gt;{{ 'HELLO' | translate:param }}&lt;/div&gt;      // With param
+    `
+})
+export class AppComponent {
+    // This param will be used in the translation
+    param = { value: 'world' };
+
+    constructor(translate: TranslateService) {
+        // this language will be used as a fallback when a translation isn't found in the current language
+        translate.setDefaultLang('en');
+
+        // the lang to use, if the lang isn't available, it will use the current loader to get them
+        translate.use('en');
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In order to change the language used you will need to create a button or selector that calls the <code>this.translate.use(language: string)</code> method from <code>TranslateService</code>. For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">toggleLanguage(option) {
+    this.translate.use(option);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The translations will be included in the <code>en.json</code>, <code>es.json</code>, <code>de.json</code>, etc. files inside the <code>/assets/i18n</code> folder. For example <code>en.json</code> would be (using the previous param):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+    "HELLO": "hello"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or with an <strong>optional param</strong>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+    "HELLO": "hello {{value}}"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>TranslateParser</code> understands nested JSON objects. This means that you can have a translation that looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+    "HOME": {
+        "HELLO": "hello {{value}}"
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In order to access access the value, use the dot notation, in this case <code>HOME.HELLO</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-internationalization.asciidoc_using-the-service">Using the service, pipe or directive</h3>
+<div class="sect3">
+<h4 id="guide-internationalization.asciidoc_service">Service</h4>
+<div class="paragraph">
+<p>If you need to access translations in any component or service you can do it injecting the <code>Translateservice</code> into them:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">translate.get('HELLO', {value: 'world'}).subscribe((res: string) =&gt; {
+    console.log(res);
+    //=&gt; 'hello world'
+});</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-internationalization.asciidoc_pipe">Pipe</h4>
+<div class="paragraph">
+<p>The use of pipes can be possible too:</p>
+</div>
+<div class="paragraph">
+<p>template:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">&lt;div&gt;{{ 'HELLO' | translate:param }}&lt;/div&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>component:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">param = {value: 'world'};</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-internationalization.asciidoc_directives">Directives</h4>
+<div class="paragraph">
+<p>Finally, it can also be used with directives:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">&lt;div [translate]="'HELLO'" [translateParams]="{value: 'world'}"&gt;&lt;/div&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or, using the content of your element as a key</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">&lt;div translate [translateParams]="{value: 'world'}"&gt;HELLO&lt;/div&gt;</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-important" title=""></i>
+</td>
+<td class="content">
+You can find a complete example at <a href="https://github.com/devonfw/devon4ng-application-template" class="bare">https://github.com/devonfw/devon4ng-application-template</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Please, visit <a href="https://github.com/ngx-translate/core" class="bare">https://github.com/ngx-translate/core</a> for more info.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:15:05 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

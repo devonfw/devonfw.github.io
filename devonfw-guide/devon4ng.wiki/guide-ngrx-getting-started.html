@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Introduction to NgRx</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-ngrx-getting-started.asciidoc">Introduction to NgRx</a>
+<ul class="sectlevel1">
+<li><a href="#guide-ngrx-getting-started.asciidoc_the-need-for-client-side-state-management">The need for client side state management</a></li>
+<li><a href="#guide-ngrx-getting-started.asciidoc_why-ngrx">Why NgRx?</a></li>
+<li><a href="#guide-ngrx-getting-started.asciidoc_setup">Setup</a></li>
+<li><a href="#guide-ngrx-getting-started.asciidoc_concept">Concept</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-ngrx-getting-started.asciidoc" class="sect0">Introduction to NgRx</h1>
+<div class="paragraph">
+<p><a href="https://github.com/ngrx">NgRx</a> is a state management framework for Angular based on the <a href="https://redux.js.org/">Redux</a> pattern.</p>
+</div>
+<div class="sect1">
+<h2 id="guide-ngrx-getting-started.asciidoc_the-need-for-client-side-state-management">The need for client side state management</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You may wonder why you should bother with state management. Usually data resides in a backend storage system, e.g. a database, and is retrieved by the client on a per-need basis. To add, update, or delete entities from this store, clients have to invoke API endpoints at the backend. Mimicking database-like transactions on the client side may seem redundant. However, there are many use cases for which a global client-side state is appropriate:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the client has some kind of global state which should survive the destruction of a component, but does not warrant server side persistence, for example: volume level of media, expansion status of menus</p>
+</li>
+<li>
+<p>sever side data should not be retrieved every time it is needed, either because multiple components consume it, or because it should be cached, e.g. the personal watchlist in an online streaming app</p>
+</li>
+<li>
+<p>the app provides a rich experience with offline functionality, e.g. a native app built with <a href="#guilde-ionic-getting-started.asciidoc">Ionic</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Saving global states inside the services they originates from results in a data flow that is hard to follow and state becoming inconsistent due to unordered state mutations. Following the <em>single source of truth</em> principle, there should be a central location holding all your application&#8217;s state, just like a server side database does. State managament libraries for Angular provide tools for storing, retrieving, and updating client-side state.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-ngrx-getting-started.asciidoc_why-ngrx">Why NgRx?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As stated in the <a href="#home.asciidoc">introduction</a>, devon4ng does not stipulate a particular state library, or require using one at all. However, NgRx has proven to be a robust, mature solution for this task, with good tooling and 3rd-party library support. Albeit introducing a level of indirection that requires additional effort even for simple features, the redux concept enforces a clear separation of concerns leading to a cleaner architecture.</p>
+</div>
+<div class="paragraph">
+<p>Nonetheless, you should always compare different approaches to state management and pick the best one suiting your use case. Here&#8217;s a (non-exhaustive) list of competing state management libraries:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Plain Rxjs using the simple store described in <a href="#cookbook-abstract-class-store.asciidoc">Abstract Class Store</a></p>
+</li>
+<li>
+<p><a href="https://github.com/ngxs">NgXS</a> reduces some boilerplate of NgRx by leveraging the power of decorators and moving side effects to the store</p>
+</li>
+<li>
+<p><a href="https://github.com/mobxjs/mobx">MobX</a> follows a more imperative approach in contrast to the functional Redux pattern</p>
+</li>
+<li>
+<p><a href="https://github.com/datorama/akita">Akita</a> also uses an imperative approach with direct setters in the store, but keeps the concept of immutable state transitions</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-ngrx-getting-started.asciidoc_setup">Setup</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To get a quick start, use the provided <a href="https://github.com/devonfw-forge/devon4ng-ngrx-template">template for devon4ng + NgRx</a>.</p>
+</div>
+<div class="paragraph">
+<p>To manually install the core store package together with a set of useful extensions:</p>
+</div>
+<div class="paragraph">
+<p>NPM:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>npm install @ngrx/store @ngrx/effects @ngrx/entity @ngrx/store-devtools --save</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Yarn:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>yarn add @ngrx/store @ngrx/effects @ngrx/entity @ngrx/store-devtools</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We recommend to add the NgRx schematics to your project so you can create code artifacts from the command line:</p>
+</div>
+<div class="paragraph">
+<p>NPM:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>npm install @ngrx/schematics --save-dev</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Yarn:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>yarn add @ngrx/schematics --dev</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Afterwards, make NgRx your default schematics provider, so you don&#8217;t have to type the qualified package name every time:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ng config cli.defaultCollection @ngrx/schematics</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you have custom settings for Angular schematics, you have to <a href="https://ngrx.io/guide/schematics">configure them as described here</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-ngrx-getting-started.asciidoc_concept">Concept</h2>
+<div class="sectionbody">
+<div class="imageblock" style="text-align: center;">
+<div class="content">
+<a class="image" href="images/ngrx-concept.svg"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/ngrx-concept.svg" alt="NgRx Architecture"></a>
+</div>
+<div class="title">Figure 1. NgRx architecture overview</div>
+</div>
+<div class="paragraph">
+<p>Figure 1 gives an overview of the NgRx data flow. The single source of truth is managed as an immutable state object by the store. Components dispatch actions to trigger state changes. Actions are handed over to reducers, which take the current state and action data to compute the next state. Actions are also consumed byeffects, which perform side-effects such as retrieving data from the backend, and may dispatch new actions as a result. Components subscribe to state changes using selectors.</p>
+</div>
+<div class="paragraph">
+<p>Continue with <a href="#guide-ngrx-simple-store.asciidoc">Creating a Simple Store</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:15:14 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

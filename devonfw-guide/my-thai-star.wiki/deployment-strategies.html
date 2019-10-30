@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deployment Strategies</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#deployment-strategies.asciidoc">Deployment Strategies</a>
+<ul class="sectlevel1">
+<li><a href="#deployment-strategies.asciidoc_independendent-docker-containers">Independendent Docker containers</a></li>
+<li><a href="#deployment-strategies.asciidoc_docker-compose">Docker Compose</a>
+<ul class="sectlevel2">
+<li><a href="#deployment-strategies.asciidoc_project-adjustment">Project adjustment</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="deployment-strategies.asciidoc" class="sect0">Deployment Strategies</h1>
+<div class="paragraph">
+<p>In this chapter different way of deploying My Thai Star are explained. Everything will be based in Docker.</p>
+</div>
+<div class="sect1">
+<h2 id="deployment-strategies.asciidoc_independendent-docker-containers">Independendent Docker containers</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The first way of deployment will use isolated Docker containers. That means that if the client-side container is deployed, it does not affect the server-side container&#8217;s lifecycle and viceversa.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s show how the containers will behave during their life cycle.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>0) Copy everything you need into the Deployment Server directory</p>
+</li>
+<li>
+<p>1) Remove existing container (Nginx or Tomcat)</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="container1.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/ci/angular/container1.png" alt="container1"></a>
+</div>
+</div>
+</li>
+<li>
+<p>2) Run new one from the Docker images collection of the external Deployment Server.</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="container2.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/ci/angular/container2.png" alt="container2"></a>
+</div>
+</div>
+</li>
+<li>
+<p>3) Add the artifact <code>/dist</code> to the "depoyable" folder of the Docker container (<code>/usr/share/nginx/html/</code>)</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="container3.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/ci/angular/container3.png" alt="container3"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>Now, let&#8217;s see how it&#8217;s being executed in the command line (simplified due to documentation purposes). The next block of code represents what is inside of the last stage of the Pipeline.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="groovy language-groovy">sshagent (credentials: ['my_ssh_token']) {
+    sh """
+        // Copy artifact from workspace to deployment server
+
+        // Manage container:
+        docker rm -f [mts-container]
+        docker run -itd --name=[mts-container] [base_image]
+        docker exec [mts-container] bash -C \\"rm [container_deployment_folder]/*\\"
+        docker cp [artifact] [mts-container]:[container_deployment_folder]
+    """
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For every operation performed in the external Deployment Server, it is necessary to define <em>where</em> those commands are going to be executed. So, for each one of previous <code>docker</code> commands, this should appear before:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ssh -o StrictHostKeyChecking=no root@10.40.235.244</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="deployment-strategies.asciidoc_docker-compose">Docker Compose</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The second way of deployment will be by orchestrating both elements of the application: The Angular client-side and the Java server-side. Both elements will be running in Docker containers as well, but in this case they won&#8217;t be independendent anymore. <strong>Docker Compose</strong> will be in charge of keeping both containers up, or to put them down.</p>
+</div>
+<div class="sect2">
+<h3 id="deployment-strategies.asciidoc_project-adjustment">Project adjustment</h3>
+<div class="paragraph">
+<p>In order to perform this second way of deployment, some files will be created in the project. The first one is the <strong>Dockerfile</strong> for the Angular client-side. This file will pull (if necessary) an <strong>nginx</strong> Docker image and copy the Angular artifact (<code>/dist</code> folder) inside of the deployment folder of the image. It will be located in the main directory of the Angular client-side project.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="dockerfile-angular.PNG"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/ci/deployment/dockerfile-angular.PNG" alt="dockerfile angular"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>The second file is the <strong>Dockerfile</strong> for the Java server-side. Its function will be quite similar to the Angular one. It will run a <strong>tomcat</strong> Docker image and copy the Java artifact (<code>mythaistar.war</code> file) in its deployment folder.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="dockerfile-java.PNG"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/ci/deployment/dockerfile-java.PNG" alt="dockerfile java"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally, as long as the <strong>docker-compose</strong> is being used, a file containing its configuration will be necessary as well. A new folder one the main My That Star&#8217;s directory is created, and it&#8217;s called <code>/docker</code>. Inside there is just a <code>docker-compose.yml</code> file. It contains all the information needed to orchestrate the deployment process. For example, which port both containers are going to be published on, and so on. This way of deployment will allow the application to be published or not just with one action.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>docker-compose rm -f            # down
+docker-compsoe up --build -d    # up fresh containers</pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="docker-compose.PNG"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/ci/deployment/docker-compose.PNG" alt="docker compose"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s have a look at the file itself:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="yaml language-yaml">version: '3'
+services:
+  client_compose:
+    build: "angular"
+    ports:
+      - "8091:80"
+    depends_on:
+      - server_compose
+  server_compose:
+    build: "java"
+    ports:
+      - "9091:8080"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This Orchestrated Deployment will offer some interesting possibilities for <a href="#future-deployment.asciidoc">the future of the application</a>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:17:45 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

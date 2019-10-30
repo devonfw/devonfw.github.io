@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Queries</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-jpa-query.asciidoc">Queries</a>
+<ul class="sectlevel1">
+<li><a href="#guide-jpa-query.asciidoc_static-queries">Static Queries</a>
+<ul class="sectlevel2">
+<li><a href="#guide-jpa-query.asciidoc_using-queries-to-avoid-bidirectional-relationships">Using Queries to Avoid Bidirectional Relationships</a></li>
+</ul>
+</li>
+<li><a href="#guide-jpa-query.asciidoc_dynamic-queries">Dynamic Queries</a></li>
+<li><a href="#guide-jpa-query.asciidoc_using-wildcards">Using Wildcards</a></li>
+<li><a href="#guide-jpa-query.asciidoc_pagination">Pagination</a>
+<ul class="sectlevel2">
+<li><a href="#guide-jpa-query.asciidoc_pagination-example">Pagination example</a></li>
+</ul>
+</li>
+<li><a href="#guide-jpa-query.asciidoc_query-meta-parameters">Query Meta-Parameters</a></li>
+<li><a href="#guide-jpa-query.asciidoc_advanced-queries">Advanced Queries</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-jpa-query.asciidoc" class="sect0">Queries</h1>
+<div class="paragraph">
+<p>The <a href="http://www.oracle.com/technetwork/java/javaee/tech/persistence-jsp-140049.html">Java Persistence API (JPA)</a> defines its own query language, the <a href="https://docs.oracle.com/html/E13946_01/ejb3_langref.html"><em>java persistence query language</em> (JPQL)</a> (see also <a href="https://docs.oracle.com/javaee/7/tutorial/persistence-querylanguage.htm">JPQL tutorial</a>), which is similar to SQL but operates on entities and their attributes instead of tables and columns.</p>
+</div>
+<div class="paragraph">
+<p>The simplest CRUD-Queries (e.g. find an entity by its ID) are already build in the devonfw CRUD functionality (via <a href="#guide-repository.asciidoc">Repository</a> or <a href="#guide-dao.asciidoc">DAO</a>). For other cases you need to write your own query. We distinguish between <em>static</em> and <em>dynamic</em> queries. <a href="#guide-jpa-query.asciidoc_static-queries">Static queries</a> have a fixed JPQL query string that may only use parameters to customize the query at runtime. Instead, <a href="#guide-jpa-query.asciidoc_dynamic-queries">dynamic queries</a> can change their clauses (<code>WHERE</code>, <code>ORDER BY</code>, <code>JOIN</code>, etc.) at runtime depending on the given search criteria.</p>
+</div>
+<div class="sect1">
+<h2 id="guide-jpa-query.asciidoc_static-queries">Static Queries</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>E.g. to find all <a href="https://github.com/devonfw/my-thai-star/blob/develop/java/mtsj/core/src/main/java/com/devonfw/application/mtsj/dishmanagement/dataaccess/api/DishEntity.java">DishEntries</a> (from MTS sample app) that have a price not exceeding a given <code>maxPrice</code> we write the following JPQL query:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="sql language-sql">SELECT dish FROM DishEntity dish WHERE dish.price &lt;= :maxPrice</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here <code>dish</code> is used as alias (variable name) for our selected <code>DishEntity</code> (what refers to the simple name of the Java entity class). With <code>dish.price</code> we are referring to the Java property <code>price</code> (<code>getPrice()</code>/<code>setPrice(&#8230;&#8203;)</code>) in <code>DishEntity</code>. A named variable provided from outside (the search criteria at runtime) is specified with a colon (<code>:</code>) as prefix. Here with <code>:maxPrice</code> we reference to a variable that needs to be set via <code>query.setParameter("maxPrice", maxPriceValue)</code>. JPQL also supports indexed parameters (<code>?</code>) but they are discouraged because they easily cause confusion and mistakes.</p>
+</div>
+<div class="sect2">
+<h3 id="guide-jpa-query.asciidoc_using-queries-to-avoid-bidirectional-relationships">Using Queries to Avoid Bidirectional Relationships</h3>
+<div class="paragraph">
+<p>With the usage of queries it is possible to avoid exposing relationships or modelling bidirectional relationships, which have some disadvantages (see <a href="guide-jpa.html#relationships">relationships</a>). This is especially desired for relationships between entities of different business components.
+So for example to get all <a href="https://github.com/devonfw/my-thai-star/blob/develop/java/mtsj/core/src/main/java/com/devonfw/application/mtsj/ordermanagement/dataaccess/api/OrderLineEntity.java">OrderLineEntities</a> for a specific <a href="https://github.com/devonfw/my-thai-star/blob/develop/java/mtsj/core/src/main/java/com/devonfw/application/mtsj/ordermanagement/dataaccess/api/OrderEntity.java">OrderEntity</a> without using the <code>orderLines</code> relation from <code>OrderEntity</code> the following query could be used:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="sql language-sql">SELECT line FROM OrderLineEntity line WHERE line.order.id = :orderId</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-jpa-query.asciidoc_dynamic-queries">Dynamic Queries</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For dynamic queries we use <a href="http://www.querydsl.com/">QueryDSL</a>. It allows to implement queries in a powerful but readable and type-safe way (unlike Criteria API). If you already know JPQL you will quickly be able to read and write QueryDSL code. It feels like JPQL but implemented in Java instead of plain text.</p>
+</div>
+<div class="paragraph">
+<p>Please be aware that code-generation can be painful especially with large teams. We therefore recommend to use QueryDSL without code-generation. Here is an example from our sample application:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">  public List&lt;DishEntity&gt; findOrders(DishSearchCriteriaTo criteria) {
+    DishEntity dish = Alias.alias(DishEntity.class);
+    JPAQuery&lt;OrderEntity&gt; query = newDslQuery(alias); // new JPAQuery&lt;&gt;(getEntityManager()).from(Alias.$(dish));
+    Range&lt;BigDecimal&gt; priceRange = criteria.getPriceRange();
+    if (priceRange != null) {
+      BigDecimal min = priceRange.getMin();
+      if (min != null) {
+        query.where(Alias.$(order.getPrice()).ge(min));
+      }
+      BigDecimal max = priceRange.getMax();
+      if (max != null) {
+        query.where(Alias.$(order.getPrice()).le(max));
+      }
+    }
+    String name = criteria.getName();
+    if ((name != null) &amp;&amp; (!name.isEmpty())) {
+      // query.where(Alias.$(alias.getName()).eq(name));
+      QueryUtil.get().whereString(query, Alias.$(alias.getName()), name, criteria.getNameOption());
+    }
+    return query.fetch();
+  }</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-jpa-query.asciidoc_using-wildcards">Using Wildcards</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For flexible queries it is often required to allow wildcards (especially in <a href="#guide-jpa-query.asciidoc_dynamic_queries">dynamic queries</a>). While users intuitively expect glob syntax the SQL and JPQL standards work different. Therefore a mapping is required. devonfw provides this on a lower level by <a href="https://github.com/devonfw/devon4j/blob/develop/modules/basic/src/main/java/com/devonfw/module/basic/common/api/query/LikePatternSyntax.java">LikePatternSyntax</a> and on a high level by <a href="https://github.com/devonfw/devon4j/blob/develop/modules/jpa-basic/src/main/java/com/devonfw/module/jpa/dataaccess/api/QueryUtil.java#L54">QueryUtil</a> (see <a href="https://github.com/devonfw/devon4j/blob/develop/modules/jpa-basic/src/main/java/com/devonfw/module/jpa/dataaccess/api/QueryHelper.java#L199">QueryHelper.newStringClause(&#8230;&#8203;)</a>).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-jpa-query.asciidoc_pagination">Pagination</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>devonfw provides pagination support. If you are using <a href="#guide-repository.asciidoc">spring-data repositories</a> you will get that directly from spring for static queries. Otherwise for dynamic or generally handwritten queries we provide this via <a href="https://github.com/devonfw/devon4j/blob/develop/modules/jpa-basic/src/main/java/com/devonfw/module/jpa/dataaccess/api/QueryUtil.java#L102">QueryUtil.findPaginated(&#8230;&#8203;)</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">boolean determineTotalHitCount = ...;
+return QueryUtil.get().findPaginated(criteria.getPageable(), query, determineTotalHitCount);</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-jpa-query.asciidoc_pagination-example">Pagination example</h3>
+<div class="paragraph">
+<p>For the table entity we can make a search request by accessing the REST endpoint with pagination support like in the following examples:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">POST mythaistar/services/rest/tablemanagement/v1/table/search
+{
+  "pagination": {
+    "size":2,
+    "total":true
+  }
+}
+
+//Response
+{
+    "pagination": {
+        "size": 2,
+        "page": 1,
+        "total": 11
+    },
+    "result": [
+        {
+            "id": 101,
+            "modificationCounter": 1,
+            "revision": null,
+            "waiterId": null,
+            "number": 1,
+            "state": "OCCUPIED"
+        },
+        {
+            "id": 102,
+            "modificationCounter": 1,
+            "revision": null,
+            "waiterId": null,
+            "number": 2,
+            "state": "FREE"
+        }
+    ]
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+As we are requesting with the <code>total</code> property set to <code>true</code> the server responds with the total count of rows for the query.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>For retrieving a concrete page, we provide the <code>page</code> attribute with the desired value. Here we also left out the <code>total</code> property so the server doesn&#8217;t incur on the effort to calculate it:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">POST mythaistar/services/rest/tablemanagement/v1/table/search
+{
+  "pagination": {
+    "size":2,
+    "page":2
+  }
+}
+
+//Response
+
+{
+    "pagination": {
+        "size": 2,
+        "page": 2,
+        "total": null
+    },
+    "result": [
+        {
+            "id": 103,
+            "modificationCounter": 1,
+            "revision": null,
+            "waiterId": null,
+            "number": 3,
+            "state": "FREE"
+        },
+        {
+            "id": 104,
+            "modificationCounter": 1,
+            "revision": null,
+            "waiterId": null,
+            "number": 4,
+            "state": "FREE"
+        }
+    ]
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-jpa-query.asciidoc_query-meta-parameters">Query Meta-Parameters</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Queries can have meta-parameters and that are provided via <code>SearchCriteriaTo</code>. Besides paging (see above) we also get <a href="https://github.com/devonfw/devon4j/blob/develop/modules/jpa-basic/src/main/java/com/devonfw/module/jpa/dataaccess/api/QueryHelper.java#L51">timeout support</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-jpa-query.asciidoc_advanced-queries">Advanced Queries</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Writing queries can sometimes get rather complex. The current examples given above only showed very simple basics. Within this topic a lot of advanced features need to be considered like:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.w3schools.com/sql/sql_join.asp">Joins</a></p>
+</li>
+<li>
+<p><a href="https://docs.oracle.com/html/E13946_04/ejb3_langref.html#ejb3_langref_constructor">Constructor queries</a></p>
+</li>
+<li>
+<p><a href="https://www.w3schools.com/sql/sql_orderby.asp">Order By</a> (Sorting)</p>
+</li>
+<li>
+<p><a href="https://www.w3schools.com/sql/sql_groupby.asp">Grouping</a></p>
+</li>
+<li>
+<p><a href="https://www.w3schools.com/sql/sql_having.asp">Having</a></p>
+</li>
+<li>
+<p><a href="https://www.w3schools.com/sql/sql_union.asp">Unions</a></p>
+</li>
+<li>
+<p><a href="https://docs.oracle.com/cd/E11035_01/kodo41/full/html/ejb3_langref.html#ejb3_langref_subqueries">Sub-Queries</a></p>
+</li>
+<li>
+<p>Aggregation functions like e.g. <a href="https://www.w3schools.com/sql/sql_count_avg_sum.asp">count/avg/sum</a></p>
+</li>
+<li>
+<p><a href="https://www.w3schools.com/sql/sql_distinct.asp">Distinct selections</a></p>
+</li>
+<li>
+<p>SQL Hints (see e.g. <a href="https://docs.oracle.com/cd/B19306_01/server.102/b14211/hintsref.htm#i8327">Oracle hints</a> or <a href="http://sqlhints.com/">SQL-Server hints</a>) - only when required for ultimate performance tuning</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This list is just containing the most important aspects. As we can not cover all these topics here, they are linked to external documentation that can help and guide you.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:13:30 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

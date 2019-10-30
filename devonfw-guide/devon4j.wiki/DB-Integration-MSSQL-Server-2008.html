@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guide for DBIntegration of MS SQL Server 2008</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-for-dbintegration-of-ms-sql-server-2008">Guide for DBIntegration of MS SQL Server 2008</a>
+<ul class="sectlevel1">
+<li><a href="#mssql-installation-and-configuration-using-docker">MSSQL Installation and Configuration using Docker</a></li>
+<li><a href="#installing-mssql-ojdbc-driver-dependency">Installing mssql ojdbc driver dependency</a></li>
+<li><a href="#installing-msql-server-on-windows">Installing MSQL Server on Windows</a></li>
+<li><a href="#enabling-mssql-server-2008-and-disabling-h2-database">Enabling MSSQL Server 2008 and disabling H2 Database</a></li>
+<li><a href="#disabling-mssql-server-2008-and-enabling-h2-database">Disabling MSSQL Server 2008 and enabling H2 Database</a></li>
+<li><a href="#run-the-sample-application-with-the-angular-js-client">Run the sample application with the Angular JS Client</a></li>
+<li><a href="#run-the-sample-application-with-the-sencha-client">Run the sample application with the Sencha Client</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-for-dbintegration-of-ms-sql-server-2008" class="sect0">Guide for DBIntegration of MS SQL Server 2008</h1>
+<div class="paragraph">
+<p>devon4j is by default configured with the H2 Databse.</p>
+</div>
+<div class="sect1">
+<h2 id="mssql-installation-and-configuration-using-docker">MSSQL Installation and Configuration using Docker</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We can now use SQL Server in Linux and run it easily using docker executing:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">docker run --name mssql -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=Passw0rd' -p 1433:1433 -d microsoft/mssql-server-linux</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This makes MSSQL avaiable on the docker-machine host on port 1433. If using docker on windows with docker toolbox it usually means that MSSQL will be on 192.168.99.100 (please check the IP of your docker machine)</p>
+</div>
+<div class="paragraph">
+<p>So the configuration for the datasource url strig will be:</p>
+</div>
+<div class="paragraph">
+<p><code>jdbc:sqlserver://192.168.99.100:1433;databaseName=restaurant</code></p>
+</div>
+<div class="paragraph">
+<p>There are no client tools on this image to test and connect to the MSSQL but we can create a connection within eclipse using a generic JDBC connection</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="installing-mssql-ojdbc-driver-dependency">Installing mssql ojdbc driver dependency</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The maven dependency required for MS SQL server JDBC driver is not avaiable in Maven central so a manual install can be required.</p>
+</div>
+<div class="paragraph">
+<p>In order to do so yo can manually download the driver from:</p>
+</div>
+<div class="paragraph">
+<p><a href="http://clojars.org/repo/com/microsoft/sqlserver/sqljdbc4/4.0/sqljdbc4-4.0.jar" class="bare">http://clojars.org/repo/com/microsoft/sqlserver/sqljdbc4/4.0/sqljdbc4-4.0.jar</a></p>
+</div>
+<div class="paragraph">
+<p>And then install using the command line:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">mvn install:install-file -Dfile=sqljdbc4-4.0.jar -DgroupId=com.microsoft.sqlserver -DartifactId=sqljdbc4 -Dversion=4.0  -Dpackaging=jar</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="installing-msql-server-on-windows">Installing MSQL Server on Windows</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Following are the steps with screen shots to configure the MS SQL Server 2008 in windows.</p>
+</div>
+<div class="paragraph">
+<p><strong>Note</strong> : One can ignore the following section if they are well versed with installation process of the MS SQL Server 2008.
+MSSQL Server 2008 Installation and Configuration</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>In ‘Server Configuration’ step, specify the “Service Accounts” as shown in the screenshot. Click NEXT Button.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock" style="text-align: center;">
+<div class="content">
+<a class="image" href="https://github.com/devonfw-wiki/devon4j/wiki/images/mssql/serviceconfig.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/mssql/serviceconfig.png" alt="serviceconfig" width="350"></a>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>In ‘Database Engine Configuration’ step, specify the “Authentication Mode” as shown in the screenshot. Click NEXT Button.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock" style="text-align: center;">
+<div class="content">
+<a class="image" href="https://github.com/devonfw-wiki/devon4j/wiki/images/mssql/databaseconfig.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/mssql/databaseconfig.png" alt="databaseconfig" width="350"></a>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>In ‘Analysis Services Configuration’ step, specify the “Account Provisioning” as shown in the screenshot. Click NEXT Button.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock" style="text-align: center;">
+<div class="content">
+<a class="image" href="https://github.com/devonfw-wiki/devon4j/wiki/images/mssql/servicesconfig.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/mssql/servicesconfig.png" alt="servicesconfig" width="350"></a>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>In ‘Reporting Services Configuration’ step, specify the “reporting service configuration mode” as shown in the screenshot. Click NEXT Button.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock" style="text-align: center;">
+<div class="content">
+<a class="image" href="https://github.com/devonfw-wiki/devon4j/wiki/images/mssql/reportingconfig.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/mssql/reportingconfig.png" alt="reportingconfig" width="350"></a>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>In ‘Error and Usage Reporting’ step, check if you want to automatically send information to the server, as shown in screenshot. Click NEXT Button.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock" style="text-align: center;">
+<div class="content">
+<a class="image" href="https://github.com/devonfw-wiki/devon4j/wiki/images/mssql/usageconfig.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/mssql/reportingconfig.png" alt="reportingconfig" width="350"></a>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Alternatively, you can select the default configuration for above steps and complete the installation.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="enabling-mssql-server-2008-and-disabling-h2-database">Enabling MSSQL Server 2008 and disabling H2 Database</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Assuming the MS SQL database that is created is <strong>restaurant</strong>, execute the following script to create Flyway MetaData Table <strong>schema_version</strong> in the database <strong>restaurant</strong></p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">USE [restaurant]
+GO
+
+/****** Object:  Table [dbo].[schema_version]    Script Date: 12/02/2016 15:48:34 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[schema_version](
+	[version_rank] [int] NOT NULL,
+	[installed_rank] [int] NOT NULL,
+	[version] [nvarchar](50) NOT NULL,
+	[description] [nvarchar](200) NULL,
+	[type] [nvarchar](20) NOT NULL,
+	[script] [nvarchar](1000) NOT NULL,
+	[checksum] [int] NULL,
+	[installed_by] [nvarchar](100) NOT NULL,
+	[installed_on] [datetime] NOT NULL,
+	[execution_time] [int] NOT NULL,
+	[success] [bit] NOT NULL,
+ CONSTRAINT [schema_version_pk] PRIMARY KEY CLUSTERED
+(
+	[version] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE [dbo].[schema_version] ADD  DEFAULT (getdate()) FOR [installed_on]
+GO</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Add the dependency for MSSQLServer 2008 jdbc driver in devon4j core module <em>pom.xml</em>.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">&lt;dependency&gt;
+    &lt;groupId&gt;com.microsoft.sqlserver&lt;/groupId&gt;
+    &lt;artifactId&gt;sqljdbc4&lt;/artifactId&gt;
+    &lt;version&gt;4.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Uncomment the query to retrieve id’s from Bill table for <strong>payed=1</strong> in devon4j core module src/main/resources/META-INF/<em>orm.xml</em> and comment the one for H2 Database. Uncomment code below:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">&lt;named-native-query name="get.all.ids.of.payed.bills"&gt;
+    &lt;query&gt;&lt;![CDATA[SELECT id FROM Bill WHERE payed = 1]]&gt;&lt;/query&gt;
+&lt;/named-native-query&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Change the value of following property ‘spring.datasource.url’ in following file ‘devon4j-sample-core/src/main/resources/config/<em>application-mssql.properties</em>’. Accordingly, change the following properties:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Hostname</p>
+</li>
+<li>
+<p>Port</p>
+</li>
+<li>
+<p>Database Name</p>
+</li>
+<li>
+<p>spring.datasource.username</p>
+</li>
+<li>
+<p>spring.datasource.password</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Run the script core/src/test/setup/mssqldb.bat for Windows Environment and the script core/src/test/setup/mssqldb.sh for Unix/Linux Environments.</p>
+</li>
+<li>
+<p>Comment the spring active profile <strong>h2mem</strong> and uncomment the spring active profile <strong>mssql</strong> in devon4j core module src/main/resources/config/<em>application.properties</em>.</p>
+</li>
+<li>
+<p>Uncomment the line that has spring active profile <strong>junit</strong> and <strong>mssql</strong> separated by comma and comment the line has spring active profiles <strong>junit</strong> in the file devon4j-sample-core/src/test/resources/config/<em>application.properties</em>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Note</strong>: Make sure that JUNIT Test cases run successfully for devon4j Project using the command <strong>‘mvn clean install’</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Assuming that devon4j is integrated with <strong>MS SQL Server 2008</strong>, following are the steps to enable H2 Database.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="disabling-mssql-server-2008-and-enabling-h2-database">Disabling MSSQL Server 2008 and enabling H2 Database</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Comment the dependency for MSSQLServer 2008 jdbc driver in devon4j core module <em>pom.xml</em>.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">&lt;!--
+&lt;dependency&gt;
+   &lt;groupId&gt;com.microsoft.sqlserver&lt;/groupId&gt;
+   &lt;artifactId&gt;sqljdbc4&lt;/artifactId&gt;
+   &lt;version&gt;4.0&lt;/version&gt;
+&lt;/dependency&gt;
+--&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Uncomment the query to retrieve id’s from Bill table for <strong>payed=true</strong> in devon4j-sample-core/src/main/resources/META-INF/<em>orm.xml</em> and comment the one that exists for MS SQL Server.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">&lt;named-native-query name="get.all.ids.of.payed.bills"&gt;
+   &lt;query&gt;&lt;![CDATA[SELECT id FROM Bill WHERE payed = true]]&gt;&lt;/query&gt;
+&lt;/named-native-query&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Run the script core/src/test/setup/disablemssqldb.bat for Windows Environment and the script core/src/test/setup/disablemssqldb.sh for Unix/Linux Environments.</p>
+</li>
+<li>
+<p>Uncomment the spring active profile <strong>h2mem</strong> and comment the spring active profile <strong>mssql</strong> in devon4j-sample-core/src/main/resources/config/<em>application.properties</em></p>
+</li>
+<li>
+<p>Uncomment the line that has spring active profile <strong>junit</strong> and comment the line has spring active profiles <strong>junit</strong> and <strong>mssql</strong> separated by comma in the file devon4j-sample-core/src/test/resources/config/<em>application.properties</em></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Note</strong>: Make sure that JUNIT Test cases run successfully for devon4j Project using the command <strong>‘mvn clean install’</strong>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="run-the-sample-application-with-the-angular-js-client">Run the sample application with the Angular JS Client</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Follow the steps mentioned <a href="https://github.com/oasp/oasp4js/wiki/tutorial-jspacking-angular-client">here</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="run-the-sample-application-with-the-sencha-client">Run the sample application with the Sencha Client</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Follow the steps mentioned <a href="https://github.com/devonfw/devon/wiki/getting-started-deployment-on-tomcat">here</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Note</strong> : One has to recompile devon4j project by executing the command <strong>mvn clean install</strong> in <strong>devon4j</strong> project after doing the changes mentioned in the above said instructions.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:12:44 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

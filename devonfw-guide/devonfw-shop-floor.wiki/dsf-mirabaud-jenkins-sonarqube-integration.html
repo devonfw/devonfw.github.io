@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jenkins - SonarQube integration</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body id="dsf-mirabaud-jenkins-sonarqube-integration.asciidoc" class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>First thing is installing both tools by, for example, Docker or Docker Compose. Then, we have to think about how they should collaborate to create a more efficient Continuous Integration process.</p>
+</div>
+<div class="paragraph">
+<p>Once our project&#8217;s pipeline is triggered (it could also be triggered in a fancy way, such as when a merge to the <code>develop</code> branch is done).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dsf-mirabaud-jenkins-sonarqube-integration.asciidoc_1.-jenkins-sonarqube-plugin">1. Jenkins SonarQube plugin</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Typically in those integration cases, Jenkins plug-in installations become a <strong>must</strong>. Let&#8217;s look for some available SonarQube plug-in(s) for Jenkins:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/jenkins-sonarqube/jenkins-sonarqube-plugin.png" alt="jenkins sonarqube plugin">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dsf-mirabaud-jenkins-sonarqube-integration.asciidoc_2.-sonarqube-token">2. SonarQube token</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Once installed let&#8217;s create a <strong>token</strong> in SonarQube so that Jenkins can communicate with it to trigger their Jobs. Once we install SonarQube in our CI/CD machine (ideally a remote machine) let&#8217;s login with <code>admin/admin</code> credentials:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/jenkins-sonarqube/sonarqube-login.png" alt="sonarqube login">
+</div>
+</div>
+<div class="paragraph">
+<p>Afterwards, SonarQube itself asks you to create this token we talked about (the name is up to you):</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/jenkins-sonarqube/sonarqube-token-name.png" alt="sonarqube token name">
+</div>
+</div>
+<div class="paragraph">
+<p>Then a token is generated:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/jenkins-sonarqube/sonarqube-token-generation.png" alt="sonarqube token generation">
+</div>
+</div>
+<div class="paragraph">
+<p>You click in "continue" and the token&#8217;s generation is completed:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/jenkins-sonarqube/sonarqube-token-done.png" alt="sonarqube token done">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dsf-mirabaud-jenkins-sonarqube-integration.asciidoc_3.-jenkins-sonarqube-server-setup">3. Jenkins SonarQube Server setup</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now we need to tell Jenkins where is SonarQube and how to communicate with it. In <code>Manage Jenkins &gt; Configure Settings</code>. We add a name for the server (up to you), where it is located (URL), version and the Server authentication token created in point 2.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/jenkins-sonarqube/jenkins-sonarqube-server-setup.png" alt="jenkins sonarqube server setup">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dsf-mirabaud-jenkins-sonarqube-integration.asciidoc_4.-jenkins-sonarqube-scanner">4. Jenkins SonarQube Scanner</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Install a SonarQube Scanner as a Global tool in Jenkins to be used in the project&#8217;s pipeline.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/jenkins-sonarqube/jenkins-sonarqube-scanner.png" alt="jenkins sonarqube scanner">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dsf-mirabaud-jenkins-sonarqube-integration.asciidoc_5.-pipeline-code">5. Pipeline code</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Last step is to add the SonarQube process in our project&#8217;s Jenkins pipeline. The following code will trigger a SonarQube process that will evaluate our code&#8217;s quality looking for bugs, duplications, and so on.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="groovy language-groovy">    stage 'SonarQube Analysis'
+        def scannerHome = tool 'SonarQube scanner';
+        sh "${scannerHome}/bin/sonar-scanner \
+             -Dsonar.host.url=http://url-to-your-sq-server:9000/ \
+             -Dsonar.login=[SONAR_USER] -Dsonar.password=[SONAR_PASS] \
+             -Dsonar.projectKey=[PROJECT_KEY] \
+             -Dsonar.projectName=[PROJECT_NAME] -Dsonar.projectVersion=[PROJECT_VERSION] \
+             -Dsonar.sources=. -Dsonar.java.binaries=. \
+             -Dsonar.java.source=1.8 -Dsonar.language=java"</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dsf-mirabaud-jenkins-sonarqube-integration.asciidoc_6.-results">6. Results</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>After all this, you should end up having something like this in Jenkins:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/jenkins-sonarqube/jenkins-sonarqube-feedback.png" alt="jenkins sonarqube feedback">
+</div>
+</div>
+<div class="paragraph">
+<p>And in SonarQube:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/jenkins-sonarqube/sonarqube-project-result.png" alt="sonarqube project result">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dsf-mirabaud-jenkins-sonarqube-integration.asciidoc_7.-changes-in-a-devonfw-project-to-execute-sonarqube-tests-with-coverage">7. Changes in a devonfw project to execute SonarQube tests with Coverage</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The plugin used to have Coverage reports in the SonarQube for devonfw projects is <strong>Jacoco</strong>. There are some changes in the project&#8217;s parent <code>pom.xml</code> that are mandatory to use it.</p>
+</div>
+<div class="paragraph">
+<p>Inside of the <code>&lt;properties&gt;</code> tag:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;properties&gt;
+
+    (...)
+
+    &lt;sonar.jacoco.version&gt;3.8&lt;/sonar.jacoco.version&gt;
+    &lt;sonar.java.coveragePlugin&gt;jacoco&lt;/sonar.java.coveragePlugin&gt;
+    &lt;sonar.core.codeCoveragePlugin&gt;jacoco&lt;/sonar.core.codeCoveragePlugin&gt;
+    &lt;sonar.dynamicAnalysis&gt;reuseReports&lt;/sonar.dynamicAnalysis&gt;
+    &lt;sonar.language&gt;java&lt;/sonar.language&gt;
+    &lt;sonar.java.source&gt;1.7&lt;/sonar.java.source&gt;
+    &lt;sonar.junit.reportPaths&gt;target/surefire-reports&lt;/sonar.junit.reportPaths&gt;
+    &lt;sonar.jacoco.reportPaths&gt;target/jacoco.exec&lt;/sonar.jacoco.reportPaths&gt;
+    &lt;sonar.sourceEncoding&gt;UTF-8&lt;/sonar.sourceEncoding&gt;
+    &lt;sonar.exclusions&gt;
+        **/generated-sources/**/*,
+        **io/oasp/mirabaud/general/**/*,
+        **/*Dao.java,
+        **/*Entity.java,
+        **/*Cto.java,
+        **/*Eto.java,
+        **/*SearchCriteriaTo.java,
+        **/*management.java,
+        **/*SpringBootApp.java,
+        **/*SpringBootBatchApp.java,
+        **/*.xml,
+        **/*.jsp
+    &lt;/sonar.exclusions&gt;
+    &lt;sonar.coverage.exclusions&gt;
+        **io/oasp/mirabaud/general/**/*,
+        **/*Dao.java,
+        **/*Entity.java,
+        **/*Cto.java,
+        **/*Eto.java,
+        **/*SearchCriteriaTo.java,
+        **/*management.java,
+        **/*SpringBootApp.java,
+        **/*SpringBootBatchApp.java,
+        **/*.xml,
+        **/*.jsp
+    &lt;/sonar.coverage.exclusions&gt;
+    &lt;sonar.host.url&gt;http://${YOUR_SONAR_SERVER_URL}/&lt;/sonar.host.url&gt;
+    &lt;jacoco.version&gt;0.7.9&lt;/jacoco.version&gt;
+
+    &lt;war.plugin.version&gt;3.2.0&lt;/war.plugin.version&gt;
+    &lt;assembly.plugin.version&gt;3.1.0&lt;/assembly.plugin.version&gt;
+&lt;/properties&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Of course, those <code>sonar</code> amd <code>sonar.coverage</code> can/must be changed to fit with other projects.</p>
+</div>
+<div class="paragraph">
+<p>Now add the <strong>Jacoco Listener</strong> as a dependency:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.sonarsource.java&lt;/groupId&gt;
+        &lt;artifactId&gt;sonar-jacoco-listeners&lt;/artifactId&gt;
+        &lt;scope&gt;test&lt;/scope&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Plugin Management declarations:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;pluginManagement&gt;
+    &lt;plugins&gt;
+        &lt;plugin&gt;
+            &lt;groupId&gt;org.sonarsource.scanner.maven&lt;/groupId&gt;
+            &lt;artifactId&gt;sonar-maven-plugin&lt;/artifactId&gt;
+            &lt;version&gt;3.2&lt;/version&gt;
+        &lt;/plugin&gt;
+        &lt;plugin&gt;
+            &lt;groupId&gt;org.jacoco&lt;/groupId&gt;
+            &lt;artifactId&gt;jacoco-maven-plugin&lt;/artifactId&gt;
+            &lt;version&gt;${jacoco.version}&lt;/version&gt;
+        &lt;/plugin&gt;
+    &lt;/plugins&gt;
+&lt;pluginManagement&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Plugins:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;plugins&gt;
+
+    (...)
+
+    &lt;plugin&gt;
+        &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+        &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;
+        &lt;version&gt;2.20.1&lt;/version&gt;
+        &lt;configuration&gt;
+            &lt;argLine&gt;-XX:-UseSplitVerifier -Xmx2048m ${surefireArgLine}&lt;/argLine&gt;
+            &lt;testFailureIgnore&gt;false&lt;/testFailureIgnore&gt;
+            &lt;useFile&gt;false&lt;/useFile&gt;
+            &lt;reportsDirectory&gt;${project.basedir}/${sonar.junit.reportPaths}&lt;/reportsDirectory&gt;
+            &lt;argLine&gt;${jacoco.agent.argLine}&lt;/argLine&gt;
+            &lt;excludedGroups&gt;${oasp.test.excluded.groups}&lt;/excludedGroups&gt;
+            &lt;alwaysGenerateSurefireReport&gt;true&lt;/alwaysGenerateSurefireReport&gt;
+            &lt;aggregate&gt;true&lt;/aggregate&gt;
+            &lt;properties&gt;
+                &lt;property&gt;
+                    &lt;name&gt;listener&lt;/name&gt;
+                    &lt;value&gt;org.sonar.java.jacoco.JUnitListener&lt;/value&gt;
+                &lt;/property&gt;
+            &lt;/properties&gt;
+        &lt;/configuration&gt;
+    &lt;/plugin&gt;
+    &lt;plugin&gt;
+        &lt;groupId&gt;org.jacoco&lt;/groupId&gt;
+        &lt;artifactId&gt;jacoco-maven-plugin&lt;/artifactId&gt;
+        &lt;configuration&gt;
+            &lt;argLine&gt;-Xmx128m&lt;/argLine&gt;
+            &lt;append&gt;true&lt;/append&gt;
+            &lt;propertyName&gt;jacoco.agent.argLine&lt;/propertyName&gt;
+            &lt;destFile&gt;${sonar.jacoco.reportPath}&lt;/destFile&gt;
+            &lt;excludes&gt;
+                &lt;exclude&gt;**/generated-sources/**/*,&lt;/exclude&gt;
+                &lt;exclude&gt;**io/oasp/${PROJECT_NAME}/general/**/*&lt;/exclude&gt;
+                &lt;exclude&gt;**/*Dao.java&lt;/exclude&gt;
+                &lt;exclude&gt;**/*Entity.java&lt;/exclude&gt;
+                &lt;exclude&gt;**/*Cto.java&lt;/exclude&gt;
+                &lt;exclude&gt;**/*Eto.java&lt;/exclude&gt;
+                &lt;exclude&gt;**/*SearchCriteriaTo.java&lt;/exclude&gt;
+                &lt;exclude&gt;**/*management.java&lt;/exclude&gt;
+                &lt;exclude&gt;**/*SpringBootApp.java&lt;/exclude&gt;
+                &lt;exclude&gt;**/*SpringBootBatchApp.java&lt;/exclude&gt;
+                &lt;exclude&gt;**/*.class&lt;/exclude&gt;
+            &lt;/excludes&gt;
+        &lt;/configuration&gt;
+        &lt;executions&gt;
+            &lt;execution&gt;
+                &lt;id&gt;prepare-agent&lt;/id&gt;
+                &lt;phase&gt;initialize&lt;/phase&gt;
+                &lt;goals&gt;
+                    &lt;goal&gt;prepare-agent&lt;/goal&gt;
+                &lt;/goals&gt;
+                &lt;configuration&gt;
+                    &lt;destFile&gt;${sonar.jacoco.reportPath}&lt;/destFile&gt;
+                    &lt;append&gt;true&lt;/append&gt;
+                &lt;/configuration&gt;
+            &lt;/execution&gt;
+            &lt;execution&gt;
+                &lt;id&gt;report-aggregate&lt;/id&gt;
+                &lt;phase&gt;verify&lt;/phase&gt;
+                &lt;goals&gt;
+                    &lt;goal&gt;report-aggregate&lt;/goal&gt;
+                &lt;/goals&gt;
+            &lt;/execution&gt;
+            &lt;execution&gt;
+                &lt;id&gt;jacoco-site&lt;/id&gt;
+                &lt;phase&gt;verify&lt;/phase&gt;
+                &lt;goals&gt;
+                    &lt;goal&gt;report&lt;/goal&gt;
+                &lt;/goals&gt;
+            &lt;/execution&gt;
+        &lt;/executions&gt;
+    &lt;/plugin&gt;
+&lt;/plugins&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dsf-mirabaud-jenkins-sonarqube-integration.asciidoc_jenkins-sonarqube-execution">Jenkins SonarQube execution</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If the previous configuration is already setup, once Jenkins execute the sonar maven plugin, it will automatically execute coverage as well.</p>
+</div>
+<div class="paragraph">
+<p>This is an example of a block of code from a devonfw project&#8217;s <code>Jenkinsfile</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="groovy language-groovy">    withMaven(globalMavenSettingsConfig: 'YOUR_GLOBAL_MAVEN_SETTINGS', jdk: 'OpenJDK 1.8', maven: 'Maven_3.3.9') {
+        sh "mvn sonar:sonar -Dsonar.login=[USERNAME] -Dsonar.password=[PASSWORD]"
+    }</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:16:09 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

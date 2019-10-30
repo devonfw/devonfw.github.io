@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deployment Pipelines</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#deployment-pipelines.asciidoc">Deployment Pipelines</a>
+<ul class="sectlevel1">
+<li><a href="#deployment-pipelines.asciidoc_mythaistar_deploy-together-pipeline">MyThaiStar_DEPLOY-Together Pipeline</a>
+<ul class="sectlevel2">
+<li><a href="#deployment-pipelines.asciidoc_parameters">Parameters</a></li>
+<li><a href="#deployment-pipelines.asciidoc_pipeline-steps">Pipeline steps</a></li>
+</ul>
+</li>
+<li><a href="#deployment-pipelines.asciidoc_mythaistar_server_deploy-pipeline">MyThaiStar_SERVER_DEPLOY Pipeline</a>
+<ul class="sectlevel2">
+<li><a href="#deployment-pipelines.asciidoc_parameters">Parameters</a></li>
+<li><a href="#deployment-pipelines.asciidoc_pipeline-steps">Pipeline steps</a></li>
+</ul>
+</li>
+<li><a href="#deployment-pipelines.asciidoc_mythaistar_frontend_deploy">MyThaiStar_FRONTEND_DEPLOY</a>
+<ul class="sectlevel2">
+<li><a href="#deployment-pipelines.asciidoc_parameters">Parameters</a></li>
+<li><a href="#deployment-pipelines.asciidoc_pipeline-steps">Pipeline steps</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="deployment-pipelines.asciidoc" class="sect0">Deployment Pipelines</h1>
+<div class="paragraph">
+<p>As PL does not support deployments, we have created separate pipelines for this purpose. Those pipelines are: <strong>MyThaiStar_DEPLOY-Together</strong>, <strong>MyThaiStar_FRONTEND_DEPLOY</strong> and <strong>MyThaiStar_SERVER_DEPLOY</strong>.</p>
+</div>
+<div class="paragraph">
+<p>The application will be deployed using docker on a remote machine. The architecture is as follows:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/ci/deployment/deployment_arch.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/ci/deployment/deployment_arch.png" alt="deployment arch"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>The parts to be deployed are: an NGINX reverse proxy, the java application and the angular application.</p>
+</div>
+<div class="sect1">
+<h2 id="deployment-pipelines.asciidoc_mythaistar_deploy-together-pipeline">MyThaiStar_DEPLOY-Together Pipeline</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The MyThaiStar_DEPLOY-Together pipeline will deploy all parts of My Thai Star application into a remote server via ssh.</p>
+</div>
+<div class="sect2">
+<h3 id="deployment-pipelines.asciidoc_parameters">Parameters</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>sshAgentCredentials</strong>: The SSH private key to connecto to remote server. The public key must be included in the remote server as a authorized_keys.</p>
+</li>
+<li>
+<p><strong>nexusApiUrl</strong>: The url to the nexus api. <a href="http://nexus3-core:8081/nexus3" class="bare">http://nexus3-core:8081/nexus3</a> is the default url for PL.</p>
+</li>
+<li>
+<p><strong>nexusCredentialsId</strong>: The nexus credentials.</p>
+</li>
+<li>
+<p><strong>repository</strong>: Name of the repository where the artifacts are stored. maven-snapshots is the default value for PL.</p>
+</li>
+<li>
+<p><strong>JAVA_VERSION</strong>: The version of the java project that you want to deploy.</p>
+</li>
+<li>
+<p><strong>ANGULAR_VERSION</strong>: The version of the java project that you want to deploy.</p>
+</li>
+<li>
+<p><strong>EXTERNAL_SERVER_IP</strong>: The IP of the remote server where you will deploy My Thai Star.</p>
+</li>
+<li>
+<p><strong>APPLICATION_DIR</strong>: The folder of the application.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="deployment-pipelines.asciidoc_pipeline-steps">Pipeline steps</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Copy files to remote server</strong>: Copy all files required for the deployment to the remote server. Those files are all files inside the reverse_proxy folder in the My Thai Star repository.</p>
+</li>
+<li>
+<p><strong>Deploy java application</strong>: Call to <strong>MyThaiStar_SERVER_DEPLOY</strong> pipeline.</p>
+</li>
+<li>
+<p><strong>Deploy angular application</strong>: Call to <strong>MyThaiStar_FRONTEND_DEPLOY</strong> pipeline.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="deployment-pipelines.asciidoc_mythaistar_server_deploy-pipeline">MyThaiStar_SERVER_DEPLOY Pipeline</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Deploys on the server the Java part of My Thai Star.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+You need to run the MyThaiStar_DEPLOY-Together pipeline at least once before you run this one.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="deployment-pipelines.asciidoc_parameters">Parameters</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>sshAgentCredentials</strong>: The SSH private key to connecto to remote server. The public key must be included in the remote server as a authorized_keys.</p>
+</li>
+<li>
+<p><strong>nexusApiUrl</strong>: The url to the nexus api. <a href="http://nexus3-core:8081/nexus3" class="bare">http://nexus3-core:8081/nexus3</a> is the default url for PL.</p>
+</li>
+<li>
+<p><strong>nexusCredentialsId</strong>: The nexus credentials.</p>
+</li>
+<li>
+<p><strong>repository</strong>: Name of the repository where the artifacts are stored. maven-snapshots is the default value for PL.</p>
+</li>
+<li>
+<p><strong>JAVA_VERSION</strong>: The version of the java project that you want to deploy.</p>
+</li>
+<li>
+<p><strong>EXTERNAL_SERVER_IP</strong>: The IP of the remote server where you will deploy My Thai Star.</p>
+</li>
+<li>
+<p><strong>APPLICATION_DIR</strong>: The folder of the application.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="deployment-pipelines.asciidoc_pipeline-steps">Pipeline steps</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Download artifact from Nexus</strong>: Download the artifact from nexus using the nexus3 API. The downloaded artifact will be the last snapshot of the version specified in the parameters.</p>
+</li>
+<li>
+<p><strong>Deployment</strong>: Deploy the download artifact in the remote server. It will create a new docker image and redeploy the java docker container.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="deployment-pipelines.asciidoc_mythaistar_frontend_deploy">MyThaiStar_FRONTEND_DEPLOY</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Deploys on the server the Angular part of My Thai Star</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+You need to run the MyThaiStar_DEPLOY-Together pipeline at least once before you run this one.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="deployment-pipelines.asciidoc_parameters">Parameters</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>sshAgentCredentials</strong>: The SSH private key to connecto to remote server. The public key must be included in the remote server as a authorized_keys.</p>
+</li>
+<li>
+<p><strong>nexusApiUrl</strong>: The url to the nexus api. <a href="http://nexus3-core:8081/nexus3" class="bare">http://nexus3-core:8081/nexus3</a> is the default url for PL.</p>
+</li>
+<li>
+<p><strong>nexusCredentialsId</strong>: The nexus credentials.</p>
+</li>
+<li>
+<p><strong>repository</strong>: Name of the repository where the artifacts are stored. maven-snapshots is the default value for PL.</p>
+</li>
+<li>
+<p><strong>ANGULAR_VERSION</strong>: The version of the java project that you want to deploy.</p>
+</li>
+<li>
+<p><strong>EXTERNAL_SERVER_IP</strong>: The IP of the remote server where you will deploy My Thai Star.</p>
+</li>
+<li>
+<p><strong>APPLICATION_DIR</strong>: The folder of the application.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="deployment-pipelines.asciidoc_pipeline-steps">Pipeline steps</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Download artifact from Nexus</strong>: Download the artifact from nexus using the nexus3 API. The downloaded artifact will be the last snapshot of the version specified in the parameters.</p>
+</li>
+<li>
+<p><strong>Deployment</strong>: Deploy the download artifact in the remote server. It will create a new docker image and redeploy the angular docker container.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:17:44 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

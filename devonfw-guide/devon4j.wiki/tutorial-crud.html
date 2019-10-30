@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creating a CRUD functionality for an entity</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#tutorial-crud.asciidoc">Creating a CRUD functionality for an entity</a>
+<ul class="sectlevel1">
+<li><a href="#tutorial-crud.asciidoc_persitence-provider-configuration">Persitence provider configuration</a></li>
+<li><a href="#tutorial-crud.asciidoc_create-the-jpa-entity">Create the JPA entity</a>
+<ul class="sectlevel2">
+<li><a href="#tutorial-crud.asciidoc_validation">Validation</a></li>
+</ul>
+</li>
+<li><a href="#tutorial-crud.asciidoc_creating-persistence-layer">Creating persistence layer</a>
+<ul class="sectlevel2">
+<li><a href="#tutorial-crud.asciidoc_defining-querys">Defining querys</a></li>
+</ul>
+</li>
+<li><a href="#tutorial-crud.asciidoc_expose-logic-as-services">Expose logic as services</a></li>
+<li><a href="#tutorial-crud.asciidoc_securing-the-application">Securing the application</a>
+<ul class="sectlevel2">
+<li><a href="#tutorial-crud.asciidoc_creating-rest-endpoints">Creating REST endpoints</a></li>
+</ul>
+</li>
+<li><a href="#tutorial-crud.asciidoc_internationalization">Internationalization</a>
+<ul class="sectlevel2">
+<li><a href="#tutorial-crud.asciidoc_pagination">Pagination</a></li>
+<li><a href="#tutorial-crud.asciidoc_sorting">Sorting</a></li>
+<li><a href="#tutorial-crud.asciidoc_testing-endpoints">Testing endpoints</a></li>
+<li><a href="#tutorial-crud.asciidoc_creating-web-services">Creating Web Services</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="tutorial-crud.asciidoc" class="sect0">Creating a CRUD functionality for an entity</h1>
+<div class="paragraph">
+<p>In this tutorial we are going to create an entity for the application and provide services for Create, Read, Update and Delete instances of that entity.</p>
+</div>
+<div class="paragraph">
+<p>It is important to mention devonfw packaging convention. devonfw uses a strict packaging convention to map technical layers and business components to the code. devonfw uses the following Java-Package schema:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>&lt;basepackage&gt;.&lt;component&gt;.&lt;layer&gt;.&lt;scope&gt;[.&lt;detail&gt;]*</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In our example application we find the different classes in this packages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Entity and DAO: com.devonfw.application.mtsj.ordermanagement.dataaccess.api[.&lt;detail&gt;]</p>
+</li>
+<li>
+<p>Logic: com.devonfw.application.mtsj.ordermanagement.logic[.&lt;detail&gt;]</p>
+</li>
+<li>
+<p>Services: com.devonfw.application.mtsj.ordermanagement.service[.&lt;detail&gt;]</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For more information you can consult <a href="coding-conventions.html#packages">packaging devonfw documentation</a></p>
+</div>
+<div class="sect1">
+<h2 id="tutorial-crud.asciidoc_persitence-provider-configuration">Persitence provider configuration</h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="tutorial-crud.asciidoc_create-the-jpa-entity">Create the JPA entity</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We are going to create a <code>Order</code> entity. First, we are going to create the <code>Order</code> entity interface. This will be reused between all the objects involved with order on the different layers.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">import com.devonfw.application.mtsj.general.common.api.ApplicationEntity;
+
+public interface Order extends ApplicationEntity {
+
+  public Long getBookingId();
+
+  public void setBookingId(Long bookingId);
+
+  public Long getInvitedGuestId();
+
+  public void setInvitedGuestId(Long invitedGuestId);
+
+  public Long getHostId();
+
+  public void setHostId(Long hostId);
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As you can see, Table should extend <code>ApplicationEntity</code> class. This class provides the neccesary methods for a mutable entity (ID getter and setter basically).</p>
+</div>
+<div class="paragraph">
+<p>Finally, we should create the entity implementation:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">import java.util.List;
+
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.devonfw.application.mtsj.bookingmanagement.dataaccess.api.BookingEntity;
+import com.devonfw.application.mtsj.bookingmanagement.dataaccess.api.InvitedGuestEntity;
+import com.devonfw.application.mtsj.general.dataaccess.api.ApplicationPersistenceEntity;
+//import io.oasp.application.mtsj.ordermanagement.common.api.Order;
+
+/**
+ * The {@link com.devonfw.application.mtsj.general.dataaccess.api.ApplicationPersistenceEntity persistent entity} for
+ * {@link Order}.
+ */
+@Entity
+@Table(name = "Orders")
+public class OrderEntity extends ApplicationPersistenceEntity implements Order {
+
+  private static final long serialVersionUID = 1L;
+
+  private BookingEntity booking;
+
+  private InvitedGuestEntity invitedGuest;
+
+  private BookingEntity host;
+
+  private List&lt;OrderLineEntity&gt; orderLines;
+
+  /**
+   * @return booking
+   */
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "idBooking")
+  public BookingEntity getBooking() {
+
+    return this.booking;
+  }
+
+  /**
+   * @param booking new value of {@link #getbooking}.
+   */
+  public void setBooking(BookingEntity booking) {
+
+    this.booking = booking;
+  }
+
+  /**
+   * @return invitedGuest
+   */
+  @OneToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "idInvitedGuest")
+  public InvitedGuestEntity getInvitedGuest() {
+
+    return this.invitedGuest;
+  }
+
+  /**
+   * @param invitedGuest new value of {@link #getinvitedGuest}.
+   */
+  public void setInvitedGuest(InvitedGuestEntity invitedGuest) {
+
+    this.invitedGuest = invitedGuest;
+  }
+
+  /**
+   * @return orderLines
+   */
+  @OneToMany(mappedBy = "order", fetch = FetchType.EAGER)
+  public List&lt;OrderLineEntity&gt; getOrderLines() {
+
+    return this.orderLines;
+  }
+
+  /**
+   * @param orderLines new value of {@link #getorderLines}.
+   */
+  public void setOrderLines(List&lt;OrderLineEntity&gt; orderLines) {
+
+    this.orderLines = orderLines;
+  }
+
+  @Override
+  @Transient
+  public Long getBookingId() {
+
+    if (this.booking == null) {
+      return null;
+    }
+    return this.booking.getId();
+  }
+
+  @Override
+  public void setBookingId(Long bookingId) {
+
+    if (bookingId == null) {
+      this.booking = null;
+    } else {
+      BookingEntity bookingEntity = new BookingEntity();
+      bookingEntity.setId(bookingId);
+      this.booking = bookingEntity;
+    }
+  }
+
+  @Override
+  @Transient
+  public Long getInvitedGuestId() {
+
+    if (this.invitedGuest == null) {
+      return null;
+    }
+    return this.invitedGuest.getId();
+  }
+
+  @Override
+  public void setInvitedGuestId(Long invitedGuestId) {
+
+    if (invitedGuestId == null) {
+      this.invitedGuest = null;
+    } else {
+      InvitedGuestEntity invitedGuestEntity = new InvitedGuestEntity();
+      invitedGuestEntity.setId(invitedGuestId);
+      this.invitedGuest = invitedGuestEntity;
+    }
+  }
+
+  /**
+   * @return host
+   */
+  @OneToOne
+  @JoinColumn(name = "idHost")
+  public BookingEntity getHost() {
+
+    return this.host;
+  }
+
+  /**
+   * @param host new value of {@link #gethost}.
+   */
+  public void setHost(BookingEntity host) {
+
+    this.host = host;
+  }
+
+  @Override
+  @Transient
+  public Long getHostId() {
+
+    if (this.host == null) {
+      return null;
+    }
+    return this.host.getId();
+  }
+
+  @Override
+  public void setHostId(Long hostId) {
+
+    if (hostId == null) {
+      this.host = null;
+    } else {
+      BookingEntity bookingEntity = new BookingEntity();
+      bookingEntity.setId(hostId);
+      this.host = bookingEntity;
+    }
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="tutorial-crud.asciidoc_validation">Validation</h3>
+<div class="paragraph">
+<p>You can read more about devonfw validation in <a href="#guide-validation.asciidoc">devonfw validation</a></p>
+</div>
+<div class="paragraph">
+<p>For example, we are going to add a validation in TableEntity to validate number property to allow only values greater than 0.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">  @Min(value = 1, message = "Assistants must be greater than 0")
+  @Digits(integer = 2, fraction = 0)
+  private Integer assistants;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="tutorial-crud.asciidoc_creating-persistence-layer">Creating persistence layer</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Data Acccess Objects (DAOs) are part of the persistence layer. They are responsible for a specific entity and should be named &lt;entity&gt;Dao[Impl]. The DAO offers the so called CRUD-functionalities (create, retrieve, update, delete) for the corresponding entity. Additionally a DAO may offer advanced operations such as search or locking methods.</p>
+</div>
+<div class="paragraph">
+<p>For each DAO there is an interface named &lt;entity&gt;Dao that defines the API. For CRUD support and common naming methods we derive it from the interface <code>com.devonfw.application.mtsj.general.dataaccess.api.dao</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">OrderDao.java</div>
+<div class="content">
+<pre class="highlight"><code class="java language-java">// import io.oasp.application.mtsj.general.dataaccess.api.dao.ApplicationDao;
+import com.devonfw.application.mtsj.ordermanagement.dataaccess.api.OrderEntity;
+import com.devonfw.application.mtsj.ordermanagement.logic.api.to.OrderSearchCriteriaTo;
+import com.devonfw.module.jpa.common.api.to.PaginatedListTo;
+
+/**
+ * Data access interface for Order entities
+ */
+public interface OrderDao extends ApplicationDao&lt;OrderEntity&gt; {
+
+  /**
+   * Finds the {@link OrderEntity orders} matching the given {@link OrderSearchCriteriaTo}.
+   *
+   * @param criteria is the {@link OrderSearchCriteriaTo}.
+   * @return the {@link PaginatedListTo} with the matching {@link OrderEntity} objects.
+   */
+  PaginatedListTo&lt;OrderEntity&gt; findOrders(OrderSearchCriteriaTo criteria);
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Implementing a DAO is quite simple. We should create a class named &lt;entity&gt;DaoImpl that extends ApplicationDaoImpl class and implements our DAO interface.</p>
+</div>
+<div class="paragraph">
+<p>This is the DAO implementation for our table sample:</p>
+</div>
+<div class="listingblock">
+<div class="title">OrderDaoImpl.java</div>
+<div class="content">
+<pre class="highlight"><code class="java language-java">import java.util.List;
+
+import javax.inject.Named;
+
+import com.mysema.query.alias.Alias;
+import com.mysema.query.jpa.impl.JPAQuery;
+import com.mysema.query.types.path.EntityPathBase;
+
+import com.cap.jumpthequeue.general.dataaccess.base.dao.ApplicationDaoImpl;
+import com.devonfw.application.mtsj.ordermanagement.dataaccess.api.OrderEntity;
+// import io.oasp.application.mtsj.ordermanagement.dataaccess.api.dao.OrderDao;
+import com.devonfw.application.mtsj.ordermanagement.logic.api.to.OrderSearchCriteriaTo;
+// import io.oasp.module.jpa.common.api.to.OrderByTo;
+// import io.oasp.module.jpa.common.api.to.OrderDirection;
+import com.devonfw.module.jpa.common.api.to.PaginatedListTo;
+
+/**
+ * This is the implementation of {@link OrderDao}.
+ */
+@Named
+public class OrderDaoImpl extends ApplicationDaoImpl&lt;OrderEntity&gt; implements OrderDao {
+
+  /**
+   * The constructor.
+   */
+  public OrderDaoImpl() {
+
+    super();
+  }
+
+  @Override
+  public Class&lt;OrderEntity&gt; getEntityClass() {
+
+    return OrderEntity.class;
+  }
+
+  @Override
+  public PaginatedListTo&lt;OrderEntity&gt; findOrders(OrderSearchCriteriaTo criteria) {
+
+    OrderEntity order = Alias.alias(OrderEntity.class);
+    EntityPathBase&lt;OrderEntity&gt; alias = Alias.$(order);
+    JPAQuery query = new JPAQuery(getEntityManager()).from(alias);
+
+    Long booking = criteria.getBookingId();
+    if (booking != null &amp;&amp; order.getBooking() != null) {
+      query.where(Alias.$(order.getBooking().getId()).eq(booking));
+    }
+    Long invitedGuest = criteria.getInvitedGuestId();
+    if (invitedGuest != null &amp;&amp; order.getInvitedGuest() != null) {
+      query.where(Alias.$(order.getInvitedGuest().getId()).eq(invitedGuest));
+    }
+    String hostToken = criteria.getHostToken();
+    if (hostToken != null &amp;&amp; order.getHost() != null) {
+      query.where(Alias.$(order.getBooking().getBookingToken()).toLowerCase().eq(hostToken.toLowerCase()));
+    }
+
+    String email = criteria.getEmail();
+    if (email != null) {
+      query.where(Alias.$(order.getBooking().getEmail()).toLowerCase().eq(email.toLowerCase()));
+    }
+
+    String bookingToken = criteria.getBookingToken();
+    if (bookingToken != null) {
+      query.where(Alias.$(order.getBooking().getBookingToken()).toLowerCase().eq(bookingToken.toLowerCase()));
+    }
+
+    addOrderBy(query, alias, order, criteria.getSort());
+    return findPaginated(criteria, query, alias);
+  }
+
+  private void addOrderBy(JPAQuery query, EntityPathBase&lt;OrderEntity&gt; alias, OrderEntity order, List&lt;OrderByTo&gt; sort) {
+
+    if (sort != null &amp;&amp; !sort.isEmpty()) {
+      for (OrderByTo orderEntry : sort) {
+        if ("idBooking".equals(orderEntry.getName())) {
+          if (OrderDirection.ASC.equals(orderEntry.getDirection())) {
+            query.orderBy(Alias.$(order.getBookingId()).asc());
+          } else {
+            query.orderBy(Alias.$(order.getBookingId()).desc());
+          }
+        } else if ("idInvitedGuest".equals(orderEntry.getName())) {
+          if (OrderDirection.ASC.equals(orderEntry.getDirection())) {
+            query.orderBy(Alias.$(order.getInvitedGuestId()).asc());
+          } else {
+            query.orderBy(Alias.$(order.getInvitedGuestId()).desc());
+          }
+        } else if ("hostToken".equals(orderEntry.getName())) {
+          if (OrderDirection.ASC.equals(orderEntry.getDirection())) {
+            query.orderBy(Alias.$(order.getBooking().getBookingToken()).toLowerCase().asc());
+          } else {
+            query.orderBy(Alias.$(order.getBooking().getBookingToken()).toLowerCase().desc());
+          }
+        } else if ("bookingToken".equals(orderEntry.getName())) {
+          if (OrderDirection.ASC.equals(orderEntry.getDirection())) {
+            query.orderBy(Alias.$(order.getBooking().getBookingToken()).toLowerCase().asc());
+          } else {
+            query.orderBy(Alias.$(order.getBooking().getBookingToken()).toLowerCase().desc());
+          }
+        } else if ("email".equals(orderEntry.getName())) {
+          if (OrderDirection.ASC.equals(orderEntry.getDirection())) {
+            query.orderBy(Alias.$(order.getBooking().getEmail()).toLowerCase().asc());
+          } else {
+            query.orderBy(Alias.$(order.getBooking().getEmail()).toLowerCase().desc());
+          }
+        } else if ("bookingDate".equals(orderEntry.getName())) {
+          if (OrderDirection.ASC.equals(orderEntry.getDirection())) {
+            query.orderBy(Alias.$(order.getBooking().getBookingDate()).asc());
+          } else {
+            query.orderBy(Alias.$(order.getBooking().getBookingDate()).desc());
+          }
+        }
+      }
+    }
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As you can see ApplicationMasterDataDaoImpl already implements the CRUD operations so you only have to implement the additional methods that you have declared in your &lt;entity&gt;Dao interface.</p>
+</div>
+<div class="sect2">
+<h3 id="tutorial-crud.asciidoc_defining-querys">Defining querys</h3>
+<div class="paragraph">
+<p>devonfw advises to specify all queries in one mapping file called NamedQueries.xml. So we are going to create a query to get free tables that we have used in TableDaoImpl.</p>
+</div>
+<div class="listingblock">
+<div class="title">src/main/resources/config/app/dataaccess/NamedQueries.xml</div>
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;!--?xml version="1.0" encoding="UTF-8"?--&gt;
+&lt;entity-mappings version="1.0" xmlns="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemalocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"&gt;
+
+  &lt;named-query name="get.free.tables"&gt;
+    &lt;query&gt;&lt;!--[CDATA[SELECT t FROM Table t WHERE t.state = com.devonfw.gastronomy.restaurant.common.datatype.TableState.FREE]]--&gt;&lt;/query&gt;
+  &lt;/named-query&gt;
+
+&lt;/entity-mappings&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To avoid redundant occurrences of the query name we define the constants for each named query:</p>
+</div>
+<div class="listingblock">
+<div class="title">NamedQueries.java</div>
+<div class="content">
+<pre class="highlight"><code class="java language-java">/**
+ * Constants of the named queries defined in ``NamedQueries.xml``.
+ *
+ */
+public abstract class NamedQueries {
+
+  // put your query names from NamedQueries.xml as constants here
+  /** @see io.oasp.gastronomy.restaurant.tablemanagement.dataaccess.impl.dao.TableDaoImpl#getFreeTables() */
+  public static final String GET_FREE_TABLES = "get.free.tables";
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that changing the name of the java constant can be done easily with refactoring. Further you can trace where the query is used by searching the references of the constant.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="tutorial-crud.asciidoc_expose-logic-as-services">Expose logic as services</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The logic layer is for internal use of an application. In order to access the functionality of the logic layer from other applications it should be exposed with a bridge layer called the service layer.</p>
+</div>
+<div class="paragraph">
+<p>This layer should be in charge of converting between Java objects to its serialized form and back. It also provide the means to publish to an endpoint and securize the access to certain users. Last but not less important it is responsible to wrap any error coming from the logic layer to a format that would be understood by the client of the service.</p>
+</div>
+<div class="paragraph">
+<p>In devonfw, we propose to divide the CRUD logic into different files to sepparate responsability:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>An interface and an implementing class for CRUD read only methods, UCFind[XXX]. E.g. UCFindTable.</p>
+</li>
+<li>
+<p>An interface and an implementing class fro CRUD write methods, UCManage[XXX]. E.g. UCManageTable.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">UCFindTable.java</div>
+<div class="content">
+<pre class="highlight"><code class="java language-java">import com.devonfw.application.mtsj.bookingmanagement.logic.api.to.TableEto;
+
+import java.util.List;
+
+/**
+ * Interface of UcFindTable to centralize documentation and signatures of methods.
+ *
+ */
+public interface UcFindTable {
+
+  /**
+   * Returns a restaurant table by its id 'id'.
+   *
+   * @param id The id 'id' of the restaurant table.
+   * @return The restaurant {@link TableEto} with id 'id'
+   */
+  TableEto findTable(Long id);
+
+  /**
+   * Returns a list of all existing restaurant tables.
+   *
+   * @return {@link List} of all existing restaurant {@link TableEto}s
+   */
+  List&lt;tableeto&gt; findAllTables();
+
+ /**
+   * Returns a list of all existing free restaurant tables.
+   *
+   * @return {@link List} of all existing free restaurant {@link TableEto}s
+   */
+  List&lt;tableeto&gt; findFreeTables();
+
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">UCFindTableImpl.java</div>
+<div class="content">
+<pre class="highlight"><code class="java language-java">import com.devonfw.application.mtsj.general.common.api.constants.PermissionConstants;
+import com.devonfw.application.mtsj.general.logic.api.UseCase;
+import com.devonfw.application.mtsj.general.dataaccess.api.TableEntity;
+import com.devonfw.application.mtsj.general.logic.api.to.TableEto;
+import com.devonfw.application.mtsj.general.logic.api.usecase.UcFindTable;
+import com.devonfw.application.mtsj.general.logic.base.usecase.AbstractTableUc;
+
+import java.util.List;
+
+import javax.annotation.security.RolesAllowed;
+import javax.inject.Named;
+
+/**
+ * Implementation of {@link UcFindTable}.
+ *
+ */
+@Named
+@UseCase
+public class UcFindTableImpl extends AbstractTableUc implements UcFindTable {
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  @RolesAllowed(PermissionConstants.FIND_TABLE)
+  public TableEto findTable(Long id) {
+
+    return getBeanMapper().map(getTableDao().findOne(id), TableEto.class);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  @RolesAllowed(PermissionConstants.FIND_TABLE)
+  public List&lt;tableeto&gt; findAllTables() {
+
+    List&lt;tableentity&gt; tables = getTableDao().findAll();
+    return getBeanMapper().mapList(tables, TableEto.class);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  @RolesAllowed(PermissionConstants.FIND_TABLE)
+  public List&lt;tableeto&gt; findFreeTables() {
+
+    List&lt;tableentity&gt; tables = getTableDao().getFreeTables();
+    return getBeanMapper().mapList(tables, TableEto.class);
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">UCManageTable.java</div>
+<div class="content">
+<pre class="highlight"><code class="java language-java">import com.devonfw.application.mtsj.general.logic.api.to.TableEto;
+
+import javax.validation.Valid;
+
+/**
+ * Interface of UcManageTable to centralize documentation and signatures of methods.
+ *
+ */
+public interface UcManageTable {
+
+  /**
+   * Deletes a restaurant table from the database by its id 'id'.
+   *
+   * @param tableId Id of the restaurant table to delete
+   */
+  void deleteTable(Long tableId);
+
+  /**
+   * Creates a new restaurant table and store it in the database.
+   *
+   * @param table the {@link TableEto} to create.
+   * @return the new {@link TableEto} that has been saved with ID and version.
+   */
+  TableEto saveTable(@Valid TableEto table);
+
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">UCManageTableImpl.java</div>
+<div class="content">
+<pre class="highlight"><code class="java language-java">import com.devonfw.application.mtsj.general.common.api.constants.PermissionConstants;
+import com.devonfw.application.mtsj.general.common.api.exception.IllegalEntityStateException;
+import com.devonfw.application.mtsj.general.logic.api.UseCase;
+import com.devonfw.gastronomy.restaurant.common.datatype.TableState;
+import com.devonfw.application.mtsj.bookingmanagement.dataaccess.api.TableEntity;
+import com.devonfw.application.mtsj.bookingmanagement.logic.api.to.TableEto;
+import com.devonfw.application.mtsj.bookingmanagement.logic.api.usecase.UcManageTable;
+import com.devonfw.application.mtsj.bookingmanagement.logic.base.usecase.AbstractTableUc;
+
+import java.util.Objects;
+
+import javax.annotation.security.RolesAllowed;
+import javax.inject.Named;
+import javax.validation.Valid;
+
+import org.springframework.validation.annotation.Validated;
+
+/**
+ * Implementation of {@link UcManageTable}.
+ *
+ */
+@Named
+@UseCase
+@Validated
+public class UcManageTableImpl extends AbstractTableUc implements UcManageTable {
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  @RolesAllowed(PermissionConstants.DELETE_TABLE)
+  public void deleteTable(Long tableId) {
+
+    TableEntity table = getTableDao().find(tableId);
+
+    if (!table.getState().isFree()) {
+      throw new IllegalEntityStateException(table, table.getState());
+    }
+
+    getTableDao().delete(table);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  @RolesAllowed(PermissionConstants.SAVE_TABLE)
+  public TableEto saveTable(@Valid TableEto table) {
+
+    Objects.requireNonNull(table, "table");
+
+    TableEntity tableEntity = getBeanMapper().map(table, TableEntity.class);
+    // initialize
+    if (tableEntity.getState() == null) {
+      tableEntity.setState(TableState.FREE);
+    }
+
+    getTableDao().save(tableEntity);
+    return getBeanMapper().map(tableEntity, TableEto.class);
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As you can see, implementation classes extend AbstractTableUC class. This class provides the DAO class injection.</p>
+</div>
+<div class="listingblock">
+<div class="title">AbstractTableUC.java</div>
+<div class="content">
+<pre class="highlight"><code class="java language-java">import com.devonfw.application.mtsj.general.logic.base.AbstractUc;
+import com.devonfw.application.mtsj.bookingmanagement.logic.impl.BookingmanagementImpl;
+
+import javax.inject.Inject;
+
+/**
+ *
+ */
+public abstract class AbstractTableUc extends AbstractUc {
+
+  /** @see #getTableDao() */
+  private TableDao tableDao;
+
+  /**
+   * @return the {@link TableDao} instance.
+   */
+  public TableDao getTableDao() {
+
+    return this.tableDao;
+  }
+
+  /**
+   * @param tableDao the {@link TableDao} to {@link Inject}.
+   */
+  @Inject
+  public void setTableDao(TableDao tableDao) {
+
+    this.tableDao = tableDao;
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally, we are going to create an interface and the implementating class that joins both UC classes. devonfw naming convention for this classes are: [XXX]management and [XXX]managementImpl.</p>
+</div>
+<div class="listingblock">
+<div class="title">Tablemanagement.java</div>
+<div class="content">
+<pre class="highlight"><code class="java language-java">import com.devonfw.application.mtsj.general.logic.api.usecase.UcFindTable;
+import com.devonfw.application.mtsj.bookingmanagement.logic.api.usecase.UcManageTable;
+
+/**
+ * Interface for TableManagement component.
+ *
+ */
+public interface Tablemanagement extends UcFindTable, UcManageTable {
+
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">TablemanagementImpl.java</div>
+<div class="content">
+<pre class="highlight"><code class="java language-java">import com.devonfw.application.mtsj.general.common.base.AbstractBeanMapperSupport;
+import com.devonfw.application.mtsj.general.logic.api.UseCase;
+// import io.oasp.gastronomy.restaurant.tablemanagement.logic.api.Tablemanagement;
+import com.devonfw.application.mtsj.bookingmanagement.logic.api.to.TableEto;
+import com.devonfw.application.mtsj.general.logic.api.usecase.UcFindTable;
+import com.devonfw.application.mtsj.bookingmanagement.logic.api.usecase.UcManageTable;
+
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
+/**
+ * Implementation of {@link Tablemanagement}.
+ *
+ */
+@Named
+public class TablemanagementImpl extends AbstractBeanMapperSupport implements Tablemanagement {
+
+  private UcFindTable ucFindTable;
+
+  private UcManageTable ucManageTable;
+
+  /**
+   * The constructor.
+   */
+  public TablemanagementImpl() {
+
+    super();
+  }
+
+  /**
+   * Sets the field 'ucFindTable'.
+   *
+   * @param ucFindTable New value for ucFindTable
+   */
+  @Inject
+  @UseCase
+  public void setUcFindTable(UcFindTable ucFindTable) {
+
+    this.ucFindTable = ucFindTable;
+  }
+
+  /**
+   * Sets the field 'ucManageTable'.
+   *
+   * @param ucManageTable New value for ucManageTable
+   */
+  @Inject
+  @UseCase
+  public void setUcManageTable(UcManageTable ucManageTable) {
+
+    this.ucManageTable = ucManageTable;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public TableEto findTable(Long id) {
+
+    return this.ucFindTable.findTable(id);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List&lt;tableeto&gt; findAllTables() {
+
+    return this.ucFindTable.findAllTables();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List&lt;tableeto&gt; findAllTables() {
+
+    return this.ucFindTable.findAllTables();
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   */
+  @Override
+  public TableEto saveTable(TableEto table) {
+
+    return this.ucManageTable.saveTable(table);
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   */
+  @Override
+  public void deleteTable(Long id) {
+
+    this.ucManageTable.deleteTable(id);
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This code shows that is merely a delegation for the injected UC and can be automatically generated with eclipse&#8217;s powerful refactoring capabilities.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="tutorial-crud.asciidoc_securing-the-application">Securing the application</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>devonfw focus on role-based authorization to cope with authorization for executing use case of an application. devonfw use the JSR250 annotations, mainly @RolesAllowed, as you have seen, for authorizing method calls against the permissions defined in the annotation body.
+So, finally, we have to create a class to declare the RollesAllowed annotation value as constants:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">/**
+ * Contains constants for the keys of all
+ * {@link com.devonfw.module.security.common.api.accesscontrol.AccessControlPermission}s.
+ *
+ */
+public abstract class PermissionConstants {
+
+  /** {@link com.devonfw.module.security.common.api.accesscontrol.AccessControlPermission} to retrieve table. */
+  public static final String FIND_TABLE = "FindTable";
+
+  /** {@link com.devonfw.module.security.common.api.accesscontrol.AccessControlPermission} to save table. */
+  public static final String SAVE_TABLE = "SaveTable";
+
+  /** {@link com.devonfw.module.security.common.api.accesscontrol.AccessControlPermission} to remove table. */
+  public static final String DELETE_TABLE = "DeleteTable";
+}</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="tutorial-crud.asciidoc_creating-rest-endpoints">Creating REST endpoints</h3>
+<div class="paragraph">
+<p>Web applications need to get data from the server, so we have to expose the methods defined in the logic layer to this applications. We need a class that exposes methods as URLs to allow to the applications get the data. By convention, we call this class <code>[XXX]managementRestServiceImpl</code> where <code>[XXX]</code> will be the name of the entity.</p>
+</div>
+<div class="paragraph">
+<p>This is an example of a REST API for our <code>Table</code> use case using JAX-RS. devonfw recommends to use CXF as the implementation for JAX-RS but other libraries following the standard will perform equally.</p>
+</div>
+<div class="paragraph">
+<p>Also note that the implementation does not follow the canonical RESTFUL approach as devonfw proposes a more pragmatic way to use REST. Please refer to the Platform Guide <a href="#guide-service-layer.asciidoc">service layer</a> chapter for more information on the subject.</p>
+</div>
+<div class="listingblock">
+<div class="title">TablemanagementRestServiceImpl.java</div>
+<div class="content">
+<pre class="highlight"><code class="java language-java">import com.devonfw.application.mtsj.bookingmanagement.common.api.Table;
+// import io.oasp.gastronomy.restaurant.tablemanagement.logic.api.Tablemanagement;
+import com.devonfw.application.mtsj.bookingmanagement.logic.api.to.TableEto;
+import com.devonfw.application.mtsj.general.logic.api.usecase.UcFindTable;
+import com.devonfw.application.mtsj.bookingmanagement.logic.api.usecase.UcManageTable;
+
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+import net.sf.mmm.util.exception.api.ObjectNotFoundUserException;
+
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * The service class for REST calls in order to execute the methods in {@link Tablemanagement}.
+ */
+@Path("/tablemanagement/v1")
+@Named("TablemanagementRestService")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+@Transactional
+public class TablemanagementRestServiceImpl {
+
+  private Tablemanagement tableManagement;
+
+  /**
+   * This method sets the field &lt;tt&gt;tableManagement&lt;/tt&gt;.
+   *
+   * @param tableManagement the new value of the field tableManagement
+   */
+  @Inject
+  public void setTableManagement(Tablemanagement tableManagement) {
+
+    this.tableManagement = tableManagement;
+  }
+
+  /**
+   * Delegates to {@link UcFindTable#findTable}.
+   *
+   * @param id the ID of the {@link TableEto}
+   * @return the {@link TableEto}
+   */
+  @GET
+  @Path("/table/{id}/")
+  public TableEto getTable(@PathParam("id") String id) {
+
+    Long idAsLong;
+    if (id == null) {
+      throw new BadRequestException("missing id");
+    }
+    try {
+      idAsLong = Long.parseLong(id);
+    } catch (NumberFormatException e) {
+      throw new BadRequestException("id is not a number");
+    } catch (NotFoundException e) {
+      throw new BadRequestException("table not found");
+    }
+    return this.tableManagement.findTable(idAsLong);
+  }
+
+  /**
+   * Delegates to {@link UcFindTable#findAllTables}.
+   *
+   * @return list of all existing restaurant {@link TableEto}s
+   */
+  @GET
+  @Path("/table/")
+  public List&lt;tableeto&gt; getAllTables() {
+
+    List&lt;tableeto&gt; allTables = this.tableManagement.findAllTables();
+    return allTables;
+  }
+
+  /**
+   * Delegates to {@link UcFindTable#findFreeTables}.
+   *
+   * @return list of all existing free {@link TableEto}s
+   */
+  @GET
+  @Path("/freetables/")
+  public List&lt;tableeto&gt; getFreeTables() {
+
+    return this.tableManagement.findFreeTables();
+  }
+
+  /**
+   * Delegates to {@link UcManageTable#saveTable}.
+   *
+   * @param table the {@link TableEto} to be created
+   * @return the recently created {@link TableEto}
+   */
+  @POST
+  @Path("/table/")
+  public TableEto saveTable(TableEto table) {
+
+    return this.tableManagement.saveTable(table);
+  }
+
+  /**
+   * Delegates to {@link UcManageTable#deleteTable}.
+   *
+   * @param id ID of the {@link TableEto} to be deleted
+   */
+  @DELETE
+  @Path("/table/{id}/")
+  public void deleteTable(@PathParam("id") Long id) {
+
+    this.tableManagement.deleteTable(id);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Is important to mention:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>We send and receive the information in JSON format.</p>
+</li>
+<li>
+<p>We specify the version of the entire API or every method.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Finally, we need to add this implementation into JAX-RS server bean definition:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">  &lt;jaxrs:server id="CxfRestServices" address="/rest"&gt;
+    &lt;jaxrs:providers&gt;
+      &lt;bean class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider"&gt;
+      &lt;property name="mapper"&gt;
+        &lt;ref bean="JacksonObjectMapper"&gt;
+      &lt;/ref&gt;&lt;/property&gt;
+      &lt;/bean&gt;
+      &lt;ref bean="RestServiceExceptionFacade"&gt;
+    &lt;/ref&gt;&lt;/jaxrs:providers&gt;
+    &lt;jaxrs:servicebeans&gt;
+      &lt;ref bean="TablemanagementRestService"&gt;
+      &lt;ref bean="SecurityRestService"&gt;
+    &lt;/ref&gt;&lt;/ref&gt;&lt;/jaxrs:servicebeans&gt;
+  &lt;/jaxrs:server&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As you can see, we have defined the REST URLs for our Table user case. Now, for example, you can find all tables on this URL:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>http://server:port/application-name/tablemanagement/v1/table/</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="tutorial-crud.asciidoc_dto-conversion">DTO conversion</h4>
+<div class="paragraph">
+<p>In the logic API, the methods of the classes should return Data Transfer Object (DTO) instead of entities. So, in devonfw we have a mechanism to convert the entities into DTOs.</p>
+</div>
+<div class="paragraph">
+<p>This is an example of how to convert a entity into a DTO:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">    // Conversion for lists
+    getBeanMapper().mapList(tableList, TableDto.class);
+
+    // Conversion for objects
+    getBeanMapper().map(table, TableDto.class);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the example, we use the function getBeanMapper(). This function provides us an API to convert entities into DTOs. In the logic layer, we only have to extend the class AbstractUc to access to this functionality.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="tutorial-crud.asciidoc_exceptions">Exceptions</h4>
+<div class="sect4">
+<h5 id="tutorial-crud.asciidoc_user-exceptions">User exceptions</h5>
+
+</div>
+<div class="sect4">
+<h5 id="tutorial-crud.asciidoc_non-controlled-exceptions">Non controlled exceptions</h5>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="tutorial-crud.asciidoc_internationalization">Internationalization</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="tutorial-crud.asciidoc_pagination">Pagination</h3>
+
+</div>
+<div class="sect2">
+<h3 id="tutorial-crud.asciidoc_sorting">Sorting</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">/**
+ * This enum identifies the entity, on which the sorting should be executed.
+ *
+ */
+public enum TableSortByHitEntry {
+
+  /**
+   * Sort by id.
+   */
+  ID("id"),
+  /**
+   * Sort by number.
+   */
+  NUMBER("number"),
+  /**
+   * Sort by state.
+   */
+  STATE("state"),
+  /**
+   * Sort by waiterId.
+   */
+  WAITERID("waiterId");
+
+  private final String sortByAttributeName;
+
+  private TableSortByHitEntry(String sortByAttributeName) {
+
+    this.sortByAttributeName = sortByAttributeName;
+  }
+
+  /**
+   * @return sortByAttributeName
+   */
+  public String getSortByAttributeName() {
+
+    return this.sortByAttributeName;
+  }
+
+  /**
+   * This method returns an {@link TableSortByHitEntry} for a given {@link #getSortByAttributeName() attribute name}.
+   *
+   * @param sortByAttributeName the name.
+   * @return an {@link TableSortByHitEntry}
+   */
+  public static TableSortByHitEntry getEntryForAttributeName(String sortByAttributeName) {
+
+    for (TableSortByHitEntry entry : TableSortByHitEntry.values()) {
+      if (entry.sortByAttributeName.equals(sortByAttributeName)) {
+        return entry;
+      }
+    }
+
+    return null;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">// import io.oasp.gastronomy.restaurant.general.common.api.datatype.OrderBy;
+// import io.oasp.gastronomy.restaurant.tablemanagement.common.api.datatype.TableSortByHitEntry;
+
+/**
+ * Table sortBy class
+ */
+public class TableSortBy {
+
+  private TableSortByHitEntry sortByEntry;
+
+  private OrderBy orderBy;
+
+  /**
+   * The constructor.
+   */
+  public TableSortBy() {
+
+    this.sortByEntry = TableSortByHitEntry.ID;
+    this.orderBy = OrderBy.ASC;
+  }
+
+  /**
+   * Returns the field 'sortByEntry'.
+   *
+   * @return Value of sortByEntry
+   */
+  public TableSortByHitEntry getSortByEntry() {
+
+    return this.sortByEntry;
+  }
+
+  /**
+   * Sets the field 'sortByEntry'.
+   *
+   * @param sortByEntry New value for sortByEntry
+   */
+  public void setSortByEntry(TableSortByHitEntry sortByEntry) {
+
+    this.sortByEntry = sortByEntry;
+  }
+
+  /**
+   * Returns the field 'orderBy'.
+   *
+   * @return Value of orderBy
+   */
+  public OrderBy getOrderBy() {
+
+    return this.orderBy;
+  }
+
+  /**
+   * Sets the field 'orderBy'.
+   *
+   * @param orderBy New value for orderBy
+   */
+  public void setOrderBy(OrderBy orderBy) {
+
+    this.orderBy = orderBy;
+  }
+
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="tutorial-crud.asciidoc_testing-endpoints">Testing endpoints</h3>
+<div class="paragraph">
+<p>SOAPUI, JUnit?</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="tutorial-crud.asciidoc_creating-web-services">Creating Web Services</h3>
+
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:14:04 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

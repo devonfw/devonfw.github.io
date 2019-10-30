@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A1 Injection</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="paragraph">
+<p>This document compares the current devonfw recommendations and sample with the OWASP Top 10 security vulnerabilities.</p>
+</div>
+<h1 id="OWASP-Top-10-security-vulnerabilities.asciidoc" class="sect0">A1 Injection</h1>
+<div class="paragraph">
+<p>Injection flaws, such as SQL, OS, and LDAP injection occur when untrusted data is sent to an interpreter as part of a command or query. The attacker’s hostile data can trick the interpreter into executing unintended commands or accessing data without proper authorization.</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CH</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OWASP ASVS 2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">devonfw</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OK?</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Comment</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">V5.10 L1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify that the runtime environment is not susceptible to SQL Injection, or that security controls prevent SQL Injection.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">devonfw4J V1.0.0, 3.4.3.1 SQL-Injection: Prevents 100% injections in static SQLs, gives advises how to handle dynamic SQLs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">V5.11 L1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify that the runtime environment is not susceptible to LDAP Injection, or that security controls prevent LDAP Injection.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Spring Security with its ldap query builder could be already immune to this one. Example is missing.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">V5.12 L1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify that the runtime environment is not susceptible to OS Command Injection, or that security controls prevent OS Command Injection.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">We could probably handly this one quite easy using static code analysis (preventing the usage of the class Runtime?).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">V5.14 L1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify that the runtime environment is not susceptible to XML Injections or that security controls prevents XML Injections.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This is primarily about the XPath injection. Could be handled with a good encoder (<a href="https://github.com/ESAPI/esapi-java" class="bare">https://github.com/ESAPI/esapi-java</a>)</p></td>
+</tr>
+</tbody>
+</table>
+<h1 id="OWASP-Top-10-security-vulnerabilities.asciidoc" class="sect0">A2 Broken Authentication and Session Management</h1>
+<div class="paragraph">
+<p>Application functions related to authentication and session management are often not implemented correctly, allowing attackers to compromise passwords, keys, or session tokens, or to exploit other implementation flaws to assume other users’ identities.</p>
+</div>
+<div class="paragraph">
+<p>You may be vulnerable if:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>User authentication credentials aren’t protected when stored using hashing or encryption.</p>
+</li>
+<li>
+<p>Credentials can be guessed or overwritten through weak account management functions (e.g., account creation, change password, recover password, weak session IDs).</p>
+</li>
+<li>
+<p>Session IDs are exposed in the URL (e.g., URL rewriting).</p>
+</li>
+<li>
+<p>Session IDs are vulnerable to session fixation attacks.</p>
+</li>
+<li>
+<p>Session IDs don’t timeout, or user sessions or authentication tokens, particularly single sign-on (SSO) tokens, aren’t properly invalidated during logout.</p>
+</li>
+<li>
+<p>Session IDs aren’t rotated after successful login.</p>
+</li>
+<li>
+<p>Passwords, session IDs, and other credentials are sent over unencrypted connections.rypted connections. See A6.</p>
+</li>
+</ol>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">V2.1 L1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify all pages and resources require authentication except those specifically intended to be public (Principle of complete mediation).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">encrypt all channels, use a central identity management with strong password-policy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This point is handled well in the documentation.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">V2.16 L1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify that credentials, and all other identity information handled by the application(s), do not traverse unencrypted or weakly encrypted links.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No TLS in the example application present. Need for TLS not stated in the documentation.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">V2.17 L1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify that the forgotten password function and other recovery paths do not reveal the current password and that the new password is not sent in clear text to the user.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">well…</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">One of the many points that shows, that OWASP Top 10 complaince is not only about secure framework. This one is more about possible business logic flaws. It might not really belong to be a part of the devonfw documentation.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">V2.18 L1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify that username enumeration is not possible via login, password reset, or forgot account functionality</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Spring security does that automatically for us as long as we depend on him.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">V3.1 L1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify that the framework’s default session management control implementation is used by the application.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Spring security does that automatically for us as long as we depend on him.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">V3.2 L1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify that sessions are invalidated when the user logs out.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Spring security does that automatically for us as long as we depend on him.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">V3.14 L1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify that authenticated session tokens using cookies sent via HTTP, are protected by the use of "HttpOnly".</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Nice secure default of the tomcat container.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">V3.15 L1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify that authenticated session tokens using cookies are protected with the "secure" attribute and a strict transport security header (such as StrictTransport-Security: max-age=60000; includeSubDomains) are present.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No TLS = no scure flag. HSTS is another topic where good examples could be helpful.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">V2.12 L2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify that all authentication decisions are logged. This should include requests with missing required information, needed for security investigations.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">These things are a bit less common then the others, but they show that authentication and session management issues can go deep.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">V2.20 L2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify that a resource governor is in place to protect against vertical (a single account tested against all possible passwords) and horizontal brute forcing (all accounts tested with the same password e.g. “Password1”). A correct credential entry should incur no delay. Both these governor mechanisms should be active simultaneously to protect against  diagonal and distributed attacks.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">V2.25 L2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify that the system can be configured to disallow the use of a configurable number of previous passwords.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<h1 id="OWASP-Top-10-security-vulnerabilities.asciidoc" class="sect0">A3 Cross-Site Scripting (XSS)</h1>
+<div class="paragraph">
+<p>XSS flaws occur whenever an application takes untrusted data and sends it to a web browser without proper validation or escaping. XSS allows attackers to execute scripts in the victim’s browser which can hijack user sessions, deface web sites, or redirect the user to malicious sites.</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">V5.16 L1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify that all untrusted data that are output to HTML (including HTML elements, HTML attributes, JavaScript data values, CSS blocks, and URI atributes) are properly escaped for the applicable context</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AngularJS makes it hard for developers to make XXS mistakes. Still possibilities exist: <a href="https://code.google.com/p/mustache-security/wiki/AngularJS" class="bare">https://code.google.com/p/mustache-security/wiki/AngularJS</a>. JQuery can also lead to problems.  The security we have is probably pretty good. Yet at least a list of dos and don&#8217;ts is missing.</p></td>
+</tr>
+</tbody>
+</table>
+<h1 id="OWASP-Top-10-security-vulnerabilities.asciidoc" class="sect0">A4 Insecure Direct Object References</h1>
+<div class="paragraph">
+<p>A direct object reference occurs when a developer exposes a reference to an internal implementation object, such as a file, directory, or database key. Without an access control check or other protection, attackers can manipulate these references to access unauthorized data.</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">V4.4 L1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify that direct object references are protected, such that only authorized objects or data are accessible to each user (for example, protect against direct object reference tampering).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The topic is not well covered in the documentation but still we will not have problems at this point. We usually have secure direct object references which are ok.</p></td>
+</tr>
+</tbody>
+</table>
+<h1 id="OWASP-Top-10-security-vulnerabilities.asciidoc" class="sect0">A5 Security Misconfiguration</h1>
+<div class="paragraph">
+<p>Good security requires having a secure configuration defined and deployed for the application, frameworks, application server, web server, database server, and platform. Secure settings should be defined, implemented, and maintained, as defaults are often insecure. Additionally, software should be kept up to date.</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">V19.1 L1 (v3.0)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">All components should be up to date with proper security configuration(s) and version(s). This should include unneeded configurations and folders (sample applications).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Use devonfw application template and guides to avoid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Using some kind of application template is not enough. This is a hard feature for architects to deal with, because it&#8217;s more about ITSec, then AppSec. This point is about server hardening. Look at this to get a bigger picture: <a href="https://benchmarks.cisecurity.org/tools2/apache/CIS_Apache_Tomcat_Benchmark_v1.0.0.pdf" class="bare">https://benchmarks.cisecurity.org/tools2/apache/CIS_Apache_Tomcat_Benchmark_v1.0.0.pdf</a></p></td>
+</tr>
+</tbody>
+</table>
+<h1 id="OWASP-Top-10-security-vulnerabilities.asciidoc" class="sect0">A6 Sensitive Data Exposure</h1>
+<div class="paragraph">
+<p>Many web applications do not properly protect sensitive data, such as credit cards, tax IDs, and authentication credentials. Attackers may steal or modify such weakly protected data to conduct credit card fraud, identity theft, or other crimes. Sensitive data deserves extra protection such as encryption at rest or in transit, as well as special precautions when exchanged with the browser.</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">V2.16 L1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify that credentials, and all other identity information handled by the application(s), do not traverse unencrypted or weakly encrypted links.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The example application is not using TLS. The documentation does not describe the need for TLS. Spring Security should be configured to always redirect the connection to a TLS secured one.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">V10.3 L1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify that TLS is used for all connections (including both external and backend connections) that are authenticated or that involve sensitive data or functions.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">V2.21 L2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify that all authentication credentials for accessing services external to the application are encrypted and stored in a protected location (not in source code)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">There is a lot of discussion going on between security officers and architects about this one. Still it is a common security requirement to find.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">V2.13 L2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify that account passwords are salted using a salt that is unique to that account (e.g., internal user ID, account creation) and use bcrypt, scrypt or PBKDF2 before storing the password.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This is an elementary solution for local user authentication. Good code examples are necessary. Example application could handle this one aswell.</p></td>
+</tr>
+</tbody>
+</table>
+<h1 id="OWASP-Top-10-security-vulnerabilities.asciidoc" class="sect0">A7 Missing Function Level Access Control</h1>
+<div class="paragraph">
+<p>Most web applications verify function level access rights before making that functionality visible in the UI. However, applications need to perform the same access control checks on the server when each function is accessed. If requests are not verified, attackers will be able to forge requests in order to access functionality without proper authorization.</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">V4.1 L1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify that users can only access secured functions or services for which they possess specific authorization.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ensure proper authorization for all use-cases, use @DenyAll als default to enforce</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">V4.2 L1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify that users can only access secured URLs for which they possess specific authorization.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">V4.3 L1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify that users can only access secured data files for which they possess specific authorization.</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">I wouldn&#8217;t know how to handle this one based on the documentation and examples.</p></td>
+</tr>
+</tbody>
+</table>
+<h1 id="OWASP-Top-10-security-vulnerabilities.asciidoc" class="sect0">A8 Cross-Site Request Forgery (CSRF)</h1>
+<div class="paragraph">
+<p>A CSRF attack forces a logged-on victim’s browser to send a forged HTTP request, including the victim’s session cookie and any other automatically included authentication information, to a vulnerable web application. This allows the attacker to force the victim’s browser to generate requests the vulnerable application thinks are legitimate requests from the victim.</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">V4.16 L1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify that the application or framework generates strong random anti-CSRF tokens unique to the user as part of all high value transactions or accessing sensitive data, and that the application verifies the presence of this token with the proper value for the current user when processing these requests.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Short capitel 3.2.6. Beautiful implementation in the example application for SPA/RIA.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Does it make sense to create another example for a non-SPA appliction or application that can not use JavaScript?</p></td>
+</tr>
+</tbody>
+</table>
+<h1 id="OWASP-Top-10-security-vulnerabilities.asciidoc" class="sect0">A9 Using Components with Known Vulnerabilities</h1>
+<div class="paragraph">
+<p>Components, such as libraries, frameworks, and other software modules, almost always run with full privileges. If a vulnerable component is exploited, such an attack can facilitate serious data loss or server takeover. Applications using components with known vulnerabilities may undermine application defenses and enable a range of possible attacks and impacts.</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">V19.1 L1 (v3.0)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">All components should be up to date with proper security configuration(s) and version(s). This should include unneeded configurations and folders (sample applications).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">subscribe to security newsletters, recheck products and their versions continuously, use devonfw dependency management</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Redirecting people to CSV lists does not solve the problem here. Automated solutions like integration with Victims or OWASP Dependency Check is needed.</p></td>
+</tr>
+</tbody>
+</table>
+<h1 id="OWASP-Top-10-security-vulnerabilities.asciidoc" class="sect0">A10 Unvalidated Redirects and Forwards</h1>
+<div class="paragraph">
+<p>Web applications frequently redirect and forward users to other pages and websites, and use untrusted data to determine the destination pages. Without proper validation, attackers can redirect victims to phishing or malware sites, or use forwards to access unauthorized pages.</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">V16.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Verify that URL redirects and forwards do not include unvalidated data.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">"devonfw proposes to use richclients (SPA/RIA). We only use redirects for login in a safe way"</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">We don&#8217;t usually need this kind of functionality.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:12:53 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

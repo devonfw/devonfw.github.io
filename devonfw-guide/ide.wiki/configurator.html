@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Configurator</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#configurator.asciidoc">Configurator</a>
+<ul class="sectlevel1">
+<li><a href="#configurator.asciidoc_how-to-use">How to use</a></li>
+<li><a href="#configurator.asciidoc_how-it-works">How it works</a></li>
+<li><a href="#configurator.asciidoc_how-to-customize">How to customize</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="configurator.asciidoc" class="sect0">Configurator</h1>
+<div class="paragraph">
+<p>The <code>devonfw-ide</code> maintains and includes a tool called <a href="https://github.com/devonfw/ide/tree/master/configurator">devonfw-ide-configurator</a>. This allows to synchronize and manage complex configurations. Initially it was written for Eclipse that stores its information in a <code>.metadata</code> folder of your workspace. Unfortunately it contains different file-formats (including XML as String value inside properties files), temporary data as well as important configurations with sometimes mixtures of project specific, developer specific, and UI specific settings. To make it short it is a mess. Instead of bashing on Eclipse we want to make this IDE more usable and created a way to manage important parts of such configuration strcutures.</p>
+</div>
+<div class="sect1">
+<h2 id="configurator.asciidoc_how-to-use">How to use</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The easiest way is that you do not care. When you launch the IDE of your choice (e.g. via <code>devon eclipse</code>, <code>devon vscode</code> or by running <code>eclipse-main</code> script), this will happen automatically.
+If you want to explicitly update your workspace without launching the IDE, you can append <code>ws-update</code> (e.g. <code>devon eclipse ws-update</code>). Instead, if you want to launch your IDE without touching its configuration you can append <code>run</code> or <code>start</code> (e.g. <code>devon eclipse run</code>) what will omit this <code>configurator</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configurator.asciidoc_how-it-works">How it works</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For every tool managed with our configurator we distinguish the following file structures:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The actual configuration location of the tool itself. We configure the tool to relocate this to a specific workspace (so by default <code>workspaces/main/</code>).</p>
+</li>
+<li>
+<p>A configuration location with the configuration only used during the <a href="#setup.asciidoc">setup</a>: <code>$SETTINGS_PATH/«tool»/workspace/setup</code>. Contains settings to setup a <a href="#workspaces.asciidoc">workspace</a>. After that the user remains control over these settings.</p>
+</li>
+<li>
+<p>A configuration location with the configuration used to update and override settings: <code>$SETTINGS_PATH/«tool»/workspace/update</code>. Contains settings that are overridden with every update and enforced for every team member.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The configurator will recursively traverse the directory structure of 2. and 3. together. For each located file <code>«relative-path»/«file»</code> it will create or update 1. according to the following rules:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If <code>«relative-path»/«file»</code> is present in 1. it will be loaded and used as basis.</p>
+</li>
+<li>
+<p>Otherwise if <code>«relative-path»/«file»</code> is present in 2. it will be loaded and used as basis.</p>
+</li>
+<li>
+<p>If <code>«relative-path»/«file»</code> is present in 3. it will be loaded and merged with the current basis.</p>
+</li>
+<li>
+<p>Variables in the from <code>${«variable-name»}</code> get resolved if <code>«variable-name»</code> is defined.</p>
+</li>
+<li>
+<p>If this caused any change the result is written to <code>«relative-path»/«file»</code> in 1.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In other words this means:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>When your workspace configuration is initially created, 1. is empty. Hence, settings from 2. are used and merged with 3.</p>
+</li>
+<li>
+<p>Settings in 2. are therefore used as initial defaults and suggestions but can be changed by the end-user (developer). Hence, use 2. for things such as themes, UI tweaks, etc. Once the workspace is configured 2. typically is not relevant anymore.</p>
+</li>
+<li>
+<p>Settings in 3. are applied on every update. By default this happens every time you start your IDE, these settings are managed by the <code>settings</code> and in control <code>configurator</code>. If the user modifies such settings and reopens his IDE his changes are reverted. Hence, use 3. for things such as code-formatters, compiler options, paths to tools shipped with <code>devonfw-ide</code>, etc. that should be consistent and homogenous for every team-member.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="configurator.asciidoc_how-to-customize">How to customize</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Many fundamental settings for Eclipse can be found in the sub-folder <code><a href="https://github.com/devonfw/ide/tree/master/settings/src/main/settings/eclipse/workspace/update/.metadata/.plugins/org.eclipse.core.runtime/.settings">.metadata/.plugins/org.eclipse.core.runtime/.settings</a></code>. Of course you could manually edit these settings with a text editor. However, this requires a lot of knowledge. As we want to provide a great user-experience with <code>devonfw-ide</code> you can also do the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>launch your IDE (e.g. <code>devon eclipse</code>).</p>
+</li>
+<li>
+<p>do the desired modification of the configuration within the IDE&#8217;s GUI (e.g. in Eclipse preferences)</p>
+</li>
+<li>
+<p>exit your IDE and wait till it is shutdown</p>
+</li>
+<li>
+<p>run <code>ws-reverse</code> command for your IDE (e.g. <code>devon eclipse ws-reverse</code>) - ensure you do this in the same workspace (without intermediate <code>cd</code> commands).</p>
+</li>
+<li>
+<p>review the changes to your <a href="#settings.asciidoc">settings</a> (git diff)</p>
+</li>
+<li>
+<p>if all looks as expected commit these changes and push them - consider using a feature branch and ask a colleguage to test these changes before you apply this to the main branch.</p>
+</li>
+<li>
+<p>otherwise in case you modified an currently unmanaged setting you can try <code>ws-reverse-add</code> instead of <code>ws-reverse</code> and check the diff again. Be sure not to add undesired settings that should not be managed.</p>
+</li>
+<li>
+<p>in case your changes are in an entirely new configuration file that is currently not managed (in 3.) you need to figure out this file manually and add it to the according location in 3.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:17:21 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

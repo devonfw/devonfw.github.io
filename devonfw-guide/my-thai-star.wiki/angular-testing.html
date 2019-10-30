@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angular testing</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#angular-testing.asciidoc">Angular testing</a>
+<ul class="sectlevel1">
+<li><a href="#angular-testing.asciidoc_testing-components">Testing Components</a>
+<ul class="sectlevel2">
+<li><a href="#angular-testing.asciidoc_dialog-components">Dialog components</a></li>
+</ul>
+</li>
+<li><a href="#angular-testing.asciidoc_testing-services">Testing Services</a></li>
+<li><a href="#angular-testing.asciidoc_testing-in-a-ci-environment">Testing in a CI environment</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="angular-testing.asciidoc" class="sect0">Angular testing</h1>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/angular/testing.JPG"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/angular/testing.JPG" alt="testing"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>MyThaiStar testing is made using Angular default testing environment and syntax language: <a href="https://karma-runner.github.io/1.0/index.html"><strong>Karma</strong></a> and <a href="https://jasmine.github.io/"><strong>Jasmine</strong></a></p>
+</div>
+<div class="paragraph">
+<p>To test an element of the application, you indicate that tests are a special type of files with the extension <strong>.spec.ts</strong>, then, in MyThaiStar angular/CLI config you can notice that there is an array with only one entry, Karma, with at the same time has one entry to Karma.config.js.</p>
+</div>
+<div class="paragraph">
+<p>In the configuration of Karma we indicate which syntax language we are going to use (currently Jasmine as said before) between some other configurations, it is remarkable the last one: <em>browsers</em>. By default, the only available browser is chrome, that is because Karma works opening a chrome view to run all the tests, in that same window, Karma shows the result or errors of the test run. But we can add some other browser to adjust to our necessities, for example, in some automatic processes that run from console, it is not an option to open a chrome window, in that case, MyThaiStar used PhantomJS and ChromeHeadless.</p>
+</div>
+<div class="paragraph">
+<p>Taking all of this into account, to run the test in MyThaiStar we need to move to project root folder and run this command : <code>ng test --browser &lt;browser&gt;</code></p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you run just <code>ng test</code> it will run the three browser options <strong>simultaneously</strong>, giving as a result three test runs and outputs, it can cause timeouts and unwanted behaviors, if you want a shortcut to run the test with chrome window you can just run <code>yarn test</code> so we really encourage to <strong>not use</strong> just <code>ng test</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Here we are going to see how Client side testing of MyThaiStar has been done.</p>
+</div>
+<div class="sect1">
+<h2 id="angular-testing.asciidoc_testing-components">Testing Components</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Angular components were created using angular/CLI <code>ng create component</code> so they already come with an spec file to test them. The only thing left to do is to add the providers and imports needed in the component to work as the component itself, once this is done, the most basic test is to be sure that all the dependencies and the component itself can be correctly created.</p>
+</div>
+<div class="paragraph">
+<p>As an example, this is the <em>spec.ts</em> of the menu view component:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="javascript language-javascript">all the imports...
+
+describe('MenuComponent', () =&gt; {
+  let component: MenuComponent;
+  let fixture: ComponentFixture&lt;MenuComponent&gt;;
+
+  beforeEach(async(() =&gt; {
+    TestBed.configureTestingModule({
+      declarations: [ MenuComponent, MenuCardComponent ],
+      providers: [SidenavService, MenuService, SnackBarService],
+      imports: [
+        BrowserAnimationsModule,
+        BackendModule.forRoot({environmentType: 0, restServiceRoot: 'v1'}),
+        CovalentModule,
+      ],
+    })
+    .compileComponents();
+  }));
+
+  beforeEach(() =&gt; {
+    fixture = TestBed.createComponent(MenuComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () =&gt; {
+    expect(component).toBeTruthy();
+  });
+});</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>First we declare the component to be tested and a Fixture object, then, we configure the testingModule right in the same way we could configure the MenuModule with the difference here that tests always have to use the mockBackend because we do not want to really depend on a server to test our components.</p>
+</div>
+<div class="paragraph">
+<p>Once configured the test module, we have to prepare the context of the test, in this case we create the component, that is exactly what is going on in the <code>beforeEach()</code> function.</p>
+</div>
+<div class="paragraph">
+<p>Finally, we are ready to use the component and it&#8217;s fixture to check if the component has bee correctly created.</p>
+</div>
+<div class="paragraph">
+<p>At this moment this is the case for most of the components, in the future, some work would be applied on this matter to have a full testing experience in MyThaiStar components.</p>
+</div>
+<div class="sect2">
+<h3 id="angular-testing.asciidoc_dialog-components">Dialog components</h3>
+<div class="paragraph">
+<p>Dialog components are in a special category because they can not be tested normally. In the way Material implements the opening of dialogs, you have to create a component that will load into a dialog, to tell the module to load this components when needed, they have to be added into a special array category: <em>EntryComponents</em>. So, to test them, we need to import them in the test file as well.</p>
+</div>
+<div class="paragraph">
+<p>Also, the testing code to open the component is a bit different too:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="javascript language-javascript">...
+  beforeEach(() =&gt; {
+    dialog = TestBed.get(MdDialog);
+    component = dialog.open(CommentDialogComponent).componentInstance;
+  });
+...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>That is right, the <code>beforeEach()</code> function is slightly different from the the example above, in this case we have to force to the test to know that the component is only displayed in a dialog, so we have to open a dialog with this component in order to access it.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="angular-testing.asciidoc_testing-services">Testing Services</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As well as components, services can be tested too, actually, they are even more necessary to be tested because they have inside more complex logic and data management.</p>
+</div>
+<div class="paragraph">
+<p>As an example of testing services i am going to use a well done services, with a specific purpose and with its logic completely tested, the price-calculator service:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="javascript language-javascript">...
+
+describe('PriceCalculatorService', () =&gt; {
+
+  beforeEach(() =&gt; {
+    TestBed.configureTestingModule({
+      providers: [PriceCalculatorService],
+    });
+  });
+
+  it('should be properly injected', inject([PriceCalculatorService], (service: PriceCalculatorService) =&gt; {
+    expect(service).toBeTruthy();
+  }));
+
+  describe('check getPrice method', () =&gt; {
+
+    it('should calculate price for single order without extras', inject([PriceCalculatorService], (service: PriceCalculatorService) =&gt; {
+      const order: OrderView = {
+        dish: {
+          id: 0,
+          price: 12.50,
+          name: 'Order without extras',
+        },
+        orderLine: {
+          comment: '',
+          amount: 1,
+        },
+        extras: [],
+      };
+
+      expect(service.getPrice(order)).toEqual(order.dish.price);
+    }));
+...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In services test, we have to inject the service in order to use it, then we can define some initializing contexts to test if the functions of the services returns the expected values, in the example we can see how an imaginary order is created and expected the function <code>getPrice()</code> to correctly calculate the price of that order.</p>
+</div>
+<div class="paragraph">
+<p>In this same test file you can find some more test regarding all the possibilities of use in that services: orders with and without extras, single order, multiple orders and so on.</p>
+</div>
+<div class="paragraph">
+<p>Some services as well as the components have only tested that they are correctly created and they dependencies properly injected, in the future, will be full covering regarding this services test coverage.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="angular-testing.asciidoc_testing-in-a-ci-environment">Testing in a CI environment</h2>
+<div class="sectionbody">
+
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:17:43 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

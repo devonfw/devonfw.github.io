@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Selenium Basic Usage</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#selenium-basic-usage.asciidoc">Selenium Basic Usage</a>
+<ul class="sectlevel1">
+<li><a href="#selenium-basic-usage.asciidoc_maven-integration">Maven Integration</a></li>
+<li><a href="#selenium-basic-usage.asciidoc_locating-ui-elements">Locating UI Elements</a></li>
+<li><a href="#selenium-basic-usage.asciidoc_ui-element-interaction">UI Element Interaction</a>
+<ul class="sectlevel2">
+<li><a href="#selenium-basic-usage.asciidoc_fetching-values">Fetching values</a></li>
+<li><a href="#selenium-basic-usage.asciidoc_setting-values">Setting values</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="selenium-basic-usage.asciidoc" class="sect0">Selenium Basic Usage</h1>
+<div class="sect1">
+<h2 id="selenium-basic-usage.asciidoc_maven-integration">Maven Integration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Maven is required because the tests will be started using Maven Goals. Even if your webapplication is not built upon a Maven project, you should create a <em>pom.xml</em> just for the Selenium testing purposes.</p>
+</div>
+<div class="paragraph">
+<p>After creating the <em>pom.xml</em> file, the WebDriver extensions have to be declared as a dependency.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;dependency&gt;
+	&lt;groupId&gt;com.github.webdriverextensions&lt;/groupId&gt;
+	&lt;artifactId&gt;webdriverextensions&lt;/artifactId&gt;
+	&lt;version&gt;3.5.0&lt;/version&gt;
+	&lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="selenium-basic-usage.asciidoc_locating-ui-elements">Locating UI Elements</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>UI elements can be located by using the following attributes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ID</p>
+</li>
+<li>
+<p>Class Name</p>
+</li>
+<li>
+<p>Tag Name</p>
+</li>
+<li>
+<p>Name</p>
+</li>
+<li>
+<p>Link Text</p>
+</li>
+<li>
+<p>Partial Link Text</p>
+</li>
+<li>
+<p>CSS Selectors</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Binding these elements to Java objects is relatively straightforward.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">// WebDriver Initialization
+WebDriver driver = new HTMLUnitDriver();
+
+// Loading desired Webpage
+driver.get("somewebpage.com");
+
+// Finding elements using findElement() method with multiple attributes
+Element element = driver.findElement(By.id("someComboBoxId"));
+
+Element element = driver.findElement(By.className("someComboBoxClassName"));
+
+Element element = driver.findElement(By.tagName("someComboBoxTagName"));
+
+Element element = driver.findElement(By.name("someComboBoxName"));
+
+Element element = driver.findElement(By.linkText("someLinkText"));
+
+Element element = driver.findElement(By.partialLinkText("LinkText"));
+
+Element element = driver.findElement(By.cssSelector("#css .cssclass"));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Note:</strong> Alternatively to using the <em>driver.findElement()</em> method, the <em>@Find</em> annotation can simplify the element locating process.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@FindBy(id = "someComboBoxId")
+Element element;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="selenium-basic-usage.asciidoc_ui-element-interaction">UI Element Interaction</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="selenium-basic-usage.asciidoc_fetching-values">Fetching values</h3>
+<div class="paragraph">
+<p>Getter methods can be used to access element values.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">Element element = driver.findElement(By.id("someElementId"))
+String value = element.getText();</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="selenium-basic-usage.asciidoc_setting-values">Setting values</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">driver.findElement(By.id("someId")).sendKeys("Selenium will enter this text");</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:16:49 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

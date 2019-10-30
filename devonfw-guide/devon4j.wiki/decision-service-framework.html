@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Decision Sheet for Choosing a Service Framework</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#decision-service-framework.asciidoc">Decision Sheet for Choosing a Service Framework</a>
+<ul class="sectlevel1">
+<li><a href="#decision-service-framework.asciidoc_rest-services">REST Services</a></li>
+<li><a href="#decision-service-framework.asciidoc_webservices">WebServices</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="decision-service-framework.asciidoc" class="sect0">Decision Sheet for Choosing a Service Framework</h1>
+<div class="paragraph">
+<p>We need to choose which framework(s) we are using to build services. For the devonfw we focus on a standard API if available. However, we also want to recommend an implementation to use. While projects would still be able to choose whatever they want, we want to suggest the best, most robust and established solution. This way projects do not have to worry about the decision and can rely on a production ready framework without getting into trouble. Also besides the standard the configuration of the implementation framework differs and we want to give instructions how to do this in the documentation and by our sample application. This is why in the end the implementation also matters. If a project has a customer demand to use something else then the project has to take care of this. We will always suggest and "support" ONE solution.</p>
+</div>
+<div class="sect1">
+<h2 id="decision-service-framework.asciidoc_rest-services">REST Services</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For REST services we rely on the JAX-RS standard (and NOT on spring-mvc with its proprietary annotations).
+As JAX-RS implementation had Jersey (Reference-Implementation) and Apache CXF on the short-list. As it turned out, Jersey is build for HK2 and the spring integration is rather a quickfix. So we ran into bugs when we used it with spring. There are various issues open in the jersey tracker related to this. E.g. <a href="https://java.net/jira/browse/JERSEY-2112" class="bare">https://java.net/jira/browse/JERSEY-2112</a>
+For Apache CXF the spring container was first choice but container abstraction has been properly introduced by design so it can be used in JEE application servers. Everything works smooth in our sample application and we collected feedback from various projects doing JAX-RS based on CXF either with XML or JSON with success in production.</p>
+</div>
+<div class="paragraph">
+<p>Therefore we decided for Apache CXF here.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="decision-service-framework.asciidoc_webservices">WebServices</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For WebServices we rely on the JAX-WS standard. On our short list we have <a href="https://metro.java.net">Metro2</a> and <a href="http://cxf.apache.org">Apache CXF</a>. Here a collection of facts and considerations:</p>
+</div>
+<table class="tableblock frame-all grid-cols" style="width: 100%;">
+<caption class="title">Table 1. Decision for JAX-WS implementation</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top"><strong>Metro2</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Apache CXF</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Pro</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- reference implementation<br>
+- proven in many projects<br>
+- standard in RF</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- supports both JAX-WS and JAX-RS therefore consistent configuration, single integration into servlet-container and spring<br>
+- proven in a lot of projects<br>
+- already chosen by devonfw for JAX-RS (so we already have a JAX-WS implementation on board).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Contra</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- We expect trouble if use the planned URL path scheme &lt;app&gt;/services/(rest|ws)/... as CXF and Metro2 would both occupy services/*<br>
+- ugly endorsed trouble and small spring-integration issues with WSDL/XSD link resolution (input from Martin Girschik)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- IMHO currently used in less projects than metro2 so less existing experience<br></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>See also
+<a href="http://predic8.de/axis2-cxf-jax-ws-vergleich.htm" class="bare">http://predic8.de/axis2-cxf-jax-ws-vergleich.htm</a>
+We also had an evaluation at CSD research on CXF vs. Axis2. vs. Metro that suggested CXF.</p>
+</div>
+<div class="paragraph">
+<p>BTW: Axis(2) is definitely out of discussion for devonfw.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:12:58 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

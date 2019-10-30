@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guide for DBIntegration of MariaDB</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-for-dbintegration-of-mariadb">Guide for DBIntegration of MariaDB</a>
+<ul class="sectlevel1">
+<li><a href="#using-mariadb-with-docker">Using MariaDB with docker</a></li>
+<li><a href="#enabling-mariadb-and-disabling-h2-database">Enabling MariaDB and disabling h2 Database</a></li>
+<li><a href="#disabling-mariadb-and-enabling-h2-database">Disabling MariaDB and enabling H2 Database</a></li>
+<li><a href="#run-the-sample-application-with-the-angular-js-client">Run the sample application with the Angular JS Client</a></li>
+<li><a href="#run-the-sample-application-with-the-sencha-client">Run the sample application with the Sencha Client</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-for-dbintegration-of-mariadb" class="sect0">Guide for DBIntegration of MariaDB</h1>
+<div class="paragraph">
+<p>devon4j is by default configured with the H2 Databse.</p>
+</div>
+<div class="paragraph">
+<p>To integrate devon4j with the MariaDB 10.0.27, as a first step, MariaDB 10.0.27 Database has to be installed .  Follow the link [here](<a href="https://mariadb.com/kb/en/mariadb/installing-mariadb-msi-packages-on-windows/" class="bare">https://mariadb.com/kb/en/mariadb/installing-mariadb-msi-packages-on-windows/</a>) to install MariaDB 10.0.27</p>
+</div>
+<div class="sect1">
+<h2 id="using-mariadb-with-docker">Using MariaDB with docker</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We can provision a MariaDB with docker by running the following line:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">docker run --name mariadb -p 3306:3306 -e MYSQL_ROOT_PASSWORD=password -d mariadb:10.0.28 --lower-case-table-names=1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And access it using mysql console using also a docker process</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">docker run -it --rm --link mariadb:mariadb mariadb:10.0.28 sh -c 'exec mysql -hmariadb -P3306 -uroot -ppassword'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Also, when configuring the connection url value, take into acount the address of the docker machine (in windows it usually point to 192.168.99.100)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">spring.datasource.url=jdbc:mariadb://192.168.99.100:3306/restaurant?user=root&amp;password=password</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="enabling-mariadb-and-disabling-h2-database">Enabling MariaDB and disabling h2 Database</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Assuming the MariaDB database that is created is <strong>RESTAURANT</strong> , execute the following script to create Flyway MetaData Table <strong>schema_version</strong> in the database <strong>RESTAURANT</strong></p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">CREATE TABLE `schema_version` (
+	`version_rank` INT(11) NOT NULL,
+	`installed_rank` INT(11) NOT NULL,
+	`version` VARCHAR(50) NOT NULL,
+	`description` VARCHAR(200) NOT NULL,
+	`type` VARCHAR(20) NOT NULL,
+	`script` VARCHAR(1000) NOT NULL,
+	`checksum` INT(11) NULL DEFAULT NULL,
+	`installed_by` VARCHAR(100) NOT NULL,
+	`installed_on` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	`execution_time` INT(11) NOT NULL,
+	`success` TINYINT(1) NOT NULL,
+	PRIMARY KEY (`version`),
+	INDEX `schema_version_vr_idx` (`version_rank`),
+	INDEX `schema_version_ir_idx` (`installed_rank`),
+	INDEX `schema_version_s_idx` (`success`)
+)
+COLLATE='latin1_swedish_ci'
+ENGINE=InnoDB
+;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Add the dependency for MariaDB 10.0.27 Java Connector in devon4j core module <em>pom.xml</em>. Dependency for MariaDB 10.0.27 is as follows :</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">&lt;dependency&gt;
+   &lt;groupId&gt;org.mariadb.jdbc&lt;/groupId&gt;
+   &lt;artifactId&gt;mariadb-java-client&lt;/artifactId&gt;
+   &lt;version&gt;1.5.4&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Change the value of following property ‘spring.datasource.url’ in devon4j core module  file ‘src/main/resources/config/<em>application-mysql.properties</em>’. Accordingly, change the following properties</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Hostname</p>
+</li>
+<li>
+<p>Port</p>
+</li>
+<li>
+<p>Database Name</p>
+</li>
+<li>
+<p>spring.datasource.username</p>
+</li>
+<li>
+<p>spring.datasource.password</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Comment the spring active profile <strong>h2mem</strong> and uncomment the spring active profile <strong>mysql</strong> in core module /src/main/resources/config/<em>application.properties</em></p>
+</li>
+<li>
+<p>Comment the line that has spring active profile <strong>junit</strong> and uncomment the line that has spring active profiles <strong>junit</strong> and <strong>mysql</strong> separated by comma in the core module src/test/resources/config/<em>application.properties</em></p>
+</li>
+<li>
+<p>Run the script core/src/test/setup/mariadb.bat for Windows Environment and the script core/src/test/setup/mariadb.sh for Unix/Linux Environments.*</p>
+</li>
+<li>
+<p>Open /devon4j-sample-core/src/test/java/io/oasp/gastronomy/restaurant/tablemanagement/service/impl/rest/TablemanagementRestServiceTest.java. In test testSaveTable() &amp; testFindTablesByPost() change the waiterId from 2L to 3L.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Note</strong>: Make sure that JUNIT Test cases run successfully for devon4j Project using the command <strong>‘mvn clean install’</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Assuming that devon4j is integrated with MariaDB 10.0.27, following are the steps to enable H2 Database</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="disabling-mariadb-and-enabling-h2-database">Disabling MariaDB and enabling H2 Database</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Comment the dependency for MariaDB 10.0.27 Java Connector in devon4j core module <em>pom.xml</em>. Dependency for MariaDB 10.0.27 is as follows</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">&lt;!--
+&lt;dependency&gt;
+&lt;groupId&gt;org.mariadb.jdbc&lt;/groupId&gt;
+      	&lt;artifactId&gt;mariadb-java-client&lt;/artifactId&gt;
+      	&lt;version&gt;1.5.4&lt;/version&gt;
+&lt;/dependency&gt;
+--&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Comment the spring active profile <strong>mysql</strong> and uncomment the spring active profile <strong>h2mem</strong> in core module src/main/resources/config/<em>application.properties</em></p>
+</li>
+<li>
+<p>Uncomment the line that has spring active profile <strong>junit</strong> and comment the line that has spring active profiles <strong>junit</strong> and <strong>mysql</strong> separated by comma in the file core module src/test/resources/config/<em>application.properties</em>.</p>
+</li>
+<li>
+<p>Run the script core/src/test/setup/disablemariadb.bat for Windows Environment and the script core/src/test/setup/disablemariadb.sh for Unix/Linux Environments.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Note</strong>: Make sure that JUNIT Test cases run successfully for devon4j Project using the command <strong>‘mvn clean install’</strong>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="run-the-sample-application-with-the-angular-js-client">Run the sample application with the Angular JS Client</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Follow the steps mentioned <a href="https://github.com/oasp/oasp4js/wiki/tutorial-jspacking-angular-client">here</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="run-the-sample-application-with-the-sencha-client">Run the sample application with the Sencha Client</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Follow the steps mentioned <a href="https://github.com/devonfw/devon/wiki/getting-started-deployment-on-tomcat">here</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Note</strong> : One has to recompile devon4j project by executing the command <strong>mvn clean install</strong> in <strong>devon4j</strong> project after doing the changes mentioned in the above said instructions.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:12:45 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

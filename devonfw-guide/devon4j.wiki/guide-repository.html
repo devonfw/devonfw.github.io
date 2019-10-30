@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spring-Data</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-repository.asciidoc">Spring-Data</a>
+<ul class="sectlevel1">
+<li><a href="#guide-repository.asciidoc_motivation">Motivation</a></li>
+<li><a href="#guide-repository.asciidoc_repository">Repository</a>
+<ul class="sectlevel2">
+<li><a href="#guide-repository.asciidoc_example">Example</a></li>
+<li><a href="#guide-repository.asciidoc_further-examples">Further examples</a></li>
+<li><a href="#guide-repository.asciidoc_auditing">Auditing</a></li>
+</ul>
+</li>
+<li><a href="#guide-repository.asciidoc_dependency">Dependency</a></li>
+<li><a href="#guide-repository.asciidoc_drawbacks">Drawbacks</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-repository.asciidoc" class="sect0">Spring-Data</h1>
+<div class="paragraph">
+<p>If you are using the springframework and have no restrictions regarding that, we recommend to use <a href="https://projects.spring.io/spring-data-jpa/">spring-data-jpa</a> via <a href="http://repo1.maven.org/maven2/com/devonfw/java/starters/devon4j-starter-spring-data-jpa/">devon4j-starter-spring-data-jpa</a> that brings advanced integration (esp. for QueryDSL).</p>
+</div>
+<div class="sect1">
+<h2 id="guide-repository.asciidoc_motivation">Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The benefits of spring-data are (for examples and explanations see next sections):</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>All you need is one single repository interface for each entity. No need for a separate implementation or other code artefacts like XML descriptors, <code>NamedQueries</code> class, etc.</p>
+</li>
+<li>
+<p>You have all information together in one place (the repository interface) that actually belong together (where as in the classic approach you have the static <a href="#guide-jpa-query.asciidoc">queries</a> in an XML file, constants to them in <code>NamedQueries</code> class and referencing usages in DAO implementation classes).</p>
+</li>
+<li>
+<p>Static <a href="#guide-jpa-query.asciidoc">queries</a> are most simple to realize as you do not need to write any method body. This means you can develop faster.</p>
+</li>
+<li>
+<p>Support for paging is already build-in. Again for static <a href="#guide-jpa-query.asciidoc">query</a> method the is nothing you have to do except using the paging objects in the signature.</p>
+</li>
+<li>
+<p>Still you have the freedom to write custom implementations via default methods within the repository interface (e.g. for dynamic queries).</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-repository.asciidoc_repository">Repository</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For each entity <code>«Entity»Entity</code> an interface is created with the name <code>«Entity»Repository</code> extending <a href="https://github.com/devonfw/devon4j/blob/develop/modules/jpa-spring-data/src/main/java/com/devonfw/module/jpa/dataaccess/api/data/DefaultRepository.java"><code>DefaultRepository</code></a>.
+Such repository is the analogy to a <a href="#guide-dao.asciidoc">Data-Access-Object (DAO)</a> used in the classic approach or when spring-data is not an option.</p>
+</div>
+<div class="sect2">
+<h3 id="guide-repository.asciidoc_example">Example</h3>
+<div class="paragraph">
+<p>The following example shows how to write such a repository:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public interface ExampleRepository extends DefaultRepository&lt;ExampleEntity&gt; {
+
+  @Query("SELECT example FROM ExampleEntity example" //
+      + " WHERE example.name = :name")
+  List&lt;ExampleEntity&gt; findByName(@Param("name") String name);
+
+  @Query("SELECT example FROM ExampleEntity example" //
+      + " WHERE example.name = :name")
+  Page&lt;ExampleEntity&gt; findByNamePaginated(@Param("name") String name, Pageable pageable);
+
+  default Page&lt;ExampleEntity&gt; findByCriteria(ExampleSearchCriteriaTo criteria) {
+    ExampleEntity alias = newDslAlias();
+    JPAQuery&lt;ExampleEntity&gt; query = newDslQuery(alias);
+    String name = criteria.getName();
+    if ((name != null) &amp;&amp; !name.isEmpty()) {
+      QueryUtil.get().whereString(query, $(alias.getName()), name, criteria.getNameOption());
+    }
+    return QueryUtil.get().findPaginated(criteria.getPageable(), query, false);
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This <code>ExampleRepository</code> has the following features:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>CRUD support from spring-data (see <a href="https://docs.spring.io/spring-data/data-jpa/docs/current/api/org/springframework/data/jpa/repository/JpaRepository.html">JavaDoc</a> for details).</p>
+</li>
+<li>
+<p>Support for <a href="https://github.com/devonfw/devon4j/blob/develop/modules/jpa-spring-data/src/main/java/com/devonfw/module/jpa/dataaccess/api/data/QueryDslSupport.java">QueryDSL integration</a>, <a href="https://github.com/devonfw/devon4j/blob/develop/modules/jpa-basic/src/main/java/com/devonfw/module/jpa/dataaccess/api/QueryUtil.java">paging and more</a> as well as <a href="https://github.com/devonfw/devon4j/blob/develop/modules/jpa-basic/src/main/java/com/devonfw/module/jpa/dataaccess/api/feature/FeatureForceIncrementModificationCounter.java">locking</a> via <a href="https://github.com/devonfw/devon4j/blob/develop/modules/jpa-spring-data/src/main/java/com/devonfw/module/jpa/dataaccess/api/data/GenericRepository.java">GenericRepository</a></p>
+</li>
+<li>
+<p>A static <a href="#guide-jpa-query.asciidoc">query</a> method <code>findByName</code> to find all <code>ExampleEntity</code> instances from DB that have the given name. Please note the <code>@Param</code> annotation that links the method parameter with the variable inside the query (<code>:name</code>).</p>
+</li>
+<li>
+<p>The same with pagination support via <code>findByNamePaginated</code> method.</p>
+</li>
+<li>
+<p>A dynamic <a href="#guide-jpa-query.asciidoc">query</a> method <code>findByCriteria</code> showing the QueryDSL and paging integration into spring-data provided by devon.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-repository.asciidoc_further-examples">Further examples</h3>
+<div class="paragraph">
+<p>You can also read the JUnit test-case <a href="https://github.com/devonfw/devon4j/blob/develop/starters/starter-spring-data-jpa/src/test/java/com/devonfw/module/jpa/dataaccess/api/DefaultRepositoryTest.java">DefaultRepositoryTest</a> that is testing an example
+<a href="https://github.com/devonfw/devon4j/blob/develop/starters/starter-spring-data-jpa/src/test/java/com/devonfw/example/component/dataaccess/api/FooRepository.java">FooRepository</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-repository.asciidoc_auditing">Auditing</h3>
+<div class="paragraph">
+<p>In case you need <a href="#guide-auditing.asciidoc">auditing</a>, you only need to extend <code>DefaultRevisionedRepository</code> instead of <code>DefaultRepository</code>. The auditing methods can be found in <a href="https://github.com/devonfw/devon4j/blob/develop/modules/jpa-spring-data/src/main/java/com/devonfw/module/jpa/dataaccess/api/data/GenericRevisionedRepository.java">GenericRevisionedRepository</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-repository.asciidoc_dependency">Dependency</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In case you want to switch to or add spring-data support to your devon application all you need is this maven dependency:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;!-- Starter for consuming REST services --&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;com.devonfw.java.starters&lt;/groupId&gt;
+  &lt;artifactId&gt;devon4j-starter-spring-data-jpa&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-repository.asciidoc_drawbacks">Drawbacks</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Spring-data also has some drawbacks:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Some kind of magic behind the scenes that are not so easy to understand. So in case you want to extend all your repositories without providing the implementation via a default method in a parent repository interface you need to deep-dive into spring-data. We assume that you do not need that and hope what spring-data and devon already provides out-of-the-box is already sufficient.</p>
+</li>
+<li>
+<p>The spring-data magic also includes guessing the query from the method name. This is not easy to understand and especially to debug. Our suggestion is not to use this feature at all and either provide a <code>@Query</code> annotation or an implementation via default method.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:13:38 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

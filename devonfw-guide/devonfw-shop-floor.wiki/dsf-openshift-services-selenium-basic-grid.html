@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Basic Selenium Grid setup in OpenShift</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body id="dsf-openshift-services-selenium-basic-grid.asciidoc" class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>[Under construction]</em></p>
+</div>
+<hr>
+<div class="paragraph">
+<p>The purpose of the present document is to provide the basic steps carried out to setup a Selenium Grid (Hub + Nodes) in OpenShift.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dsf-openshift-services-selenium-basic-grid.asciidoc_introduction">Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Selenium is a tool to automate web browser across many platforms. It allows the automation of the testing in many different browsers, operating systems, programing laguages, or testing frameworks. (for further information pelase see <a href="http://www.seleniumhq.org/">Selenium</a>)</p>
+</div>
+<div class="paragraph">
+<p>Selenium Grid is the platform provided by Selenium in order to perform the execution of tests in parallel and in a distributed way.</p>
+</div>
+<div class="paragraph">
+<p>It basically consists on a Selenium Server (also known as hub or simply server) which redirects the requests it receives to the appropriate node (Firefox node, Chrome node, &#8230;&#8203;) depending on how the Selenium WebDriver is configured or implemented (See <a href="http://www.seleniumhq.org/docs/">Selenium Doc.</a>)</p>
+</div>
+<div class="sect2">
+<h3 id="dsf-openshift-services-selenium-basic-grid.asciidoc_additional-documentacion">Additional documentacion:</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.tutorialspoint.com/selenium/selenium_grids.htm" class="bare">https://www.tutorialspoint.com/selenium/selenium_grids.htm</a></p>
+</li>
+<li>
+<p><a href="http://www.softwaretestinghelp.com/selenium-ide-download-and-installation-selenium-tutorial-2" class="bare">http://www.softwaretestinghelp.com/selenium-ide-download-and-installation-selenium-tutorial-2</a></p>
+</li>
+<li>
+<p><a href="https://examples.javacodegeeks.com/enterprise-java/selenium/selenium-standalone-server-example" class="bare">https://examples.javacodegeeks.com/enterprise-java/selenium/selenium-standalone-server-example</a></p>
+</li>
+<li>
+<p><a href="https://tripleqa.com/2016/09/26/hello-world-selenium" class="bare">https://tripleqa.com/2016/09/26/hello-world-selenium</a></p>
+</li>
+<li>
+<p><a href="http://queirozf.com/entries/selenium-hello-world-style-tutorial" class="bare">http://queirozf.com/entries/selenium-hello-world-style-tutorial</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dsf-openshift-services-selenium-basic-grid.asciidoc_prerequisites">Prerequisites</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>OpenShift up &amp; running</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dsf-openshift-services-selenium-basic-grid.asciidoc_procedure">Procedure</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The present procedure is divided into two different main parts:
+* First part: Selenium Hub (server) installation
+* Second part: Selenium node installation (Firefox &amp; Chrome)
+* Create persistent volumes for the hub and the node(s)</p>
+</div>
+<div class="sect2">
+<h3 id="dsf-openshift-services-selenium-basic-grid.asciidoc_selenium-hub-installation">Selenium Hub installation</h3>
+<div class="paragraph">
+<p>The followed approach consists on deploying new image from the OpenShift WenConsole.</p>
+</div>
+<div class="paragraph">
+<p>The image as well as its documentation and details can be found at <a href="https://hub.docker.com/r/selenium/hub/">Selenium Hub Docker Image</a></p>
+</div>
+<div class="sect3">
+<h4 id="dsf-openshift-services-selenium-basic-grid.asciidoc_step-1-deploy-image">Step 1: Deploy Image</h4>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/selenium/hub/step1.png" alt="step1">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dsf-openshift-services-selenium-basic-grid.asciidoc_step-2-image-name">Step 2: Image Name</h4>
+<div class="paragraph">
+<p>As it is specified in the <a href="https://hub.docker.com/r/selenium/hub/">documentation</a> <em>(selenium/hub)</em></p>
+</div>
+<div class="paragraph">
+<p><em>(Please notice that, as it is described in the additional documentation of the above links, the server will run by default on <strong>4444</strong> port)</em></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/selenium/hub/step2.png" alt="step2">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dsf-openshift-services-selenium-basic-grid.asciidoc_step-3-introduce-the-appropriate-resource-name">Step 3: Introduce the appropriate resource name</h4>
+<div class="paragraph">
+<p><em>(selenium-hub in this case)</em></p>
+</div>
+<div class="paragraph">
+<p><em>(No additional config. is required by the moment)</em></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/selenium/hub/step3a.png" alt="step3a">
+</div>
+</div>
+<div class="paragraph">
+<p>Once the image is deployed, you will be able to check &amp; review the config. of the container. Please notice by, by default, <strong>no route is created for external traffic</strong>, hence the application (the selenium server or hub) is not reachable from outside the cluster</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/selenium/hub/step3b.png" alt="step3b">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dsf-openshift-services-selenium-basic-grid.asciidoc_step-4-create-a-route-for-external-traffic">Step 4: Create a route for external traffic</h4>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/selenium/hub/step4.png" alt="step4">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dsf-openshift-services-selenium-basic-grid.asciidoc_step-5-change-the-default-config.-if-necessary">Step 5: Change the default config. if necessary</h4>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/selenium/hub/step5.png" alt="step5">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dsf-openshift-services-selenium-basic-grid.asciidoc_done-">DONE !!</h4>
+<div class="paragraph">
+<p>The Selenium Server is now accesible from outside the cluster. Click on the link of the route and you will be able to see the server home page.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/selenium/hub/done1.png" alt="done1">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dsf-openshift-services-selenium-basic-grid.asciidoc_consoleview-config-to-see-the-default-server-config.">console/view config to see the default server config.</h4>
+<div class="paragraph">
+<p>Please notice that the server is not detecting any node up &amp; running, since we have not yet installed none of them.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/selenium/hub/done2.png" alt="done2">
+</div>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-openshift-services-selenium-basic-grid.asciidoc_selenium-node-firefox-installation">Selenium Node Firefox installation</h3>
+<div class="paragraph">
+<p><em>(Same steps apply for Selenium Node Chrome with the selenium/node-chrome Docker image)</em></p>
+</div>
+<div class="paragraph">
+<p>The key point of the nodes installation is to specify the host name and port of the hub. If this step is not correctly done, the container will be setup but the application will not run.</p>
+</div>
+<div class="paragraph">
+<p>The followed approach consists on deploying new image from the OpenShift WenConsole.</p>
+</div>
+<div class="paragraph">
+<p>The image as well as its documentation and details can be found at <a href="https://hub.docker.com/r/selenium/node-firefox/">Selenium Hub Docker Image</a> <em>(firefox node in this case)</em></p>
+</div>
+<div class="sect3">
+<h4 id="dsf-openshift-services-selenium-basic-grid.asciidoc_step-1-deploy-image">Step 1: Deploy Image</h4>
+<div class="paragraph">
+<p>Introduce the appropriate Docker Image name as it is specified in the <a href="https://hub.docker.com/r/selenium/node-firefox/">documentation</a> <em>(selenium/node-firefox)</em></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/selenium/node/step1.png" alt="step1">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dsf-openshift-services-selenium-basic-grid.asciidoc_step-2-introduce-the-appropriate-resource-name">Step 2: Introduce the appropriate resource name</h4>
+<div class="paragraph">
+<p><em>(selenium-node-firefox in this case)</em></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/selenium/node/step2.png" alt="step2">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dsf-openshift-services-selenium-basic-grid.asciidoc_step-3-introduce">Step 3: Introduce, as environment variables, the host name and port of the selenium hub previously created</h4>
+<div class="paragraph">
+<p><strong>Env. var. for selenium hub host name</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Name: HUB_PORT_4444_TCP_ADDR</p>
+</li>
+<li>
+<p>Value: The Selenium hub host name. It&#8217;s recommended to use the service name of the internal OpenShift service.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Env. var. for host selenium hub host port</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Name: HUB_PORT_4444_TCP_PORT</p>
+</li>
+<li>
+<p>Value: 4444 <em>(by default)</em>, or the appropriate one if it was changed during the installation.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/selenium/node/step3.png" alt="step3">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dsf-openshift-services-selenium-basic-grid.asciidoc_done-">DONE !!</h4>
+<div class="paragraph">
+<p>If the creation of the container was correct, we will be able to see our new selenium-node-firefox application up &amp; running, as well as we will be able to see that the firefox node has correctly detected the selenium hub <em>(in the log of the POD)</em></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/selenium/node/done1.png" alt="done1">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/selenium/node/done2.png" alt="done2">
+</div>
+</div>
+<div class="paragraph">
+<p>If we go back to the configuration of the SeleniumHub through the WebConsole, we also will be able to see the our new firefox node</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/selenium/node/done3.png" alt="done3">
+</div>
+</div>
+<hr>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-openshift-services-selenium-basic-grid.asciidoc_persistent-volumes">Persistent Volumes</h3>
+<div class="paragraph">
+<p>Last part of the installation of the Selenium Grid consists on creating persistent volumes for both, the hub container and the node container.</p>
+</div>
+<div class="paragraph">
+<p>Persistent Volumes can be easely created folling the the <a href="#dsf-openshift-services-bitbucket-extra-server-configuration.asciidoc">BitBucket Extra server configuration</a></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:16:17 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

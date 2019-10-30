@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mailer Module</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guides-mailer.asciidoc">Mailer Module</a>
+<ul class="sectlevel1">
+<li><a href="#guides-mailer.asciidoc_installing">Installing</a></li>
+<li><a href="#guides-mailer.asciidoc_configuring">Configuring</a>
+<ul class="sectlevel2">
+<li><a href="#guides-mailer.asciidoc_forroot">forRoot()</a></li>
+<li><a href="#guides-mailer.asciidoc_forrootasync">forRootAsync()</a></li>
+</ul>
+</li>
+<li><a href="#guides-mailer.asciidoc_usage">Usage</a>
+<ul class="sectlevel2">
+<li><a href="#guides-mailer.asciidoc_mailerservice-methods">MailerService methods</a></li>
+</ul>
+</li>
+<li><a href="#guides-mailer.asciidoc_handlebars-templates">Handlebars templates</a></li>
+<li><a href="#guides-mailer.asciidoc_local-development">Local development</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guides-mailer.asciidoc" class="sect0">Mailer Module</h1>
+<div class="paragraph">
+<p>This module enables you to send emails in devon4node. It also provides a template engine using Handlebars.</p>
+</div>
+<div class="paragraph">
+<p>It is a NestJS module that inject into your application a MailerService, which is the responsible to send the emails using the nodemailer library.</p>
+</div>
+<div class="sect1">
+<h2 id="guides-mailer.asciidoc_installing">Installing</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Execute the following command in a devon4node project:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="shell language-shell">yarn add @devon4node/mailer</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guides-mailer.asciidoc_configuring">Configuring</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To configure the mailer module, you only need to import it in your application into another module. Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">@Module({
+  ...
+  imports: [
+    MailerModule.forRoot(),
+  ],
+  ...
+})</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Your must pass the configuration using the forRoot or forRootAsync methods.</p>
+</div>
+<div class="sect2">
+<h3 id="guides-mailer.asciidoc_forroot">forRoot()</h3>
+<div class="paragraph">
+<p>The forRoot method recives an MailerModuleOptions object as parameter. It configures the MailerModule using the input MailerModuleOptions object.</p>
+</div>
+<div class="paragraph">
+<p>The structure of MailerModuleOptions is:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">{
+  hbsOptions?: {
+    templatesDir: string;
+    extension?: string;
+    partialsDir?: string;
+    helpers?: IHelperFunction[];
+    compilerOptions?: ICompileOptions;
+  },
+  mailOptions?: nodemailerSmtpTransportOptions;
+  emailFrom: string;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here, you need to specify the <a href="https://handlebarsjs.com/reference.html">Handlebars compile options</a>, the <a href="https://nodemailer.com/smtp">nodemailer transport options</a> and the email address which will send the emails.
+Then, you need to call to forRoot function in the module imports. Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">@Module({
+  ...
+  imports: [
+    MailerModule.forRoot({
+      mailOptions: {
+        host: 'localhost',
+        port: 1025,
+        secure: false,
+        tls: {
+          rejectUnauthorized: false,
+        },
+      },
+      emailFrom: 'noreply@capgemini.com',
+      hbsOptions: {
+        templatesDir: join(__dirname, '../..', 'templates/views'),
+        partialsDir: join(__dirname, '../..', 'templates/partials'),
+        helpers: [{
+          name: 'fullname',
+          func: person =&gt; `${person.name} ${person.surname}`,s
+        }],
+      },
+    }),
+  ...
+})</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guides-mailer.asciidoc_forrootasync">forRootAsync()</h3>
+<div class="paragraph">
+<p>The method forRootAsync enables you to get the mailer configuration in a asynchronous way. It is usefull when you need to get the configuration using, for example, a service (e.g. ConfigurationService).</p>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">@Module({
+  ...
+  imports: [
+    MailerModule.forRootAsync({
+      imports: [ConfigurationModule],
+      useFactory: (config: ConfigurationService) =&gt; {
+        return config.mailerConfig;
+      },
+      inject: [ConfigurationService],
+    }),
+  ...
+})</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this example, we use the ConfigurationService in order to get the MailerModuleOptions (the same as forRoot)</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guides-mailer.asciidoc_usage">Usage</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order to use, you only need to inject using the dependency injection the MailerService.</p>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">@Injectable()
+export class CatsService {
+  constructor(private readonly mailer: MailerService) {}
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then, you only need to use the methods provided by the MailerService in your service. Take into account that you can inject it in every place that support NestJS dependency injection.</p>
+</div>
+<div class="sect2">
+<h3 id="guides-mailer.asciidoc_mailerservice-methods">MailerService methods</h3>
+<div class="sect3">
+<h4 id="guides-mailer.asciidoc_sendplainmail">sendPlainMail</h4>
+<div class="paragraph">
+<p>The method sendPlainMail recive a string sends a email.</p>
+</div>
+<div class="paragraph">
+<p>The method signatures are:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">sendPlainMail(emailOptions: SendMailOptions): Promise&lt;SentMessageInfo&gt;;
+sendPlainMail(to: string, subject: string, mail: string): Promise&lt;SentMessageInfo&gt;;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Examples:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">this.mailer.sendPlainMail({
+  to: 'example@example.com',
+  subject: 'This is a subject',
+  html: '&lt;h1&gt;Hello world&lt;/h1&gt;'
+});
+this.mailer.sendPlainMail('example@example.com', 'This is a subject', '&lt;h1&gt;Hello world&lt;/h1&gt;');</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guides-mailer.asciidoc_sendtemplatemail">sendTemplateMail</h4>
+<div class="paragraph">
+<p>The method sendTemplateMail sends a email based on a Handlebars template. The templates are registered using the templatesDir option or using the addTemplate method.
+The template name is the name of the template (without extension) or the first parameter of the method addTemplate.</p>
+</div>
+<div class="paragraph">
+<p>The method signatures are:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">sendTemplateMail(emailOptions: SendMailOptions, templateName: string, emailData: any, hbsOptions?: RuntimeOptions): Promise&lt;SentMessageInfo&gt;;
+sendTemplateMail(to: string, subject: string, templateName: string, emailData: any, hbsOptions?: RuntimeOptions): Promise&lt;SentMessageInfo&gt;;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Examples:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">this.mailer.sendTemplateMail({
+  to: 'example@example.com',
+  subject: 'This is a subject',
+  html: '&lt;h1&gt;Hello world&lt;/h1&gt;'
+}, 'template1', { person: {name: 'Dario', surname: 'Rodriguez'}});
+this.mailer.sendTemplateMail('example@example.com', 'This is a subject', 'template1', { person: {name: 'Dario', surname: 'Rodriguez'}});</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guides-mailer.asciidoc_addtemplate">addTemplate</h4>
+<div class="paragraph">
+<p>Adds a new template to the MailerService.</p>
+</div>
+<div class="paragraph">
+<p>Mehotd signature:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">addTemplate(name: string, template: string, options?: CompileOptions): void;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">this.mailer.addTemplate('newTemplate', '&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body&gt;{{&gt;partial1}}&lt;/body&gt;&lt;/html&gt;')</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guides-mailer.asciidoc_registerpartial">registerPartial</h4>
+<div class="paragraph">
+<p>Register a new partial in Handlebars.</p>
+</div>
+<div class="paragraph">
+<p>Mehotd signature:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">registerPartial(name: string, partial: Handlebars.Template&lt;any&gt;): void;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">this.mailer.registerPartial('partial', '&lt;h1&gt;Hello World&lt;/h1&gt;')</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guides-mailer.asciidoc_registerhelper">registerHelper</h4>
+<div class="paragraph">
+<p>Register a new helper in Handlebars.</p>
+</div>
+<div class="paragraph">
+<p>Mehotd signature:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">registerHelper(name: string, helper: Handlebars.HelperDelegate): void;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">this.mailer.registerHelper('fullname', person =&gt; `${person.name} ${person.surname}`)</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guides-mailer.asciidoc_handlebars-templates">Handlebars templates</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As mentioned above, this module allow you to use Handlebars as template engine, but it is optional. If you do not need the Handlebars, you just need to keep the hbsOptions undefined.</p>
+</div>
+<div class="paragraph">
+<p>In order to get the templates form the file system, you can specify the template folder, the partials folder and the helpers.
+At the moment of module initialization, it will read the content of the template folder, and will register every file with the name (without extension) and the content as Handlebars template. It will do the same for the partials.</p>
+</div>
+<div class="paragraph">
+<p>You can specify the extension of template files using the <code>extension</code> parameter. The default value is <code>.handlebars</code></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guides-mailer.asciidoc_local-development">Local development</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you want to work with this module but you dont have a SMTP server, you can use the <code>streamTransport</code>. Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">{
+  mailOptions: {
+    streamTransport: true,
+    newline: 'windows',
+  },
+  emailFrom: ...
+  hbsOptions: ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then, you need to get the sendPlainMail or sendTemplateMail result, and print the email to the extandart output (STDOUT). Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">const mail = await this.mailer.sendTemplateMail(...);
+
+mail.message.pipe(process.stdout);</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:15:45 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

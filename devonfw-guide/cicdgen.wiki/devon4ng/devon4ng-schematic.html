@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Devon4ng schematic</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#devon4ng-schematic.asciidoc_devon4ng-schematic">Devon4ng schematic</a>
+<ul class="sectlevel2">
+<li><a href="#devon4ng-schematic.asciidoc_devon4ng-schematic-arguments">Devon4ng schematic arguments</a></li>
+<li><a href="#devon4ng-schematic.asciidoc_devon4ng-generated-files">Devon4ng generated files</a></li>
+<li><a href="#devon4ng-schematic.asciidoc_devon4ng-docker-generated-files">Devon4ng Docker generated files</a></li>
+</ul>
+</li>
+</ul>
+<div class="sect1">
+<h2 id="devon4ng-schematic.asciidoc_devon4ng-schematic">Devon4ng schematic</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>With the <code>cicdgen generate devon4ng</code> command you can generate some files required for CICD. In this section we will explain the arguments of this command and also the files that will be generated.</p>
+</div>
+<div class="sect2">
+<h3 id="devon4ng-schematic.asciidoc_devon4ng-schematic-arguments">Devon4ng schematic arguments</h3>
+<div class="paragraph">
+<p>When you execute the <code>cicdgen generate devon4ng</code> command you can also add some arguments in order to modify the behaviour of the command. Those arguments are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>--docker</p>
+<div class="paragraph">
+<p>The type of this paramter if boolean. If it is present, docker related files and pipeline stage will be also generated. For more details see docker section of Jenkinsfile and <a href="#devon4ng-schematic.asciidoc_devon4ng-docker-generated-files">files generated for docker</a></p>
+</div>
+</li>
+<li>
+<p>--plurl</p>
+<div class="paragraph">
+<p>Url of Production Line. It is required when <code>--docker</code> is true, and it will be used to know where the docker image will be uploaded.</p>
+</div>
+</li>
+<li>
+<p>--openshift</p>
+<div class="paragraph">
+<p>The type of this paramter if boolean. If it is present, OpenShift related files and pipeline stage will be also generated. For more details see OpenShift section of Jenkinsfile and <a href="#devon4ng-schematic.asciidoc_devon4ng-docker-generated-files">files generated for OpenShift</a> (same as <code>--docker</code>)</p>
+</div>
+</li>
+<li>
+<p>--ocurl</p>
+<div class="paragraph">
+<p>OpenShift cluster url where the application will be builded and deployed.</p>
+</div>
+</li>
+<li>
+<p>--ocn</p>
+<div class="paragraph">
+<p>Openshift cluster namespace</p>
+</div>
+</li>
+<li>
+<p>--groupid</p>
+<div class="paragraph">
+<p>The project groupId. This argument is required. It will be used for store the project in a maven repository at Nexus 3. Why maven? Because is the kind of repository where we can upload/download a zip file easily. Npm repository needs a package.json file but, as we compile the angular application to static javascript and html files, the package.json is no needed anymore.</p>
+</div>
+</li>
+<li>
+<p>--teams</p>
+<div class="paragraph">
+<p>With this argument we can add the teams notification option in the <a href="#devon4ng-schematic.asciidoc_jenkinsfile-teams">Jenkinsfile</a>.</p>
+</div>
+</li>
+<li>
+<p>--teamsname</p>
+<div class="paragraph">
+<p>The name of the Microsft Teams webhook. It is defined at Microsoft Teams connectors.</p>
+</div>
+</li>
+<li>
+<p>--teamsurl</p>
+<div class="paragraph">
+<p>The url of the Microsft Teams webhook. It is returned by Microsoft Teams when you create a connector.</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devon4ng-schematic.asciidoc_devon4ng-generated-files">Devon4ng generated files</h3>
+<div class="paragraph">
+<p>When you execute the generate devon4ng command, some files will be added/updated in your project.</p>
+</div>
+<div class="sect3">
+<h4 id="devon4ng-schematic.asciidoc_files">Files</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>angular.json</p>
+<div class="paragraph">
+<p>The angular.json is modified in order to change the compiled files destination folder. Now, when you make a build of your project, the compiled files will be generated into dist folder instead of dist/&lt;project-name&gt; folder.</p>
+</div>
+</li>
+<li>
+<p>package.json</p>
+<div class="paragraph">
+<p>The package.json is modified in order to add a script for test the application using Chrome Headless instead of a regular chrome. This script is called <code>test:ci</code>.</p>
+</div>
+</li>
+<li>
+<p>karma.conf.js</p>
+<div class="paragraph">
+<p>The karma.conf.js is also modified in order to add the Chrome Headless as a browser to execute test. The coverage output folder is change to <code>./coverage</code> instead of <code>./coverage/&lt;project-name&gt;</code></p>
+</div>
+</li>
+<li>
+<p>Jenkinsfile</p>
+<div class="paragraph">
+<p>The Jenkinsfile is the file which define the Jenkins pipeline of our project. With this we can execute the test, build the application and deploy it automatically following a CICD methodology. This file is prepared to work with the Production Line default values, but it is also fully configurable to your needs.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Prerequisites</p>
+<div class="ulist">
+<ul>
+<li>
+<p>A Production Line instance. It can works also if you have a Jenkins, SonarQube and Nexus3, but in this case maybe you need to configure them properly.</p>
+</li>
+<li>
+<p>NodeJS installed in Jenkins as a global tool.</p>
+</li>
+<li>
+<p>Google Chrome installed in Jenkins as a global custom tool.</p>
+</li>
+<li>
+<p>SonarQube installed in Jenkins as a global tool.</p>
+</li>
+<li>
+<p>Maven3 installed in Jenkins as a global tool.</p>
+</li>
+<li>
+<p>A maven global settings properly configured in Jenkins.</p>
+</li>
+<li>
+<p>If you will use docker :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Docker installed in Jenkins as a global custom tool.</p>
+</li>
+<li>
+<p>The Nexus3 with a docker repository.</p>
+</li>
+<li>
+<p>A machine with docker installed where the build and deploy will happen.</p>
+</li>
+<li>
+<p>A docker network called application.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>If you will use OpenShift :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>An OpenShift instance</p>
+</li>
+<li>
+<p>The OpenShift projects created</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>The Jenkins syntax</p>
+<div class="paragraph">
+<p>In this section we will  explain a little bit the syntax of the Jenkins, so if you need to change something you will be able to do it properly.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>agent: Here you can specify the Jenkins agente where the pipeline will be executed. The default value is any.</p>
+</li>
+<li>
+<p>options: Here you can set global options for the pipeline. By default, we add a build discarded to delete old artifacts/buils of the pipeline and also we disable the concurrent builds.</p>
+<div id="devon4ng-schematic.asciidoc_jenkinsfile-teams" class="paragraph">
+<p>If the teams option is passed to cicdgen, we add a new option in order to send notifications to Microsoft Teams with the status of the pipeline executions.</p>
+</div>
+</li>
+<li>
+<p>tools: Here we define the global tools configurations. By default a version of nodejs is added here.</p>
+</li>
+<li>
+<p>environment: Here all environment variables are defined. All values defined here matches with the Production Line defaults. If you Jenkins has other values, you need to update it manually.</p>
+</li>
+<li>
+<p>stages: Here are defined all stages that our pipeline will execute. Those stages are:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Loading Custom Tools: in this stage some custom tools are loaded. Also we set some variables depending on the git branch which you are executing.</p>
+</li>
+<li>
+<p>Fresh Dependency Installation: install all packages need to build/run your angular project.</p>
+</li>
+<li>
+<p>Code Linting: execute the linter analysis.</p>
+</li>
+<li>
+<p>Execute Angular tests: execute the angular test in a Chrome Headless.</p>
+</li>
+<li>
+<p>SonarQube code analysis: send the project to SonarQube in order to get the static code analysis of your project.</p>
+</li>
+<li>
+<p>Build Application: compile the application to be ready to deploy in a web server.</p>
+</li>
+<li>
+<p>Deliver application into Nexus: store all compiled files in Nexus3 as a zip file.</p>
+</li>
+<li>
+<p>If <code>--docker</code> is present:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Create the Docker image: build a new docker image that contains the new version of the project.</p>
+</li>
+<li>
+<p>Deploy the new image: deploy a new version of the application using the image created in the previous stage. The previous version is removed.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>If <code>--openshift</code> is present:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Create the Docker image: build a new docker image that contains the new version of the project using a OpenShift build config.</p>
+</li>
+<li>
+<p>Deploy the new image: deploy a new version of the application in OpenShift.</p>
+</li>
+<li>
+<p>Check pod status: checks that the application deployed in the previous stage is running properly. If the application does not run the pipeline will fail.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>post: actions that will be executed after the stages. We use it to clean up all files.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devon4ng-schematic.asciidoc_devon4ng-docker-generated-files">Devon4ng Docker generated files</h3>
+<div class="paragraph">
+<p>When you generate the files for a devon4ng you can also pass the option <code>--docker</code>. It will generate also some extra files related to docker.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+If you pass the <code>--docker</code> option the option <code>--plurl</code> is also required. It will be used to upload the images to the Nexus3 inside Production Line. Example: if your PL url is <code>test.s2-eu.capgemini.com</code> you should execute the command in this way: <code>cicdgen generate devon4ng --groupid com.devonfw --docker --plurl test.s2-eu.capgemini.com</code>, and it will use docker-registry-test.s2-eu.capgemini.com as docker registry.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="devon4ng-schematic.asciidoc_files">Files</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>.dockerignore</p>
+<div class="paragraph">
+<p>In this files are defined the folders that will not be copied to the docker image. Fore more information read the <a href="https://docs.docker.com/engine/reference/builder/#dockerignore-file">official documentation</a>.</p>
+</div>
+</li>
+<li>
+<p>Dockerfile</p>
+<div class="paragraph">
+<p>This file contains the instructions to build a docker image for you project. This Dockerfile is for local development purposes, you can use it in your machine executing:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ cd &lt;path-to-your-project&gt;
+$ docker build -t &lt;project-name&gt;/&lt;tag&gt; .</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This build is using a multi-stage build. First, it use a node image in order to compile the source code, then it will use a nginx image as a web server for our devon4ng application. With the multi-stage build we avoid everything related to node.js in our final image, where we only have a nginx with our application compiled.</p>
+</div>
+</li>
+<li>
+<p>Dockerfile.ci</p>
+<div class="paragraph">
+<p>This file contains the instructions to create a docker image for you project. The main difference with the Dockerfile is that this file will be only used in the Jenkins pipeline. Instead of compiling again the code, it takes all compiled files and the nginx.conf from Jenkins to the image.</p>
+</div>
+</li>
+<li>
+<p>nginx.conf</p>
+<div class="paragraph">
+<p>Configuration file for our nginx server. It defines the root folder of our application where docker copy the files to. Also it defines a fallback route to the index as described in the <a href="https://angular.io/guide/deployment#routed-apps-must-fallback-to-indexhtml">angular deployment guide</a> in oder to enable the angular routes.</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:12:40 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

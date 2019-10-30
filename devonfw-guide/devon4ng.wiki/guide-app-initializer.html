@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APP_INITIALIZER</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-app-initializer.asciidoc">APP_INITIALIZER</a>
+<ul class="sectlevel1">
+<li><a href="#guide-app-initializer.asciidoc_what-is-the-app_initializer-pattern">What is the APP_INITIALIZER pattern</a></li>
+<li><a href="#guide-app-initializer.asciidoc_what-is-app_initializer">What is APP_INITIALIZER</a></li>
+<li><a href="#guide-app-initializer.asciidoc_creating-a-app_initializer-configuration">Creating a APP_INITIALIZER configuration</a></li>
+<li><a href="#guide-app-initializer.asciidoc_setting-up-the-config-files">Setting up the config files</a>
+<ul class="sectlevel2">
+<li><a href="#guide-app-initializer.asciidoc_docker-external-configuration-optional">Docker external configuration (Optional)</a></li>
+<li><a href="#guide-app-initializer.asciidoc_external-json-configuration">External json configuration</a></li>
+</ul>
+</li>
+<li><a href="#guide-app-initializer.asciidoc_setting-up-the-proxies">Setting up the proxies</a>
+<ul class="sectlevel2">
+<li><a href="#guide-app-initializer.asciidoc_docker-optional">Docker (Optional)</a></li>
+<li><a href="#guide-app-initializer.asciidoc_external-configuration">External Configuration</a></li>
+</ul>
+</li>
+<li><a href="#guide-app-initializer.asciidoc_adding-the-loadexternalconfig-boolean-to-the-environments">Adding the loadExternalConfig boolean to the environments</a></li>
+<li><a href="#guide-app-initializer.asciidoc_creating-core-configuration-service">Creating core configuration service</a>
+<ul class="sectlevel2">
+<li><a href="#guide-app-initializer.asciidoc_using-the-config-service">Using the Config Service</a></li>
+<li><a href="#guide-app-initializer.asciidoc_final-steps">Final steps</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-app-initializer.asciidoc" class="sect0">APP_INITIALIZER</h1>
+<div class="sect1">
+<h2 id="guide-app-initializer.asciidoc_what-is-the-app_initializer-pattern">What is the APP_INITIALIZER pattern</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The APP_INITIALIZER pattern allows an aplication to choose which configuration is going to be used in the start of the application, this is useful because it allows to setup different configurations, for example, for docker or a remote configuration. This provides benefits since this is done on <code>runtime</code>, so theres no need to recompile the whole application to switch from configuration.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-app-initializer.asciidoc_what-is-app_initializer">What is APP_INITIALIZER</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>APP_INITIALIZER allows to provide a service in the initialization of the application in a <code>@NgModule</code>. It also allows to use a factory, allowing to create a singleton in the same service. An example can be found in MyThaiStar <code>/core/config/config.module.ts</code>:</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The provider expects the return of a <code>Promise</code>, if it is using Observables, a change with the method <code>toPromise()</code> will allow a switch from <code>Observable</code> to <code>Promise</code></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="TypeScript language-TypeScript">import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
+
+import { ConfigService } from './config.service';
+
+@NgModule({
+  imports: [HttpClientModule],
+  providers: [
+    ConfigService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: ConfigService.factory,
+      deps: [ConfigService],
+      multi: true,
+    },
+  ],
+})
+export class ConfigModule {}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is going to allow the creation of a <code>ConfigService</code> where, using a singleton, the service is going to load an external config depending on a route. This dependence with a route, allows to setup diferent configuration for docker etc. This is seen in the <code>ConfigService</code> of MyThaiStar:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="TypeScript language-TypeScript">import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Config, config } from './config';
+
+@Injectable()
+export class ConfigService {
+  constructor(private httpClient: HttpClient) {}
+
+  static factory(appLoadService: ConfigService) {
+    return () =&gt; appLoadService.loadExternalConfig();
+  }
+
+  // this method gets external configuration calling /config endpoint
+  //and merges into config object
+  loadExternalConfig(): Promise&lt;any&gt; {
+    if (!environment.loadExternalConfig) {
+      return Promise.resolve({});
+    }
+
+    const promise = this.httpClient
+      .get('/config')
+      .toPromise()
+      .then((settings) =&gt; {
+        Object.keys(settings || {}).forEach((k) =&gt; {
+          config[k] = settings[k];
+        });
+        return settings;
+      })
+      .catch((error) =&gt; {
+        return 'ok, no external configuration';
+      });
+
+    return promise;
+  }
+
+  getValues(): Config {
+    return config;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As it is mentioned earlier, you can see the use of a factory to create a singleton at the start. After that, <code>loadExternalConfig</code> is going to look for a boolean inside the corresponding environment file inside the path <code>src/environments/</code>, this boolean <code>loadExternalConfig</code> is going to easily allow to switch to a external config. If it is true, it generates a promise that overwrites the parameters of the local config, allowing to load the external config. Finally, the last method <code>getValues()</code> is going to allow to return the file config with the values (overwritten or not). The local <code>config</code> file from MyThaiStar can be seen here:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="TypeScript language-TypeScript">export enum BackendType {
+  IN_MEMORY,
+  REST,
+  GRAPHQL,
+}
+
+interface Role {
+  name: string;
+  permission: number;
+}
+
+interface Lang {
+  label: string;
+  value: string;
+}
+
+export interface Config {
+  version: string;
+  backendType: BackendType;
+  restPathRoot: string;
+  restServiceRoot: string;
+  pageSizes: number[];
+  pageSizesDialog: number[];
+  roles: Role[];
+  langs: Lang[];
+}
+
+export const config: Config = {
+  version: 'dev',
+  backendType: BackendType.REST,
+  restPathRoot: 'http://localhost:8081/mythaistar/',
+  restServiceRoot: 'http://localhost:8081/mythaistar/services/rest/',
+  pageSizes: [8, 16, 24],
+  pageSizesDialog: [4, 8, 12],
+  roles: [
+    { name: 'CUSTOMER', permission: 0 },
+    { name: 'WAITER', permission: 1 },
+  ],
+  langs: [
+    { label: 'English', value: 'en' },
+    { label: 'Deutsch', value: 'de' },
+    { label: 'Español', value: 'es' },
+    { label: 'Català', value: 'ca' },
+    { label: 'Français', value: 'fr' },
+    { label: 'Nederlands', value: 'nl' },
+    { label: 'हिन्दी', value: 'hi' },
+    { label: 'Polski', value: 'pl' },
+    { label: 'Русский', value: 'ru' },
+    { label: 'български', value: 'bg' },
+  ],
+};</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally, inside a environment file <code>src/environments/environment.ts</code> the use of the boolean <code>loadExternalConfig</code> is seen:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="TypeScript language-TypeScript">// The file contents for the current environment will overwrite these during build.
+// The build system defaults to the dev environment which uses `environment.ts`, but if you do
+// `ng build --env=prod` then `environment.prod.ts` will be used instead.
+// The list of which env maps to which file can be found in `.angular-cli.json`.
+
+export const environment: {
+  production: boolean;
+  loadExternalConfig: boolean;
+} = { production: false, loadExternalConfig: false };</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-app-initializer.asciidoc_creating-a-app_initializer-configuration">Creating a APP_INITIALIZER configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This section is going to be used to create a new <code>APP_INITIALIZER</code> basic example. For this, a basic app with angular is going to be generated using <code>ng new "appname"</code> substituting <code>appname</code> for the name of the app choosed.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-app-initializer.asciidoc_setting-up-the-config-files">Setting up the config files</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="guide-app-initializer.asciidoc_docker-external-configuration-optional">Docker external configuration (Optional)</h3>
+<div class="paragraph">
+<p>This section is only done if theres a docker configuration in the app you are setting up this type of configuration.</p>
+</div>
+<div class="paragraph">
+<p>1.- Create in the root folder <code>/docker-external-config.json</code>. This external config is going to be used when the application is loaded with docker (if the boolean to load the external configuration is set to true). Here you need to add all the config parameter you want to load with docker:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+    "version": "docker-version"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>2.- In the root, in the file <code>/Dockerfile</code> angular is going to copy the <code>docker-external-config.json</code> that was created before into the nginx html route:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>....
+COPY docker-external-config.json /usr/share/nginx/html/docker-external-config.json
+....</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-app-initializer.asciidoc_external-json-configuration">External json configuration</h3>
+<div class="paragraph">
+<p>1.- Create a json file in the route <code>/src/external-config.json</code>. This external config is going to be used when the application is loaded with the start script (if the boolean to load the external configuration is set to true). Here you need to add all the config parameter you want to load:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+    "version": "external-config"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>2.- The file named <code>/angular.json</code> located at the root is going to be modified to add the file <code>external-config.json</code> that was just created to both <code>"assets"</code> inside <code>Build</code> and <code>Test</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">	....
+	"build": {
+          ....
+            "assets": [
+              "src/assets",
+              "src/data",
+              "src/favicon.ico",
+              "src/manifest.json",
+              "src/external-config.json"
+            ]
+	        ....
+        "test": {
+	  ....
+	   "assets": [
+              "src/assets",
+              "src/data",
+              "src/favicon.ico",
+              "src/manifest.json",
+              "src/external-config.json"
+            ]
+	  ....</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-app-initializer.asciidoc_setting-up-the-proxies">Setting up the proxies</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This step is going to setup two proxies. This is going to allow to load the config desired by the context, in case that it is using docker to load the app or in case it loads the app with angular. Loading diferent files is made posible by the fact that the <code>ConfigService</code> method <code>loadExternalConfig()</code> looks for the path <code>/config</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="guide-app-initializer.asciidoc_docker-optional">Docker (Optional)</h3>
+<div class="paragraph">
+<p>1.- This step is going to be for docker. Add <code>docker-external-config.json</code> to nginx configuration (<code>/nginx.conf</code>) that is in the root of the application:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>....
+  location  ~ ^/config {
+        alias /usr/share/nginx/html/docker-external-config.json;
+  }
+....</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-app-initializer.asciidoc_external-configuration">External Configuration</h3>
+<div class="paragraph">
+<p>1.- Now the file <code>/proxy.conf.json</code>, needs to be created/modified this file can be found in the root of the application. In this file you can add the route of the external configuration in <code>target</code> and the name of the file in <code>^/config:</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">....
+  "/config": {
+    "target": "http://localhost:4200",
+    "secure": false,
+    "pathRewrite": {
+      "^/config": "/external-config.json"
+    }
+  }
+....</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>2.- The file <code>package.json</code> found in the root of the application is gonna use the start script to load the proxy config that was just created:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">  "scripts": {
+....
+    "start": "ng serve --proxy-config proxy.conf.json -o",
+....</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-app-initializer.asciidoc_adding-the-loadexternalconfig-boolean-to-the-environments">Adding the loadExternalConfig boolean to the environments</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order to load an external config we need to add the loadExternalConfig boolean to the environments. To do so, inside the folder <code>environments/</code> the files are going to get modified adding this boolean to each environment that is going to be used. In this case, only two environments are going to be modified (<code>environment.ts</code> and <code>environment.prod.ts</code>). Down below theres an example of the modification being done in the <code>environment.prod.ts</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="TypeScript language-TypeScript">export const environment: {
+  production: boolean;
+  loadExternalConfig: boolean;
+} = { production: false, loadExternalConfig: false };</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the file in first instance theres the declaration of the types of the variables. After that, theres the definition of those variables. This variable <code>loadExternalConfig</code> is going to be used by the service, allowing to setup a external config just by switching the <code>loadExternalConfig</code> to true.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-app-initializer.asciidoc_creating-core-configuration-service">Creating core configuration service</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order to create the whole configuration module three are going to be created:</p>
+</div>
+<div class="paragraph">
+<p>1.- Create in the core <code>app/core/config/</code> a <code>config.ts</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="TypeScript language-TypeScript">  export interface Config {
+    version: string;
+  }
+
+  export const config: Config = {
+    version: 'dev'
+  };</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Taking a look to this file, it creates a interface (<code>Config</code>) that is going to be used by the variable that exports (<code>export const config: Config</code>). This variable <code>config</code> is going to be used by the service that is going to be created.</p>
+</div>
+<div class="paragraph">
+<p>2.- Create in the core <code>app/core/config/</code> a <code>config.service.ts</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="TypeScript language-TypeScript">import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Config, config } from './config';
+
+@Injectable()
+export class ConfigService {
+  constructor(private httpClient: HttpClient) {}
+
+  static factory(appLoadService: ConfigService) {
+    return () =&gt; appLoadService.loadExternalConfig();
+  }
+
+  // this method gets external configuration calling /config endpoint
+  // and merges into config object
+  loadExternalConfig(): Promise&lt;any&gt; {
+    if (!environment.loadExternalConfig) {
+      return Promise.resolve({});
+    }
+
+    const promise = this.httpClient
+      .get('/config')
+      .toPromise()
+      .then((settings) =&gt; {
+        Object.keys(settings || {}).forEach((k) =&gt; {
+          config[k] = settings[k];
+        });
+        return settings;
+      })
+      .catch((error) =&gt; {
+        return 'ok, no external configuration';
+      });
+
+    return promise;
+  }
+
+  getValues(): Config {
+    return config;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As it was explained in previous steps, at first, there is a factory that uses the method <code>loadExternalConfig()</code>, this factory is going to be used in later steps in the module. After that, the <code>loadExternalConfig()</code> method checks if the boolean in the environment is false. If it is false it will return the promise resolved with the normal config. Else, it is going to load the external config in the path (<code>/config</code>), and overwrite the values from the external config to the config thats going to be used by the app, this is all returned in a promise.</p>
+</div>
+<div class="paragraph">
+<p>3.- Create in the core a module for the config <code>app/core/config/</code> a <code>config.module.ts</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="TypeScript language-TypeScript">import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
+
+import { ConfigService } from './config.service';
+
+@NgModule({
+  imports: [HttpClientModule],
+  providers: [
+    ConfigService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: ConfigService.factory,
+      deps: [ConfigService],
+      multi: true,
+    },
+  ],
+})
+export class ConfigModule {}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As seen earlier, the <code>ConfigService</code> is added to the module. In this addition, the app is initialized(<code>provide</code>) and it uses the factory that was created in the <code>ConfigService</code> loading the config with or without the external values depending on the boolean in the <code>config</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="guide-app-initializer.asciidoc_using-the-config-service">Using the Config Service</h3>
+<div class="paragraph">
+<p>As a first step, in the file <code>/app/app.module.ts</code> the <code>ConfigModule</code> created earlier in the other step is going to be imported:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="TypeScript language-TypeScript">  imports: [
+    ....
+    ConfigModule,
+    ....
+  ]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After that, the <code>ConfigService</code> is going to be injected into the <code>app.component.ts</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="TypeScript language-TypeScript">....
+import { ConfigService } from './core/config/config.service';
+....
+export class AppComponent {
+....
+  constructor(public configService: ConfigService) { }
+....</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally, for this demonstration app, the component <code>app/app.component.html</code> is going to show the version of the config it is using at that moment.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="html language-html">&lt;div style="text-align:center"&gt;
+  &lt;h1&gt;
+    Welcome to {{ title }}!
+  &lt;/h1&gt;
+&lt;/div&gt;
+&lt;h2&gt;Here is the configuration version that is using angular right now: {{configService.getValues().version}}&lt;/h2&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-app-initializer.asciidoc_final-steps">Final steps</h3>
+<div class="paragraph">
+<p>The script <code>start</code> that was created earlier in the <code>package.json</code> (<code>npm start</code>) is going to be used to start the application. After that, modifying the boolean <code>loadExternalConfig</code> inside the corresponding environment file inside <code>/app/environments/</code> should show the different config versions.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/loadExternalConfigFalse.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/app-initializer/loadExternalConfigFalse.png" alt="loadExternalConfigFalse"></a>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/loadExternalConfigTrue.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/app-initializer/loadExternalConfigTrue.png" alt="loadExternalConfigTrue"></a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:14:58 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

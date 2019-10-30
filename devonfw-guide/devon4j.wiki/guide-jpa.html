@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Java Persistence API</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-jpa.asciidoc">Java Persistence API</a>
+<ul class="sectlevel1">
+<li><a href="#guide-jpa.asciidoc_entity">Entity</a>
+<ul class="sectlevel2">
+<li><a href="#guide-jpa.asciidoc_a-simple-entity">A Simple Entity</a></li>
+<li><a href="#guide-jpa.asciidoc_entities-and-datatypes">Entities and Datatypes</a></li>
+<li><a href="#guide-jpa.asciidoc_primary-keys">Primary Keys</a></li>
+</ul>
+</li>
+<li><a href="#guide-jpa.asciidoc_relationships">Relationships</a>
+<ul class="sectlevel2">
+<li><a href="#guide-jpa.asciidoc_n1-and-11-relationships">n:1 and 1:1 Relationships</a></li>
+<li><a href="#guide-jpa.asciidoc_1n-and-nm-relationships">1:n and n:m Relationships</a></li>
+<li><a href="#guide-jpa.asciidoc_eager-vs.-lazy-loading">Eager vs. Lazy Loading</a></li>
+<li><a href="#guide-jpa.asciidoc_cascading-relationships">Cascading Relationships</a></li>
+</ul>
+</li>
+<li><a href="#guide-jpa.asciidoc_embeddable">Embeddable</a></li>
+<li><a href="#guide-jpa.asciidoc_inheritance">Inheritance</a></li>
+<li><a href="#guide-jpa.asciidoc_repositories-and-daos">Repositories and DAOs</a>
+<ul class="sectlevel2">
+<li><a href="#guide-jpa.asciidoc_concurrency-control">Concurrency Control</a></li>
+<li><a href="#guide-jpa.asciidoc_optimistic-locking">Optimistic Locking</a></li>
+<li><a href="#guide-jpa.asciidoc_pessimistic-locking">Pessimistic Locking</a></li>
+</ul>
+</li>
+<li><a href="#guide-jpa.asciidoc_database-auditing">Database Auditing</a></li>
+<li><a href="#guide-jpa.asciidoc_testing-entities-and-daos">Testing Entities and DAOs</a></li>
+<li><a href="#guide-jpa.asciidoc_principles">Principles</a></li>
+<li><a href="#guide-jpa.asciidoc_database-configuration">Database Configuration</a>
+<ul class="sectlevel2">
+<li><a href="#guide-jpa.asciidoc_database-system-and-access">Database System and Access</a></li>
+<li><a href="#guide-jpa.asciidoc_database-migration">Database Migration</a></li>
+<li><a href="#guide-jpa.asciidoc_database-logging">Database Logging</a></li>
+<li><a href="#guide-jpa.asciidoc_pooling">Pooling</a></li>
+</ul>
+</li>
+<li><a href="#guide-jpa.asciidoc_security">Security</a>
+<ul class="sectlevel2">
+<li><a href="#guide-jpa.asciidoc_sql-injection">SQL-Injection</a></li>
+<li><a href="#guide-jpa.asciidoc_limited-permissions-for-application">Limited Permissions for Application</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-jpa.asciidoc" class="sect0">Java Persistence API</h1>
+<div class="paragraph">
+<p>For mapping java objects to a relational database we use the <a href="http://www.oracle.com/technetwork/java/javaee/tech/persistence-jsp-140049.html">Java Persistence API (JPA)</a>.
+As JPA implementation we recommend to use <a href="http://hibernate.org/orm/">hibernate</a>. For general documentation about JPA and hibernate follow the links above as we will not replicate the documentation. Here you will only find guidelines and examples how we recommend to use it properly. The following examples show how to map the data of a database to an entity. As we use JPA we abstract from <a href="#guide-sql.asciidoc">SQL</a> here. However, you will still need a <a href="https://en.wikipedia.org/wiki/Data_definition_language">DDL</a> script for your schema and during maintenance also <a href="#guide-database-migration.asciidoc">database migrations</a>. Please follow our <a href="#guide-sql.asciidoc">SQL guide</a> for such artefacts.</p>
+</div>
+<div class="sect1">
+<h2 id="guide-jpa.asciidoc_entity">Entity</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Entities are part of the persistence layer and contain the actual data. They are POJOs (Plain Old Java Objects) on which the relational data of a database is mapped and vice versa. The mapping is configured via JPA annotations (<code>javax.persistence</code>). Usually an entity class corresponds to a table of a database and a property to a column of that table. A persistent entity instance then represents a row of the database table.</p>
+</div>
+<div class="sect2">
+<h3 id="guide-jpa.asciidoc_a-simple-entity">A Simple Entity</h3>
+<div class="paragraph">
+<p>The following listing shows a simple example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Entity
+@Table(name="TEXTMESSAGE")
+public class MessageEntity extends ApplicationPersistenceEntity implements Message {
+
+  private String text;
+
+  public String getText() {
+    return this.text;
+  }
+
+  public void setText(String text) {
+    this.text = text;
+  }
+ }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>@Entity</code> annotation defines that instances of this class will be entities which can be stored in the database. The <code>@Table</code> annotation is optional and can be used to define the name of the corresponding table in the database. If it is not specified, the simple name of the entity class is used instead.</p>
+</div>
+<div class="paragraph">
+<p>In order to specify how to map the attributes to columns we annotate the corresponding getter methods (technically also private field annotation is also possible but approaches can not be mixed).
+The <code>@Id</code> annotation specifies that a property should be used as <a href="#guide-jpa.asciidoc_primary-keys">primary key</a>.
+With the help of the <code>@Column</code> annotation it is possible to define the name of the column that an attribute is mapped to as well as other aspects such as <code>nullable</code> or <code>unique</code>. If no column name is specified, the name of the property is used as default.</p>
+</div>
+<div class="paragraph">
+<p>Note that every entity class needs a constructor with public or protected visibility that does not have any arguments. Moreover, neither the class nor its getters and setters may be final.</p>
+</div>
+<div class="paragraph">
+<p>Entities should be simple POJOs and not contain business logic.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-jpa.asciidoc_entities-and-datatypes">Entities and Datatypes</h3>
+<div class="paragraph">
+<p>Standard datatypes like <code>Integer</code>, <code>BigDecimal</code>, <code>String</code>, etc. are mapped automatically by JPA. Custom <a href="#guide-datatype.asciidoc">datatypes</a> are mapped as serialized <a href="#guide-jpa.asciidoc_blob">BLOB</a> by default what is typically undesired.
+In order to map atomic custom datatypes (implementations of`+SimpleDatatype`) we implement an <code>AttributeConverter</code>. ere is a simple example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Converter(autoApply = true)
+public class MoneyAttributeConverter implements AttributeConverter&lt;Money, BigDecimal&gt; {
+
+  public BigDecimal convertToDatabaseColumn(Money attribute) {
+    return attribute.getValue();
+  }
+
+  public Money convertToEntityAttribute(BigDecimal dbData) {
+    return new Money(dbData);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The annotation <code>@Converter</code> is detected by the JPA vendor if the annotated class is in the packages to scan. Further, <code>autoApply = true</code> implies that the converter is automatically used for all properties of the handled datatype. Therefore all entities with properties of that datatype will automatically be mapped properly (in our example <code>Money</code> is mapped as <code>BigDecimal</code>).</p>
+</div>
+<div class="paragraph">
+<p>In case you have a composite datatype that you need to map to multiple columns the JPA does not offer a real solution. As a workaround you can use a bean instead of a real datatype and declare it as <a href="#guide-jpa.asciidoc_embeddable"><code>@Embeddable</code></a>. If you are using hibernate you can implement <code>CompositeUserType</code>. Via the <code>@TypeDef</code> annotation it can be registered to hibernate. If you want to annotate the <code>CompositeUserType</code> implementation itself you also need another annoation (e.g. <code>MappedSuperclass</code> tough not technically correct) so it is found by the scan.</p>
+</div>
+<div class="sect3">
+<h4 id="guide-jpa.asciidoc_enumerations">Enumerations</h4>
+<div class="paragraph">
+<p>By default JPA maps Enums via their ordinal. Therefore the database will only contain the ordinals (0, 1, 2, etc.) . So , inside the database you can not easily understand their meaning. Using <code>@Enumerated</code> with <code>EnumType.STRING</code> allows to map the enum values to their name (<code>Enum.name()</code>). Both approaches are fragile when it comes to code changes and refactorings (if you change the order of the enum values or rename them) after the application is deployed to production. If you want to avoid this and get a robust mapping you can define a dedicated string in each enum value for database representation that you keep untouched. Then you treat the enum just like any other <a href="#guide-jpa.asciidoc_entities-and-datatypes">custom datatype</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-jpa.asciidoc_blob">BLOB</h4>
+<div class="paragraph">
+<p>If binary or character large objects (BLOB/CLOB) should be used to store the value of an attribute, e.g. to store an icon, the <code>@Lob</code> annotation should be used as shown in the following listing:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Lob
+public byte[] getIcon() {
+  return this.icon;
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Using a byte array will cause problems if BLOBs get large because the entire BLOB is loaded into the RAM of the server and has to be processed by the garbage collector. For larger BLOBs the type <a href="http://docs.oracle.com/javase/7/docs/api/java/sql/Blob.html">Blob</a> and streaming should be used.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public Blob getAttachment() {
+  return this.attachment;
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-jpa.asciidoc_date-and-time">Date and Time</h4>
+<div class="paragraph">
+<p>To store date and time related values, the temporal annotation can be used as shown in the listing below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Temporal(TemporalType.TIMESTAMP)
+public java.util.Date getStart() {
+  return start;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Until Java8 the java data type <code>java.util.Date</code> (or Jodatime) has to be used.
+<code>TemporalType</code> defines the granularity. In this case, a precision of nanoseconds is used. If this granularity is not wanted, <code>TemporalType.DATE</code> can be used instead, which only has a granularity of milliseconds.
+Mixing these two granularities can cause problems when comparing one value to another. This is why we <strong>only</strong>  use <code>TemporalType.TIMESTAMP</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-jpa.asciidoc_querydsl-and-custom-types">QueryDSL and Custom Types</h4>
+<div class="paragraph">
+<p>Using the Aliases API of QueryDSL might result in an <code>InvalidDataAccessApiUsageException</code> when using custom datatypes in entity properties. This can be circumvented in two steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Ensure you have the following maven dependencies in your project (<code>core</code> module) to support custom types via the Aliases API:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.ow2.asm&lt;/groupId&gt;
+  &lt;artifactId&gt;asm&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;cglib&lt;/groupId&gt;
+  &lt;artifactId&gt;cglib&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Make sure, that all your custom types used in entities provide a non-argument constructor with at least visibility level <code>protected</code>.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-jpa.asciidoc_idref">IdRef</h4>
+<div class="paragraph">
+<p>IdRef can be used to reference the other entities in TOs</p>
+</div>
+<div class="paragraph">
+<p>IdRef is just a wrapper for reference ID as Long. so instead of</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">private Long orderId;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>you can write</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">private IdRef&lt;Order&gt; orderId;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When using IdRef make sure that the Junit tests contains the following</p>
+</div>
+<div class="paragraph">
+<p>Junit test should be derived from DbTest (e.g. ComponentDbTest and SubsystemDbTest).</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-jpa.asciidoc_primary-keys">Primary Keys</h3>
+<div class="paragraph">
+<p>We only use simple Long values as primary keys (IDs). By default it is auto generated (<code>@GeneratedValue(strategy=GenerationType.AUTO)</code>). This is already provided by the class <code>com.devonfw.&lt;projectName&gt;.general.dataaccess.api.AbstractPersistenceEntity</code> that you can extend.
+In case you have business oriented keys (often as <code>String</code>), you can define an additional property for it and declare it as unique (<code>@Column(unique=true)</code>).
+Be sure to include "AUTO_INCREMENT" in your sql table field ID to be able to persist data (or similar for other databases).</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-jpa.asciidoc_relationships">Relationships</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="guide-jpa.asciidoc_n1-and-11-relationships">n:1 and 1:1 Relationships</h3>
+<div class="paragraph">
+<p>Entities often do not exist independently but are in some relation to each other. For example, for every period of time one of the StaffMember&#8217;s of the restaurant example has worked, which is represented by the class <code>WorkingTime</code>, there is a relationship to this StaffMember.</p>
+</div>
+<div class="paragraph">
+<p>The following listing shows how this can be modeled using JPA:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">...
+
+@Entity
+public class WorkingTimeEntity {
+   ...
+
+   private StaffMemberEntity staffMember;
+
+   @ManyToOne
+   @JoinColumn(name="STAFFMEMBER")
+   public StaffMemberEntity getStaffMember() {
+      return this.staffMember;
+   }
+
+   public void setStaffMember(StaffMemberEntity staffMember) {
+      this.staffMember = staffMember;
+   }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To represent the relationship, an attribute of the type of the corresponding entity class that is referenced has been introduced. The relationship is a n:1 relationship, because every <code>WorkingTime</code> belongs to exactly one <code>StaffMember</code>, but a <code>StaffMember</code> usually worked more often than once.<br>
+This is why the <code>@ManyToOne</code> annotation is used here. For 1:1 relationships the <code>@OneToOne</code> annotation can be used which works basically the same way. To be able to save information about the relation in the database, an additional column in the corresponding table of WorkingTime is needed which contains the primary key of the referenced StaffMember. With the <code>name</code> element of the <code>@JoinColumn</code> annotation it is possible to specify the name of this column.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-jpa.asciidoc_1n-and-nm-relationships">1:n and n:m Relationships</h3>
+<div class="paragraph">
+<p>The relationship of the example listed above is currently an unidirectional one, as there is a getter method for retrieving the <code>StaffMember</code> from the <code>WorkingTime</code> object, but not vice versa.</p>
+</div>
+<div class="paragraph">
+<p>To make it a bidirectional one, the following code has to be added to <code>StaffMember</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">  private Set&lt;WorkingTimeEntity&gt; workingTimes;
+
+  @OneToMany(mappedBy="staffMember")
+  public Set&lt;WorkingTimeEntity&gt; getWorkingTimes() {
+    return this.workingTimes;
+  }
+
+  public void setWorkingTimes(Set&lt;WorkingTimeEntity&gt; workingTimes) {
+    this.workingTimes = workingTimes;
+  }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To make the relationship bidirectional, the tables in the database do not have to be changed. Instead the column that corresponds to the attribute <code>staffMember</code> in class <code>WorkingTime</code> is used, which is specified by the <code>mappedBy</code> element of the <code>@OneToMany</code> annotation. Hibernate will search for corresponding <code>WorkingTime</code> objects automatically when a <code>StaffMember</code> is loaded.</p>
+</div>
+<div class="paragraph">
+<p>The problem with bidirectional relationships is that if a <code>WorkingTime</code> object is added to the set or list <code>workingTimes</code> in <code>StaffMember</code>, this does not have any effect in the database unless
+the <code>staffMember</code> attribute of that <code>WorkingTime</code> object is set. That is why the devon4j advices not to use bidirectional relationships but to use queries instead. How to do this is shown <a href="#guide-jpa.asciidoc_queries">here</a>. If a bidirectional relationship should be used nevertheless, approriate add and remove methods must be used.</p>
+</div>
+<div class="paragraph">
+<p>For 1:n and n:m relations, the devon4j demands that (unordered) Sets and no other collection types are used, as shown in the listing above. The only exception is whenever an ordering is really needed, (sorted) lists can be used.<br>
+For example, if <code>WorkingTime</code> objects should be sorted by their start time, this could be done like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">  private List&lt;WorkingTimeEntity&gt; workingTimes;
+
+  @OneToMany(mappedBy = "staffMember")
+  @OrderBy("startTime asc")
+  public List&lt;WorkingTimeEntity&gt; getWorkingTimes() {
+    return this.workingTimes;
+  }
+
+  public void setWorkingTimes(List&lt;WorkingTimeEntity&gt; workingTimes) {
+    this.workingTimes = workingTimes;
+  }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The value of the <code>@OrderBy</code> annotation consists of an attribute name of the class followed by <code>asc</code> (ascending) or <code>desc</code> (descending).</p>
+</div>
+<div class="paragraph">
+<p>To store information about a n:m relationship, a separate table has to be used, as one column cannot store several values (at least if the database schema is in first normal form).<br>
+For example if one wanted to extend the example application so that all ingredients of one <code>FoodDrink</code> can be saved and to model the ingredients themselves as entities (e.g. to store additional information about them), this could be modeled as follows (extract of class <code>FoodDrink</code>):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">  private Set&lt;IngredientEntity&gt; ingredients;
+
+  @ManyToMany()
+  @JoinTable
+  public Set&lt;IngredientEntity&gt; getIngredients() {
+    return this.ingredients;
+  }
+
+  public void setOrders(Set&lt;IngredientEntity&gt; ingredients) {
+    this.ingredients = ingredients;
+  }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Information about the relation is stored in a table called <code>BILL_ORDER</code> that has to have two columns, one for referencing the Bill, the other one for referencing the Order. Note that the <code>@JoinTable</code> annotation is not needed in this case because a separate table is the default solution here (same for n:m relations) unless there is a <code>mappedBy</code> element specified.</p>
+</div>
+<div class="paragraph">
+<p>For 1:n relationships this solution has the disadvantage that more joins (in the database system) are needed to get a Bill with all the Orders it refers to. This might have a negative impact on performance so that the solution to store a reference to the Bill row/entity in the Order&#8217;s table is probably the better solution in most cases.</p>
+</div>
+<div class="paragraph">
+<p>Note that bidirectional n:m relationships are not allowed for applications based on the devon4j. Instead a third entity has to be introduced, which "represents" the relationship (it has two n:1 relationships).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-jpa.asciidoc_eager-vs.-lazy-loading">Eager vs. Lazy Loading</h3>
+<div class="paragraph">
+<p>Using JPA it is possible to use either lazy or eager loading. Eager loading means that for entities retrieved from the database, other entities that are referenced by these entities are also retrieved, whereas lazy loading means that this is only done when they are actually needed, i.e. when the corresponding getter method is invoked.</p>
+</div>
+<div class="paragraph">
+<p>Application based on the devon are strongly advised to always use lazy loading. The JPA defaults are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>@OneToMany</code>: LAZY</p>
+</li>
+<li>
+<p><code>@ManyToMany</code>: LAZY</p>
+</li>
+<li>
+<p><code>@ManyToOne</code>: EAGER</p>
+</li>
+<li>
+<p><code>@OneToOne</code>: EAGER</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>So at least for <code>@ManyToOne</code> and <code>@OneToOne</code> you always need to override the default by providing <code>fetch = FetchType.LAZY</code>.
+IMPORTANT: Please read the <a href="#guide-jpa-performance.asciidoc">performance guide</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-jpa.asciidoc_cascading-relationships">Cascading Relationships</h3>
+<div class="paragraph">
+<p>For relations it is also possible to define whether operations are cascaded (like a recursion) to the related entity.
+By default, nothing is done in these situations. This can be changed by using the <code>cascade</code> property of the annotation that specifies the relation type (<code>@OneToOne</code>, <code>@ManyToOne</code>, <code>@OneToMany</code>, <code>@ManyToOne</code>). This property accepts a <code>CascadeType</code> that offers the following options:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>PERSIST (for <code>EntityManager.persist</code>, relevant to inserted transient entities into DB)</p>
+</li>
+<li>
+<p>REMOVE (for <code>EntityManager.remove</code> to delete entity from DB)</p>
+</li>
+<li>
+<p>MERGE (for <code>EntityManager.merge</code>)</p>
+</li>
+<li>
+<p>REFRESH (for <code>EntityManager.refresh</code>)</p>
+</li>
+<li>
+<p>DETACH (for <code>EntityManager.detach</code>)</p>
+</li>
+<li>
+<p>ALL (cascade all of the above operations)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>See <a href="http://meri-stuff.blogspot.de/2012/03/jpa-tutorial.html">here</a> for more information.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-jpa.asciidoc_embeddable">Embeddable</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>An embeddable Object is a way to group properties of an <a href="#guide-jpa.asciidoc_entity">entity</a> into a separate Java (child) object. Unlike with implement <a href="#guide-jpa.asciidoc_relationships">relationships</a> the embeddable is not a separate entity and its properties are stored (embedded) in the same table together with the entity. This is helpful to structure and reuse groups of properties.</p>
+</div>
+<div class="paragraph">
+<p>The following example shows an <code>Address</code> implemented as an embeddable class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Embeddable
+public class AddressEmbeddable {
+
+  private String street;
+  private String number;
+  private Integer zipCode;
+  private String city;
+
+  @Column(name="STREETNUMBER")
+  public String getNumber() {
+    return number;
+  }
+
+  public void setNumber(String number) {
+    this.number = number;
+  }
+
+  ...  // other getter and setter methods, equals, hashCode
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As you can see an embeddable is similar to an entity class, but with an <code>@Embeddable</code> annotation instead of the <code>@Entity</code> annotation and without primary key or modification counter.
+An Embeddable does not exist on its own but in the context of an entity.
+As a simplification Embeddables do not require a separate interface and <a href="guide-transferobject.html#ETO">ETO</a> as the <a href="#guide-beanmapping.asciidoc">bean-mapper</a> will create a copy automatically when converting the owning entity to an ETO.
+However, in this case the embeddable becoms part of your <code>api</code> module that therefore needs a dependency on the <code>JPA</code>.</p>
+</div>
+<div class="paragraph">
+<p>In addition to that the methods <code>equals(Object)</code> and <code>hashCode()</code> need to be implemented as this is required by Hibernate (it is not required for entities because they can be unambiguously identified by their primary key). For some hints on how to implement the <code>hashCode()</code> method please have a look <a href="http://stackoverflow.com/questions/113511/hash-code-implementation">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>Using this <code>AddressEmbeddable</code> inside an entity class can be done like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">  private AddressEmbeddable address;
+
+  @Embedded
+  public AddressEmbeddable getAddress() {
+    return this.address;
+  }
+
+  public void setAddress(AddressEmbeddable address) {
+    this.address = address;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>@Embedded</code> annotation needs to be used for embedded attributes. Note that if in all columns of the embeddable (here <code>Address</code>) are <code>null</code>, then the embeddable object itself is also <code>null</code> inside the entity. This has to be considered to avoid NullPointerException&#8217;s. Further this causes some issues with primitive types in embeddable classes that can be avoided by only using object types instead.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-jpa.asciidoc_inheritance">Inheritance</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Just like normal java classes, <a href="#guide-jpa.asciidoc_entity">entity</a> classes can inherit from others. The only difference is that you need to specify how to map a class hierarchy to database tables. Generic abstract super-classes for entities can simply be annotated with <code>@MappedSuperclass</code>.</p>
+</div>
+<div class="paragraph">
+<p>For all other cases the JPA offers the annotation <code>@Inheritance</code> with the property <code>strategy</code> talking an <code>InheritanceType</code> that has the following options:</p>
+</div>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p><code>SINGLE_TABLE</code>: This strategy uses a single table that contains all columns needed to store all entity-types of the entire inheritance hierarchy. If a column is not needed for an entity because of its type, there is a null value in this column. An additional column is introduced, which denotes the type of the entity (called <code>dtype</code>).</p>
+</li>
+<li>
+<p><code>TABLE_PER_CLASS</code>: For each concrete entity class there is a table in the database that can store such an entity with all its attributes. An entity is only saved in the table corresponding to its most concrete type. To get all entities of a super type, joins are needed.</p>
+</li>
+<li>
+<p><code>JOINED</code>: In this case there is a table for every entity class including abstract classes, which contains only the columns for the persistent properties of that particular class. Additionally there is a primary key column in every table. To get an entity of a class that is a subclass of another one, joins are needed.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Each of the three approaches has its advantages and drawbacks, which are discussed in detail <a href="http://openjpa.apache.org/builds/1.0.4/apache-openjpa-1.0.4/docs/manual/jpa_overview_mapping_inher.html#jpa_overview_mapping_inher_tpc">here</a>. In most cases, the first one should be used, because it is usually the fastest way to do the mapping, as no joins are needed when retrieving, searching or persisting entities. Moreover it is rather simple and easy to understand.
+One major disadvantage is that the first approach could lead to a table with a lot of null values, which might have a negative impact on the database size.</p>
+</div>
+<div class="paragraph">
+<p>The inheritance strategy has to be annotated to the top-most entity of the class hierarchy (where `@MappedSuperclass`es are not considered) like in the following example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Entity
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+public abstract class MyParentEntity extends ApplicationPersistenceEntity implements MyParent {
+  ...
+}
+
+@Entity
+public class MyChildEntity extends MyParentEntity implements MyChild {
+  ...
+}
+
+@Entity
+public class MyOtherEntity extends MyParentEntity implements MyChild {
+  ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As a best practice we advise you to avoid entity hierarchies at all where possible and otherwise to keep the hierarchy as small as possible. In order to just ensure reuse or establish a common API you can consider a shared interface, a <code>@MappedSuperclass</code> or an <code>@Embeddable</code> instead of an entity hierarchy.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-jpa.asciidoc_repositories-and-daos">Repositories and DAOs</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For each entity a code unit is created that groups all database operations for that entity. We recommend to use <a href="#guide-repository.asciidoc">spring-data respositories</a> for that as it is most efficient for developers. As an alternative there is still the classic approach using <a href="#guide-dao.asciidoc">DAOs</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="guide-jpa.asciidoc_concurrency-control">Concurrency Control</h3>
+<div class="paragraph">
+<p>The concurrency control defines the way concurrent access to the same data of a database is handled. When several users (or threads of application servers) concurrently access a database, anomalies may happen, e.g. a transaction is able to see changes from another transaction although that one did, not yet commit these changes. Most of these anomalies are automatically prevented by the database system, depending on the <a href="http://en.wikipedia.org/wiki/Isolation_(database_systems)"><em>isolation level</em></a> (property <code>hibernate.connection.isolation</code> in the <code>jpa.xml</code>, see <a href="http://docs.jboss.org/hibernate/orm/5.0/manual/en-US/html/ch03.html">here</a>).</p>
+</div>
+<div class="paragraph">
+<p>Another anomaly is when two stakeholders concurrently access a record, do some changes and write them back to the database. The JPA addresses this with different locking strategies (see <a href="http://www.objectdb.com/java/jpa/persistence/lock">here</a>).</p>
+</div>
+<div class="paragraph">
+<p>As a best practice we are using optimistic locking for regular end-user <a href="#guide-service-layer.asciidoc">services</a> (OLTP) and pessimistic locking for <a href="#guide-batch-layer.asciidoc">batches</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-jpa.asciidoc_optimistic-locking">Optimistic Locking</h3>
+<div class="paragraph">
+<p>The class <code>com.devonfw.module.jpa.persistence.api.AbstractPersistenceEntity</code> already provides optimistic locking via a <code>modificationCounter</code> with the <code>@Version</code> annotation. Therefore JPA takes care of optimistic locking for you. When entities are transferred to clients, modified and sent back for update you need to ensure the <code>modificationCounter</code> is part of the game. If you follow our guides about <a href="#guide-transferobject.asciidoc">transfer-objects</a> and <a href="#guide-service-layer.asciidoc">services</a> this will also work out of the box.
+You only have to care about two things:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>How to deal with optimistic locking in <a href="#guide-jpa.asciidoc_relationships">relationships</a>?<br>
+Assume an entity <code>A</code> contains a collection of <code>B</code> entities. Should there be a locking conflict if one user modifies an instance of <code>A</code> while another user in parallel modifies an instance of <code>B</code> that is contained in the other instance? To address this , take a look at <a href="https://oasp.github.io/oasp4j_content/2.4.0/maven/apidocs/io/oasp/module/jpa/dataaccess/api/GenericDao.html#forceIncrementModificationCounter(E)">GenericDao.forceIncrementModificationCounter</a>.</p>
+</li>
+<li>
+<p>What should happen in the UI if an <code>OptimisticLockException</code> occurred?<br>
+According to KISS our recommendation is that the user gets an error displayed that tells him to do his change again on the recent data. Try to design your system and the work processing in a way to keep such conflicts rare and you are fine.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-jpa.asciidoc_pessimistic-locking">Pessimistic Locking</h3>
+<div class="paragraph">
+<p>For back-end <a href="#guide-service-layer.asciidoc">services</a> and especially for <a href="#guide-batch-layer.asciidoc">batches</a> optimistic locking is not suitable. A human user shall not cause a large batch process to fail because he was editing the same entity. Therefore such use-cases use pessimistic locking what gives them a kind of priority over the human users.
+In your <a href="#guide-jpa.asciidoc_data-access-object">DAO</a> implementation you can provide methods that do pessimistic locking via <a href="http://docs.oracle.com/javaee/7/api/javax/persistence/EntityManager.html"><code>EntityManager</code></a> operations that take a <a href="http://docs.oracle.com/javaee/7/api/javax/persistence/LockModeType.html"><code>LockModeType</code></a>. Here is a simple example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">  getEntityManager().lock(entity, LockModeType.READ);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When using the <code>lock(Object, LockModeType)</code> method with <code>LockModeType.READ</code>, Hibernate will issue a <code>SELECT &#8230;&#8203; FOR UPDATE</code>. This means that no one else can update the entity (see <a href="http://docs.oracle.com/cd/B28359_01/server.111/b28286/statements_10002.htm">here</a> for more information on the statement). If <code>LockModeType.WRITE</code> is specified, Hibernate issues a <code>SELECT &#8230;&#8203; FOR UPDATE NOWAIT</code> instead, which has has the same meaning as the statement above, but if there is already a lock, the program will not wait for this lock to be released. Instead, an exception is raised.<br>
+Use one of the types if you want to modify the entity later on, for read only access no lock is required.</p>
+</div>
+<div class="paragraph">
+<p>As you might have noticed, the behavior of Hibernate deviates from what one would expect by looking at the <code>LockModeType</code> (especially <code>LockModeType.READ</code> should not cause a <code>SELECT &#8230;&#8203; FOR UPDATE</code> to be issued). The framework actually deviates from what is <a href="http://docs.oracle.com/javaee/7/api/javax/persistence/LockModeType.html">specified</a> in the JPA for unknown reasons.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-jpa.asciidoc_database-auditing">Database Auditing</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>See <a href="#guide-auditing.asciidoc">auditing guide</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-jpa.asciidoc_testing-entities-and-daos">Testing Entities and DAOs</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>See <a href="guide-testing.html#integration-testing">testing guide</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-jpa.asciidoc_principles">Principles</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We strongly recommend these principles:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Use the JPA where ever possible and use vendor (hibernate) specific features only for situations when JPA does not provide a solution. In the latter case consider first if you really need the feature.</p>
+</li>
+<li>
+<p>Create your entities as simple POJOs and use JPA to annotate the getters in order to define the mapping.</p>
+</li>
+<li>
+<p>Keep your entities simple and avoid putting advanced logic into entity methods.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-jpa.asciidoc_database-configuration">Database Configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <a href="#guide-configuration.asciidoc">configuration</a> for spring and hibernate is already provided by devonfw in our sample application and the application template. So you only need to worry about a few things to customize.</p>
+</div>
+<div class="sect2">
+<h3 id="guide-jpa.asciidoc_database-system-and-access">Database System and Access</h3>
+<div class="paragraph">
+<p>Obviously you need to configure which type of database you want to use as well as the location and credentials to access it. The defaults are configured in <code>application-default.properties</code> that is bundled and deployed with the release of the software. It should therefore contain the properties as in the given example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="properties language-properties">  database.url=jdbc:postgresql://database.enterprise.com/app
+  database.user.login=appuser01
+  database.hibernate.dialect = org.hibernate.dialect.PostgreSQLDialect
+  database.hibernate.hbm2ddl.auto=validate</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The environment specific settings (especially passwords) are configured by the operators in <code>application.properties</code>. For further details consult the <a href="#guide-configuration.asciidoc">configuration guide</a>. It can also override the default values. The relevant configuration properties can be seen by the following example for the development environment (located in <code>src/test/resources</code>):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="properties language-properties">  database.url=jdbc:postgresql://localhost/app
+  database.user.password=************
+  database.hibernate.hbm2ddl.auto=create</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For further details about <code>database.hibernate.hbm2ddl.auto</code> please see <a href="http://docs.jboss.org/hibernate/orm/5.0/manual/en-US/html/ch03.html#configuration-misc-properties">here</a>. For production and acceptance environments we use the value <code>validate</code> that should be set as default. In case you want to use Oracle RDBMS you can find additional hints <a href="guide-oracle.html#driver">here</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-jpa.asciidoc_database-migration">Database Migration</h3>
+<div class="paragraph">
+<p>See <a href="#guide-database-migration.asciidoc">database migration</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-jpa.asciidoc_database-logging">Database Logging</h3>
+<div class="paragraph">
+<p>Add the following properties to <code>application.properties</code> to enable logging of database queries for debugging purposes.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="properties language-properties">spring.jpa.properties.hibernate.show_sql=true
+spring.jpa.properties.hibernate.use_sql_comments=true
+spring.jpa.properties.hibernate.format_sql=true</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-jpa.asciidoc_pooling">Pooling</h3>
+<div class="paragraph">
+<p>You typically want to pool JDBC connections to boost performance by recycling previous connections. There are many libraries available to do connection pooling. We recommend to use <a href="https://github.com/brettwooldridge/HikariCP">HikariCP</a>. For Oracle RDBMS see <a href="guide-oracle.html#pooling">here</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-jpa.asciidoc_security">Security</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="guide-jpa.asciidoc_sql-injection">SQL-Injection</h3>
+<div class="paragraph">
+<p>A common <a href="#guide-security.asciidoc">security</a> threat is <a href="http://en.wikipedia.org/wiki/SQL_injection">SQL-injection</a>. Never build queries with string concatenation or your code might be vulnerable as in the following example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">  String query = "Select op from OrderPosition op where op.comment = " + userInput;
+  return getEntityManager().createQuery(query).getResultList();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Via the parameteter <code>userInput</code> an attacker can inject SQL (JPQL) and execute arbitrary statements in the database causing extreme damage. In order to prevent such injections you have to strictly follow our rules for <a href="#guide-jpa.asciidoc_queries">queries</a>: Use named queries for static queries and QueryDSL for dynamic queries. Please also consult the <a href="https://www.owasp.org/index.php/SQL_Injection_Prevention_Cheat_Sheet">SQL Injection Prevention Cheat Sheet</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-jpa.asciidoc_limited-permissions-for-application">Limited Permissions for Application</h3>
+<div class="paragraph">
+<p>We suggest that you operate your application with a database user that has limited permissions so he can not modify the SQL schema (e.g. drop tables). For initializing the schema (DDL) or to do schema migrations use a separate user that is not used by the application itself.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:13:34 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

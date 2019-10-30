@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feature-Toggles</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-feature-toggle.asciidoc">Feature-Toggles</a>
+<ul class="sectlevel1">
+<li><a href="#guide-feature-toggle.asciidoc_implementation-with-the-devonfw">Implementation with the devonfw</a>
+<ul class="sectlevel2">
+<li><a href="#guide-feature-toggle.asciidoc_preparation">Preparation</a></li>
+<li><a href="#guide-feature-toggle.asciidoc_small-features">Small features</a></li>
+<li><a href="#guide-feature-toggle.asciidoc_extensive-features">Extensive features</a></li>
+</ul>
+</li>
+<li><a href="#guide-feature-toggle.asciidoc_guidelines-for-a-successful-use-of-feature-toggles">Guidelines for a successful use of feature-toggles</a>
+<ul class="sectlevel2">
+<li><a href="#guide-feature-toggle.asciidoc_minimize-the-number-of-toggles">Minimize the number of toggles</a></li>
+<li><a href="#guide-feature-toggle.asciidoc_consistent-naming-scheme">Consistent naming scheme</a></li>
+<li><a href="#guide-feature-toggle.asciidoc_placement-of-toggle-points">Placement of toggle points</a></li>
+<li><a href="#guide-feature-toggle.asciidoc_use-of-fine-grained-features">Use of fine-grained features</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-feature-toggle.asciidoc" class="sect0">Feature-Toggles</h1>
+<div class="paragraph">
+<p>The most software developing teams use Feature-Branching to be able to work in parallel and maintain a stable main branch in the VCS. However Feature-Branching might not be the ideal tool in every case because of big merges and isolation between development groups. In many cases, Feature-Toggles can avoid some of these problems, so these should definitely be considered to be used in the collaborative software development.</p>
+</div>
+<div class="sect1">
+<h2 id="guide-feature-toggle.asciidoc_implementation-with-the-devonfw">Implementation with the devonfw</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To use Feature-Toggles with the devonfw, use the Framework <a href="http://www.togglz.org/">Togglz</a> because it has all the features generally needed and provides a great documentation.</p>
+</div>
+<div class="paragraph">
+<p>For a pretty minimal working example, also see <a href="https://github.com/florianluediger/oasp4j">this fork</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="guide-feature-toggle.asciidoc_preparation">Preparation</h3>
+<div class="paragraph">
+<p>The following example takes place in the <code>oasp-sample-core</code> project, so the necessary dependencies have to be added to the according <code>pom.xml</code> file. Required are the main Togglz project including Spring support, the Togglz console to graphically change the feature state and the Spring security package to handle authentication for the Togglz console.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;!-- Feature-Toggle-Framework togglz --&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;org.togglz&lt;/groupId&gt;
+  &lt;artifactId&gt;togglz-spring-boot-starter&lt;/artifactId&gt;
+  &lt;version&gt;2.3.0.RC2&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+  &lt;groupId&gt;org.togglz&lt;/groupId&gt;
+  &lt;artifactId&gt;togglz-console&lt;/artifactId&gt;
+  &lt;version&gt;2.3.0.RC2&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;dependency&gt;
+  &lt;groupId&gt;org.togglz&lt;/groupId&gt;
+  &lt;artifactId&gt;togglz-spring-security&lt;/artifactId&gt;
+  &lt;version&gt;2.3.0.RC2&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In addition to that, the following lines have to be included in the spring configuration file <code>application.properties</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code># configuration for the togglz Feature-Toggle-Framework
+togglz.enabled=true
+togglz.console.secured=false</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-feature-toggle.asciidoc_small-features">Small features</h3>
+<div class="paragraph">
+<p>For small features, a simple query of the toggle state is often enough to acheive the desired functionality. To illustrate this, a simple example follows, which implements a toggle to limit the page size returned by the staffmanagement. See <a href="https://github.com/florianluediger/oasp4j/commit/e55c3c7cfcb42efe4f279dc673cced730abd580a">here</a> for further details.</p>
+</div>
+<div class="paragraph">
+<p>This is the current implementation to <em>toggle</em> the feature:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">// Uncomment next line in order to limit the maximum page size for the staff member search
+// criteria.limitMaximumPageSize(MAXIMUM_HIT_LIMIT);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To realise this more elegantly with Togglz, first an enum is required to configure the feature-toggle.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public enum StaffmanagementFeatures implements Feature {
+  @Label("Limit the maximum page size for the staff members")
+  LIMIT_STAFF_PAGE_SIZE;
+
+  public boolean isActive() {
+    return FeatureContext.getFeatureManager().isActive(this);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To familiarize the Spring framework with the enum, add the following entry to the <code>application.properties</code> file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>togglz.feature-enums=io.oasp.gastronomy.restaurant.staffmanagement.featuremanager.StaffmanagementFeatures</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After that, the toggle can be used easily by calling the <code>isActive()</code> method of the enum.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">if (StaffmanagementFeatures.LIMIT_STAFF_PAGE_SIZE.isActive()) {
+  criteria.limitMaximumPageSize(MAXIMUM_HIT_LIMIT);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This way, you can easily switch the feature on or off by using the administration console at <a href="http://localhost:8081/devon4j-sample-server/togglz-console" class="bare">http://localhost:8081/devon4j-sample-server/togglz-console</a>. If you are getting redirected to the login page, just sign in with any valid user (eg. waiter).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-feature-toggle.asciidoc_extensive-features">Extensive features</h3>
+<div class="paragraph">
+<p>When implementing extensive features, you might want to consider using the strategy design pattern to maintain the overview of your software. The following example is an implementation of a feature which adds a 25% discount to all products managed by the offermanagement.</p>
+</div>
+<div class="olist arabic">
+<div class="title">Therefore there are two strategies needed:</div>
+<ol class="arabic">
+<li>
+<p>Return the offers with the normal price</p>
+</li>
+<li>
+<p>Return the offers with a 25% discount</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The implementation is pretty straight forward so use this as a reference. Compare <a href="https://github.com/florianluediger/oasp4j/commit/8f43f788d3a4a61b6b003c22a8b6c0d3f2254d14">this</a> for further details.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Override
+@RolesAllowed(PermissionConstants.FIND_OFFER)
+public PaginatedListTo&lt;OfferEto&gt; findOfferEtos(OfferSearchCriteriaTo criteria) {
+  criteria.limitMaximumPageSize(MAXIMUM_HIT_LIMIT);
+  PaginatedListTo&lt;OfferEntity&gt; offers = getOfferDao().findOffers(criteria);
+
+
+  if (OffermanagementFeatures.DISCOUNT.isActive()) {
+    return getOfferEtosDiscount(offers);
+  } else {
+    return getOfferEtosNormalPrice(offers);
+  }
+
+}
+
+
+// Strategy 1: Return the OfferEtos with the normal price
+private PaginatedListTo&lt;OfferEto&gt; getOfferEtosNormalPrice(PaginatedListTo&lt;OfferEntity&gt; offers) {
+  return mapPaginatedEntityList(offers, OfferEto.class);
+}
+
+// Strategy 2: Return the OfferEtos with the new, discounted price
+private PaginatedListTo&lt;OfferEto&gt; getOfferEtosDiscount(PaginatedListTo&lt;OfferEntity&gt; offers) {
+  offers = addDiscountToOffers(offers);
+  return mapPaginatedEntityList(offers, OfferEto.class);
+}
+
+private PaginatedListTo&lt;OfferEntity&gt; addDiscountToOffers(PaginatedListTo&lt;OfferEntity&gt; offers) {
+  for (OfferEntity oe : offers.getResult()) {
+    Double oldPrice = oe.getPrice().getValue().doubleValue();
+
+    // calculate the new price and round it to two decimal places
+    BigDecimal newPrice = new BigDecimal(oldPrice * 0.75);
+    newPrice = newPrice.setScale(2, RoundingMode.HALF_UP);
+
+    oe.setPrice(new Money(newPrice));
+  }
+
+  return offers;
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-feature-toggle.asciidoc_guidelines-for-a-successful-use-of-feature-toggles">Guidelines for a successful use of feature-toggles</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The use of feature-toggles requires a specified set of guidelines to maintain the overview on the software. The following is a colllection of considerations and examples for conventions that are reasonable to use.</p>
+</div>
+<div class="sect2">
+<h3 id="guide-feature-toggle.asciidoc_minimize-the-number-of-toggles">Minimize the number of toggles</h3>
+<div class="paragraph">
+<p>When using too many toggles at the same time, it is hard to maintain a good overview of the system and things like finding bugs are getting much harder. Additionaly, the management of toggles in the configuration interface gets more difficult due to the amount of toggles.</p>
+</div>
+<div class="paragraph">
+<p>To prevent toggles from piling up during development, a toggle and the associated obsolete source code should be removed after the completion of the corresponding feature. In addidion to that, the existing toggles should be revisited periodically to verify that these are still needed and therefore remove legacy toggles.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-feature-toggle.asciidoc_consistent-naming-scheme">Consistent naming scheme</h3>
+<div class="paragraph">
+<p>A consistent naming scheme is the key to a structured and easily maintainable set of features. This should include the naming of toggles in the source code and the appropriate naming of commit messages in the VCS. The following section contains an example for a useful naming scheme including a small example.</p>
+</div>
+<div class="paragraph">
+<p>Every Feature-Toggle in the system has to get its own unique name without repeating any names of features, which were removed from the system. The chosen names should be descriptive names to simplify the association between toggles and their purpose. If the feature should be split into multiple sub-features, you might want to name the feature like the parent feature with a describing addition. If for example you want to split the <code>DISCOUNT</code> feature into the logic and the UI part, you might want to name the sub-features <code>DISCOUNT_LOGIC</code> and <code>DISCOUNT_UI</code>.</p>
+</div>
+<div class="paragraph">
+<p>The entry in the togglz configuration enum should be named identically to the beforementioned feature name. The explicitness of feature names prevents a confusion between toggles due to using multiple enums.</p>
+</div>
+<div class="paragraph">
+<p>Commit messages are very important for the use of feature-toggles and also should follow a predefined naming scheme. You might want to state the feature name at the beginning of the message, followed by the actual message, describing what the commit changes to the feature. An example commit message could look like the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>DISCOUNT: Add the feature-toggle to the offermanagement implementation.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Mentioning the feature name in the commit message has the advantage, that you can search your git log for the feature name and get every commit belonging to the feature. An example for this using the tool <em>grep</em> could look like this.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>$ git log | grep -C 4 DISCOUNT
+
+commit 034669a48208cb946cc6ba8a258bdab586929dd9
+Author: Florian Luediger &lt;florian.luediger@somemail.com&gt;
+Date:   Thu Jul 7 13:04:37 2016 +0100
+
+DISCOUNT: Add the feature-toggle to the offermanagement implementation.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To keep track of all the features in your software system, a platform like GitHub offers issues. When creating an issue for every feature, you can retrace, who created the feature and who is assigned to completing its development. When referencing the issue from commits, you also have links to all the relevant commits from the issue view.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-feature-toggle.asciidoc_placement-of-toggle-points">Placement of toggle points</h3>
+<div class="paragraph">
+<p>To maintain a clean codebase, you definitely want to avoid using the same toggle in different places in the software. There should be one single query of the toggle which should be able to toggle the whole functionality of the feature. If one single toggle point is not enough to switch the whole feature on or off, you might want to think about splitting the feature into multiple ones.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-feature-toggle.asciidoc_use-of-fine-grained-features">Use of fine-grained features</h3>
+<div class="paragraph">
+<p>Bigger features in general should be split into multiple sub-features to maintain the overview on the codebase. These sub-features get their own feature-toggle and get implemented independently.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:13:26 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

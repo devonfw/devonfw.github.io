@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>State, Selection and Reducers</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-ngrx-simple-store.asciidoc">State, Selection and Reducers</a>
+<ul class="sectlevel1">
+<li><a href="#guide-ngrx-simple-store.asciidoc_creating-a-simple-store">Creating a Simple Store</a>
+<ul class="sectlevel2">
+<li><a href="#guide-ngrx-simple-store.asciidoc_initializing-ngrx">Initializing NgRx</a></li>
+<li><a href="#guide-ngrx-simple-store.asciidoc_create-an-entity-model-and-initial-state">Create an entity model and initial state</a></li>
+<li><a href="#guide-ngrx-simple-store.asciidoc_select-the-current-watchlist">Select the current watchlist</a></li>
+<li><a href="#guide-ngrx-simple-store.asciidoc_dispatching-an-action-to-update-watched-minutes">Dispatching an action to update watched minutes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-ngrx-simple-store.asciidoc" class="sect0">State, Selection and Reducers</h1>
+<div class="sect1">
+<h2 id="guide-ngrx-simple-store.asciidoc_creating-a-simple-store">Creating a Simple Store</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the following pages we use the example of an online streaming service. We will model a particular feature, a watchlist that can be populated by the user with movies she or he wants to see in the future.</p>
+</div>
+<div class="sect2">
+<h3 id="guide-ngrx-simple-store.asciidoc_initializing-ngrx">Initializing NgRx</h3>
+<div class="paragraph">
+<p>If you&#8217;re starting fresh, you first have to initialize NgRx and create a root state. The fastest way to do this is using the schematic:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ng generate @ngrx/schematics:store State --root --module app.module.ts</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will automatically generate a root store and register it in the app module. Next we generate a feature module for the watchlist:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ng generate module watchlist</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and create a corresponding feature store:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ng generate store watchlist/Watchlist -m watchlist.module.ts</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This generates a file <code>watchlist/reducers/index.ts</code> with the reducer function, and registers the store in the watchlist module declaration.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you&#8217;re getting an error <em>Schematic "store" not found in collection "@schematics/angular"</em>, this means you forgot to register the NgRx schematics as default.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Next, add the WatchlistModule to the AppModule imports so the feature store is registered when the application starts. We also added the <strong>store devtools</strong> which we will use later, resulting in the following file:</p>
+</div>
+<div class="paragraph">
+<p><strong>app.module.ts</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+
+import { AppComponent } from './app.component';
+import { EffectsModule } from '@ngrx/effects';
+import { AppEffects } from './app.effects';
+import { StoreModule } from '@ngrx/store';
+import { reducers, metaReducers } from './reducers';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '../environments/environment';
+import { WatchlistModule } from './watchlist/watchlist.module';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    WatchlistModule,
+    StoreModule.forRoot(reducers, { metaReducers }),
+    // Instrumentation must be imported after importing StoreModule (config is optional)
+    StoreDevtoolsModule.instrument({
+      maxAge: 25, // Retains last 25 states
+      logOnly: environment.production, // Restrict extension to log-only mode
+    }),
+    !environment.production ? StoreDevtoolsModule.instrument() : []
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-ngrx-simple-store.asciidoc_create-an-entity-model-and-initial-state">Create an entity model and initial state</h3>
+<div class="paragraph">
+<p>We need a simple model for our list of movies. Create a file <code>watchlist/models/movies.ts</code> and insert the following code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">export interface Movie {
+    id: number;
+    title: string;
+    releaseYear: number;
+    runtimeMinutes: number;
+    genre: Genre;
+}
+
+export type Genre = 'action' | 'fantasy' | 'sci-fi' | 'romantic' | 'comedy' | 'mystery';
+
+export interface WatchlistItem {
+    id: number;
+    movie: Movie;
+    added: Date;
+    playbackMinutes: number;
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>We discourage putting several types into the same file and do this only for the sake of keeping this tutorial brief.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Later we will learn how to retrieve data from the backend using effects. For now we will create an initial state for the user with a default movie.</p>
+</div>
+<div class="paragraph">
+<p>State is defined and transforms by a reducer function. Let&#8217;s create a watchlist reducer:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>cd watchlist/reducers
+ng g reducer WatchlistData --reducers index.ts</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Open the generated file <code>watchlist-data.reducer.ts</code>. You see three exports: The <strong>State</strong> interface defines the shape of the state. There is only one instance of a feature state in the store at all times. The <strong>initialState</strong> constant is the state at application creation time. The <strong>reducer</strong> function will later be called by the store to produce the next state instance based on the current state and an action object.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s put a movie into the user&#8217;s watchlist:</p>
+</div>
+<div class="paragraph">
+<p><strong>watchlist-data.reducer.ts</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">export interface State {
+  items: WatchlistItem[];
+}
+
+export const initialState: State = {
+  items: [
+    {
+      id: 42,
+      movie: {
+        id: 1,
+        title: 'Die Hard',
+        genre: 'action',
+        releaseYear: 1988,
+        runtimeMinutes: 132
+      },
+      playbackMinutes: 0,
+      added: new Date(),
+    }
+  ]
+};</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-ngrx-simple-store.asciidoc_select-the-current-watchlist">Select the current watchlist</h3>
+<div class="paragraph">
+<p>State slices can be retrieved from the store using selectors.</p>
+</div>
+<div class="paragraph">
+<p>Create a watchlist component:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ng g c watchlist/Watchlist</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and add it to the exports of WatchlistModule. Also, replace <code>app.component.html</code> with</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;app-watchlist&gt;&lt;/app-watchlist&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>State observables are obtained using selectors. They are memoized by default, meaning that you don&#8217;t have to worry about performance if you use complicated calculations when deriving state&#8201;&#8212;&#8201;these are only performed once per state emission.</p>
+</div>
+<div class="paragraph">
+<p>Add a selector to <code>watchlist-data.reducer.ts</code>:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>export const getAllItems = (state: State) =&gt; state.items;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Next, we have to re-export the selector for this substate in the feature reducer. Modify the <code>watchlist/reducers/index.ts</code> like this:</p>
+</div>
+<div class="paragraph">
+<p><strong>watchlist/reducers/index.ts</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">import {
+  ActionReducer,
+  ActionReducerMap,
+  createFeatureSelector,
+  createSelector,
+  MetaReducer
+} from '@ngrx/store';
+import { environment } from 'src/environments/environment';
+import * as fromWatchlistData from './watchlist-data.reducer';
+import * as fromRoot from 'src/app/reducers/index';
+
+export interface WatchlistState { <i class="conum" data-value="1"></i><b>(1)</b>
+  watchlistData: fromWatchlistData.State;
+}
+
+export interface State extends fromRoot.State { <i class="conum" data-value="2"></i><b>(2)</b>
+  watchlist: WatchlistState;
+}
+
+export const reducers: ActionReducerMap&lt;WatchlistState&gt; = { <i class="conum" data-value="3"></i><b>(3)</b>
+  watchlistData: fromWatchlistData.reducer,
+};
+
+export const metaReducers: MetaReducer&lt;WatchlistState&gt;[] = !environment.production ? [] : [];
+
+export const getFeature = createFeatureSelector&lt;State, WatchlistState&gt;('watchlist'); <i class="conum" data-value="4"></i><b>(4)</b>
+
+export const getWatchlistData = createSelector( <i class="conum" data-value="5"></i><b>(5)</b>
+  getFeature,
+  state =&gt; state.watchlistData
+);
+
+export const getAllItems = createSelector( <i class="conum" data-value="6"></i><b>(6)</b>
+  getWatchlistData,
+  fromWatchlistData.getAllItems
+);</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The feature state, each member is managed by a different reducer</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Feature states are registered by the <code>forFeature</code> method. This interface provides a typesafe path from root to feature state.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Tie substates of a feature state to the corresponding reducers</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Create a selector to access the 'watchlist' feature state</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>select the watchlistData sub state</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>re-export the selector</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Note how <code>createSelector</code> allows to chain selectors. This is a powerful tool that also allows for selecting from multiple states.</p>
+</div>
+<div class="paragraph">
+<p>You can use selectors as pipeable operators:</p>
+</div>
+<div class="paragraph">
+<p><strong>watchlist.component.ts</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">export class WatchlistComponent {
+  watchlistItems$: Observable&lt;WatchlistItem[]&gt;;
+
+  constructor(
+    private store: Store&lt;fromWatchlist.State&gt;
+  ) {
+    this.watchlistItems$ = this.store.pipe(select(fromWatchlist.getAllItems));
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>watchlist.component.html</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">&lt;h1&gt;Watchlist&lt;/h1&gt;
+&lt;ul&gt;
+    &lt;li *ngFor="let item of watchlistItems$ | async"&gt;{{item.movie.title}} ({{item.movie.releaseYear}}): {{item.playbackMinutes}}/{{item.movie.runtimeMinutes}} min watched&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-ngrx-simple-store.asciidoc_dispatching-an-action-to-update-watched-minutes">Dispatching an action to update watched minutes</h3>
+<div class="paragraph">
+<p>We track the user&#8217;s current progress at watching a movie as the <code>playbackMinutes</code> property. After closing a video, the watched minutes have to be updated. In NgRx, state is being updated by dispatching actions. An action is an option with a (globally unique) type discriminator and an optional payload.</p>
+</div>
+<div class="sect3">
+<h4 id="guide-ngrx-simple-store.asciidoc_creating-the-action">Creating the action</h4>
+<div class="paragraph">
+<p>Create a file <code>playback/actions/index.ts</code>. In this example, we do not further separate the actions per sub state. Actions can be defined by using action creators:</p>
+</div>
+<div class="paragraph">
+<p><strong>playback/actions/index.ts</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">import { createAction, props, union } from '@ngrx/store';
+
+export const playbackFinished = createAction('[Playback] Playback finished', props&lt;{ movieId: number, stoppedAtMinute: number }&gt;());
+
+const actions = union({
+    playbackFinished
+});
+
+export type ActionsUnion = typeof actions;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>First we specify the type, followed by a call to the payload definition function. Next, we create a union of all possible actions for this file using <code>union</code>, which allows us a to access action payloads in the reducer in a typesafe way.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-tip" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Action types should follow the naming convention <code>[Source] Event</code>, e.g. <code>[Recommended List] Hide Recommendation</code> or <code>[Auth API] Login Success</code>. Think of actions rather as events than commands. You should never use the same action at two different places (you can still handle multiple actions the same way). This faciliates tracing the source of an action. For details see <a href="https://www.youtube.com/watch?v=JmnsEvoy-gY">Good Action Hygiene with NgRx</a> by Mike Ryan (video).</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-ngrx-simple-store.asciidoc_dispatch">Dispatch</h4>
+<div class="paragraph">
+<p>We skip the implementation of an actual video playback page and simulate wathcing a movie in 10 minute segments by adding a link in the template:</p>
+</div>
+<div class="paragraph">
+<p><strong>watchlist-component.html</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">&lt;li *ngFor="let item of watchlistItems$ | async"&gt;... &lt;button (click)="stoppedPlayback(item.movie.id, item.playbackMinutes + 10)"&gt;Add 10 Minutes&lt;/button&gt;&lt;/li&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>watchlist-component.ts</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">import * as playbackActions from 'src/app/playback/actions';
+...
+  stoppedPlayback(movieId: number, stoppedAtMinute: number) {
+    this.store.dispatch(playbackActions.playbackFinished({ movieId, stoppedAtMinute }));
+  }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-ngrx-simple-store.asciidoc_state-reduction">State reduction</h4>
+<div class="paragraph">
+<p>Next, we handle the action inside the watchlistData reducer. Note that actions can be handled by multiple reducers and effects at the same time to update different states, for example if we&#8217;d like to show a rating modal after playback has finished.</p>
+</div>
+<div class="paragraph">
+<p><strong>watchlist-data.reducer.ts</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">export function reducer(state = initialState, action: playbackActions.ActionsUnion): State {
+  switch (action.type) {
+    case playbackActions.playbackFinished.type:
+      return {
+        ...state,
+        items: state.items.map(updatePlaybackMinutesMapper(action.movieId, action.stoppedAtMinute))
+      };
+
+    default:
+      return state;
+  }
+}
+
+export function updatePlaybackMinutesMapper(movieId: number, stoppedAtMinute: number) {
+  return (item: WatchlistItem) =&gt; {
+    if (item.movie.id === movieId) {
+      return {
+        ...item,
+        playbackMinutes: stoppedAtMinute
+      };
+    } else {
+      return item;
+    }
+  };
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note how we changed the reducer&#8217;s function signature to reference the actions union. The switch-case handles all incoming actions to produce the next state. The default case handles all actions a reducer is not interested in by returning the state unchanged. Then we find the watchlist item corresponding to the movie with the given id and update the playback minutes. Since state is immutable, we have to clone all objects down to the one we would like to change using the object spread operator (<code>&#8230;&#8203;</code>).</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-caution" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Selectors rely on object identity to decide whether the value has to be recalculated. Do not clone objects that are not on the path to the change you want to make. This is why <code>updatePlaybackMinutesMapper</code> returns the same item if the movie id does not match.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-ngrx-simple-store.asciidoc_alternative-state-mapping-with-immer">Alternative state mapping with immer</h4>
+<div class="paragraph">
+<p>It can be hard to think in immutable changes, especially if your team has a strong background in imperative programming. In this case, you may find the <a href="https://github.com/immerjs/immer">immer</a> library convenient, which allows to produce immutable objects by manipulating a proxied draft. The same reducer can then be written as:</p>
+</div>
+<div class="paragraph">
+<p><strong>watchlist-data.reducer.ts</strong> with immer</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">import { produce } from 'immer';
+...
+case playbackActions.playbackFinished.type:
+      return produce(state, draft =&gt; {
+        const itemToUpdate = draft.items.find(item =&gt; item.movie.id === action.movieId);
+        if (itemToUpdate) {
+          itemToUpdate.playbackMinutes = action.stoppedAtMinute;
+        }
+      });</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Immer works out of the box with plain objects and arrays.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-ngrx-simple-store.asciidoc_redux-devtools">Redux devtools</h4>
+<div class="paragraph">
+<p>If the <code>StoreDevToolsModule</code> is instrumented as described above, you can use the browser extension <a href="https://github.com/reduxjs/redux-devtools">Redux devtools</a> to see all dispatched actions and the resulting state diff, as well as the current state, and even travel back in time by undoing actions.</p>
+</div>
+<div class="imageblock" style="text-align: center;">
+<div class="content">
+<a class="image" href="images/ngrx-devtools.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/ngrx-devtools.png" alt="Redux Devtools"></a>
+</div>
+<div class="title">Figure 1. Redux devtools</div>
+</div>
+<div class="paragraph">
+<p>Continue with <a href="#guide-ngrx-effects.asciidoc">learning about effects</a></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:15:17 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

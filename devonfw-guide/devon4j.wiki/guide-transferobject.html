@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transfer-Objects</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-transferobject.asciidoc">Transfer-Objects</a>
+<ul class="sectlevel2">
+<li><a href="#guide-transferobject.asciidoc_eto">ETO</a></li>
+<li><a href="#guide-transferobject.asciidoc_bo">BO</a></li>
+<li><a href="#guide-transferobject.asciidoc_cto">CTO</a></li>
+<li><a href="#guide-transferobject.asciidoc_to">TO</a></li>
+<li><a href="#guide-transferobject.asciidoc_searchcriteriato">SearchCriteriaTo</a></li>
+<li><a href="#guide-transferobject.asciidoc_sto">STO</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-transferobject.asciidoc" class="sect0">Transfer-Objects</h1>
+<div class="paragraph">
+<p>The technical data model is defined in form of <a href="guide-jpa.html#entity">persistent entities</a>.
+However, passing persistent entities via <em>call-by-reference</em> across the entire application will soon cause problems:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Changes to a persistent entity are directly written back to the persistent store when the transaction is committed. When the entity is send across the application also changes tend to take place in multiple places endangering data sovereignty and leading to inconsistency.</p>
+</li>
+<li>
+<p>You want to send and receive data via services across the network and have to define what section of your data is actually transferred. If you have relations in your technical model you quickly end up loading and transferring way too much data.</p>
+</li>
+<li>
+<p>Modifications to your technical data model shall not automatically have impact on your external services causing incompatibilities.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To prevent such problems transfer-objects are used leading to a <em>call-by-value</em> model and decoupling changes to persistent entities.</p>
+</div>
+<div class="paragraph">
+<p>In the following sections the different types of transfer-objects are explained.
+You will find all according naming-conventions in the <a href="coding-conventions.html#architecture-mapping">architecture-mapping</a></p>
+</div>
+<div class="sect2">
+<h3 id="guide-transferobject.asciidoc_eto">ETO</h3>
+<div class="paragraph">
+<p>For each <a href="guide-jpa.html#entity">persistent entity</a> <code>«BusinessObject»Entity</code> we create or generate a corresponding <em>entity transfer object</em> (ETO) named <code>«BusinessObject»Eto</code>. It has the same properties except for relations.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-transferobject.asciidoc_bo">BO</h3>
+<div class="paragraph">
+<p>In order to centralize the properties (getters and setters with their javadoc) we create a common interface <code>«BusinessObject»</code> implemented both by the entity and its ETO. This also gives us compile-time safty that
+<a href="#guide-beanmapping.asciidoc">bean-mapper</a> can properly map all properties between entity and ETO.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-transferobject.asciidoc_cto">CTO</h3>
+<div class="paragraph">
+<p>If we need to pass an entity with its relation(s) we create a corresponding <em>composite transfer object</em> (CTO) named <code>«BusinessObject»«Subset»Cto</code> that only contains other transfer-objects or collections of them. Here <code>«Subset»</code> is empty for the canonical CTO that holds the ETO together with all its relations.
+This is what can be gemerated automatically with <a href="https://github.com/devonfw/tools-cobigen">CobiGen</a>.
+However, be careful to generate CTOs without thinking and considering design.
+If there are no relations at all a CTO is pointless and shall be omitted.
+However, if there are multiple relations you typically need  multiple CTOs for the same <code>«BusinessObject»</code> that define different subsets of the related data.
+These will typically be designed and implemented by hand.
+E.g. you may have <code>CustomerWithAddressCto</code> and <code>CustomerWithContractCto</code>. Most CTOs correspond to a specific <code>«BusinessObject»</code> and therefore contain a <code>«BusinessObject»Eto</code>. Such CTOs should inherit from <code>MasterCto</code>.</p>
+</div>
+<div class="paragraph">
+<p>This pattern with entities, ETOs and CTOs is illustrated by the following UML diagram from our sample application.</p>
+</div>
+<div id="guide-transferobject.asciidoc_img-transfer-objects" class="imageblock" style="text-align: center;">
+<div class="content">
+<a class="image" href="images/transfer-objects.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/transfer-objects.png" alt="ETOs and CTOs"></a>
+</div>
+<div class="title">Figure 1. ETOs and CTOs</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-transferobject.asciidoc_to">TO</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Finally, there are typically transfer-objects for data that is never persistent. For very generic cases
+these just carry the suffix <code>To</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-transferobject.asciidoc_searchcriteriato">SearchCriteriaTo</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>For searching we create or generate a `«BusinessObject»SearchCriteriaTo` representing a query to find instances of `«BusinessObject»`.</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-transferobject.asciidoc_sto">STO</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We can potentially create separate <em>service transfer objects</em> (STO) (if possible named <code>«BusinessObject»Sto</code>) to keep the <a href="#guide-service-layer.asciidoc">service</a> API stable and independent of the actual data-model.
+However, we usually do not need this and want to keep our architecture simple.
+Only create STOs if you need <a href="guide-service-layer.html#versioning">service versioning</a> and support previous APIs or to provide legacy service technologies that require their own isolated data-model.
+In such case you also need <a href="#guide-beanmapping.asciidoc">beanmapping</a> between STOs and ETOs what means extra effort and complexity that should be avoided.
+In such case you also need <a href="#guide-beanmapping.asciidoc">beanmapping</a> between STOs and ETOs what means extra effort and complexity that should be avoided.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:13:51 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

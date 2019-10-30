@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Java design</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#server-design.asciidoc">Java design</a>
+<ul class="sectlevel1">
+<li><a href="#server-design.asciidoc_introduction">Introduction</a></li>
+<li><a href="#server-design.asciidoc_basic-architecture-details">Basic architecture details</a>
+<ul class="sectlevel2">
+<li><a href="#server-design.asciidoc_project-modules">Project modules</a></li>
+<li><a href="#server-design.asciidoc_components">Components</a></li>
+<li><a href="#server-design.asciidoc_layers">Layers</a></li>
+<li><a href="#server-design.asciidoc_component-structure">Component structure</a></li>
+<li><a href="#server-design.asciidoc_dependency-injection">Dependency injection</a></li>
+<li><a href="#server-design.asciidoc_layers-communication">Layers communication</a></li>
+</ul>
+</li>
+<li><a href="#server-design.asciidoc_service-layer">Service layer</a>
+<ul class="sectlevel2">
+<li><a href="#server-design.asciidoc_service-api">Service api</a></li>
+<li><a href="#server-design.asciidoc_service-impl">Service impl</a></li>
+</ul>
+</li>
+<li><a href="#server-design.asciidoc_logic-layer">Logic layer</a></li>
+<li><a href="#server-design.asciidoc_data-access-layer">Data Access layer</a></li>
+<li><a href="#server-design.asciidoc_security-with-json-web-token">Security with Json Web Token</a>
+<ul class="sectlevel2">
+<li><a href="#server-design.asciidoc_jwt-basics">Jwt basics</a></li>
+<li><a href="#server-design.asciidoc_jwt-implementation-details">Jwt implementation details</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="server-design.asciidoc" class="sect0">Java design</h1>
+<div class="sect1">
+<h2 id="server-design.asciidoc_introduction">Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Java backend for My Thai Star application is going to be based on:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>OASP4J</strong> as the Java framework</p>
+</li>
+<li>
+<p><strong>Devonfw</strong> as the Development environment</p>
+</li>
+<li>
+<p><strong>Cobigen</strong> as code generation tool</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To know more details about the above technologies please visit the following documentation:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/oasp/oasp4j/wiki">OASP4J</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devon/wiki">Devonfw</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/tools-cobigen/wiki">Cobigen</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="server-design.asciidoc_basic-architecture-details">Basic architecture details</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Following the OASP4J conventions the Java My Thai Star backend is going to be developed dividing the application in <em>Components</em> and using a three layers architecture.</p>
+</div>
+<div class="sect2">
+<h3 id="server-design.asciidoc_project-modules">Project modules</h3>
+<div class="paragraph">
+<p>Using the OASP4J approach for the Java backend project we will have a structure of a <em>Maven</em> project formed by two projects</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/java/project_modules.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/java/project_modules.png" alt="project modules"></a>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>core</em>: Stores all the logic and functionality of the application.</p>
+</li>
+<li>
+<p><em>server</em>: Configures the packaging of the application.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>We can automatically generate this project structure <a href="https://github.com/devonfw/devon/wiki/getting-started-creating-new-devonfw-application#running-the-archetype">using the OASP4J <em>Maven</em> archetype</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="server-design.asciidoc_components">Components</h3>
+<div class="paragraph">
+<p>The application is going to be divided in different components to encapsulate the different domains of the application functionalities.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/java/mtsj_components.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/java/mtsj_components.png" alt="mtsj components"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>As <em>main components</em> we will find:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>Bookingmanagement</em>: Manages the bookings part of the application. With this component the users (anonymous/logged in) can create new bookings or cancel an existing booking. The users with waiter role can see all scheduled bookings.</p>
+</li>
+<li>
+<p><em>Ordermanagement</em>: This component handles the process to order dishes (related to bookings). A user (as a host or as a guest) can create orders (that contain dishes) or cancel an existing one. The users with waiter role can see all ordered orders.</p>
+</li>
+<li>
+<p><em>Dishmanagement</em>: This component groups the logic related to the menu (dishes) view. Its main feature is to provide the client with the data of the available dishes but also can be used by other components (Ordermanagement) as a data provider in some processes.</p>
+</li>
+<li>
+<p><em>Usermanagement</em>: Takes care of the User Profile management, allowing to create and update the data profiles.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>As <em>common components</em> (that don&#8217;t exactly represent an application&#8217;s area but provide functionalities that can be used by the <em>main components</em>):</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>Imagemanagement</em>: Manages the images of the application. In a first approach the <em>Dishmanagement</em> component and the <em>Usermanagement</em> component will have an image as part of its data. The <em>Imagemanagement</em> component will expose the functionality to store and retrieve this kind of data.</p>
+</li>
+<li>
+<p><em>Mailservice</em>: with this service we will provide the functionality for sending email notifications. This is a shared service between different app components such as <em>bookingmanagement</em> or <em>ordercomponent</em>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Other components:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Security (will manage the access to the <em>private</em> part of the application using a <a href="https://jwt.io/">jwt</a> implementation).</p>
+</li>
+<li>
+<p>Twitter integration: planned as a <em>Microservice</em> will provide the twitter integration needed for some specific functionalities of the application.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="server-design.asciidoc_layers">Layers</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/oasp/oasp4j/wiki/guide-service-layer">Service Layer</a>: this layer will expose the REST api to exchange information with the client applications.</p>
+</li>
+<li>
+<p><a href="https://github.com/oasp/oasp4j/wiki/guide-logic-layer">Logic Layer</a>: the layer in charge of hosting the business logic of the application.</p>
+</li>
+<li>
+<p><a href="https://github.com/oasp/oasp4j/wiki/guide-dataaccess-layer">Data Access Layer</a>: the layer to communicate with the data base.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This architecture is going to be reflected dividing each component of the application in different packages to match those three layers.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="server-design.asciidoc_component-structure">Component structure</h3>
+<div class="paragraph">
+<p>Each one of the components defined previously are going to be structured using the <em>three-layers</em> architecture. In each case we will have a <em>service</em> package, a <em>logic</em> package and a <em>dataaccess</em> package to fit the layers definition.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/java/component_structure.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/java/component_structure.png" alt="component structure"></a>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="server-design.asciidoc_dependency-injection">Dependency injection</h3>
+<div class="paragraph">
+<p>As it is explained in the <a href="https://github.com/oasp/oasp4j/wiki/guide-dependency-injection">oasp documentation</a> we are going to implement the <em>dependency injection</em> pattern basing our solution on <em>Spring</em> and the Java standards: <em>java.inject</em> (JSR330) combined with JSR250.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/java/dependency_injection.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/java/dependency_injection.png" alt="dependency injection"></a>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Separation of API and implementation: Inside each layer we will separate the elements in different packages: <em>api</em> and <em>impl</em>. The <em>api</em> will store the <em>interface</em> with the methods definition and inside the <em>impl</em> we will store the class that implements the <em>interface</em>.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/java/layer_api_impl.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/java/layer_api_impl.png" alt="layer api impl"></a>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Usage of JSR330: The Java standard set of annotations for <em>dependency injection</em> (<code>@Named</code>, <code>@Inject</code>, <code>@PostConstruct</code>, <code>@PreDestroy</code>, etc.) provides us with all the needed annotations to define our beans and inject them.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Named
+public class MyBeanImpl implements MyBean {
+  @Inject
+  private MyOtherBean myOtherBean;
+
+  @PostConstruct
+  public void init() {
+    // initialization if required (otherwise omit this method)
+  }
+
+  @PreDestroy
+  public void dispose() {
+    // shutdown bean, free resources if required (otherwise omit this method)
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="server-design.asciidoc_layers-communication">Layers communication</h3>
+<div class="paragraph">
+<p>The connection between layers, to access to the functionalities of each one, will be solved using the <em>dependency injection</em> and the JSR330 annotations.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/java/layers_impl.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/java/layers_impl.png" alt="layers impl"></a>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Connection Service - Logic</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Named("DishmanagementRestService")
+public class DishmanagementRestServiceImpl implements DishmanagementRestService {
+
+  @Inject
+  private Dishmanagement dishmanagement;
+
+  // use the 'this.dishmanagement' object to access to the functionalities of the logic layer of the component
+
+  ...
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Connection Logic - Data Access</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Named
+public class DishmanagementImpl extends AbstractComponentFacade implements Dishmanagement {
+
+  @Inject
+  private DishDao dishDao;
+
+  // use the 'this.dishDao' to access to the functionalities of the data access layer of the component
+  ...
+
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="server-design.asciidoc_service-layer">Service layer</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The services layer will be solved using REST services with the <a href="https://github.com/oasp/oasp4j/wiki/guide-rest#jax-rs">JAX-RS implementation</a>.</p>
+</div>
+<div class="paragraph">
+<p>To give service to the defined <em>User Stories</em> we will need to implement the following services:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>provide all available dishes.</p>
+</li>
+<li>
+<p>save a booking.</p>
+</li>
+<li>
+<p>save an order.</p>
+</li>
+<li>
+<p>provide a list of bookings (only for waiters) and allow filtering.</p>
+</li>
+<li>
+<p>provide a list of orders (only for waiters) and allow filtering.</p>
+</li>
+<li>
+<p>login service (see the <em>Security</em> section).</p>
+</li>
+<li>
+<p>provide the <em>current user</em> data (see the <em>Security</em> section)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Following the <a href="https://github.com/oasp/oasp4j/wiki/guide-rest">naming conventions</a> proposed for <em>Oasp4j</em> applications we will define the following <em>end points</em> for the listed services.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>(POST) <code>/mythaistar/services/rest/dishmanagement/v1/dish/search</code>.</p>
+</li>
+<li>
+<p>(POST) <code>/mythaistar/services/rest/bookingmanagement/v1/booking</code>.</p>
+</li>
+<li>
+<p>(POST) <code>/mythaistar/services/rest/ordermanagement/v1/order</code>.</p>
+</li>
+<li>
+<p>(POST) <code>/mythaistar/services/rest/bookingmanagement/v1/booking/search</code>.</p>
+</li>
+<li>
+<p>(POST) <code>/mythaistar/services/rest/ordermanagement/v1/order/search</code>.</p>
+</li>
+<li>
+<p>(POST) <code>/mythaistar/services/rest/ordermanagement/v1/order/filter</code> (to filter with fields that does not belong to the Order entity).</p>
+</li>
+<li>
+<p>(POST) <code>/mythaistar/login</code>.</p>
+</li>
+<li>
+<p>(GET) <code>/mythaistar/services/rest/security/v1/currentuser/</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You can find all the details for the services implementation in the <a href="https://github.com/oasp/my-thai-star/blob/develop/swagger/mythaistar.yaml">Swagger definition</a> included in the My Thai Star project on Github.</p>
+</div>
+<div class="sect2">
+<h3 id="server-design.asciidoc_service-api">Service api</h3>
+<div class="paragraph">
+<p>The <em>api.rest</em> package in the <em>service</em> layer of a <em>component</em> will store the definition of the service by a  <em>Java interface</em>. In this definition of the service we will set-up the <em>endpoints</em> of the service, the type of data expected and returned, the <em>HTTP</em> method for each endpoint of the service and other configurations if needed.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Path("/dishmanagement/v1")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+public interface DishmanagementRestService {
+
+  @GET
+  @Path("/dish/{id}/")
+  public DishCto getDish(@PathParam("id") long id);
+
+  ...
+
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="server-design.asciidoc_service-impl">Service impl</h3>
+<div class="paragraph">
+<p>Once the service <em>api</em> is defined we need to implement it using the <em>Java interface</em> as reference. We will add the <em>service implementation</em> class to the <em>impl.rest</em> package and implement the <em>RestService interface</em>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Named("DishmanagementRestService")
+public class DishmanagementRestServiceImpl implements DishmanagementRestService {
+
+  @Inject
+  private Dishmanagement dishmanagement;
+
+  @Override
+  public DishCto getDish(long id) {
+    return this.dishmanagement.findDish(id);
+  }
+
+  ...
+
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You can see the Oasp4j conventions for REST services <a href="https://github.com/oasp/oasp4j/wiki/guide-rest">here</a>. And the My Thai Star services definition <a href="https://github.com/oasp/my-thai-star/blob/develop/swagger/mythaistar.yaml">here</a> as part of the <a href="https://github.com/oasp/my-thai-star">My Thai Star</a> project.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="server-design.asciidoc_logic-layer">Logic layer</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the <em>logic</em> layer we will locate all the <em>business logic</em> of the application. We will keep the same schema as we have done for the <em>service</em> layer, having an <em>api</em> package with the definition of the methods and a <em>impl</em> package for the implementation.</p>
+</div>
+<div class="paragraph">
+<p>Also, inside the <em>api</em> package, a <em>to</em> package will be the place to store the <a href="https://github.com/oasp/oasp4j/wiki/guide-transferobject"><em>transfer objects</em></a> needed to pass data through the layers of the component.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/java/logic_layer.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/java/logic_layer.png" alt="logic layer"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>The logic <em>api</em> definition:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public interface Dishmanagement {
+
+  DishCto findDish(Long id);
+
+  ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The logic <em>impl</em> class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Named
+public class DishmanagementImpl extends AbstractComponentFacade implements Dishmanagement {
+
+  @Inject
+  private DishDao dishDao;
+
+
+  @Override
+  public DishCto findDish(Long id) {
+
+    return getBeanMapper().map(this.dishDao.findOne(id), DishCto.class);
+  }
+
+  ...
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <em>BeanMapper</em> will provide the needed transformations between <em>entity</em> and <em>transfer objects</em>.</p>
+</div>
+<div class="paragraph">
+<p>Also, the <em>logic</em> layer is the place to add validation for <em>Authorization</em> based on <em>roles</em> as we will see later.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="server-design.asciidoc_data-access-layer">Data Access layer</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The data-access layer is responsible for managing the connections to access and process data. The mapping between java objects to a relational database is done in <em>Oasp4j</em> with the <a href="http://www.oracle.com/technetwork/java/javaee/tech/persistence-jsp-140049.html">Java Persistence API</a> (JPA) and, as implementation, the recommended one is <a href="http://hibernate.org/orm/">Hibernate</a>.</p>
+</div>
+<div class="paragraph">
+<p>As in the previous layers, the <em>data-access</em> layer will have both <em>api</em> and <em>impl</em> packages. However, in this case, the implementation will be slightly different. The <em>api</em> package will store the <em>component</em> main <em>entities and, inside the _api</em> package, another <em>api.dao</em> package will serve to house the <em>interfaces</em> with the definition of the layer functionalities. In the other side, the <em>impl.dao</em> package will store the implementation of the dao interfaces. The <em>dao</em> interface will extend <code>ApplicationDao</code> class (located in <code>general.dataaccess.api.dao</code> package) and due to the class hierarchy of the <a href="https://github.com/oasp/oasp4j/tree/develop/modules/jpa"><code>oasp.module.jpa</code></a> the main methods will be already implemented and the class of the <code>impl.dao</code> package will only need to define the less standard ones.</p>
+</div>
+<div class="paragraph">
+<p>For queries we will differentiate between <em>static queries</em> (that will be located in a mapped file) and <em>dynamic queries</em> (implemented with <a href="http://www.querydsl.com/">QueryDsl</a>). You can find all the details about how to manage queries with <em>Oasp4j</em> <a href="https://github.com/oasp/oasp4j/wiki/guide-dataaccess-layer#queries">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>The default data base included in the project will be the <a href="http://www.h2database.com/html/main.html">H2</a> instance included with the <em>Oasp4j</em> projects.</p>
+</div>
+<div class="paragraph">
+<p>To get more details about <em>pagination</em>, <em>data base security, _concurrency control</em>, <em>inheritance</em> or how to solve the different <em>relationships</em> between entities visit the official <a href="https://github.com/oasp/oasp4j/wiki/guide-dataaccess-layer">oasp4j dataaccess documentation</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="server-design.asciidoc_security-with-json-web-token">Security with Json Web Token</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For the <em>Authentication</em> and <em>Authorization</em> the app will implement the <a href="https://jwt.io/">json web token</a> protocol.</p>
+</div>
+<div class="sect2">
+<h3 id="server-design.asciidoc_jwt-basics">Jwt basics</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>A user will provide a username / password combination to our auth server.</p>
+</li>
+<li>
+<p>The auth server will try to identify the user and, if the credentials match, will issue a token.</p>
+</li>
+<li>
+<p>The user will send the token as the <em>Authorization</em> header to access resources on server protected by JWT Authentication.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/java/jwt_schema.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/java/jwt_schema.png" alt="jwt schema"></a>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="server-design.asciidoc_jwt-implementation-details">Jwt implementation details</h3>
+<div class="paragraph">
+<p>The <em>Json Web Token</em> pattern will be implemented based on the <a href="https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/"><em>Spring Security</em></a> framework that is provided by default in the <em>Oasp4j</em> projects.</p>
+</div>
+<div class="sect3">
+<h4 id="server-design.asciidoc_authentication">Authentication</h4>
+<div class="paragraph">
+<p>Based on the <em>Spring Security</em> approach, we will implement a class extending <em>WebSecurityConfigurerAdapter</em> (<em>Oasp4j</em> already provides the <em>BaseWebSecurityConfig</em> class) to define the security <em>entry point</em> and filters. Also, as <em>My Thai Star</em> is a mainly <em>public</em> application, we will define here the resources that won&#8217;t be secured.</p>
+</div>
+<div class="paragraph">
+<p>List of <em>unsecured resources</em>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>/services/rest/dishmanagement/**</em>: to allow anonymous users to see the dishes info in the <em>menu</em> section.</p>
+</li>
+<li>
+<p><em>/services/rest/ordermanagement/v1/order</em>: to allow anonymous users to save an order. They will need a <em>booking token</em> but they won&#8217;t be authenticated to do this task.</p>
+</li>
+<li>
+<p><em>/services/rest/bookingmanagement/v1/booking</em>: to allow anonymous users to create a booking. Only a <em>booking token</em> is necessary to accomplish this task.</p>
+</li>
+<li>
+<p><em>/services/rest/bookingmanagement/v1/booking/cancel/**</em>: to allow cancelling a booking from an email. Only the <em>booking token</em> is needed.</p>
+</li>
+<li>
+<p><em>/services/rest/bookingmanagement/v1/invitedguest/accept/**</em>: to allow guests to accept an invite. Only a <em>guest token</em> is needed.</p>
+</li>
+<li>
+<p><em>/services/rest/bookingmanagement/v1/invitedguest/decline/**</em>: to allow guests to reject an invite. Only a <em>guest token</em> is needed.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To configure the <em>login</em> we will set up the <em>HttpSecurity</em> object in the <em>configure</em> method of the class. We will define a <em>JWTLoginFilter</em> class that will handle the requests to the <code>/login</code> <em>endpoint</em>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">http.[...].antMatchers(HttpMethod.POST, "/login").permitAll().[...].addFilterBefore(new JWTLoginFilter("/login", authenticationManager()), UsernamePasswordAuthenticationFilter.class);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the same <em>HttpSecurity</em> object we will set up the filter for the rest of the requests, to check the presence of the JWT token in the header. First we will need to create a <em>JWTAuthenticationFilter</em> class extending the <em>GenericFilterBean</em> class. Then we can add the filter to the <em>HttpSecurity</em> object</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">http.[...].addFilterBefore(new JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally, as default users to start using the <em>My Thai Star</em> app we are going to define two profiles using the <em>inMemoryAuthentication</em> of the <em>Spring Security</em> framework. In the <code>configure(AuthenticationManagerBuilder auth)</code> method we will create:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>user: <em>waiter</em></p>
+</li>
+<li>
+<p>password: <em>waiter</em></p>
+</li>
+<li>
+<p>role: <em>Waiter</em></p>
+</li>
+<li>
+<p>user: <em>user0</em></p>
+</li>
+<li>
+<p>password: <em>password</em></p>
+</li>
+<li>
+<p>role: <em>Customer</em></p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">auth.inMemoryAuthentication().withUser("waiter").password("waiter").roles("Waiter").and().withUser("user0").password("password").roles("Customer");</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="server-design.asciidoc_token-set-up">Token set up</h4>
+<div class="paragraph">
+<p>Following the <a href="https://jwt.io/introduction/">official documentation</a> the implementation details for the MyThaiStar&#8217;s jwt will be:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>Secret</em>: Used as part of the signature of the token, acting as a private key. For the showcase purposes we will use simply "ThisIsASecret".</p>
+</li>
+<li>
+<p><em>Token Prefix</em> schema: Bearer. The token will look like <code>Bearer &lt;token&gt;</code></p>
+</li>
+<li>
+<p><em>Header</em>: Authorization. The response header where the token will be included. Also, in the requests, when checking the token it will be expected to be in the same header.</p>
+</li>
+<li>
+<p>The <em>Authorization</em> header should be part of the <code>Access-Control-Expose-Headers</code> header to allow clients access to the <em>Authorization</em> header content (the token);</p>
+</li>
+<li>
+<p>The <em>claims</em> are the content of the <em>payload</em> of the token. The <em>claims</em> are statements about the user, so we will include the user info in this section.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><em>subject</em>: "sub". The username.</p>
+</li>
+<li>
+<p><em>issuer</em>: "iss". Who creates the token. We could use the <em>url</em> of our service but, as this is a showcase app, we simply will use "MyThaiStarApp"</p>
+</li>
+<li>
+<p><em>expiration date</em>: "exp". Defines when the token expires.</p>
+</li>
+<li>
+<p><em>creation date</em>: "iat". Defines when the token has been created.</p>
+</li>
+<li>
+<p><em>scope</em>: "scope". Array of strings to store the user roles.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Signature Algorithm: To encrypt the token we will use the default algorithm HS512.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>An example of a token claims before encryption would be:</p>
+</div>
+<div class="paragraph">
+<p><code>{sub=waiter, scope=[ROLE_Waiter], iss=MyThaiStarApp, exp=1496920280, iat=1496916680}</code></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="server-design.asciidoc_current-user-request">Current User request</h4>
+<div class="paragraph">
+<p>To provide to the client with the current user data our application should expose a service to return the user details. In <em>Oasp4j</em> applications the <code>/general/service/impl/rest/SecurityRestServiceImpl.java</code> class is ready to do that.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Path("/security/v1")
+@Named("SecurityRestService")
+public class SecurityRestServiceImpl {
+
+  @Produces(MediaType.APPLICATION_JSON)
+  @GET
+  @Path("/currentuser/")
+  public UserDetailsClientTo getCurrentUserDetails(@Context HttpServletRequest request) {
+
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>we only will need to implement the <code>getCurrentUserDetails</code> method.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="server-design.asciidoc_authorization">Authorization</h4>
+<div class="paragraph">
+<p>We need to secure three services, that only should be accessible for users with role <em>Waiter</em>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>(POST) <code>/mythaistar/services/rest/bookingmanagement/v1/booking/search</code>.</p>
+</li>
+<li>
+<p>(POST) <code>/mythaistar/services/rest/ordermanagement/v1/order/search</code>.</p>
+</li>
+<li>
+<p>(POST) <code>/mythaistar/services/rest/ordermanagement/v1/order/filter</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>As part of the token we are providing the user <em>Role</em>. So, when validating the token, we can obtain that same information and build a <code>UsernamePasswordAuthenticationToken</code> with username and the roles as collection of <em>Granted Authorities</em>.</p>
+</div>
+<div class="paragraph">
+<p>Doing so, afterwards, in the implementation class of the <em>logic</em> layer we can set up the related methods with the <em>java security</em> '@RolesAllowed' annotation to block the access to the resource to users that does not match the expected roles.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@RolesAllowed(Roles.WAITER)
+public PaginatedListTo&lt;BookingEto&gt; findBookings(BookingSearchCriteriaTo criteria) {
+  return findBookings(criteria);
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:14:25 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

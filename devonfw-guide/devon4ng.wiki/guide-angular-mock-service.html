@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angular Mock Service</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-angular-mock-service.asciidoc">Angular Mock Service</a>
+<ul class="sectlevel1">
+<li><a href="#guide-angular-mock-service.asciidoc_the-app-we-start-with">The app we start with</a></li>
+<li><a href="#guide-angular-mock-service.asciidoc_the-components">The Components</a></li>
+<li><a href="#guide-angular-mock-service.asciidoc_the-service">The Service</a></li>
+<li><a href="#guide-angular-mock-service.asciidoc_the-model">The Model</a></li>
+<li><a href="#guide-angular-mock-service.asciidoc_use-case">Use case</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-angular-mock-service.asciidoc" class="sect0">Angular Mock Service</h1>
+<div class="paragraph">
+<p>We&#8217;ve all been there: A new idea comes, let&#8217;s quickly prototype it. But wait, there&#8217;s no backend. What can we do?</p>
+</div>
+<div class="paragraph">
+<p>Below you will find o solution that will get your started quick and easy. The idea is to write a simple mock service that helps us by feeding data into our components.</p>
+</div>
+<div class="sect1">
+<h2 id="guide-angular-mock-service.asciidoc_the-app-we-start-with">The app we start with</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Let&#8217;s say you have a simple boilerplate code, with your favorite styling library hooked up and you&#8217;re ready to go. The <a href="https://github.com/devonfw/devon4ng/tree/develop/samples/AngularMaterialBasicLayout">Angular Material</a> sample is a good starting place.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-angular-mock-service.asciidoc_the-components">The Components</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Components - are the building blocks of our application. Their main role is to enable fragments of user interfaces. They will either display data (a list, a table, a chart, etc.), or 'collect' user interaction (e.g: a form, a menu, etc.)</p>
+</div>
+<div class="paragraph">
+<p>Components stay at the forefront of the application. They should also be reusable (as much as possible). Reusability is key for what we are trying to achieve - a stable, maintainable frontend where multiple people can contribute and collaborate.</p>
+</div>
+<div class="paragraph">
+<p>In our project, we are at the beginning. That means we may have more ideas than plans. We are exploring possibilites. In order to code eficiently:<br>
+1) We will not store mock data in the components.<br>
+2) We will not fetch or save data directly in the components.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/devonfw/devon4ng/wiki/components-layer">Learn more about Angular Components</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-angular-mock-service.asciidoc_the-service">The Service</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>So, how do we get data in our app? How do we propagate the data to the components and how can we send user interaction from the components to the our data "manager" logic.</p>
+</div>
+<div class="paragraph">
+<p>The answer to all these questions is an Angular Service (that we will just call a service from now on).</p>
+</div>
+<div class="paragraph">
+<p>A service is an injectable logic that can be consumed by all the components that need it. It can carry manipulation functions and ,in our case, fetch data from a provider.</p>
+</div>
+<div id="guide-angular-mock-service.asciidoc_id_service_architecture" class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/architecture.png" alt="Service Architecture" width="600 link="images/architecture.png"">
+</div>
+<div class="title">Figure 1. Angular Components &amp; Services architecture.</div>
+</div>
+<div class="paragraph">
+<p>Inside the Angular App, an Injector gives access to each component to their required services. It&#8217;s good coding practice to use a distinct service to each data type you want to manipulate. The type is described in a interface.</p>
+</div>
+<div class="paragraph">
+<p>Still, our ideas drive in diferent ways, so we have to stay flexible. We cannot use a database at the moment, but we want a way to represent data on screen, which can grow organically.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/devonfw/devon4ng/wiki/services-layer">Learn more about Angular Services</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-angular-mock-service.asciidoc_the-model">The Model</h2>
+<div class="sectionbody">
+<div id="guide-angular-mock-service.asciidoc_id_data_box" class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/data-box.jpg" alt="Data Box" width="600 link="images/data-box.jpg"">
+</div>
+<div class="title">Figure 2. Data box in relation to services and components.</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s consider a 'box of data' represented in JSON. Phisicly this means a folder with some JSON/TS files in it. They are located in the <strong>app/mock</strong> folder. The example uses only one mock data file. The file is typed according to our data model.</p>
+</div>
+<div class="paragraph">
+<p>Pro tip: separate your files based on purpose. In your source code, put the <strong>mock files</strong> in the <strong>mock folder</strong>, <strong>components</strong> in the <strong>components folder</strong>, <strong>services</strong> in the <strong>services folder</strong> and <strong>data models</strong> in the <strong>models folder</strong>.</p>
+</div>
+<div id="guide-angular-mock-service.asciidoc_id_project_structure" class="imageblock">
+<div class="content">
+<a class="image" href="images/data-box.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/project-structure.png" alt="Project Structure" width="auto"></a>
+</div>
+<div class="title">Figure 3. Project structure.</div>
+</div>
+<div class="paragraph">
+<p>Aligned with the Angular way of development, we are implementing a model-view-controler pattern.</p>
+</div>
+<div class="paragraph">
+<p>The <strong>model</strong> is represented by the interfaces we make. These interfaces describe the data structures we will use in our application. In this example, there is one data model, coresponding with the 'type' of data that was mocked. In the models folder you will find the .ts script file that describes chemical elements. The corresponding mock file defines a set is chemical emlements objects, in accordance to our interface definition.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-angular-mock-service.asciidoc_use-case">Use case</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Enough with the theory, let&#8217;s see what we have here. The app presents 3 pages as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A leader bord with the top 3 elements</p>
+</li>
+<li>
+<p>A data table with all the elements</p>
+</li>
+<li>
+<p>A details page that reads a route paramenter and displays the details of the element.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>There are a lot of business cases which have these requirements:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A leader board can be understood as "the most popular items in a set", "the latest updated items", "you favorite items" etc.</p>
+</li>
+<li>
+<p>A data table with CRUD operations is very useful (in our case we only view details or delete an item, but they illustrate two important things: the details view shows how to navigate and consume a parametric route, the delete action shows how to invoke service operations over the loaded data - this means that the component is reusable and when the data comes with and API, only the service will need it&#8217;s implementation changed)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Check out the <a href="https://github.com/devonfw/devon4ng/tree/develop/samples/AngularMockService">Angular Mock Service</a> sample from the samples folder and easily get started with fast data roundtrips between your mock data and your components.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:14:49 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

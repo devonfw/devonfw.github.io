@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angular Lazy loading</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-angular-lazy-loading.asciidoc">Angular Lazy loading</a>
+<ul class="sectlevel1">
+<li><a href="#guide-angular-lazy-loading.asciidoc_an-example-with-angular">An example with Angular</a>
+<ul class="sectlevel2">
+<li><a href="#guide-angular-lazy-loading.asciidoc_implementation">Implementation</a></li>
+</ul>
+</li>
+<li><a href="#guide-angular-lazy-loading.asciidoc_conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-angular-lazy-loading.asciidoc" class="sect0">Angular Lazy loading</h1>
+<div class="paragraph">
+<p>When the development of an application starts, it just contains a small set of features so the app usually loads fast. However, as new features are added, the overall application size grows up  and its loading speed decreases, is in this context where Lazy loading finds its place.
+Lazy loading is a dessign pattern that defers initialization of objects until it is needed so, for example, Users that just access to a website&#8217;s home page do not need to have other areas loaded.
+Angular handles lazy loading through the routing module which redirect to requested pages. Those pages can be loaded at start or on demand.</p>
+</div>
+<div class="sect1">
+<h2 id="guide-angular-lazy-loading.asciidoc_an-example-with-angular">An example with Angular</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To explain how lazy loading is implemented using angular, a basic sample app is going to be developed. This app will consist in a window named "level 1" that contains two buttons that redirects to other windows in a "second level". It is a simple example, but useful to understand the relation between angular modules and lazy loading.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/angular/angular-lazy/levels-app.png" alt="Levels app structure" width="500 link="images/angular/angular-lazy/levels-app.png"">
+</div>
+<div class="title">Figure 1. Levels app structure.</div>
+</div>
+<div class="paragraph">
+<p>This graphic shows that modules acts as gates to access components "inside" them.</p>
+</div>
+<div class="paragraph">
+<p>Because the objective of this guide is related mainly with logic, the html structure and scss styles are less relevant, but the complete code can be found as a sample <a href="https://github.com/devonfw/devon4ng/tree/master/samples/AngularLazyLoading">here</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="guide-angular-lazy-loading.asciidoc_implementation">Implementation</h3>
+<div class="paragraph">
+<p>First write in a console <code>ng new level-app --routing</code>, to generate a new project called level-app including an app-routing.module.ts file (<strong>--routing</strong> flag).</p>
+</div>
+<div class="paragraph">
+<p>In the file app.component.html delete all the content except the router-outlet tag.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 1. File app.component.html</div>
+<div class="content">
+<pre class="highlight"><code class="html language-html">&lt;router-outlet&gt;&lt;/router-outlet&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The next steps consists on creating features modules.</p>
+</div>
+<div class="paragraph">
+<p>run <code>ng generate module first --routing</code>  to generate a module named <em>first</em>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>run <code>ng generate module first/second-left --routing</code> to generate a module named <em>second-left</em> under <em>first</em>.</p>
+</li>
+<li>
+<p>run <code>ng generate module first/second-right --routing</code> to generate a module <em>second-right</em> under <em>first</em>.</p>
+</li>
+<li>
+<p>run <code>ng generate component first/first</code> to generate a component named <em>first</em> inside the module <em>first</em>.</p>
+</li>
+<li>
+<p>run <code>ng generate component first/second-left/content</code> to generate a component <em>content</em> inside the module <em>second-left</em>.</p>
+</li>
+<li>
+<p>run <code>ng generate component first/second-right/content</code> to generate a component <em>content</em> inside the module <em>second-right</em>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To move between components we have to configure the routes used:</p>
+</div>
+<div class="paragraph">
+<p>In <strong>app-routing.module.ts</strong> add a path <strong>'first'</strong> to FirstComponent and a redirection from <strong>''</strong> to <strong>'first'</strong>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 2. File app-routing.module.ts.</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">...
+import { FirstComponent } from './first/first/first.component';
+
+const routes: Routes = [
+  {
+    path: 'first',
+    component: FirstComponent
+  },
+  {
+    path: '',
+    redirectTo: 'first',
+    pathMatch: 'full',
+  },
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule],
+})
+export class AppRoutingModule {}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In <strong>app.module.ts</strong> import the module which includes FirstComponent.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 3. File app.module.ts</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">....
+import { FirstModule } from './first/first.module';
+
+@NgModule({
+  ...
+  imports: [
+    ....
+    FirstModule
+  ],
+  ...
+})
+export class AppModule { }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In <strong>first-routing.module.ts</strong> add routes that direct to the content of SecondRightModule and SecondLeftModule. The content of both modules have the same name so, in order to avoid conflicts the name of the components are going to be changed using <strong>as</strong> ( original-name as new-name).</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 4. File first-routing.module.ts</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">...
+import { ContentComponent as ContentLeft} from './second-left/content/content.component';
+import { ContentComponent as ContentRight} from './second-right/content/content.component';
+import { FirstComponent } from './first/first.component';
+
+const routes: Routes = [
+  {
+    path: '',
+    component: FirstComponent
+  },
+  {
+    path: 'first/second-left',
+    component: ContentLeft
+  },
+  {
+    path: 'first/second-right',
+    component: ContentRight
+  }
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class FirstRoutingModule { }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In first.module.ts import SecondLeftModule and SecondRightModule.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 5. File first.module.ts</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">...
+import { SecondLeftModule } from './second-left/second-left.module';
+import { SecondRightModule } from './second-right/second-right.module';
+
+@NgModule({
+  ...
+  imports: [
+    ...
+    SecondLeftModule,
+    SecondRightModule,
+  ]
+})
+export class FirstModule { }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Using the current configuration, we have a project that loads all the modules in a eager way. Run <code>ng serve</code> to see what happens.</p>
+</div>
+<div class="paragraph">
+<p>First, during the compilation we can see that just a main file is built.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/angular/angular-lazy/compile-eager.png" alt="Compile eager" width="800 link="images/angular/angular-lazy/compile-eager.png"">
+</div>
+<div class="title">Figure 2. Compile eager.</div>
+</div>
+<div class="paragraph">
+<p>If we go to http//localhost:4200/first and open developer options (F12 on Chrome), it is found that a document named "first" is loaded.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/angular/angular-lazy/first-lvl-eager.png" alt="First level eager" width="800 link="images/angular/angular-lazy/first-lvl-eager.png"">
+</div>
+<div class="title">Figure 3. First level eager.</div>
+</div>
+<div class="paragraph">
+<p>If we click on <strong>[Go to right module]</strong> a second level module opens, but there is no 'second-right' document.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/angular/angular-lazy/second-lvl-right-eager.png" alt="Second level right eager" width="800 link="images/angular/angular-lazy/second-lvl-right-eager.png"">
+</div>
+<div class="title">Figure 4. Second level right eager.</div>
+</div>
+<div class="paragraph">
+<p>But, typing the url directly will load 'second-right' but no 'first', even if we click on <strong>[Go back]</strong></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/angular/angular-lazy/second-lvl-right-eager-d.png" alt="Second level right eager" width="800 link="images/angular/angular-lazy/second-lvl-right-eager-d.png"">
+</div>
+<div class="title">Figure 5. Second level right eager direct url.</div>
+</div>
+<div class="paragraph">
+<p>Modifying an angular application to load its modules lazily is easy, you have to change the routing configuration of the desired module (for example FirstModule).</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 6. File app-routing.module.ts.</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">const routes: Routes = [
+  {
+    path: 'first',
+    loadChildren: () =&gt; import('./first/first.module').then(m =&gt; m.FirstModule),
+  },
+  {
+    path: '',
+    redirectTo: 'first',
+    pathMatch: 'full',
+  },
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule],
+})
+export class AppRoutingModule {}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice that instead of loading a component, you dynamically import it in a <em>loadChildren</em> attribute because modules acts as gates to access components "inside" them. Updating the app to load lazily has four consecuences:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>No component attribute.</p>
+</li>
+<li>
+<p>No import of FirstComponent.</p>
+</li>
+<li>
+<p>FirstModule import has to be removed from the imports array at app.module.ts.</p>
+</li>
+<li>
+<p>Change of context.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>If we check <strong>first-routing.module.ts</strong> again, the can see that the path for ContentLeft and ContentRight is set to 'first/second-left' and 'first/second-right' respectively, so writing 'http//localhost:4200/first/second-left' will redirect us to ContentLeft. However, after loading a module with loadChildren setting the path to '<em>second-left</em>' and '<em>second-right</em>' is enough because it adquires the context set by AppRoutingModule.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 7. File first-routing.module.ts</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">const routes: Routes = [
+  {
+    path: '',
+    component: FirstComponent
+  },
+  {
+    path: 'second-left',
+    component: ContentLeft
+  },
+  {
+    path: 'second-right',
+    component: ContentRight
+  }
+];</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If we go to '<em>first</em>' then FirstModule is situated in '<em>/first</em>' but also its children ContentLeft and ContentRight, so it is not necessary to write in their path '<em>first/second-left</em>' and '<em>first/second-right</em>', because that will situate the components on '<em>first/first/second-left</em>' and  '<em>first/first/second-right</em>'.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/angular/angular-lazy/first-lvl-wrong-path.png" alt="First level wrong path" width="800 link="images/angular/angular-lazy/first-lvl-wrong-path.png"">
+</div>
+<div class="title">Figure 6. First level lazy wrong path.</div>
+</div>
+<div class="paragraph">
+<p>When we compile an app with lazy loaded modules, files containing them will be generated</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/angular/angular-lazy/compile-first-lazy.png" alt="First level lazy compilation" width="800 link="images/angular/angular-lazy/compile-first-lazy.png"">
+</div>
+<div class="title">Figure 7. First level lazy compilation.</div>
+</div>
+<div class="paragraph">
+<p>And if we go to <em>developer tools &#8594; network</em>, we can find those modules loaded (if they are needed).</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/angular/angular-lazy/first-lvl-lazy.png" alt="First level lazy" width="800 link="images/angular/angular-lazy/first-lvl-lazy.png"">
+</div>
+<div class="title">Figure 8. First level lazy.</div>
+</div>
+<div class="paragraph">
+<p>To load the component ContentComponent of SecondLeftModule lazily, we have to load SecondLeftModule as a children of FirstModule:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Change <strong>component</strong> to <strong>loadChildren</strong> and reference SecondLeftModule.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">Listing 8. File first-routing.module.ts.</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">const routes: Routes = [
+  {
+    path: '',
+    component: FirstComponent
+  },
+  {
+    path: 'second-left',
+    loadChildren: () =&gt; import('./second-left/second-left.module').then(m =&gt; m.SecondLeftModule),
+  },
+  {
+    path: 'second-right',
+    component: ContentRight
+  }
+];</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Remove SecondLeftModule at first.component.ts</p>
+</li>
+<li>
+<p>Route the components inside SecondLeftModule. Without this step nothing would be displayed.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">Listing 9. File second-left-routing.module.ts.</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">...
+import { ContentComponent } from './content/content.component';
+
+const routes: Routes = [
+  {
+    path: '',
+    component: ContentComponent
+  }
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class SecondLeftRoutingModule { }</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>run <code>ng serve</code> to generate files containing the lazy modules.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/angular/angular-lazy/second-lvl-lazy.png" alt="Second level lazy" width="800 link="images/angular/angular-lazy/second-lvl-lazy.png"">
+</div>
+<div class="title">Figure 9. Second level lazy loading compilation.</div>
+</div>
+<div class="paragraph">
+<p>Clicking on <strong>[Go to left module]</strong> triggers the load of SecondLeftModule.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/angular/angular-lazy/second-lvl-left-lazy.png" alt="Second level lazy network" width="800 link="images/angular/angular-lazy/second-lvl-left-lazy.png"">
+</div>
+<div class="title">Figure 10. Second level lazy loading network.</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-angular-lazy-loading.asciidoc_conclusion">Conclusion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Lazy loading is a pattern useful when new features are added, these features are usually identified as modules which can be loaded only if needed as shown in this document, reducing the time spent loading an application.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:14:47 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

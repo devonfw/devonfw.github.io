@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Access Object</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-dao.asciidoc">Data Access Object</a>
+<ul class="sectlevel1">
+<li><a href="#guide-dao.asciidoc_dao-interface">DAO Interface</a></li>
+<li><a href="#guide-dao.asciidoc_dao-implementation">DAO Implementation</a>
+<ul class="sectlevel2">
+<li><a href="#guide-dao.asciidoc_static-queries-for-dao-implementation">Static queries for DAO Implementation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-dao.asciidoc" class="sect0">Data Access Object</h1>
+<div class="paragraph">
+<p>The <em>Data Acccess Objects</em> (DAOs) are part of the persistence layer.
+They are responsible for a specific <a href="#guide-dao.asciidoc_entity">entity</a> and should be named <code>«Entity»Dao</code> and <code>«Entity»DaoImpl</code>.
+The DAO offers the so called CRUD-functionalities (create, retrieve, update, delete) for the corresponding entity.
+Additionally a DAO may offer advanced operations such as <a href="#guide-jpa-query.asciidoc">query</a> or locking methods.</p>
+</div>
+<div class="sect1">
+<h2 id="guide-dao.asciidoc_dao-interface">DAO Interface</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For each DAO there is an interface named <code>«Entity»Dao</code> that defines the API. For CRUD support and common naming we derive it from the <code>ApplicationDao</code> interface that comes with the devon application template:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public interface MyEntityDao extends ApplicationDao&lt;MyEntity&gt; {
+  List&lt;MyEntity&gt; findByCriteria(MyEntitySearchCriteria criteria);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>All CRUD operations are inherited from <code>ApplicationDao</code> so you only have to declare the additional methods.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-dao.asciidoc_dao-implementation">DAO Implementation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Implementing a DAO is quite simple. We create a class named <code>«Entity»DaoImpl</code> that extends <code>ApplicationDaoImpl</code> and implements your <code>«Entity»Dao</code> interface:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public class MyEntityDaoImpl extends ApplicationDaoImpl&lt;MyEntity&gt; implements MyEntityDao {
+
+  public List&lt;MyEntity&gt; findByCriteria(MyEntitySearchCriteria criteria) {
+    TypedQuery&lt;MyEntity&gt; query = createQuery(criteria, getEntityManager());
+    return query.getResultList();
+  }
+  ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Again you only need to implement the additional non-CRUD methods that you have declared in your <code>«Entity»Dao</code> interface.
+In the DAO implementation you can use the method <code>getEntityManager()</code> to access the <code>EntityManager</code> from the JPA. You will need the <code>EntityManager</code> to create and execute <a href="#guide-jpa-query.asciidoc">queries</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="guide-dao.asciidoc_static-queries-for-dao-implementation">Static queries for DAO Implementation</h3>
+<div class="paragraph">
+<p>All static <a href="#guide-jpa-query.asciidoc">queries</a> are declared in the file <code>src\main\resources\META-INF\orm.xml</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;entity-mappings version="1.0" xmlns="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"&gt;
+  &lt;named-query name="find.dish.with.max.price"&gt;
+    &lt;query&gt;&lt;![SELECT dish FROM DishEntity dish WHERE dish.price &lt;= :maxPrice]]&gt;&lt;/query&gt;
+  &lt;/named-query&gt;
+  ...
+&lt;/hibernate-mapping&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When your application is started, all these static queries will be created as prepared statements. This allows better performance and also ensures that you get errors for invalid JPQL queries when you start your app rather than later when the query is used.</p>
+</div>
+<div class="paragraph">
+<p>To avoid redundant occurrences of the query name (<code>get.open.order.positions.for.order</code>) we define a constant for each named query:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public class NamedQueries {
+  public static final String FIND_DISH_WITH_MAX_PRICE = "find.dish.with.max.price";
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that changing the name of the java constant (<code>FIND_DISH_WITH_MAX_PRICE</code>) can be done easily with refactoring. Further you can trace where the query is used by searching the references of the constant.</p>
+</div>
+<div class="paragraph">
+<p>The following listing shows how to use this query:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public List&lt;DishEntity&gt; findDishByMaxPrice(BigDecimal maxPrice) {
+  Query query = getEntityManager().createNamedQuery(NamedQueries.FIND_DISH_WITH_MAX_PRICE);
+  query.setParameter("maxPrice", maxPrice);
+  return query.getResultList();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Via <code>EntityManager.createNamedQuery(String)</code> we create an instance of <code>Query</code> for our predefined static query.
+Next we use <code>setParameter(String, Object)</code> to provide a parameter (<code>maxPrice</code>) to the query. This has to be done for all parameters of the query.</p>
+</div>
+<div class="paragraph">
+<p>Note that using the <code>createQuery(String)</code> method, which takes the entire query as string (that may already contain the parameter) is not allowed to avoid SQL injection vulnerabilities.
+When the method <code>getResultList()</code> is invoked, the query is executed and the result is delivered as <code>List</code>. As an alternative, there is a method called <code>getSingleResult()</code>, which returns the entity if the query returned exactly one and throws an exception otherwise.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:13:20 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

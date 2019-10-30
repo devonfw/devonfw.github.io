@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Routing</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-routing.asciidoc">Routing</a>
+<ul class="sectlevel1">
+<li><a href="#guide-routing.asciidoc_defining-routes">Defining Routes</a>
+<ul class="sectlevel2">
+<li><a href="#guide-routing.asciidoc_example-1---no-lazy-loading">Example 1 - No Lazy Loading</a></li>
+<li><a href="#guide-routing.asciidoc_example-2---lazy-loading">Example 2 - Lazy Loading</a></li>
+</ul>
+</li>
+<li><a href="#guide-routing.asciidoc_triggering-route-changes">Triggering Route Changes</a></li>
+<li><a href="#guide-routing.asciidoc_guards">Guards</a>
+<ul class="sectlevel2">
+<li><a href="#guide-routing.asciidoc_example-1---canactivate-and-canactivatechild-guards">Example 1 - CanActivate and CanActivateChild guards</a></li>
+<li><a href="#guide-routing.asciidoc_example-2---canload-guard">Example 2 - CanLoad guard</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-routing.asciidoc" class="sect0">Routing</h1>
+<div class="paragraph">
+<p>A basic introduction to the Angular Router can be found in <a href="https://angular.io/guide/router">Angular Docs</a>.</p>
+</div>
+<div class="paragraph">
+<p>This guide will show common tasks and best practices.</p>
+</div>
+<div class="sect1">
+<h2 id="guide-routing.asciidoc_defining-routes">Defining Routes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For each feature module and the app module all routes should be defined in a seperate module with the suffix <code>RoutingModule</code>.
+This way the routing modules are the only place where routes are defined.
+This pattern achieves a clear seperation of concernes.
+The following figure illustrates this.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/module-declaration.svg"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/module-declaration.svg" alt="Routing module declaration" width="450"></a>
+</div>
+<div class="title">Figure 1. Routing module declaration</div>
+</div>
+<div class="paragraph">
+<p>It is important to define routes inside app routing module with <code>.forRoot()</code> and in feature routing modules with <code>.forChild()</code>.</p>
+</div>
+<div class="sect2">
+<h3 id="guide-routing.asciidoc_example-1---no-lazy-loading">Example 1 - No Lazy Loading</h3>
+<div class="paragraph">
+<p>In this example two modules need to be configured with routes - AppModule and FlightModule.</p>
+</div>
+<div class="paragraph">
+<p>The following routes will be configured</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>/</code> will redirect to <code>/search</code></p>
+</li>
+<li>
+<p><code>/search</code> displays FlightSearchComponent (FlightModule)</p>
+</li>
+<li>
+<p><code>/search/print/:flightId/:date</code> displays FlightPrintComponent (FlightModule)</p>
+</li>
+<li>
+<p><code>/search/details/:flightId/:date</code> displays FlightDetailsComponent (FlightModule)</p>
+</li>
+<li>
+<p>All other routes will display ErrorPage404 (AppModule)</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">Listing 1. app-routing.module.ts</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">const routes: Routes = [
+  { path: '', redirectTo: 'search', pathMatch: 'full' },
+  { path: '**', component: ErrorPage404 }
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Listing 2. flight-search-routing.module.ts</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">const routes: Routes = [
+  {
+    path: 'search', children: [
+      { path: '', component: FlightSearchComponent },
+      { path: 'print/:flightId/:date', component: FlightPrintComponent },
+      { path: 'details/:flightId/:date', component: FlightDetailsComponent }
+    ]
+  }
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
+})
+export class FlightSearchRoutingModule { }</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-tip" title=""></i>
+</td>
+<td class="content">
+The import order inside AppModule is important.
+AppRoutingModule needs to be imported <strong>after</strong> FlightModule.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-routing.asciidoc_example-2---lazy-loading">Example 2 - Lazy Loading</h3>
+<div class="paragraph">
+<p>Lazy Loading is a good practice when the application has multiple feature areas and a user might not visit every dialog.
+Or at least he might not need every dialog up front.</p>
+</div>
+<div class="paragraph">
+<p>The following example will configure the same routes as example 1 but will lazy load FlightModule.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 3. app-routing.module.ts</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">const routes: Routes = [
+  { path: '/search', loadChildren: 'app/flight-search/flight-search.module#FlightSearchModule' },
+  { path: '**', component: ErrorPage404 }
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Listing 4. flight-search-routing.module.ts</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">const routes: Routes = [
+  {
+    path: '', children: [
+      { path: '', component: FlightSearchComponent },
+      { path: 'print/:flightId/:date', component: FlightPrintComponent },
+      { path: 'details/:flightId/:date', component: FlightDetailsComponent }
+    ]
+  }
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
+})
+export class FlightSearchRoutingModule { }</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-routing.asciidoc_triggering-route-changes">Triggering Route Changes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>With Angular you have two ways of triggering route changes.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Declarative with bindings in component HTML templates</p>
+</li>
+<li>
+<p>Programmatic with Angular <code>Router</code> service inside component classes</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>On the one hand, architecture-wise it is a much cleaner solution to trigger route changes in <em>Smart Components</em>.
+This way you have every UI event that should trigger a navigation handled in one place - in a <em>Smart Component</em>.
+It becomes very easy to look inside the code for every navigation, that can occure.
+Refactoring is also much easier, as there are no navigation events "hidden" in the HTML templates</p>
+</div>
+<div class="paragraph">
+<p>On the other hand, in terms of accessibility and SEO it is a better solution to rely on bindings in the view - e.g. by using Angulars router-link directive.
+This way screen readers and the Google crawler can move through the page easily.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-tip" title=""></i>
+</td>
+<td class="content">
+If you do not have to support accessibility (screen readers, etc.) and to care about SEO (Google rank, etc.),
+then you should aim for triggering navigations only in <em>Smart Components</em>.
+</td>
+</tr>
+</table>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/triggering-navigation.svg"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/triggering-navigation.svg" alt="Triggering navigation" width="350" height="200"></a>
+</div>
+<div class="title">Figure 2. Triggering navigation</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-routing.asciidoc_guards">Guards</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Guards are Angular services implemented on routes which determines whether a user can naviagate to/from the route. There are examples below which will explain things better. We have the following types of Guards:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>CanActivate</strong>: It is used to determine whether a user can visit a route. The most common scenario for this guard is to check if the user is authenticated. For example, if we want only logged in users to be able to go to a particular route, we will implement the <code>CanActivate</code> guard on this route.</p>
+</li>
+<li>
+<p><strong>CanActivateChild</strong>: Same as above, only implemented on child routes.</p>
+</li>
+<li>
+<p><strong>CanDeactivate</strong>: It is used to determine if a user can naviagate away from a route. Most common example is when a user tries to go to a different page after filling up a form and does not save/submit the changes, we can use this guard to confirm whether the user really wants to leave the page without saving/submiting.</p>
+</li>
+<li>
+<p><strong>Resolve</strong>: For resolving dynamic data.</p>
+</li>
+<li>
+<p><strong>CanLoad</strong>: It is used to determine whether an <em>Angular module</em> can be loaded lazily. Example below will be helpful to understand it.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s have a look at some examples.</p>
+</div>
+<div class="sect2">
+<h3 id="guide-routing.asciidoc_example-1---canactivate-and-canactivatechild-guards">Example 1 - CanActivate and CanActivateChild guards</h3>
+<div class="sect3">
+<h4 id="guide-routing.asciidoc_canactivate-guard">CanActivate guard</h4>
+<div class="paragraph">
+<p>As mentioned earlier, a guard is an Angular service and services are simply TypeScript classes. So we begin by creating a class. This class has to implement the <code>CanActivate</code> interface (imported from <code>angular/router</code>), and therefore, must have a <code>canActivate</code> function. The logic of this function determines whether the requested route can be navigated to or not. It returns either a <code>boolean</code> value or an <code>Observable</code> or a <code>Promise</code> which resolves to a <code>boolean</code> value. If it is true, the route is loaded, else not.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 5. CanActivate example</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">...
+import {CanActivate} from "@angular/router";
+
+@Injectable()
+class ExampleAuthGuard implements CanActivate {
+  constructor(private authService: AuthService) {}
+
+  canActivate(route: ActivatedRouterSnapshot, state: RouterStateSnapshot) {
+	if (this.authService.isLoggedIn()) {
+      return true;
+    } else {
+	  window.alert('Please log in first');
+      return false;
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the above example, let&#8217;s assume we have a <code>AuthService</code> which has a <code>isLoggedIn()</code> method which returns a boolean value depending on whether the user is logged in. We use it to return <code>true</code> or <code>false</code> from the <code>canActivate</code> function.
+The <code>canActivate</code> function accepts two parameters (provided by Angular). The first parameter of type <code>ActivatedRouterSnapshot</code> is the snapshot of the route the user is trying to naviagate to (where the guard is implemented); we can extract the route parameters from this instance. The second parameter of type <code>RouterStateSnapshot</code> is a snapshot of the router state the user is trying to naviagate to; we can fetch the URL from it&#8217;s <code>url</code> property.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-tip" title=""></i>
+</td>
+<td class="content">
+We can also redirect the user to another page (maybe a login page) if the <code>authService</code> returns false. To do that, inject <code>Router</code> and use it&#8217;s <code>naviagate</code> function to redirect to the appropriate page.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Since it is a service, it needs to be provided in our module:</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 6. provide the guard in a module</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">@NgModule({
+  ...
+  providers: [
+    ...
+    ExampleAuthGuard
+  ]
+})</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now this guard is ready to use on our routes. We implement it where we define our array of routes in the application:</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 7. Implementing the guard</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">...
+const routes: Routes = [
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: 'home', component: HomeComponent },
+  { path: 'page1', component: Page1Component, canActivate: [ExampleAuthGuard] }
+];</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As you can see, the <code>canActivate</code> property accepts an array of guards. So we can implement more than one guard on a route.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-routing.asciidoc_canactivatechild-guard">CanActivateChild guard</h4>
+<div class="paragraph">
+<p>To use the guard on nested (children) routes, we add it to the <code>canActivateChild</code> property like so:</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 8. Implementing the guard on child routes</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">...
+const routes: Routes = [
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: 'home', component: HomeComponent },
+  { path: 'page1', component: Page1Component, canActivateChild: [ExampleAuthGuard], children: [
+	{path: 'sub-page1', component: SubPageComponent},
+    {path: 'sub-page2', component: SubPageComponent}
+  ] }
+];</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-routing.asciidoc_example-2---canload-guard">Example 2 - CanLoad guard</h3>
+<div class="paragraph">
+<p>Similar to <code>CanActivate</code>, to use this guard we implement the <code>CanLoad</code> interface and overwrite it&#8217;s <code>canLoad</code> function. Again, this function returns either a boolean value or an <code>Observable</code> or a <code>Promise</code> which resolves to a boolean value. The fundamental difference between <code>CanActivate</code> and <code>CanLoad</code> is that <code>CanLoad</code> is used to determine whether an entire module can be lazily loaded or not. If the guard returns <code>false</code> for a module protected by <code>CanLoad</code>, the entire module is not loaded.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 9. CanLoad example</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">...
+import {CanLoad, Route} from "@angular/router";
+
+@Injectable()
+class ExampleCanLoadGuard implements CanLoad {
+  constructor(private authService: AuthService) {}
+
+  canLoad(route: Route) {
+	if (this.authService.isLoggedIn()) {
+      return true;
+    } else {
+	  window.alert('Please log in first');
+      return false;
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Again, let&#8217;s assume we have a <code>AuthService</code> which has a <code>isLoggedIn()</code> method which returns a boolean value depending on whether the user is logged in. The <code>canLoad</code> function accepts a parameter of type Route which we can use to fetch the path a user is trying to navigate to (using the <code>path</code> property of <code>Route</code>).</p>
+</div>
+<div class="paragraph">
+<p>This guard needs to be provided in our module like any other service.</p>
+</div>
+<div class="paragraph">
+<p>To implement the guard, we use the <code>canLoad</code> property:</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 10. Implementing the guard</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">...
+const routes: Routes = [
+  { path: 'home', component: HomeComponent },
+  { path: 'admin', loadChildren: 'app/admin/admin.module#AdminModule', canLoad: [ExampleCanLoadGuard] }
+];</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:15:24 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

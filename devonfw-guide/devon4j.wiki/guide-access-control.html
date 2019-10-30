@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Access-Control</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-access-control.asciidoc">Access-Control</a>
+<ul class="sectlevel1">
+<li><a href="#guide-access-control.asciidoc_authentication">Authentication</a>
+<ul class="sectlevel2">
+<li><a href="#guide-access-control.asciidoc_preserve-original-request-anchors-after-form-login-redirect">Preserve original request anchors after form login redirect</a></li>
+<li><a href="#guide-access-control.asciidoc_users-vs.-systems">Users vs. Systems</a></li>
+<li><a href="#guide-access-control.asciidoc_mixed-authentication">Mixed Authentication</a></li>
+</ul>
+</li>
+<li><a href="#guide-access-control.asciidoc_authorization">Authorization</a>
+<ul class="sectlevel2">
+<li><a href="#guide-access-control.asciidoc_clarification-of-terms">Clarification of terms</a></li>
+<li><a href="#guide-access-control.asciidoc_suggestions-on-the-access-model">Suggestions on the access model</a></li>
+<li><a href="#guide-access-control.asciidoc_naming-conventions">Naming conventions</a></li>
+<li><a href="#guide-access-control.asciidoc_devon4j-security">devon4j-security</a></li>
+<li><a href="#guide-access-control.asciidoc_access-control-config">Access Control Config</a></li>
+<li><a href="#guide-access-control.asciidoc_configuration-on-java-method-level">Configuration on Java Method level</a></li>
+<li><a href="#guide-access-control.asciidoc_check-data-permissions">Check Data-Permissions</a></li>
+<li><a href="#guide-access-control.asciidoc_access-control-schema-deprecated">Access Control Schema (deprecated)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-access-control.asciidoc" class="sect0">Access-Control</h1>
+<div class="paragraph">
+<p>Access-Control is a central and important aspect of <a href="#guide-security.asciidoc">Security</a>. It consists of two major aspects:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#guide-access-control.asciidoc_guide-access-control.asciidoc_Authentication">Authentication</a> (Who tries to access?)</p>
+</li>
+<li>
+<p><a href="#guide-access-control.asciidoc_guide-access-control.asciidoc_Authorization">Authorization</a> (Is the one accessing allowed to do what he wants to do?)</p>
+</li>
+</ul>
+</div>
+<div class="sect1">
+<h2 id="guide-access-control.asciidoc_authentication">Authentication</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Definition:</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Authentication is the verification that somebody interacting with the system is the actual subject for whom he claims to be.</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>The one authenticated is properly called <em>subject</em> or <a href="http://docs.oracle.com/javase/7/docs/api/java/security/Principal.html"><em>principal</em></a>. However, for simplicity we use the common term <em>user</em> even though it may not be a human (e.g. in case of a service call from an external system).</p>
+</div>
+<div class="paragraph">
+<p>To prove his authenticity the user provides some secret called <em>credentials</em>. The most simple form of credentials is a password.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+Please never implement your own authentication mechanism or credential store. You have to be aware of implicit demands such as salting and hashing credentials, password life-cycle with recovery, expiry, and renewal including email notification confirmation tokens, central password policies, etc. This is the domain of access managers and identity management systems. In a business context you will typically already find a system for this purpose that you have to integrate (e.g. via LDAP). Otherwise you should consider establishing such a system e.g. using <a href="http://keycloak.org">keycloak</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>We use <a href="https://projects.spring.io/spring-security/">spring-security</a> as a framework for authentication purposes.</p>
+</div>
+<div class="paragraph">
+<p>Therefore you need to provide an implementation of <a href="https://docs.spring.io/spring-security/site/docs/4.2.x/apidocs/org/springframework/security/config/annotation/web/WebSecurityConfigurer.html">WebSecurityConfigurerAdapter</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Configuration
+@EnableWebSecurity
+public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+  @Inject
+  private UserDetailsService userDetailsService;
+  ...
+  public void configure(HttpSecurity http) throws Exception {
+    http.userDetailsService(this.userDetailsService)
+        .authorizeRequests().antMatchers("/public/**").permitAll()
+        .anyRequest().authenticated().and()
+        ...
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As you can see spring-security offers a fluent API for easy configuration. You can simply add invocations like <code>formLogin().loginPage("/public/login")</code> or <code>httpBasic().realmName("MyApp")</code>. Also <a href="#guide-security.asciidoc">CSRF</a> protection can be configured by invoking <code>csrf()</code>.
+For further details see <a href="https://docs.spring.io/spring-security/site/docs/current/reference/html/jc.html#jc-httpsecurity">spring Java-config for HTTP security</a>.</p>
+</div>
+<div class="paragraph">
+<p>Further, you need to provide an implementation of the <a href="https://docs.spring.io/spring-security/site/docs/4.2.x/apidocs/org/springframework/security/core/userdetails/UserDetailsService.html">UserDetailsService</a> interface.
+A good starting point comes with our application template.</p>
+</div>
+<div class="sect2">
+<h3 id="guide-access-control.asciidoc_preserve-original-request-anchors-after-form-login-redirect">Preserve original request anchors after form login redirect</h3>
+<div class="paragraph">
+<p>Spring Security will automatically redirect any unauthorized access to the defined login-page. After successful login, the user will be redirected to the original requested URL. The only pitfall is, that anchors in the request URL will not be transmitted to server and thus cannot be restored after successful login. Therefore the <code>devon4j-security</code> module provides the <code>RetainAnchorFilter</code>, which is able to inject javascript code to the source page and to the target page of any redirection. Using javascript this filter is able to retrieve the requested anchors and store them into a cookie. Heading the target URL this cookie will be used to restore the original anchors again.</p>
+</div>
+<div class="paragraph">
+<p>To enable this mechanism you have to integrate the <code>RetainAnchorFilter</code> as follows:
+First, declare the filter with</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>storeUrlPattern</code>: an regular expression matching the URL, where anchors should be stored</p>
+</li>
+<li>
+<p><code>restoreUrlPattern</code>: an regular expression matching the URL, where anchors should be restored</p>
+</li>
+<li>
+<p><code>cookieName</code>: the name of the cookie to save the anchors in the intermediate time</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You can easily configure this as code in your <code>WebSecurityConfig</code> as following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">RetainAnchorFilter filter = new RetainAnchorFilter();
+filter.setStoreUrlPattern("http://[^/]+/[^/]+/login.*");
+filter.setRestoreUrlPattern("http://[^/]+/[^/]+/.*");
+filter.setCookieName("TARGETANCHOR");
+http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-access-control.asciidoc_users-vs.-systems">Users vs. Systems</h3>
+<div class="paragraph">
+<p>If we are talking about authentication we have to distinguish two forms of principals:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>human users</p>
+</li>
+<li>
+<p>autonomous systems</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>While e.g. a Kerberos/SPNEGO Single-Sign-On makes sense for human users it is pointless for authenticating autonomous systems. So always keep this in mind when you design your authentication mechanisms and separate access for human users from access for systems.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-access-control.asciidoc_mixed-authentication">Mixed Authentication</h3>
+<div class="paragraph">
+<p>In rare cases you might need to mix multiple authentication mechanisms (form based, basic-auth, SAMLv2, OAuth, etc.) within the same app (for different URLs). For KISS this should be avoided where possible. However, when needed, you can find a solution
+<a href="https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#multiple-httpsecurity">here</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-access-control.asciidoc_authorization">Authorization</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Definition:</strong></p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Authorization is the verification that an authenticated user is allowed to perform the operation he intends to invoke.</p>
+</div>
+</blockquote>
+</div>
+<div class="sect2">
+<h3 id="guide-access-control.asciidoc_clarification-of-terms">Clarification of terms</h3>
+<div class="paragraph">
+<p>For clarification we also want to give a common understanding of related terms that have no unique definition and consistent usage in the wild.</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<caption class="title">Table 1. Security terms related to authorization</caption>
+<colgroup>
+<col style="width: 15%;">
+<col style="width: 85%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Term</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Meaning and comment</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Permission</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A permission is an object that allows a principal to perform an operation in the system. This permission can be <em>granted</em> (give) or <em>revoked</em> (taken away). Sometimes people also use the term <em>right</em> what is actually wrong as a right (such as the right to be free) can not be revoked.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Group</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">We use the term group in this context for an object that contains permissions. A group may also contain other groups. Then the group represents the set of all recursively contained permissions.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Role</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">We consider a role as a specific form of group that also contains permissions. A role identifies a specific function of a principal. A user can act in a role.</p><p class="tableblock">For simple scenarios a principal has a single role associated. In more complex situations a principal can have multiple roles but has only one active role at a time that he can choose out of his assigned roles. For KISS it is sometimes sufficient to avoid this by creating multiple accounts for the few users with multiple roles. Otherwise at least avoid switching roles at run-time in clients as this may cause problems with related states. Simply restart the client with the new role as parameter in case the user wants to switch his role.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Access Control</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Any permission, group, role, etc., which declares a control for access management.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="guide-access-control.asciidoc_suggestions-on-the-access-model">Suggestions on the access model</h3>
+<div class="paragraph">
+<p>For the access model we give the following suggestions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Each Access Control (permission, group, role, &#8230;&#8203;) is uniquely identified by a human readable string.</p>
+</li>
+<li>
+<p>We create a unique permission for each use-case.</p>
+</li>
+<li>
+<p>We define groups that combine permissions to typical and useful sets for the users.</p>
+</li>
+<li>
+<p>We define roles as specific groups as required by our business demands.</p>
+</li>
+<li>
+<p>We allow to associate users with a list of Access Controls.</p>
+</li>
+<li>
+<p>For authorization of an implemented use case we determine the required permission. Furthermore, we determine the current user and verify that the required permission is contained in the tree spanned by all his associated Access Controls. If the user does not have the permission we throw a security exception and thus abort the operation and transaction.</p>
+</li>
+<li>
+<p>We avoid negative permissions, that is a user has no permission by default and only those granted to him explicitly give him additional permission for specific things. Permissions granted can not be reduced by other permissions.</p>
+</li>
+<li>
+<p>Technically we consider permissions as a secret of the application. Administrators shall not fiddle with individual permissions but grant them via groups. So the access management provides a list of strings identifying the Access Controls of a user. The individual application itself contains these Access Controls in a structured way, whereas each group forms a permission tree.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-access-control.asciidoc_naming-conventions">Naming conventions</h3>
+<div class="paragraph">
+<p>As stated above each Access Control is uniquely identified by a human readable string. This string should follow the naming convention:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>«app-id».«local-name»</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For Access Control Permissions the <code>«local-name»</code> again follows the convention:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>«verb»«object»</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The segments are defined by the following table:</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<caption class="title">Table 2. Segments of Access Control Permission ID</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Segment</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Description</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Example</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">«app-id»</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Is a unqiue technical but human readable string of the application (or microservice). It shall not contain special characters and especially no dot or whitespace. We recommend to use <code>lower-train-case-ascii-syntax</code>. The identity and access management should be organized on enterprise level rather than application level. Therefore permissions of different apps might easily clash (e.g. two apps might both define a group <code>ReadMasterData</code> but some user shall get this group for only one of these two apps). Using the <code>«app-id».</code> prefix is a simple but powerful namespacing concept that allows you to scale and grow. You may also reserve specific «app-id»s for cross-cutting concerns that do not actually reflect a single app e.g to grant access to a geographic region.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>shop</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">«verb»</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The action that is to be performed on «object». We use <code>Find</code> for searching and reading data. <code>Save</code> shall be used both for create and update. Only if you really have demands to separate these two you may use <code>Create</code> in addition to <code>Save</code>. Finally, <code>Delete</code> is used for deletions. For non CRUD actions you are free to use additional verbs such as <code>Approve</code> or <code>Reject</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Find</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">«object»</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The affected object or entity. Shall be named according to your data-model</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Product</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>So as an example <code>shop.FindProduct</code> will reflect the permission to search and retrieve a <code>Product</code> in the <code>shop</code> application. The group <code>shop.ReadMasterData</code> may combine all permissions to read master-data from the <code>shop</code>. However, also a group <code>shop.Admin</code> may exist for the <code>Admin</code> role of the <code>shop</code> application. Here the <code>«local-name»</code> is <code>Admin</code> that does not follow the <code>«verb»«object»</code> schema.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-access-control.asciidoc_devon4j-security">devon4j-security</h3>
+<div class="paragraph">
+<p>The devonfw provides a ready to use module <code>devon4j-security</code> that is based on <a href="http://projects.spring.io/spring-security/">spring-security</a> and makes your life a lot easier.</p>
+</div>
+<div class="imageblock" style="text-align: center;">
+<div class="content">
+<a class="image" href="images/Security-AccessControl.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/Security-AccessControl.png" alt="access-control"></a>
+</div>
+<div class="title">Figure 1. devon4j Security Model</div>
+</div>
+<div class="paragraph">
+<p>The diagram shows the model of <code>devon4j-security</code> that separates two different aspects:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <em>Indentity- and Access-Management</em> is provided by according products and typically already available in the enterprise landscape (e.g. an active directory). It provides a hierarchy of <em>primary access control objects</em> (roles and groups) of a user. An administrator can grant and revoke permissions (indirectly) via this way.</p>
+</li>
+<li>
+<p>The application security defines a hierarchy of <em>secondary access control objects</em> (groups and permissions). This is done by configuration owned by the application (see following section). The "API" is defined by the IDs of the primary access control objects that will be referenced from the <em>Indentity- and Access-Management</em>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-access-control.asciidoc_access-control-config">Access Control Config</h3>
+<div class="paragraph">
+<p>In your application simply extend <code>AccessControlConfig</code> to configure your access control objects as code and reference it from your use-cases. An example config may look like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Named
+public class ApplicationAccessControlConfig extends AccessControlConfig {
+
+  public static final String APP_ID = "MyApp";
+
+  private static final String PREFIX = APP_ID + ".";
+
+  public static final String PERMISSION_FIND_OFFER = PREFIX + "FindOffer";
+
+  public static final String PERMISSION_SAVE_OFFER = PREFIX + "SaveOffer";
+
+  public static final String PERMISSION_DELETE_OFFER = PREFIX + "DeleteOffer";
+
+  public static final String PERMISSION_FIND_PRODUCT = PREFIX + "FindProduct";
+
+  public static final String PERMISSION_SAVE_PRODUCT = PREFIX + "SaveProduct";
+
+  public static final String PERMISSION_DELETE_PRODUCT = PREFIX + "DeleteProduct";
+
+  public static final String GROUP_READ_MASTER_DATA = PREFIX + "ReadMasterData";
+
+  public static final String GROUP_MANAGER = PREFIX + "Manager";
+
+  public static final String GROUP_ADMIN = PREFIX + "Admin";
+
+  public ApplicationAccessControlConfig() {
+
+    super();
+    AccessControlGroup readMasterData = group(GROUP_READ_MASTER_DATA, PERMISSION_FIND_OFFER, PERMISSION_FIND_PRODUCT);
+    AccessControlGroup manager = group(GROUP_MANAGER, readMasterData, PERMISSION_SAVE_OFFER, PERMISSION_SAVE_PRODUCT);
+    AccessControlGroup admin = group(GROUP_ADMIN, manager, PERMISSION_DELETE_OFFER, PERMISSION_DELETE_PRODUCT);
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-access-control.asciidoc_configuration-on-java-method-level">Configuration on Java Method level</h3>
+<div class="paragraph">
+<p>In your use-case you can now reference a permission like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Named
+public class UcSafeOfferImpl extends ApplicationUc implements UcSafeOffer {
+
+  @Override
+  @RolesAllowed(ApplicationAccessControlConfig.PERMISSION_SAVE_OFFER)
+  public OfferEto save(OfferEto offer) { ... }
+  ...
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-access-control.asciidoc_check-data-permissions">Check Data-Permissions</h3>
+<div class="paragraph">
+<p>See <a href="#guide-data-permission.asciidoc">data permissions</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-access-control.asciidoc_access-control-schema-deprecated">Access Control Schema (deprecated)</h3>
+<div class="paragraph">
+<p>The <code>access-control-schema.xml</code> approach is deprecated. The documentation can still be found in <a href="#guide-access-control-schema.asciidoc">access control schema</a>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:13:06 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

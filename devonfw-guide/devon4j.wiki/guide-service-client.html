@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Service Client</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-service-client.asciidoc">Service Client</a>
+<ul class="sectlevel1">
+<li><a href="#guide-service-client.asciidoc_motivation">Motivation</a></li>
+<li><a href="#guide-service-client.asciidoc_requirements">Requirements</a></li>
+<li><a href="#guide-service-client.asciidoc_features">Features</a>
+<ul class="sectlevel2">
+<li><a href="#guide-service-client.asciidoc_simple-usage">Simple usage</a></li>
+<li><a href="#guide-service-client.asciidoc_configuration">Configuration</a></li>
+<li><a href="#guide-service-client.asciidoc_service-discovery">Service Discovery</a></li>
+<li><a href="#guide-service-client.asciidoc_headers">Headers</a></li>
+<li><a href="#guide-service-client.asciidoc_timeouts">Timeouts</a></li>
+<li><a href="#guide-service-client.asciidoc_error-handling">Error Handling</a></li>
+<li><a href="#guide-service-client.asciidoc_logging">Logging</a></li>
+<li><a href="#guide-service-client.asciidoc_asynchronous-support">Asynchronous Support</a></li>
+<li><a href="#guide-service-client.asciidoc_resilience">Resilience</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-service-client.asciidoc" class="sect0">Service Client</h1>
+<div class="paragraph">
+<p>This guide is about consuming (calling) services from other applications (micro-services). For providing services see the <a href="#guide-service-layer.asciidoc">Service-Layer Guide</a>. Services can be consumed in the <a href="#guide-client-layer.asciidoc">client</a> or the server. As the client is typically not written in Java you should consult the according guide for your client technology. In case you want to call a service within your Java code this guide is the right place to get help.</p>
+</div>
+<div class="sect1">
+<h2 id="guide-service-client.asciidoc_motivation">Motivation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Various solutions already exist for calling services such as <code>RestTemplate</code> from spring or the JAX-RS client API. Further each and every service framework offers its own API as well. These solutions might be suitable for very small and simple projects (with one or two such invocations). However, with the trend of microservices the invocation of a service becomes a very common use-case that occurs all over the place. Have a look at the following features to get an idea why you want to use the solution offered here.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-service-client.asciidoc_requirements">Requirements</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You need to add (at least one of) these dependencies to your application:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;!-- Starter for consuming REST services --&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;com.devonfw.java.starters&lt;/groupId&gt;
+  &lt;artifactId&gt;devon4j-starter-cxf-client-rest&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;!-- Starter for consuming SOAP services --&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;com.devonfw.java.starters&lt;/groupId&gt;
+  &lt;artifactId&gt;devon4j-starter-cxf-client-ws&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-service-client.asciidoc_features">Features</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When invoking a service you need to consider many cross-cutting aspects. You might not think about them in the very first place and you do not want to implement them multiple times redundantly. Therefore you should consider using this approach. The following sub-sections list the covered features and aspects:</p>
+</div>
+<div class="sect2">
+<h3 id="guide-service-client.asciidoc_simple-usage">Simple usage</h3>
+<div class="paragraph">
+<p>Assuming you already have a Java interface <code>MyService</code> of the service you want to invoke:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">package com.company.department.foo.mycomponent.service.api.rest;
+...
+
+@Path("/myservice")
+public interface MyService extends RestService {
+
+  @POST
+  @Path("/getresult")
+  MyResult getResult(MyArgs myArgs);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then all you need to do is this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Named
+public class UcMyUseCaseImpl extends MyUseCaseBase implements UcMyUseCase {
+  @Inject
+  private ServiceClientFactory serviceClientFactory;
+
+  ...
+  private MyResult callMyServiceMethod(MyArgs myArgs) {
+    MyService myService = this.serviceClientFactory.create(MyService.class);
+    MyResult myResult = myService.myMethod(myArgs); // synchronous call of service over the wire
+    return myResult;
+  }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As you can see the synchronous invocation of a service is very simple. Still it is very flexible and powerful (see following features). The actual call of <code>myMethod</code> will technically call the remote service over the wire (e.g. via HTTP) including marshaling the arguments (e.g. converting <code>myArgs</code> to JSON) and unmarshalling the result (e.g. converting the received JSON to <code>myResult</code>).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-service-client.asciidoc_configuration">Configuration</h3>
+<div class="paragraph">
+<p>This solution allows a very flexible configuration on the following levels:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Global configuration (defaults)</p>
+</li>
+<li>
+<p>Configuration per remote service application (microservice)</p>
+</li>
+<li>
+<p>Configuration per invocation.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>A configuration on a deeper level (e.g. 3) overrides the configuration from a higher level (e.g. 1).</p>
+</div>
+<div class="paragraph">
+<p>The configuration on Level 1 and 2 are configured via <code>application.properties</code>
+(see <a href="#guide-configuration.asciidoc">configuration guide</a>).
+For Level 1 the prefix <code>service.client.default.</code> is used for properties.
+Further, for level 2. the prefix <code>service.client.app.«application».</code> is used where <code>«application»</code> is the
+technical name of the application providing the service. This name will automatically be derived from
+the java package of the service interface (e.g. <code>foo</code> in <code>MyService</code> interface before) following our
+<a href="coding-conventions.html#packages">packaging conventions</a>.
+In case these conventions are not met it will fallback to the fully qualified name of the service interface.</p>
+</div>
+<div class="paragraph">
+<p>Configuration on Level 3 has to be provided as <code>Map</code> argument to the method
+<code>ServiceClientFactory.create(Class&lt;S&gt; serviceInterface, Map&lt;String, String&gt; config)</code>.
+The keys of this <code>Map</code> will not use prefixes (such as the ones above). For common configuration
+parameters a type-safe builder is offered to create such map via <code>ServiceClientConfigBuilder</code>.
+E.g. for testing you may want to do:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">this.serviceClientFactory.create(MyService.class,
+  new ServiceClientConfigBuilder().authBasic().userLogin(login).userPassword(password).buildMap());</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<strong>TODO</strong> add configuration properties for external/mock service from Sneha
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-service-client.asciidoc_service-discovery">Service Discovery</h3>
+<div class="paragraph">
+<p>You do not want to hardwire service URLs in your code, right? Therefore different strategies might apply
+to <em>discover</em> the URL of the invoked service. This is done internally by an implementation of the interface
+<code>ServiceDiscoverer</code>. The default implementation simply reads the base URL from the configuration (see above).
+So you can simply add this to your <code>application.properties</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>service.client.app.foo.url=https://foo.company.com:8443/services/rest
+service.client.app.bar.url=http://bar.company.com:8080/services/rest
+service.client.default.url=https://api.company.com/services/rest</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Assuming your service interface would have the fully qualified name
+<code>com.company.department.foo.mycomponent.service.api.rest.MyService</code> then the URL would be resolved to
+<code><a href="https://foo.company.com:8443/services/rest" class="bare">https://foo.company.com:8443/services/rest</a></code> as the <code>«application»</code> is <code>foo</code>.</p>
+</div>
+<div class="paragraph">
+<p>Additionally, the URL might use the following variables that will automatically be resolved:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>${app}</code> to <code>«application»</code> (useful for default URL)</p>
+</li>
+<li>
+<p><code>${type}</code> to the type of the service. E.g. <code>rest</code> in case of a <a href="#guide-rest.asciidoc">REST</a> service and <code>ws</code> for a <a href="#guide-soap.asciidoc">SOAP</a> service.</p>
+</li>
+<li>
+<p><code>${local.server.port}</code> for the port of your current Java servlet container running the JVM. Should only used for testing with spring-boot random port mechanism (technically spring can not resolve this variable but we do it for you here).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Therefore, the default URL may also be configured as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>service.client.default.url=https://api.company.com/${app}/services/${type}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As you can use any implementation of <code>ServiceDiscoverer</code>, you can also easily use <a href="https://github.com/Netflix/eureka#eureka">eureka</a> (or anything else) instead to discover your services.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-service-client.asciidoc_headers">Headers</h3>
+<div class="paragraph">
+<p>A very common demand is to tweak (HTTP) headers in the request to invoke the service. May it be for security (authentication data) or for other cross-cutting concerns (such as the <a href="guide-logging.html#correlation-id">Correlation ID</a>). This is done internally by implementations of the interface  <code>ServiceHeaderCustomizer</code>.
+We already provide several implementations such as:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ServiceHeaderCustomizerBasicAuth</code> for basic authentication (mainly for testing).</p>
+</li>
+<li>
+<p><code>ServiceHeaderCustomizerOAuth</code> for OAuth (passes a security token from security context such as a <a href="https://jwt.io/">JWT</a> via OAuth).</p>
+</li>
+<li>
+<p><code>ServiceHeaderCustomizerCorrelationId</code> passed the <a href="guide-logging.html#correlation-id">Correlation ID</a> to the service request.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Additionally, you can add further custom implementations of <code>ServiceHeaderCustomizer</code> for your individual requirements and additional headers.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-service-client.asciidoc_timeouts">Timeouts</h3>
+<div class="paragraph">
+<p>You can configure timeouts in a very flexible way. First of all you can configure timeouts to establish the connection (<code>timeout.connection</code>) and to wait for the response (<code>timeout.response</code>) separately. These timeouts can be configured on all three levels as described in the configuration section above.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-service-client.asciidoc_error-handling">Error Handling</h3>
+<div class="paragraph">
+<p>Whilst invoking a remote service an error may occur. This solution will automatically handle such errors and map them to a higher level <code>ServiceInvocationFailedException</code>. In general we separate two different types of errors:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Network error</strong><br>
+In such case (host not found, connection refused, time out, etc.) there is not even a response from the server. However, in advance to a low-level exception you will get a wrapped <code>ServiceInvocationFailedException</code> (with code <code>ServiceInvoke</code>) with a readable message containing the service that could not be invoked.</p>
+</li>
+<li>
+<p><strong>Service error</strong><br>
+In case the service failed on the server-side the <a href="guide-rest.html#error-results">error result</a> will be parsed and thrown as a <code>ServiceInvocationFailedException</code> with the received message and code.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-service-client.asciidoc_logging">Logging</h3>
+<div class="paragraph">
+<p>By default this solution will log all invocations including the URL of the invoked service, success or error status flag and the duration in seconds (with decimal nano precision as available). Therefore you can easily monitor the status and performance of the service invocations.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-service-client.asciidoc_asynchronous-support">Asynchronous Support</h3>
+<div class="paragraph">
+<p>An important aspect is also asynchronous (and reactive) support. So far we only propose this as an enhancement for a future release with an API like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public interface ServiceClientAsyncFactory extends ServiceClientFactory {
+  AsyncClient&lt;S&gt; createAsync(Class&lt;S&gt; serviceInterface);
+}
+
+public interface AsyncClient&lt;S&gt; {
+  S getClient();
+  &lt;R&gt; Mono&lt;R&gt; call(R result);
+  &lt;T&gt; Flux&lt;T&gt; call(Collection&lt;? extends T&gt; result);
+  &lt;R&gt; void call(R result, Consumer&lt;R&gt; callback);
+  &lt;R&gt; CompletableFuture&lt;R&gt; callFuture(R result);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This API would allow typesafe usage like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Named
+public class UcMyUseCaseImpl extends MyUseCaseBase implements UcMyUseCase {
+  @Inject private ServiceClientFactoryAsync clientFactory;
+
+  @Override @RolesAllowed(...)
+  public void doSomething(Bar bar) {
+    AsyncClient&lt;MyExternalServiceApi&gt; client = this.clientFactory.createAsync(MyExternalServiceApi.class);
+    Mono&lt;Some&gt; result = client.call(client.getService().doSomething(convert(bar)));
+    // client.call(client.getService().doSomething(convert(bar)), x -&gt; processSync(x));
+    return process(result);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>How can this work? The ServiceClientAsyncFactory implementation would create its own dynamic proxy for the given service interface. That proxy would only track the last call that was invoked internally and always return a dummy result (<code>null</code> for Object types, <code>false</code> for boolean, <code>0</code> for primitive numbers). The actual implementation of the <code>call</code> methods can access the internal invocation that has been recorded from the last service call. It will then trigger the actual service call internally according to the desired style (using a <code>Consumer</code> callback, <code>Mono</code>, <code>Flux</code>, <code>Future</code>&#8230;&#8203;).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-service-client.asciidoc_resilience">Resilience</h3>
+<div class="paragraph">
+<p>Resilience adds a lot of complexity and that typically means that addressing this here would most probably result in not being up-to-date and not meeting all requirements. Therefore we recommend something completely different: the <em>sidecar</em> approach (based on <a href="https://docs.microsoft.com/en-us/azure/architecture/patterns/sidecar">sidecar pattern</a>). This means that you use a generic proxy app that runs as a separate process on the same host, VM, or container of your actual application. Then in your app you are calling the service via the sidecar proxy on <code>localhost</code> (service discovery URL is e.g. <code><a href="http://localhost:8081/${app}/services/${type}" class="bare">http://localhost:8081/${app}/services/${type}</a></code>) that then acts as proxy to the actual remote service. Now aspects such as resilience with circuit breaking and the actual service discovery can be configured in the sidecar proxy app and independent of your actual application. Therefore, you can even share and reuse configuration and experience with such a sidecar proxy app even across different technologies (Java, .NET/C#, Node.JS, etc.).</p>
+</div>
+<div class="paragraph">
+<p>Various implementations of such sidecar proxy apps are available as free open source software.
+<strong>TODO</strong>: Decide for the best available solution and suggest here as default.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Netflix Sidecar - see <a href="http://cloud.spring.io/spring-cloud-netflix/single/spring-cloud-netflix.html#_polyglot_support_with_sidecar">Spring Cloud Netflix docs</a></p>
+</li>
+<li>
+<p><a href="https://lyft.github.io/envoy/">Envoy</a> - see <a href="https://dzone.com/articles/microservices-patterns-with-envoy-sidecar-proxy-pa">Microservices Patterns With Envoy Sidecar Proxy</a></p>
+</li>
+<li>
+<p><a href="https://github.com/netflix/Prana">Prana</a> - see <a href="https://medium.com/netflix-techblog/prana-a-sidecar-for-your-netflix-paas-based-applications-and-services-258a5790a015">Prana: A Sidecar for your Netflix PaaS based Applications and Services</a> &#8592; <strong>Not updated as it&#8217;s not used internally by Netflix</strong></p>
+</li>
+<li>
+<p>Keycloak - see <a href="http://www.hawkular.org/blog/2017/07/jaeger-with-security-proxy.html">Protecting Jaeger UI with a sidecar security proxy</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:13:43 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

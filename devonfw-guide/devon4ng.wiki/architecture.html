@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Architecture</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#architecture.asciidoc">Architecture</a>
+<ul class="sectlevel1">
+<li><a href="#architecture.asciidoc_overview">Overview</a>
+<ul class="sectlevel2">
+<li><a href="#architecture.asciidoc_layers">Layers</a></li>
+<li><a href="#architecture.asciidoc_modules">Modules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="architecture.asciidoc" class="sect0">Architecture</h1>
+<div class="paragraph">
+<p>The following principles and guidelines are based on Angular Styleguide - especially Angular modules (see <a href="https://angular.io/guide/ngmodule">Angular Docs</a>).
+It extends those where additional guidance is needed to define an architecture which is</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>maintainable across applications and teams</p>
+</li>
+<li>
+<p>easy to understand, especially when coming from a classic Java/.Net perspective - so whenever possible the same principles apply both to the server and the client</p>
+</li>
+<li>
+<p>pattern based to solve common problems</p>
+</li>
+<li>
+<p>based on best of breed solutions coming from open source and Capgemini project experiences</p>
+</li>
+<li>
+<p>gives as much guidance as necessary and as little as possible</p>
+</li>
+</ul>
+</div>
+<div class="sect1">
+<h2 id="architecture.asciidoc_overview">Overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When using Angular the web client architecture is driven by the framework in a certain way Google and the Angular community think about web client architecture.
+Angular gives an opinion on how to look at architecture.
+It is component based like devon4j but uses different terms which are common language in web application development.
+The important term is <em>module</em> which is used instead of <em>component</em>. The primary reason is the naming collision with the <em>Web Components</em> standard (see <a href="https://www.w3.org/standards/techs/components">Web Components</a>).<br>
+To clarify this:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A <em>component</em> describes an UI element containing HTML, CSS and JavaScript - structure, design and logic encapsulated inside a reusable container called component.</p>
+</li>
+<li>
+<p>A <em>module</em> describes an applications feature area. The application flight-app may have a module called booking.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>An application developed using Angular consists of multiple modules.
+There are feature modules and special modules described by the Angular Styleguide - <a href="https://angular.io/guide/ngmodule#the-core-module"><em>core</em></a> and <a href="https://angular.io/guide/ngmodule#shared-module"><em>shared</em></a>.
+Angular or Angular Styleguide give no guidance on how to structure a module internally.
+This is where this architecture comes in.</p>
+</div>
+<div class="sect2">
+<h3 id="architecture.asciidoc_layers">Layers</h3>
+<div class="paragraph">
+<p>The architecture describes two layers. The terminology is based on common language in web development.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/architecture-layers.svg"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/architecture-layers.svg" alt="Architecture - Layers" width="450"></a>
+</div>
+<div class="title">Figure 1. Layers</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#components-layer.asciidoc"><strong>Components Layer</strong></a> encapsulates components which present the current application state.
+Components are separated into <a href="#components-layer.asciidoc"><em>Smart</em> and <em>Dumb Components</em></a>.
+The only logic present is view logic inside <em>Smart Components</em>.</p>
+</li>
+<li>
+<p><a href="#services-layer.asciidoc"><strong>Services Layer</strong></a> is more or less what we call 'business logic layer' on the server side.
+The layer defines the applications state, the transitions between state and classic business logic.
+Stores contain application state over time to which <em>Smart Components</em> subscribe to.
+Adapters are used to perform XHRs, WebSocket connections, etc.
+The business model is described inside the module.
+Use case services perform business logic needed for use cases.
+A use case services interacts with the store and adapters.
+Methods of use case services are the API for <em>Smart Components</em>.
+Those methods are <em>Actions</em> in reactive terminology.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="architecture.asciidoc_modules">Modules</h3>
+<div class="paragraph">
+<p>Angular requires a module called <em>app</em> which is the main entrance to an application at runtime - this module gets bootstrapped.
+Angular Styleguide defines feature modules and two special modules - <a href="https://angular.io/guide/ngmodule#the-core-module"><em>core</em></a> and <a href="https://angular.io/guide/ngmodule#shared-module"><em>shared</em></a>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/architecture-modules.svg"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/architecture-modules.svg" alt="Architecture - Modules" width="450"></a>
+</div>
+<div class="title">Figure 2. Modules</div>
+</div>
+<div class="paragraph">
+<p>A feature module is basically a vertical cut through both layers.
+The <em>shared</em> module consists of components shared across feature modules.
+The <em>core</em> module holds services shared across modules.
+So <em>core</em> module is a module only having a services layer
+and <em>shared</em> module is a module only having a components layer.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:14:32 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

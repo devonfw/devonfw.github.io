@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REST</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-rest.asciidoc">REST</a>
+<ul class="sectlevel1">
+<li><a href="#guide-rest.asciidoc_urls">URLs</a></li>
+<li><a href="#guide-rest.asciidoc_http-methods">HTTP Methods</a></li>
+<li><a href="#guide-rest.asciidoc_http-status-codes">HTTP Status Codes</a></li>
+<li><a href="#guide-rest.asciidoc_metadata">Metadata</a></li>
+<li><a href="#guide-rest.asciidoc_jax-rs">JAX-RS</a>
+<ul class="sectlevel2">
+<li><a href="#guide-rest.asciidoc_jax-rs-configuration">JAX-RS Configuration</a></li>
+</ul>
+</li>
+<li><a href="#guide-rest.asciidoc_rest-exception-handling">REST Exception Handling</a></li>
+<li><a href="#guide-rest.asciidoc_recommendations-for-rest-requests-and-responses">Recommendations for REST requests and responses</a>
+<ul class="sectlevel2">
+<li><a href="#guide-rest.asciidoc_unparameterized-loading-of-a-single-resource">Unparameterized loading of a single resource</a></li>
+<li><a href="#guide-rest.asciidoc_unparameterized-loading-of-a-collection-of-resources">Unparameterized loading of a collection of resources</a></li>
+<li><a href="#guide-rest.asciidoc_saving-a-resource">Saving a resource</a></li>
+<li><a href="#guide-rest.asciidoc_parameterized-loading-of-a-resource">Parameterized loading of a resource</a></li>
+<li><a href="#guide-rest.asciidoc_deletion-of-a-resource">Deletion of a resource</a></li>
+<li><a href="#guide-rest.asciidoc_error-results">Error results</a></li>
+</ul>
+</li>
+<li><a href="#guide-rest.asciidoc_rest-media-types">REST Media Types</a></li>
+<li><a href="#guide-rest.asciidoc_rest-testing">REST Testing</a></li>
+<li><a href="#guide-rest.asciidoc_security">Security</a>
+<ul class="sectlevel2">
+<li><a href="#guide-rest.asciidoc_csrf">CSRF</a></li>
+<li><a href="#guide-rest.asciidoc_json-top-level-arrays">JSON top-level arrays</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-rest.asciidoc" class="sect0">REST</h1>
+<div class="paragraph">
+<p>REST (<a href="https://en.wikipedia.org/wiki/Representational_state_transfer">REpresentational State Transfer</a>) is an inter-operable protocol for <a href="#guide-service-layer.asciidoc">services</a> that is more lightweight than <a href="#guide-soap.asciidoc">SOAP</a>.
+However, it is no real standard and can cause confusion. Therefore we define best practices here to guide you.
+<strong>ATTENTION:</strong>
+REST and RESTful often implies very strict and specific rules and conventions. However different people will often have different opinions of such rules. We learned that this leads to "religious discussions" (starting from <code>PUT</code> vs. <code>POST</code> and IDs in path vs. payload up to Hypermedia and <a href="https://en.wikipedia.org/wiki/HATEOAS">HATEOAS</a>). These "religious discussions" waste a lot of time and money without adding real value in case of common business applications (if you publish your API on the internet to billions of users this is a different story). Therefore we give best practices that lead to simple, easy and pragmatic "HTTP APIs" (to avoid the term "REST services" and end "religious discussions"). Please also note that we do not want to assault anybody nor force anyone to follow our guidelines. Please read the following best practices carefully and be aware that they might slightly differ from what your first hit on the web will say about REST (see e.g. <a href="http://restcookbook.com/">RESTful cookbook</a>).</p>
+</div>
+<div class="sect1">
+<h2 id="guide-rest.asciidoc_urls">URLs</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>URLs are not case sensitive. Hence, we follow the best practice to use only lower-case-letters-with-hypen-to-separate-words.
+For operations in REST we distinguish the following types of URLs:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A <em>collection URL</em> is build from the rest service URL by appending the name of a collection. This is typically the name of an entity. Such URI identifies the entire collection of all elements of this type. Example: <code>https://mydomain.com/myapp/services/rest/mycomponent/v1/myentity</code></p>
+</li>
+<li>
+<p>An <em>element URL</em> is build from a collection URL by appending an element ID. It identifies a single element (entity) within the collection. Example: <code>https://mydomain.com/myapp/services/rest/mycomponent/v1/myentity/42</code></p>
+</li>
+<li>
+<p>A <em>search URL</em> is build from a collection URL by appending the segment <code>search</code>. The search criteria is send as <code>POST</code>. Example: <code>https://mydomain.com/myapp/services/rest/mycomponent/v1/myentity/search</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This fits perfect for <a href="https://en.wikipedia.org/wiki/Create,_read,_update_and_delete">CRUD</a> operations. For business operations (processing, calculation, etc.) we simply create a collection URL with the name of the business operation instead of the entity name (use a clear naming convention to avoid collisions). Then we can <code>POST</code> the input for the business operation and get the result back.</p>
+</div>
+<div class="paragraph">
+<p>If you want to provide an entity with a different structure do not append further details to an element URL but create a separate collection URL as base.
+So use <code>https://mydomain.com/myapp/services/rest/mycomponent/v1/myentity-with-details/42</code> instead of <code>https://mydomain.com/myapp/services/rest/mycomponent/v1/myentity/42/with-details</code>.
+For offering a <a href="guide-transferobject.html#CTO">CTO</a> simply append <code>-cto</code> to the collection URL (e.g. <code>&#8230;&#8203;/myentity-cto/</code>).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-rest.asciidoc_http-methods">HTTP Methods</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>While REST was designed as a pragmatical approach it sometimes leads to "religious discussions" e.g. about using <code>PUT</code> vs. <code>POST</code> (see ATTENTION notice above).
+As the devonfw has a string focus on usual business applications it proposes a more "pragmatic" approach to REST services.</p>
+</div>
+<div class="paragraph">
+<p>On the next table we compare the main differences between the "canonical" REST approach (or RESTful) and the devonfw proposal.</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<caption class="title">Table 1. Usage of HTTP methods</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>HTTP Method</strong></th>
+<th class="tableblock halign-left valign-top"><strong>RESTful Meaning</strong></th>
+<th class="tableblock halign-left valign-top"><strong>devonfw</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>GET</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Read single element.</p><p class="tableblock">Search on an entity (with parametrized url)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Read a single element.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PUT</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Replace entity data.</p><p class="tableblock">Replace entire collection (typically not supported)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Not used</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>POST</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Create a new element in the collection</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Create or update an element in the collection.</p><p class="tableblock">Search on an entity (parametrized post body)</p><p class="tableblock">Bulk deletion.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DELETE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Delete an entity.</p><p class="tableblock">Delete an entire collection (typically not supported)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Delete an entity.</p><p class="tableblock">Delete an entire collection (typically not supported)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Please consider these guidelines and rationales:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>We use <code>POST</code> on the collection URL to save an entity (<code>create</code> if no ID provided in payload otherwise <code>update</code>). This avoids pointless discussions in distinctions between <code>PUT</code> and <code>POST</code> and what to do if a <code>create</code> contains an ID in the payload or if an <code>update</code> is missing the ID property or contains a different ID in payload than in URL.</p>
+</li>
+<li>
+<p>Hence, we do NOT use <code>PUT</code> but always use <code>POST</code> for write operations. As we always have a technical ID for each entity, we can simply distinguish create and update by the presence of the ID property.</p>
+</li>
+<li>
+<p>Please also note that for (large) bulk deletions you may be forced to used <code>POST</code> instead of <code>DELETE</code> as according to the HTTP standard <code>DELETE</code> must not have payload and URLs are limited in length.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-rest.asciidoc_http-status-codes">HTTP Status Codes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Further we define how to use the HTTP status codes for REST services properly. In general the 4xx codes correspond to an error on the client side and the 5xx codes to an error on the server side.</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<caption class="title">Table 2. Usage of HTTP status codes</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>HTTP Code</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Meaning</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Response</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Comment</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">200</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OK</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">requested result</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Result of successful GET</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">204</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">No Content</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>none</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Result of successful POST, DELETE, or PUT (void return)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bad Request</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">error details</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The HTTP request is invalid (parse error, validation failed)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">401</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unauthorized</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>none</em> (security)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Authentication failed</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">403</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Forbidden</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>none</em> (security)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Authorization failed</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">404</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Not found</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>none</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Either the service URL is wrong or the requested resource does not exist</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">500</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Server Error</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">error code, UUID</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Internal server error occurred (used for all technical exceptions)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-rest.asciidoc_metadata">Metadata</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>devonfw has support for the following metadata in REST service invocations:</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">Further information</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">X-Correlation-Id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">HTTP header for a <em>correlation ID</em> that is a unique identifier to associate different requests belonging to the same session / action</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#guide-logging.asciidoc">Logging guide</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Validation errors</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Standardized format for a service to communicate validation errors to the client</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Server-side validation is documented in the <a href="#guide-validation.asciidoc">Validation guide</a>.</p><p class="tableblock">The protocol to communicate these validation errors to the client is worked on at <a href="https://github.com/oasp/oasp4j/issues/218" class="bare">https://github.com/oasp/oasp4j/issues/218</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pagination</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Standardized format for a service to offer paginated access to a list of entities</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Server-side support for pagination is documented in the <a href="guide-repository.html#pagination">Repository Guide</a>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-rest.asciidoc_jax-rs">JAX-RS</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For implementing REST services we use the <a href="https://jax-rs-spec.java.net/">JAX-RS</a> standard. As an implementation we recommend <a href="http://cxf.apache.org/">CXF</a>. For <a href="#guide-json.asciidoc">JSON</a> bindings we use <a href="http://wiki.fasterxml.com/JacksonHome">Jackson</a> while <a href="#guide-xml.asciidoc">XML</a> binding works out-of-the-box with <a href="http://www.oracle.com/technetwork/articles/javase/index-140168.html">JAXB</a>.
+To implement a service you write an interface with JAX-RS annotations for the API and a regular implementation class annotated with <code>@Named</code> to make it a spring-bean. Here is a simple example:
+com.devonfw.application.mtsj.dishmanagement.service.impl.rest</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Path("/imagemanagement/v1")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+public interface ImagemanagementRestService {
+
+  @GET
+  @Path("/image/{id}/")
+  public ImageEto getImage(@PathParam("id") long id);
+
+}
+
+@Named("ImagemanagementRestService")
+public class ImagemanagementRestServiceImpl implements ImagemanagementRestService {
+
+  @Inject
+  private Imagemanagement imagemanagement;
+
+  @Override
+  public ImageEto getImage(long id) {
+
+    return this.imagemanagement.findImage(id);
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here we can see a REST service for the <a href="architecture.html#business-architecture">business component</a> <code>imagemanagement</code>. The method <code>getImage</code> can be accessed via HTTP GET (see <code>@GET</code>) under the URL path <code>imagemanagement/image/{id}</code> (see <code>@Path</code> annotations) where <code>{id}</code> is the ID of the requested table and will be extracted from the URL and provided as parameter <code>id</code> to the method <code>getImage</code>. It will return its result (<code>ImageEto</code>) as <a href="#guide-json.asciidoc">JSON</a> (see <code>@Produces</code> - should already be defined as defaults in <code>RestService</code> marker interface). As you can see it delegates to the <a href="#guide-logic-layer.asciidoc">logic</a> component <code>imagemanagement</code> that contains the actual business logic while the service itself only exposes this logic via HTTP. The REST service implementation is a regular CDI bean that can use <a href="#guide-dependency-injection.asciidoc">dependency injection</a>.
+The separation of the API as a Java interface allows to use it for <a href="#guide-service-client.asciidoc">service client calls</a>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+With JAX-RS it is important to make sure that each service method is annotated with the proper HTTP method (<code>@GET</code>,<code>@POST</code>,etc.) to avoid unnecessary debugging. So you should take care not to forget to specify one of these annotations.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="guide-rest.asciidoc_jax-rs-configuration">JAX-RS Configuration</h3>
+<div class="paragraph">
+<p>Starting from CXF 3.0.0 it is possible to enable the auto-discovery of JAX-RS roots.</p>
+</div>
+<div class="paragraph">
+<p>When the jaxrs server is instantiated all the scanned root and provider beans (beans annotated with <code>javax.ws.rs.Path</code> and <code>javax.ws.rs.ext.Provider</code>) are configured.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-rest.asciidoc_rest-exception-handling">REST Exception Handling</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For exceptions a service needs to have an exception façade that catches all exceptions and handles them by writing proper log messages and mapping them to a HTTP response with an according <a href="#http-status-codes.asciidoc">HTTP status code</a>. Therefore the devonfw provides a generic solution via <code>RestServiceExceptionFacade</code>. You need to follow the <a href="#guide-exceptions.asciidoc">exception guide</a> so that it works out of the box because the façade needs to be able to distinguish between business and technical exceptions.
+Now your service may throw exceptions but the façade with automatically handle them for you.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-rest.asciidoc_recommendations-for-rest-requests-and-responses">Recommendations for REST requests and responses</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The devonfw proposes, for simplicity, a deviation from the common REST pattern:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Using <code>POST</code> for updates (instead of <code>PUT</code>)</p>
+</li>
+<li>
+<p>Using the payload for addressing resources on POST (instead of identifier on the <code>URL</code>)</p>
+</li>
+<li>
+<p>Using parametrized <code>POST</code> for searches</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This use of REST will lead to simpler code both on client and on server. We discuss this use on the next points.</p>
+</div>
+<div class="paragraph">
+<p>The following table specifies how to use the HTTP methods (verbs) for collection and element URIs properly (see <a href="http://en.wikipedia.org/wiki/Representational_State_Transfer#Applied_to_web_services">wikipedia</a>).</p>
+</div>
+<div class="sect2">
+<h3 id="guide-rest.asciidoc_unparameterized-loading-of-a-single-resource">Unparameterized loading of a single resource</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>HTTP Method</strong>: <code>GET</code></p>
+</li>
+<li>
+<p><strong>URL example</strong>: <code>/products/123</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For loading of a single resource, embed the <code>identifier</code> of the resource in the URL (for example <code>/products/123</code>).</p>
+</div>
+<div class="paragraph">
+<p>The response contains the resource in JSON format, using a JSON object at the top-level, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="javascript language-javascript">{
+    "name": "Steak",
+    "color": "brown"
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-rest.asciidoc_unparameterized-loading-of-a-collection-of-resources">Unparameterized loading of a collection of resources</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>HTTP Method</strong>: <code>GET</code></p>
+</li>
+<li>
+<p><strong>URL example</strong>: <code>/products</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For loading of a collection of resources, make sure that the size of the collection can never exceed a reasonable maximum size. For parameterized loading (searching, pagination), see below.</p>
+</div>
+<div class="paragraph">
+<p>The response contains the collection in JSON format, using a JSON object at the top-level, and the actual collection underneath a <code>result</code> key, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="javascript language-javascript">{
+    "result": [
+        {
+            "name": "Steak",
+            "color": "brown"
+        },
+        {
+            "name": "Broccoli",
+            "color": "green"
+        }
+    ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-rest.asciidoc_saving-a-resource">Saving a resource</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>HTTP Method</strong>: <code>POST</code></p>
+</li>
+<li>
+<p><strong>URL example</strong>: <code>/products</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The resource will be passed via JSON in the request body. If updating an existing resource, include the resource&#8217;s <code>identifier</code> in the JSON and not in the URL, in order to avoid ambiguity.</p>
+</div>
+<div class="paragraph">
+<p>If saving was successful, an empty HTTP 204 response is generated.</p>
+</div>
+<div class="paragraph">
+<p>If saving was unsuccessful, refer below for the format to return errors to the client.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-rest.asciidoc_parameterized-loading-of-a-resource">Parameterized loading of a resource</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>HTTP Method</strong>: <code>POST</code></p>
+</li>
+<li>
+<p><strong>URL example</strong>: <code>/products/search</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In order to differentiate from an unparameterized load, a special <em>subpath</em> (for example <code>search</code>) is introduced. The parameters are passed via JSON in the request body. An example of a simple, paginated search would be:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="javascript language-javascript">{
+    "status": "OPEN",
+    "pagination": {
+        "page": 2,
+        "size": 25
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The response contains the requested page of the collection in JSON format, using a JSON object at the top-level, the actual page underneath a <code>result</code> key, and additional pagination information underneath a <code>pagination</code> key, for example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="javascript language-javascript">{
+    "pagination": {
+        "page": 2,
+        "size": 25,
+        "total": null
+    },
+    "result": [
+        {
+            "name": "Steak",
+            "color": "brown"
+        },
+        {
+            "name": "Broccoli",
+            "color": "green"
+        }
+    ]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Compare the code needed on server side to accept this request:
+com.devonfw.application.mtsj.dishmanagement.service.api.rest</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Path("/category/search")
+  @POST
+  public PaginatedListTo&lt;CategoryEto&gt; findCategorysByPost(CategorySearchCriteriaTo searchCriteriaTo) {
+    return this.dishmanagement.findCategoryEtos(searchCriteriaTo);
+ }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With the equivalent code required if doing it the RESTful way by issuing a <code>GET</code> request:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java"> @Path("/category/search")
+  @POST @Path("/order")
+  @GET
+  public PaginatedListTo&lt;CategoryEto&gt; findCategorysByPost( @Context UriInfo info) {
+
+    RequestParameters parameters = RequestParameters.fromQuery(info);
+    CategorySearchCriteriaTo criteria = new CategorySearchCriteriaTo();
+    criteria.setName(parameters.get("name", Long.class, false));
+    criteria.setDescription(parameters.get("description", OrderState.class, false));
+    criteria.setShowOrder(parameters.get("showOrder", OrderState.class, false));
+    return this.dishmanagement.findCategoryEtos(criteria);
+
+  }</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-rest.asciidoc_pagination-details">Pagination details</h4>
+<div class="paragraph">
+<p>The client can choose to request a count of the total size of the collection, for example to calculate the total number of available pages. It does so, by specifying the <code>pagination.total</code> property with a value of <code>true</code>.</p>
+</div>
+<div class="paragraph">
+<p>The service is free to honour this request. If it chooses to do so, it returns the total count as the <code>pagination.total</code> property in the response.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-rest.asciidoc_deletion-of-a-resource">Deletion of a resource</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>HTTP Method</strong>: <code>DELETE</code></p>
+</li>
+<li>
+<p><strong>URL example</strong>: <code>/products/123</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For deletion of a single resource, embed the <code>identifier</code> of the resource in the URL (for example <code>/products/123</code>).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-rest.asciidoc_error-results">Error results</h3>
+<div class="paragraph">
+<p>The general format for returning an error to the client is as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="javascript language-javascript">{
+    "message": "A human-readable message describing the error",
+    "code": "A code identifying the concrete error",
+    "uuid": "An identifier (generally the correlation id) to help identify corresponding requests in logs"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the error is caused by a failed validation of the entity, the above format is extended to also include the list of individual validation errors:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="javascript language-javascript">{
+    "message": "A human-readable message describing the error",
+    "code": "A code identifying the concrete error",
+    "uuid": "An identifier (generally the correlation id) to help identify corresponding requests in logs",
+    "errors": {
+        "property failing validation": [
+            "First error message on this property",
+            "Second error message on this property"
+        ],
+        // ....
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-rest.asciidoc_rest-media-types">REST Media Types</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The payload of a REST service can be in any format as REST by itself does not specify this. The most established ones that the devonfw recommends are <a href="#guide-xml.asciidoc">XML</a> and <a href="#guide-json.asciidoc">JSON</a>. Follow these links for further details and guidance how to use them properly. <code>JAX-RS</code> and <code>CXF</code> properly support these formats (<code>MediaType.APPLICATION_JSON</code> and <code>MediaType.APPLICATION_XML</code> can be specified for <code>@Produces</code> or <code>@Consumes</code>). Try to decide for a single format for all services if possible and NEVER mix different formats in a service.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-rest.asciidoc_rest-testing">REST Testing</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For testing REST services in general consult the <a href="#guide-testing.asciidoc">testing guide</a>.</p>
+</div>
+<div class="paragraph">
+<p>For manual testing REST services there are browser plugins:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Firefox: <a href="https://addons.mozilla.org/en-US/firefox/addon/httprequester/">httprequester</a> (or <a href="https://addons.mozilla.org/en-US/firefox/addon/poster/">poster</a>)</p>
+</li>
+<li>
+<p>Chrome: <a href="http://www.getpostman.com/">postman</a> (<a href="https://chrome.google.com/webstore/detail/advanced-rest-client/hgmloofddffdnphfgcellkdfbfbjeloo">advanced-rest-client</a>)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-rest.asciidoc_security">Security</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Your services are the major entry point to your application. Hence security considerations are important here.</p>
+</div>
+<div class="sect2">
+<h3 id="guide-rest.asciidoc_csrf">CSRF</h3>
+<div class="paragraph">
+<p>A common security threat is <a href="https://www.owasp.org/index.php/Top_10_2013-A8-Cross-Site_Request_Forgery_(CSRF)">CSRF</a> for REST services. Therefore all REST operations that are performing modifications (PUT, POST, DELETE, etc. - all except GET) have to be secured against CSRF attacks. In devon4j we are using spring-security that already solves CSRF token generation and verification. The integration is part of the application template as well as the sample-application.</p>
+</div>
+<div class="paragraph">
+<p>For testing in development environment the CSRF protection can be disabled using the JVM option <code>-DCsrfDisabled=true</code> when starting the application.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-rest.asciidoc_json-top-level-arrays">JSON top-level arrays</h3>
+<div class="paragraph">
+<p>OWASP suggests to prevent returning JSON arrays at the top-level, to prevent attacks (see <a href="https://www.owasp.org/index.php/OWASP_AJAX_Security_Guidelines" class="bare">https://www.owasp.org/index.php/OWASP_AJAX_Security_Guidelines</a>). However, no rationale is given at OWASP. We digged deep and found <a href="http://haacked.com/archive/2008/11/20/anatomy-of-a-subtle-json-vulnerability.aspx/">anatomy-of-a-subtle-json-vulnerability</a>. To sum it up the attack is many years old and does not work in any recent or relevant browser. Hence it is fine to use arrays as top-level result in a JSON REST service (means you can return <code>List&lt;Foo&gt;</code> in a Java JAX-RS service).</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:13:41 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Java testing</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#java-testing.asciidoc">Java testing</a>
+<ul class="sectlevel1">
+<li><a href="#java-testing.asciidoc_component-testing">Component testing</a></li>
+<li><a href="#java-testing.asciidoc_running-the-tests">Running the tests</a>
+<ul class="sectlevel2">
+<li><a href="#java-testing.asciidoc_from-eclipse">From Eclipse</a></li>
+<li><a href="#java-testing.asciidoc_from-command-line-using-maven">From command line using Maven</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="java-testing.asciidoc" class="sect0">Java testing</h1>
+<div class="sect1">
+<h2 id="java-testing.asciidoc_component-testing">Component testing</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We are going to test our components as a unit using <em>Spring Test</em> and <em>Devon4j-test</em> modules.</p>
+</div>
+<div class="paragraph">
+<p>In order to test a basic component of the app first we will create a test class in the <code>src/test/java</code> folder and inside the main package of the test module. We will name the class following the convetion</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>[Component]Test</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then, in the declaration of the test class we will use the <code>@SpringBootTest</code> annotation to run the application context. In addition, we will extend the <code>ComponentTest</code> from <code>Devon4j-test</code> module to have access to the main functionalities of the module, <a href="https://github.com/devonfw/devon4j/wiki/guide-testing">see more details here</a>.</p>
+</div>
+<div class="paragraph">
+<p><em>Spring Test</em> allows us to use <em>Dependency Injection</em> so we can inject our component directly using the <code>@Inject</code> annotation.</p>
+</div>
+<div class="paragraph">
+<p>Each test will be represented by a method annotated with <code>@Test</code>. Inside the method we will test one functionality, evaluating the result thanks to the <em>asserts</em> provided by the <em>ComponentTest</em> class that we are extending.</p>
+</div>
+<div class="paragraph">
+<p>A simple test example</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@SpringBootTest(classes = SpringBootApp.class)
+public class DishmanagementTest extends ComponentTest {
+
+  @Inject
+  private Dishmanagement dishmanagement;
+
+  @Test
+  public void findAllDishes() {
+
+    PaginatedListTo&lt;DishCto&gt; result = this.dishmanagement.findDishes();
+    assertThat(result).isNotNull();
+  }
+
+  ...
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="java-testing.asciidoc_running-the-tests">Running the tests</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="java-testing.asciidoc_from-eclipse">From Eclipse</h3>
+<div class="paragraph">
+<p>We can run the test from within <em>Eclipse</em> with the contextual menu <em>Run As &gt; JUnit Test</em>. This functionality can be launched from method level, class level or even package level. The results will be shown in the <em>JUnit</em> tab.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/java/test_results_eclipse.PNG"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/java/test_results_eclipse.PNG" alt="test results eclipse"></a>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="java-testing.asciidoc_from-command-line-using-maven">From command line using Maven</h3>
+<div class="paragraph">
+<p>We can also run tests using <em>Maven</em> and the command line, using the command <em>mvn test</em> (or <em>mvn clean test</em>).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>C:\MyThaiStar&gt;mvn clean test</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Doing this we will run all the tests of the project (recognized by the <em>Test</em> word at the end of the classes) and the results will be shown by sub-project.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>...
+
+[D: 2017-07-17 09:30:08,457] [P: INFO ] [C: ] [T: Thread-5] [L: org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean] - [M: Closing JPA EntityManagerFactory for persistence unit 'default']
+
+Results :
+
+Tests run: 11, Failures: 0, Errors: 0, Skipped: 1
+
+...
+
+[INFO]
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ mtsj-server ---
+[INFO] No sources to compile
+[INFO]
+[INFO] --- maven-surefire-plugin:2.12.4:test (default-test) @ mtsj-server ---
+[INFO] No tests to run.
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary:
+[INFO]
+[INFO] mtsj ............................................... SUCCESS [  0.902 s]
+[INFO] mtsj-core .......................................... SUCCESS [02:30 min]
+[INFO] mtsj-server ........................................ SUCCESS [  1.123 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time: 02:35 min
+[INFO] Finished at: 20XX-07-17T09:30:13+02:00
+[INFO] Final Memory: 39M/193M
+[INFO] ------------------------------------------------------------------------</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:17:51 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

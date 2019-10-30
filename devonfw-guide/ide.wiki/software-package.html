@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Software Package</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#software-package.asciidoc">Software Package</a>
+<ul class="sectlevel1">
+<li><a href="#software-package.asciidoc_layout">Layout</a></li>
+<li><a href="#software-package.asciidoc_customization-of-environment">Customization of environment</a></li>
+<li><a href="#software-package.asciidoc_tools">Tools</a>
+<ul class="sectlevel2">
+<li><a href="#software-package.asciidoc_eclipse">Eclipse</a></li>
+</ul>
+</li>
+<li><a href="#software-package.asciidoc_creating-the-software-package">Creating the Software Package</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="software-package.asciidoc" class="sect0">Software Package</h1>
+<div class="paragraph">
+<p>The <code>devon-ide</code> requires a software package. This section explains how to build one yourself.</p>
+</div>
+<div class="sect1">
+<h2 id="software-package.asciidoc_layout">Layout</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The software package is a simple ZIP file with the following structure:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>software</p>
+<div class="ulist">
+<ul>
+<li>
+<p>eclipse</p>
+</li>
+<li>
+<p>java</p>
+</li>
+<li>
+<p>maven</p>
+</li>
+<li>
+<p>tomcat</p>
+</li>
+<li>
+<p>&#8230;&#8203;</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>So for each tool you have a simple folder inside the <code>software</code> folder that is named after the tool by convention in lowercase. If a tool folder contains a <code>bin</code> folder the <code>devon-ide</code> will automatically add it to the beginning of your <code>PATH</code> variable (in the shell and not in your operating system). The entire concept implies that the tools are portable and do not require a real installation into the operating system (e.g. via Windows Registry settings). This way you can have multiple instances of the <code>devon-ide</code> "installed" on the same machine for different projects with different versions of the same tools that do not interfere with each other.</p>
+</div>
+<div class="paragraph">
+<p>By intention the tool folders do not contain the version of the tool as configurations may refer to tools via their path and the idea is that the software package can be updated easy and smooth.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="software-package.asciidoc_customization-of-environment">Customization of environment</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If a tool needs extra initialization, you can create a batch file named <code>ide-config.bat</code> inside the tool directory. This file will be called during environment initialization (for example when a user opens <code>console.bat</code>), and allows you to do additional init work, without changing the main <code>devon-ide</code> script files.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="software-package.asciidoc_tools">Tools</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For most of the tools you just download the official release and add the content to the folder in the layout above (resulting in e.g. <code>software/maven/bin/mvn</code> and NOT <code>software/maven/apache-maven-3.2.0/bin/mvn</code>).
+However, there are some specials to care about.</p>
+</div>
+<div class="sect2">
+<h3 id="software-package.asciidoc_eclipse">Eclipse</h3>
+<div class="paragraph">
+<p>Eclipse is typically the most complicated animal out of the tools. Here is a suggestion how to build your eclipse distribution:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Download the latest stable version of <code>Eclipse IDE for JEE developers</code> from <a href="https://www.eclipse.org/downloads/" class="bare">https://www.eclipse.org/downloads/</a></p>
+</li>
+<li>
+<p>Unzip it to your <code>software</code> folder and launch it</p>
+</li>
+<li>
+<p>Install <a href="https://github.com/devonfw/tools-cobigen/releases">CobiGen</a> (incremental code-generator)</p>
+</li>
+<li>
+<p>Install <a href="http://andrei.gmxhome.de/eclipse/">any edit tools</a> (for easy compare with clipboard, etc.)</p>
+</li>
+<li>
+<p>Install <a href="http://eclipse-cs.sf.net/update/">eclipse-cs</a> (for checkstyle support)</p>
+</li>
+<li>
+<p>Install <a href="https://spotbugs.github.io/eclipse/">spotbugs</a> (successor of findbugs)</p>
+</li>
+<li>
+<p>Install <a href="http://update.eclemma.org/">EclEmma</a> (for JUnit code coverage)</p>
+</li>
+<li>
+<p>Install <a href="http://subclipse.tigris.org/update_1.10.x">subclipse</a> (in case SVN support is needed. Exclude Subclipse Integration for Mylyn, Subversion Revision Graph and JNA Library)</p>
+</li>
+<li>
+<p>Install <a href="http://dist.springsource.com/release/TOOLS/update/e4.7/">STS</a> (in case Spring Tools are needed. Install Spring IDE [AOP | Batch | Security] Extension, Spring IDE Maven Support, Eclipse Quicksearch and Spring IDE Core)</p>
+</li>
+<li>
+<p>Install <a href="http://basti1302.github.com/startexplorer/update/">StartExplorer</a> (for support to open current item in file manager of your OS)</p>
+</li>
+<li>
+<p>Install <a href="http://marketplace.eclipse.org/content/tm-terminal">TM Terminal</a> (open terminal/shell inside Eclipse as view)</p>
+</li>
+<li>
+<p>Install <a href="https://marketplace.eclipse.org/content/enhanced-class-decompiler">Enhanced Class Decompiler</a> (to debug in classes where no sources are available)</p>
+</li>
+<li>
+<p>Install <a href="http://download.eclipse.org/egit/github/updates/">github mylyn integration</a> (for devonfw projects that want to access github issues in Eclipse)</p>
+</li>
+<li>
+<p>Install <a href="http://download.eclipse.org/datatools/1.14.1.201712071719/repository/">Data Tools Platform</a> (for DB viewer/access inside Eclipse)</p>
+</li>
+<li>
+<p>Install <a href="http://www.soapui.org/eclipse/update/site.xml">SoapUI</a> (for service testing)</p>
+</li>
+<li>
+<p>Install <a href="http://regex-util.sourceforge.net/update/">regex util</a> (to test regular expressions)</p>
+</li>
+<li>
+<p>Install <a href="https://m-m-m.github.io/eclipse-templatevariables/latest">TemplateVariables</a> (for advanced JDT templates)</p>
+</li>
+<li>
+<p>If not already available install <a href="http://download.eclipse.org/technology/m2e/releases/">m2e</a> (for maven support)</p>
+</li>
+<li>
+<p>Install <a href="https://download.eclipse.org/m2e-wtp/releases/1.4/">m2e-wtp</a> (for maven integration into WTP, only required for non-spring-boot legacy JEE projects)</p>
+</li>
+<li>
+<p>Ensure you have <a href="https://github.com/devonfw/devon-ide/tree/master/eclipse-m2e">eclipse-m2e</a> checked out and import this into your eclipse as existing Maven project. This will trigger the download and installation of some m2e extensions.</p>
+</li>
+<li>
+<p>If not already available install <a href="http://download.eclipse.org/egit/updates">egit</a> (for git support)</p>
+</li>
+<li>
+<p>In mylyn (<code>Task List</code> view) click <code>Add Repository</code> and then <code>Install More Connectors&#8230;&#8203;</code></p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Install <code>hudson/jenkins</code> connector</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Download <a href="http://projectlombok.org/download.html">lombok.jar</a> into the <code>eclipse</code> folder (for implicit get/setter, equals and hashCode support)</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Start the <code>lombok.jar</code> to launch the installer UI.</p>
+</li>
+<li>
+<p>Click <code>Specify location&#8230;&#8203;</code> and choose your <code>eclipse</code> folder.</p>
+</li>
+<li>
+<p>Click <code>Install/Update</code>.</p>
+</li>
+<li>
+<p>Quit the installer</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Install <a href="http://downloads.sonarsource.com/eclipse/eclipse/">sonar-ide</a> (for SonarQube support - temporary omitted due to issue #13)</p>
+</li>
+<li>
+<p>Optionally install <a href="https://www.genuitec.com/updates/devstyle/ci/">DevStyle</a> for a eye-friendly dark mode that really works (Eclipse default dark theme is completely broken and unusable)</p>
+</li>
+<li>
+<p>Install additional plugins as needed</p>
+</li>
+<li>
+<p>Remove any internal (non-public) update sites after installation</p>
+</li>
+<li>
+<p>Test your Eclipse distribution.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Please read the license agreements of each plugin and only install what is suitable for you.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="software-package.asciidoc_creating-the-software-package">Creating the Software Package</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Finally you create a ZIP from your software folder. Open it and ensure the it has the specified <a href="#software-package.asciidoc_layout">layout</a> (it contains the <code>software</code> folder as root with the tool folders inside).</p>
+</div>
+<div class="paragraph">
+<p>You may want to use our <a href="https://github.com/devonfw/devon-ide/blob/master/software/build.xml">ant script</a> for building the ZIP.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:17:32 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

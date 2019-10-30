@@ -1,0 +1,67 @@
+name: build-and-deploy
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone
+        uses: actions/checkout@master
+        with:
+          submodules: recursive
+
+      - name: SetupRuby
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: '2.x'
+      
+      - name: Setup Node
+        uses: actions/setup-node@v1
+      
+      - name: InstallAsciidoctorGem
+        run: gem install asciidoctor -v 1.5.7.1
+
+      - name: Build
+        run: mvn clean package -Doutput.format=html
+        
+      - name: SplitHtml
+        run: |
+          asciidoctor -r ./asciidoctor-extensions/multipage-html5-converter.rb -b  multipage_html5 ./target/asciidoc/devonfw-guide/master.asciidoc -a toc=left -D ./target/generated-docs/website/pages/docs
+          cp -avr target/generated-docs/images/ target/generated-docs/website/pages/docs/
+          
+      - name: AddHeaderToSplittedHtml
+        run: |
+          cd general-scripts
+          npm install
+          node merger.js ../target/generated-docs/devonfw-guide/master.html ../target/generated-docs/website/pages/docs/ ../target/generated-docs/website/pages/docs/
+          node merge-search-results.js search-results.html ../target/generated-docs/devonfw-guide/master.html ../target/generated-docs/website/pages/search-results/ ../target/generated-docs/website/pages/search-results/
+          node merge-explore.js page-explore.html ../target/generated-docs/website/pages/explore/explore.html ../target/generated-docs/website/pages/explore/ ../target/generated-docs/website/pages/explore/ explore.html
+          node video-to-iframe.js ../target/generated-docs/website/pages/resources/resources.html
+          cd ..
+       
+      - name: Reindex
+        run: |
+          cd target/generated-docs/search-engine
+          npm install
+          node ./converter.js ../website/pages/docs/ .html
+          cp {index.json,docs-json.json} ../website
+          cd ../../..
+          
+          
+
+      - name: Cleanup
+        run: | 
+          cd target/generated-docs
+          rm -Rf asciidoctor* documentation pom.xml README.html
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@master
+        env:
+          ACCESS_TOKEN: ${{ secrets.DEVONFW_CORE_TOKEN }}
+          BASE_BRANCH: develop # The branch the action should deploy from.
+          BRANCH: master # The branch the action should deploy to.
+          FOLDER: target/generated-docs # The folder the action should deploy.

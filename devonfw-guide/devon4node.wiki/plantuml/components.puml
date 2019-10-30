@@ -1,0 +1,48 @@
+@startuml components
+agent client as cli
+
+rectangle middleware [
+  global middleware
+  ----
+  module middleware
+]
+
+rectangle guard [
+  global guard
+  ----
+  controller guard
+  ----
+  handler guard
+]
+
+rectangle interceptor [
+  global interceptor
+  ----
+  controller interceptor
+  ----
+  handler interceptor
+]
+
+rectangle pipe [
+  global pipe
+  ----
+  handler pipe
+]
+
+agent "handler function" <<controller>> as handler
+agent "provider" as provider
+
+cli ..> middleware
+middleware ..> cli
+middleware ..> guard
+guard ..> interceptor
+note left on link : intercept the request
+interceptor ..> pipe
+pipe ..> handler
+handler ..> interceptor
+note left on link: intercept the response
+interceptor ..> cli
+handler ..> provider
+provider ..> handler
+
+@enduml

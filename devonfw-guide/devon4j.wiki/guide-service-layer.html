@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Service Layer</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-service-layer.asciidoc">Service Layer</a>
+<ul class="sectlevel1">
+<li><a href="#guide-service-layer.asciidoc_types-of-services">Types of Services</a></li>
+<li><a href="#guide-service-layer.asciidoc_versioning">Versioning</a></li>
+<li><a href="#guide-service-layer.asciidoc_interoperability">Interoperability</a></li>
+<li><a href="#guide-service-layer.asciidoc_service-considerations">Service Considerations</a></li>
+<li><a href="#guide-service-layer.asciidoc_security">Security</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-service-layer.asciidoc" class="sect0">Service Layer</h1>
+<div class="paragraph">
+<p>The service layer is responsible for exposing functionality made available by the <a href="#guide-logic-layer.asciidoc">logical layer</a> to external consumers over a network via <a href="#guide-service-layer.asciidoc_protocol">technical protocols</a>.</p>
+</div>
+<div class="sect1">
+<h2 id="guide-service-layer.asciidoc_types-of-services">Types of Services</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We distinguish between the following types of services:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>External Services</strong><br>
+are used for communication between different companies, vendors, or partners.</p>
+</li>
+<li>
+<p><strong>Internal Services</strong><br>
+are used for communication between different applications in the same application landscape of the same vendor.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Back-end Services</strong><br>
+are internal services between Java back-end components typically with different release and deployment cycles (if not Java consider this as external service).</p>
+</li>
+<li>
+<p><strong>JS-Client Services</strong><br>
+are internal services provided by the Java back-end for JavaScript clients (GUI).</p>
+</li>
+<li>
+<p><strong>Java-Client Services</strong><br>
+are internal services provided by the Java back-end for a native Java client (JavaFx, EclipseRcp, etc.).</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The choices for technology and protocols will depend on the type of service. The following table gives a guideline for aspects according to the service types.</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<caption class="title">Table 1. Aspects according to service-type</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Aspect</strong></th>
+<th class="tableblock halign-left valign-top"><strong>External Service</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Back-end Service</strong></th>
+<th class="tableblock halign-left valign-top"><strong>JS-Client Service</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Java-Client Service</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#guide-service-layer.asciidoc_versioning"><strong>Versioning</strong></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">required</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">required</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">not required</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">not required</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#guide-service-layer.asciidoc_interoperability"><strong>Interoperability</strong></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mandatory</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">not required</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">implicit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">not required</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#guide-service-layer.asciidoc_protocol">Recommended <strong>Protocol</strong></a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#guide-soap.asciidoc">SOAP</a> or <a href="#guide-rest.asciidoc">REST</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#guide-rest.asciidoc">REST</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#guide-rest.asciidoc">REST</a>+JSON</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#guide-rest.asciidoc">REST</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-service-layer.asciidoc_versioning">Versioning</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For services consumed by other applications we use versioning to prevent incompatibilities between applications when deploying updates. This is done by the following conventions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>We define a version number and prefix it with <code>v</code> (e.g. <code>v1</code>).</p>
+</li>
+<li>
+<p>If we support previous versions we use that version numbers as part of the Java package defining the service API (e.g. <code>com.foo.application.component.service.api.v1</code>)</p>
+</li>
+<li>
+<p>We use the version number as part of the service name in the remote URL (e.g. <code><a href="https://application.foo.com/services/rest/component/v1/resource" class="bare">https://application.foo.com/services/rest/component/v1/resource</a></code>)</p>
+</li>
+<li>
+<p>Whenever breaking changes are made to the API, create a separate version of the service and increment the version (e.g. <code>v1</code> &#8594; <code>v2</code>) . The implementations of the different versions of the service contain compatibility code and delegate to the same unversioned use-case of the logic layer whenever possible.</p>
+</li>
+<li>
+<p>For maintenance and simplicity, avoid keeping more than one previous version.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-service-layer.asciidoc_interoperability">Interoperability</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For services that are consumed by clients with different technology, <em>interoperability</em> is required. This is addressed by selecting the right protocol, following protocol-specific best practices and following our considerations especially <em>simplicity</em>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-service-layer.asciidoc_service-considerations">Service Considerations</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The term <em>service</em> is quite generic and therefore easily misunderstood. It is a unit exposing coherent functionality via a well-defined interface over a network. For the design of a service, we consider the following aspects:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>self-contained</strong><br>
+The entire API of the service shall be self-contained and have no dependencies on other parts of the application (other services, implementations, etc.).</p>
+</li>
+<li>
+<p><strong>idempotence</strong><br>
+E.g. creation of the same master-data entity has no effect (no error)</p>
+</li>
+<li>
+<p><strong>loosely coupled</strong><br>
+Service consumers have minimum knowledge and dependencies on the service provider.</p>
+</li>
+<li>
+<p><strong>normalized</strong><br>
+complete, no redundancy, minimal</p>
+</li>
+<li>
+<p><strong>coarse-grained</strong><br>
+Service provides rather large operations (save entire entity or set of entities rather than individual attributes)</p>
+</li>
+<li>
+<p><strong>atomic</strong><br>
+Process individual entities (for processing large sets of data, use a <a href="#guide-batch-layer.asciidoc">batch</a> instead of a service)</p>
+</li>
+<li>
+<p><strong>simplicity</strong><br>
+avoid polymorphism, RPC methods with unique name per signature and no overloading, avoid attachments (consider separate download service), etc.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-service-layer.asciidoc_security">Security</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Your services are the major entry point to your application. Hence security considerations are important here.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="guide-rest.html#security">REST Security</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:13:44 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Java Development Kit</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-jdk.asciidoc">Java Development Kit</a>
+<ul class="sectlevel1">
+<li><a href="#guide-jdk.asciidoc_editions">Editions</a></li>
+<li><a href="#guide-jdk.asciidoc_upgrading">Upgrading</a>
+<ul class="sectlevel2">
+<li><a href="#guide-jdk.asciidoc_runtime-changes">Runtime Changes</a></li>
+<li><a href="#guide-jdk.asciidoc_buildtime-changes">Buildtime Changes</a></li>
+</ul>
+</li>
+<li><a href="#guide-jdk.asciidoc_sources-and-links">Sources and Links</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-jdk.asciidoc" class="sect0">Java Development Kit</h1>
+<div class="paragraph">
+<p>The <a href="https://en.wikipedia.org/wiki/Java_Development_Kit">Java Development Kit</a> is an implementation of the Java platform. It provides the <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">Java Vitrual Machine</a> (JVM) and the Java Runtime Environment (JRE).</p>
+</div>
+<div class="sect1">
+<h2 id="guide-jdk.asciidoc_editions">Editions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The JDK exists in different editions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://openjdk.java.net/">OpenJDK</a> is a free and open-source edition of the JDK.</p>
+</li>
+<li>
+<p><a href="https://www.oracle.com/technetwork/java/javase/overview/index.html">OracleJDK</a> is a commercial edition of the JDK.</p>
+</li>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/List_of_Java_virtual_machines">Various alternative JDK editions</a> either commercial (e.g. IBM&#8217;s JVM) or open-source.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>As Java is evolving and also complex maintaining a JVM requires a lot of energy.
+Therefore many alternative JDK editions are unable to cope with this and support latest Java versions and according compatibility.
+Unfortunately OpenJDK only maintains a specific version of Java for a relative short period of time before moving to the next major version.
+In the end, this technically means that OpenJDK is continuous beta and can not be used in production for reasonable software projects.
+As OracleJDK changed its licensing model and can not be used for commercial usage even during development, things can get tricky.
+You may want to use OpenJDK for development and OracleJDK only in production.
+However, e.g. OpenJDK 11 never released a version that is stable enough for reasonable development (e.g. javadoc tool is <a href="https://bugs.openjdk.java.net/browse/JDK-8212233">broken</a> and fixes are not available of OpenJDK 11 - fixed in 11.0.3 what is only available as OracleJDK 11 or you need to go to OpenJDK 12+, what has other bugs) so in the end there is no working release of OpenJDK 11.
+This more or less forces you to use OracleJDK what requires you to buy a subscription so you can use it for commercial development.
+However, there is <a href="https://github.com/AdoptOpenJDK">AdoptOpenJDK</a> that provides forked releases of OpenJDK with bugfixes what might be an option.
+Anyhow, as you want to have your development environment close to production, the productively used JDK (most likely OracleJDK) should be preferred also for development.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-jdk.asciidoc_upgrading">Upgrading</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Until Java 8 compatibility was one of the key aspects for Java version updates (after the mess on the Swing updates with Java2 many years ago).
+However, Java 9 introduced a lot of breaking changes.
+This documentation wants to share the experience we collected in devonfw when upgrading from Java 8 to newer versions.
+First of all we separate runtime changes that you need if you want to build your software with JDK 8 but such that it can also run on newer versions (e.g. JRE 11)
+from changes required to also build your software with more recent JDKs (e.g. JDK 11 or 12).</p>
+</div>
+<div class="sect2">
+<h3 id="guide-jdk.asciidoc_runtime-changes">Runtime Changes</h3>
+<div class="paragraph">
+<p>This section describes required changes to your software in order to make it run also with versions newer than Java 8.</p>
+</div>
+<div class="sect3">
+<h4 id="guide-jdk.asciidoc_classes-removed-from-jdk">Classes removed from JDK</h4>
+<div class="paragraph">
+<p>The first thing that most users hit when running their software with newer Java versions is a <code>ClassNotFoundException</code> like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>Caused by: java.lang.ClassNotFoundException: javax.xml.bind.JAXBException</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As Java 9 introduced a module system with <a href="https://www.baeldung.com/project-jigsaw-java-modularity">Jigsaw</a>, the JDK that has been a monolithic mess is now a well-defined set of structured modules.
+Some of the classes that used to come with the JDK moved to modules that where not available by default in Java 9 and have even been removed entirely in later versions of Java.
+Therefore you should simply treat such code just like any other 3rd pary component that you can add as a (maven) dependency.
+The following table gives you the required hints to make your software work even with such classes / modules removed from the JDK (please note that the specified version is just a suggestion that worked, feel free to pick a more recent or more appropriate version):</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<caption class="title">Table 1. Dependencies for classes removed from Java 8 since 9+</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Class</strong></th>
+<th class="tableblock halign-left valign-top"><strong>GroupId</strong></th>
+<th class="tableblock halign-left valign-top"><strong>ArtifactId</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>javax.xml.bind.*</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>javax.xml.bind</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jaxb-api</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.3.1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>com.sun.xml.bind.*</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.glassfish.jaxb</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jaxb-runtime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.3.1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>java.activation.*</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>javax.activation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>javax.activation-api</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1.2.0</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>java.transaction.*</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>javax.transaction</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>javax.transaction-api</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1.2</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>java.xml.ws.*</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>javax.xml.ws</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jaxws-api</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.3.1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>javax.jws.*</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>javax.jws</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>javax.jws-api</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1.1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>javax.annotation.*</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>javax.annotation</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>javax.annotation-api</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1.3.2</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="guide-jdk.asciidoc_3rd-party-updates">3rd Party Updates</h4>
+<div class="paragraph">
+<p>Further, internal and inofficial APIs (e.g. <code>sun.misc.Unsafe</code>) have been removed.
+These are typically not used by your software directly but by low-level 3rd party libraries like <code>asm</code> that need to be updated.
+Also simple things like the Java version have changed (from <code>1.8.x</code> to <code>9.x</code>, <code>10.x</code>, <code>11.x</code>, <code>12.x</code>, etc.).
+Some 3rd party libraries were parsing the Java version in a very naive way making them unable to be used with Java 9+:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>Caused by: java.lang.NullPointerException
+   at org.apache.maven.surefire.shade.org.apache.commons.lang3.SystemUtils.isJavaVersionAtLeast (SystemUtils.java:1626)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Therefore the following table gives an overview of common 3rd party libraries that have been affected by such breaking changes and need to be updated to at least the specified version:</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<caption class="title">Table 2. Minimum recommended versions of common 3rd party for Java 9+</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>GroupId</strong></th>
+<th class="tableblock halign-left valign-top"><strong>ArtifactId</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Issue</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.commons</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>commons-lang3</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>3.7</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://issues.apache.org/jira/browse/LANG-1365">LANG-1365</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cglib</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>cglib</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>3.2.9</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/cglib/cglib/issues/102">102</a>, <a href="https://github.com/cglib/cglib/issues/93">93</a>, <a href="https://github.com/cglib/cglib/issues/133">133</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.ow2.asm</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>asm</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>7.1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/eclipse/jetty.project/issues/2941">2941</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.javassist</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>javassist</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>3.25.0-GA</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/jboss-javassist/javassist/issues/194">194</a>, <a href="https://github.com/jboss-javassist/javassist/issues/228">228</a>, <a href="https://github.com/jboss-javassist/javassist/issues/246">246</a>, <a href="https://github.com/jboss-javassist/javassist/issues/171">171</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-jdk.asciidoc_buildtime-changes">Buildtime Changes</h3>
+<div class="paragraph">
+<p>If you also want to change your build to work with a recent JDK you also need to ensure that test frameworks and maven plugins properly support this.</p>
+</div>
+<div class="sect3">
+<h4 id="guide-jdk.asciidoc_findbugs">Findbugs</h4>
+<div class="paragraph">
+<p>Findbugs does not work with Java 9+ and is actually a dead project.
+The new findbugs is <a href="https://spotbugs.github.io/">SpotBugs</a>.
+For maven the new solution is <a href="https://spotbugs.github.io/spotbugs-maven-plugin/">spotbugs-maven-plugin</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>&lt;plugin&gt;
+  &lt;groupId&gt;com.github.spotbugs&lt;/groupId&gt;
+  &lt;artifactId&gt;spotbugs-maven-plugin&lt;/artifactId&gt;
+  &lt;version&gt;3.1.11&lt;/version&gt;
+&lt;/plugin&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-jdk.asciidoc_test-frameworks">Test Frameworks</h4>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<caption class="title">Table 3. Minimum recommended versions of common 3rd party test frameworks for Java 9+</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>GroupId</strong></th>
+<th class="tableblock halign-left valign-top"><strong>ArtifactId</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Issue</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.mockito</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mockito-core</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.23.4</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/mockito/mockito/issues/1419">1419</a>, <a href="https://github.com/mockito/mockito/issues/1696">1696</a>, <a href="https://github.com/mockito/mockito/issues/1607">1607</a>, <a href="https://github.com/mockito/mockito/issues/1594">1594</a>, <a href="https://github.com/mockito/mockito/issues/1577">1577</a>, <a href="https://github.com/mockito/mockito/issues/1482">1482</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="guide-jdk.asciidoc_maven-plugins">Maven Plugins</h4>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<caption class="title">Table 4. Minimum recommended versions of common maven plugins for Java 9+</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>GroupId</strong></th>
+<th class="tableblock halign-left valign-top"><strong>ArtifactId</strong></th>
+<th class="tableblock halign-left valign-top"><strong>(min.) Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Issue</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.maven.plugins</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maven-compiler-plugin</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>3.8.1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.maven.plugins</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maven-surefire-plugin</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.22.2</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://issues.apache.org/jira/browse/SUREFIRE-1439">SUREFIRE-1439</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.maven.plugins</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maven-surefire-report-plugin</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>2.22.2</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://issues.apache.org/jira/browse/SUREFIRE-1439">SUREFIRE-1439</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.maven.plugins</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maven-archetype-plugin</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>3.1.0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.apache.maven.plugins</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>maven-javadoc-plugin</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>3.1.0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.jacoco</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>jacoco-maven-plugin</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>0.8.3</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/jacoco/jacoco/issues/663">663</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-jdk.asciidoc_sources-and-links">Sources and Links</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We want to give credits and say thanks to the following artircles that have been there before and helped us on our way:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://blog.codefx.org/java/java-9-migration-guide/">Java 9 Migration Guide: The Seven Most Common Challenges</a></p>
+</li>
+<li>
+<p><a href="https://medium.com/criciumadev/its-time-migrating-to-java-11-5eb3868354f9">It’s time! Migrating to Java 11</a></p>
+</li>
+<li>
+<p><a href="https://winterbe.com/posts/2018/08/29/migrate-maven-projects-to-java-11-jigsaw/">Migrate Maven Projects to Java 11</a></p>
+</li>
+<li>
+<p><a href="https://www.jesperdj.com/2018/09/30/jaxb-on-java-9-10-11-and-beyond/">JAXB on Java 9, 10, 11 and beyond</a></p>
+</li>
+<li>
+<p><a href="https://stackoverflow.com/questions/26413431/which-artifacts-should-i-use-for-jaxb-ri-in-my-maven-project">JAXB Artifacts</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:13:27 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

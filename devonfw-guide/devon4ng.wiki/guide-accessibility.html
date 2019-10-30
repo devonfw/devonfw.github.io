@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accessibility</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-accessibility.asciidoc">Accessibility</a>
+<ul class="sectlevel1">
+<li><a href="#guide-accessibility.asciidoc_key-concerns-of-accessible-web-applications">Key Concerns of Accessible Web Applications</a>
+<ul class="sectlevel2">
+<li><a href="#guide-accessibility.asciidoc_semantic-markup">Semantic Markup</a></li>
+<li><a href="#guide-accessibility.asciidoc_keyboard-accessibility">Keyboard Accessibility</a></li>
+</ul>
+</li>
+<li><a href="#guide-accessibility.asciidoc_visual-assistance">Visual Assistance</a>
+<ul class="sectlevel2">
+<li><a href="#guide-accessibility.asciidoc_color-contrast">Color Contrast</a></li>
+<li><a href="#guide-accessibility.asciidoc_visual-information">Visual Information</a></li>
+<li><a href="#guide-accessibility.asciidoc_audiovisual-media">Audiovisual Media</a></li>
+</ul>
+</li>
+<li><a href="#guide-accessibility.asciidoc_accessibility-with-angular-material">Accessibility with Angular Material</a>
+<ul class="sectlevel2">
+<li><a href="#guide-accessibility.asciidoc_listkeymanager">ListKeyManager</a></li>
+<li><a href="#guide-accessibility.asciidoc_focuskeymanager">FocusKeyManager</a></li>
+<li><a href="#guide-accessibility.asciidoc_activedescendantkeymanager">ActiveDescendantKeyManager</a></li>
+<li><a href="#guide-accessibility.asciidoc_focustrap">FocusTrap</a></li>
+<li><a href="#guide-accessibility.asciidoc_regions">Regions</a></li>
+<li><a href="#guide-accessibility.asciidoc_interactivitychecker">InteractivityChecker</a></li>
+<li><a href="#guide-accessibility.asciidoc_liveannouncer">LiveAnnouncer</a></li>
+<li><a href="#guide-accessibility.asciidoc_api-reference-for-angular-cdk-a11y">API reference for Angular CDK a11y</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-accessibility.asciidoc" class="sect0">Accessibility</h1>
+<div class="paragraph">
+<p>Multiple studies suggest that around 15-20% of the population are living with a disability of some kind. In comparison, that number is higher than any single browser demographic currently, other than Chrome2. Not considering those users when developing an application means excluding a large number of people from being able to use it comfortable or at all.</p>
+</div>
+<div class="paragraph">
+<p>Some people are unable to use the mouse, view a screen, see low contrast text, Hear dialogue or music and some people having difficulty to understanding the complex language.This kind of people needed the support like Keyboard support, screen reader support, high contrast text, captions and transcripts and Plain language support. This disability may change the from permanent to the situation.</p>
+</div>
+<div class="sect1">
+<h2 id="guide-accessibility.asciidoc_key-concerns-of-accessible-web-applications">Key Concerns of Accessible Web Applications</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Semantic Markup</strong> - Allows the application to be understood on a more general level rather than just details of whats being rendered</p>
+</li>
+<li>
+<p><strong>Keyboard Accessibility</strong> - Applications must still be usable when using only a keyboard</p>
+</li>
+<li>
+<p><strong>Visual Assistance</strong> - color contrast, focus of elements and text representations of audio and events</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="guide-accessibility.asciidoc_semantic-markup">Semantic Markup</h3>
+<div class="paragraph">
+<p>If you&#8217;re creating custom element directives, Web Components or HTML in general, use native elements wherever possible to utilize built-in events and properties. Alternatively, use ARIA to communicate semantic meaning.</p>
+</div>
+<div class="paragraph">
+<p>HTML tags have attributes that providers extra context on what&#8217;s being displayed on the browser. For example, the  img  tag&#8217;s  alt  attribute lets the reader know what is being shown using a short description.However, native tags don&#8217;t cover all cases. This is where ARIA fits in. ARIA attributes can provide context on what roles specific elements have in the application or on how elements within the document relate to each other.</p>
+</div>
+<div class="paragraph">
+<p>A modal component can be given the  role  of dialog or alertdialog to let the browser know that that component is acting as a modal. The modal component template can use the ARIA attributes  aria-labelledby  and  aria-described  to describe to readers what the title and purpose of the modal is.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="TypeScript language-TypeScript">@Component({
+    selector: 'ngc2-app',
+    template: `
+      &lt;ngc2-notification-button
+        message="Hello!"
+        label="Greeting"
+        role="button"&gt;
+      &lt;/ngc2-notification-button&gt;
+      &lt;ngc2-modal
+        [title]="modal.title"
+        [description]="modal.description"
+        [visible]="modal.visible"
+        (close)="modal.close()"&gt;
+      &lt;/ngc2-modal&gt;
+    `
+})
+export class AppComponent {
+  constructor(private modal: ModalService) { }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>notification-button.component.ts</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="TypeScript language-TypeScript">@Component({
+  selector: 'ngc2-modal',
+  template: `
+    &lt;div
+      role="dialog"
+      aria-labelledby="modal-title"
+      aria-describedby="modal-description"&gt;
+      &lt;div id="modal-title"&gt;{{title}}&lt;/div&gt;
+      &lt;p id="modal-description"&gt;{{description}}&lt;/p&gt;
+      &lt;button (click)="close.emit()"&gt;OK&lt;/button&gt;
+    &lt;/div&gt;
+  `
+})
+export class ModalComponent {
+  ...
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-accessibility.asciidoc_keyboard-accessibility">Keyboard Accessibility</h3>
+<div class="paragraph">
+<p>Keyboard accessibility is the ability of your application to be interacted with using just a keyboard. The more streamlined the site can be used this way, the more keyboard accessible it is. Keyboard accessibility is one of the largest aspects of web accessibility since it targets:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>those with motor disabilities who can&#8217;t use a mouse</p>
+</li>
+<li>
+<p>users who rely on screen readers and other assistive technology, which require keyboard navigation</p>
+</li>
+<li>
+<p>those who prefer not to use a mouse</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="guide-accessibility.asciidoc_focus">Focus</h4>
+<div class="paragraph">
+<p>Keyboard interaction is driven by something called focus. In web applications, only one element on a document has focus at a time, and keypresses will activate whatever function is bound to that element.
+Focus element border can be styled with CSS using the  outline  property, but it should not be removed. Elements can also be styled using the  :focus  psuedo-selector.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-accessibility.asciidoc_tabbing">Tabbing</h4>
+<div class="paragraph">
+<p>The most common way of moving focus along the page is through the  tab  key. Elements will be traversed in the order they appear in the document outline - so that order must be carefully considered during development.
+There is way change the default behaviour or tab order. This can be done through the  tabindex  attribute. The  tabindex  can be given the values:
+* less than zero - to let readers know that an element should be focusable but not keyboard accessible
+* 0 - to let readers know that that element should be accessible by keyboard
+* greater than zero - to let readers know the order in which the focusable element should be reached using the keyboard. Order is calculated from lowest to highest.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-accessibility.asciidoc_transitions">Transitions</h4>
+<div class="paragraph">
+<p>The majority of transitions that happen in an Angular application will not involve a page reload. This means that developers will need to carefully manage what happens to focus in these cases.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="TypeScript language-TypeScript">@Component({
+  selector: 'ngc2-modal',
+  template: `
+    &lt;div
+      role="dialog"
+      aria-labelledby="modal-title"
+      aria-describedby="modal-description"&gt;
+      &lt;div id="modal-title"&gt;{{title}}&lt;/div&gt;
+      &lt;p id="modal-description"&gt;{{description}}&lt;/p&gt;
+      &lt;button (click)="close.emit()"&gt;OK&lt;/button&gt;
+    &lt;/div&gt;
+  `,
+})
+export class ModalComponent {
+  constructor(private modal: ModalService, private element: ElementRef) { }
+
+  ngOnInit() {
+    this.modal.visible$.subscribe(visible =&gt; {
+      if(visible) {
+        setTimeout(() =&gt; {
+          this.element.nativeElement.querySelector('button').focus();
+        }, 0);
+      }
+    })
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-accessibility.asciidoc_visual-assistance">Visual Assistance</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>One large category of disability is visual impairment. This includes not just the blind, but those who are color blind or partially sighted, and require some additional consideration.</p>
+</div>
+<div class="sect2">
+<h3 id="guide-accessibility.asciidoc_color-contrast">Color Contrast</h3>
+<div class="paragraph">
+<p>When choosing colors for text or elements on a website, the contrast between them needs to be considered. For WCAG 2.0 AA, this means that the contrast ratio for text or visual representations of text needs to be at least 4.5:1. There are tools online to measure the contrast ratio such as this color contrast checker from WebAIM or be checked with using automation tests.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-accessibility.asciidoc_visual-information">Visual Information</h3>
+<div class="paragraph">
+<p>Color can help a user&#8217;s understanding of information, but it should never be the only way to convey information to a user. For example, a user with red/green color-blindness may have trouble discerning at a glance if an alert is informing them of success or failure.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-accessibility.asciidoc_audiovisual-media">Audiovisual Media</h3>
+<div class="paragraph">
+<p>Audiovisual elements in the application such as video, sound effects or audio (ie. podcasts) need related textual representations such as transcripts, captions or descriptions. They also should never auto-play and playback controls should be provided to the user.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-accessibility.asciidoc_accessibility-with-angular-material">Accessibility with Angular Material</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>a11y</code> package provides a number of tools to improve accessibility. Import</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="TypeScript language-TypeScript">import { A11yModule } from '@angular/cdk/a11y';</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-accessibility.asciidoc_listkeymanager">ListKeyManager</h3>
+<div class="paragraph">
+<p><code>ListKeyManager</code> manages the active option in a list of items based on keyboard interaction. Intended to be used with components that correspond to a <code>role="menu"</code> or <code>role="listbox"</code> pattern . Any component that uses a ListKeyManager will generally do three things:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Create a <code>@ViewChildren</code> query for the options being managed.</p>
+</li>
+<li>
+<p>Initialize the <code>ListKeyManager</code>, passing in the options.</p>
+</li>
+<li>
+<p>Forward keyboard events from the managed component to the <code>ListKeyManager</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Each option should implement the <code>ListKeyManagerOption</code> interface:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="TypeScript language-TypeScript">interface ListKeyManagerOption {
+  disabled?: boolean;
+  getLabel?(): string;
+}</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-accessibility.asciidoc_types-of-listkeymanager">Types of ListKeyManager</h4>
+<div class="paragraph">
+<p>There are two varieties of <code>ListKeyManager</code>, <code>FocusKeyManager</code> and <code>ActiveDescendantKeyManager</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-accessibility.asciidoc_focuskeymanager">FocusKeyManager</h3>
+<div class="paragraph">
+<p>Used when options will directly receive browser focus. Each item managed must implement the FocusableOption interface:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="TypeScript language-TypeScript">interface FocusableOption extends ListKeyManagerOption {
+  focus(): void;
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-accessibility.asciidoc_activedescendantkeymanager">ActiveDescendantKeyManager</h3>
+<div class="paragraph">
+<p>Used when options will be marked as active via aria-activedescendant. Each item managed must implement the Highlightable interface:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="TypeScript language-TypeScript">interface Highlightable extends ListKeyManagerOption {
+  setActiveStyles(): void;
+  setInactiveStyles(): void;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Each item must also have an ID bound to the listbox&#8217;s or menu&#8217;s aria-activedescendant.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-accessibility.asciidoc_focustrap">FocusTrap</h3>
+<div class="paragraph">
+<p>The <code>cdkTrapFocus</code> directive traps Tab key focus within an element. This is intended to be used to create accessible experience for components like modal dialogs, where focus must be constrained. This directive is declared in <code>A11yModule</code>.</p>
+</div>
+<div class="paragraph">
+<p>This directive will not prevent focus from moving out of the trapped region due to mouse interaction.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="HTML language-HTML">&lt;div class="my-inner-dialog-content" cdkTrapFocus&gt;
+  &lt;!-- Tab and Shift + Tab will not leave this element. --&gt;
+&lt;/div&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-accessibility.asciidoc_regions">Regions</h3>
+<div class="paragraph">
+<p>Regions can be declared explicitly with an initial focus element by using the <code>cdkFocusRegionStart</code>, <code>cdkFocusRegionEnd</code> and <code>cdkFocusInitial</code> DOM attributes. When using the tab key, focus will move through this region and wrap around on either end.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="HTML language-HTML">&lt;a mat-list-item routerLink cdkFocusRegionStart&gt;Focus region start&lt;/a&gt;
+&lt;a mat-list-item routerLink&gt;Link&lt;/a&gt;
+&lt;a mat-list-item routerLink cdkFocusInitial&gt;Initially focused&lt;/a&gt;
+&lt;a mat-list-item routerLink cdkFocusRegionEnd&gt;Focus region end&lt;/a&gt;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-accessibility.asciidoc_interactivitychecker">InteractivityChecker</h3>
+<div class="paragraph">
+<p><code>InteractivityChecker</code> is used to check the interactivity of an element, capturing disabled, visible, tabbable, and focusable states for accessibility purposes.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-accessibility.asciidoc_liveannouncer">LiveAnnouncer</h3>
+<div class="paragraph">
+<p><code>LiveAnnouncer</code> is used to announce messages for screen-reader users using an aria-live region.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="HTML language-HTML">@Component({...})
+export class MyComponent {
+
+ constructor(liveAnnouncer: LiveAnnouncer) {
+   liveAnnouncer.announce("Hey Google");
+ }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-accessibility.asciidoc_api-reference-for-angular-cdk-a11y">API reference for Angular CDK a11y</h3>
+<div class="paragraph">
+<p><a href="https://material.angular.io/cdk/a11y/api">API reference for Angular CDK a11y</a></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:14:37 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

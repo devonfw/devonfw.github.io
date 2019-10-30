@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Java CI</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#java-ci.asciidoc">Java CI</a>
+<ul class="sectlevel1">
+<li><a href="#java-ci.asciidoc_pipeline">Pipeline</a></li>
+<li><a href="#java-ci.asciidoc_adjustments">Adjustments</a>
+<ul class="sectlevel2">
+<li><a href="#java-ci.asciidoc_pipeline-environment">Pipeline Environment</a></li>
+<li><a href="#java-ci.asciidoc_distribution-management">Distribution management</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="java-ci.asciidoc" class="sect0">Java CI</h1>
+<div class="paragraph">
+<p>The Java server-side of My Thai Star is an <strong>devon4j</strong>-based application. As long as <strong>Maven</strong> and a <strong>Java 8</strong> are going to be needed, the Pipeline should have those tools available as well.</p>
+</div>
+<div class="sect1">
+<h2 id="java-ci.asciidoc_pipeline">Pipeline</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This Pipeline is called <strong>MyThaiStar_SERVER_BUILD</strong>, and it is located exactly in the same PL instance&#8217;s folder than <strong>MyThaiStar_FRONTEND_BUILD</strong>. Let&#8217;s see how the Pipeline&#8217;s flow behaves.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="java_pipeline_flow.PNG"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/ci/java/java_pipeline_flow.PNG" alt="java pipeline flow"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>Check those Pipeline stages with more detail:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Declarative: Checkout SCM</strong></p>
+<div class="paragraph">
+<p>Gets the code from <a href="https://github.com/devonfw/my-thai-star" class="bare">https://github.com/devonfw/my-thai-star</a> . This step is not defined directly in our pipeline, but as it is loaded from the repository this step should always be done at the beginning.</p>
+</div>
+</li>
+<li>
+<p><strong>Unit Tests</strong></p>
+<div class="paragraph">
+<p>This step will execute the project unit test with maven.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="groovy language-groovy">mvn clean test</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>SonarQube analysis</strong></p>
+<div class="paragraph">
+<p>The code is evaluated using the integrated PL instance&#8217;s SonarQube. Also, it will wait for the quality gate status. If the status is failing, the pipeline execution will be stoped.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="groovy language-groovy">withSonarQubeEnv(sonarEnv) {
+    sh "mvn sonar:sonar"
+}
+
+def qg = waitForQualityGate()
+if (qg.status != 'OK') {
+    error "Pipeline aborted due to quality gate failure: ${qg.status}"
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Deliver application into Nexus</strong></p>
+<div class="paragraph">
+<p>Store all artifacts into nexus.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="groovy language-groovy">mvn deploy -Dmaven.test.skip=true</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="java-ci.asciidoc_adjustments">Adjustments</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="java-ci.asciidoc_pipeline-environment">Pipeline Environment</h3>
+<div class="paragraph">
+<p>In order to easily reuse the pipeline in other java projects, all variables have been defined in the block environment. All variables have the default values that Production Line uses, so if you&#8217;re going to work in production line you won&#8217;t have to change anything. Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="groovy language-groovy">environment {
+    // Directory with java project
+    javaDir = 'java/mtsj'
+
+    // sonarQube
+    // Name of the sonarQube environment
+    sonarEnv = "SonarQube"
+
+    // Nexus 3
+    // Maven global settings configuration ID
+    globalSettingsId = 'MavenSettings'
+    // Maven tool id
+    mavenInstallation = 'Maven3'
+}</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="java-ci.asciidoc_description">Description</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>javaDir</strong>: Relative route to java application. In My Thai Star this is the java/mtsj folder. The actual directory (.) is also allowed.</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="java_directory.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/ci/java/java_directory.png" alt="java directory"></a>
+</div>
+</div>
+</li>
+<li>
+<p><strong>sonarEnv</strong>: Name of the sonarQube environment. SonarQube is the default value for PL.</p>
+</li>
+<li>
+<p><strong>globalSettingsId</strong>: The id of the global settings file. MavenSettings is the default value for PL.</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="nexus3_global_config.PNG"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/ci/angular/nexus3_global_config.png" alt="nexus3 global config"></a>
+</div>
+</div>
+</li>
+<li>
+<p><strong>mavenInstallation</strong>: The name of the maven tool. Maven3 is the default value for PL.</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="maven_tool.PNG"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/ci/angular/maven_tool.png" alt="maven tool"></a>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="java-ci.asciidoc_distribution-management">Distribution management</h3>
+<div class="paragraph">
+<p>The only <em>extra</em> thing that needs to be added to the Java server-side is some information that determines where the artifact of the project is going to be stored in <strong>Nexus</strong>. This is going to be a section in the main <code>pom.xml</code> file called <code>&lt;distributionManagement&gt;</code>. This section will point to the PL instance&#8217;s Nexus. Let&#8217;s have a look at it. It&#8217;s already configured with the PL default values.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;distributionManagement&gt;
+    &lt;repository&gt;
+      &lt;id&gt;pl-nexus&lt;/id&gt;
+      &lt;name&gt;PL Releases&lt;/name&gt;
+      &lt;url&gt;http://nexus3-core:8081/nexus/content/repositories/maven-releases/&lt;/url&gt;
+    &lt;/repository&gt;
+    &lt;snapshotRepository&gt;
+      &lt;id&gt;pl-nexus&lt;/id&gt;
+      &lt;name&gt;PL Snapshots&lt;/name&gt;
+      &lt;url&gt;http://nexus3-core:8081/nexus3/repository/maven-snapshots&lt;/url&gt;
+    &lt;/snapshotRepository&gt;
+&lt;/distributionManagement&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:17:46 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

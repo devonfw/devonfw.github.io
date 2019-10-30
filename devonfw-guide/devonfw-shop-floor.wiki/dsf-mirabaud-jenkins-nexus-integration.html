@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jenkins - Nexus integration</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body id="dsf-mirabaud-jenkins-nexus-integration.asciidoc" class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Nexus is used to both host dependencies for devonfw projects to download (common Maven ones, custom ones such as <code>ojdb</code> and even devonfw so-far-IP modules). Moreover, it will host our projects' build artifacts (<code>.jar</code>, <code>.war</code>, &#8230;&#8203;) and expose them for us to download, wget and so on. A team should have a bidirectional relation with its Nexus repository.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dsf-mirabaud-jenkins-nexus-integration.asciidoc_1.-jenkins-credentials-to-access-nexus">1. Jenkins credentials to access Nexus</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>By default, when Nexus is installed, it contains 3 user credentials for different purposes. The admin ones look like this: <code>admin/admin123</code>. There are also other 2: <code>deployment/deployment123</code> and <code>TODO</code>.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>// ADD USER TABLE IMAGE FROM NEXUS</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this case, let&#8217;s use the ones with the greater permissions: <code>admin/admin123</code>.</p>
+</div>
+<div class="paragraph">
+<p>Go to <code>Credentials &gt; System</code> (left sidebar of Jenkins) then to <code>Global credentials (unrestricted)</code> on the page table and on the left sidebar again click on <code>Add Credentials</code>.</p>
+</div>
+<div class="paragraph">
+<p>This should be shown in your Jenkins:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/jenkins-nexus/jenkins-new-nexus-credentials.png" alt="jenkins new nexus credentials">
+</div>
+</div>
+<div class="paragraph">
+<p>Fill the form like this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/jenkins-nexus/jenkins-new-nexus-credentials-filled.png" alt="jenkins new nexus credentials filled">
+</div>
+</div>
+<div class="paragraph">
+<p>And click in OK to create them. Check if the whole thing went as expected:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/jenkins-nexus/jenkins-new-nexus-credentials-completed.png" alt="jenkins new nexus credentials completed">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dsf-mirabaud-jenkins-nexus-integration.asciidoc_2.-jenkins-maven-settings">2. Jenkins Maven Settings</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Those settings are also configured (or maybe not-yet-configured) in our <strong>devonfw distributions</strong> in:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>/${devonfw-dist-path}
+    /software
+        /maven
+            /conf
+                settings.xml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Go to <code>Manage Jenkins &gt; Managed files</code> and select <code>Add a new Config</code> in the left sidebar.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/jenkins-nexus/jenkins-new-maven-settings.png" alt="jenkins new maven settings">
+</div>
+</div>
+<div class="paragraph">
+<p>The ID field will get automatically filled with a unique value if you don&#8217;t set it up. No problems about that. Click on <code>Submit</code> and let&#8217;s create some Servers Credentials:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/jenkins-nexus/jenkins-new-maven-settings-servers.png" alt="jenkins new maven settings servers">
+</div>
+</div>
+<div class="paragraph">
+<p>Those <strong>Server Credentials</strong> will allow Jenkins to access to the different repositories/servers that are going to be declared afterwards.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s create 4 server credentials.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>my.nexus</code>: Will serve as general profile for <strong>Maven</strong>.</p>
+</li>
+<li>
+<p><code>mynexus.releases</code>: When a <code>mvn deploy</code> process is executed, this will tell <strong>Maven</strong> where to push <strong>releases</strong> to.</p>
+</li>
+<li>
+<p><code>mynexus.snapshots</code>: The same as before, but with <strong>snapshots</strong> instead.</p>
+</li>
+<li>
+<p><code>mynexus.central</code>: Just in case we want to install an specific dependency that is not by default in the Maven Central repository (such as <code>ojdbc</code>), Maven will point to it instead.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/jenkins-nexus/jenkins-new-maven-settings-servers-credentials.png" alt="jenkins new maven settings servers credentials">
+</div>
+</div>
+<div class="paragraph">
+<p>A more or less complete Jenkins Maven settings would look look like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd"&gt;
+
+    &lt;mirrors&gt;
+        &lt;mirror&gt;
+            &lt;id&gt;mynexus.central&lt;/id&gt;
+            &lt;mirrorOf&gt;central&lt;/mirrorOf&gt;
+            &lt;name&gt;central&lt;/name&gt;
+            &lt;url&gt;http://${URL-TO-YOUR-NEXUS-REPOS}/central&lt;/url&gt;
+        &lt;/mirror&gt;
+    &lt;/mirrors&gt;
+
+    &lt;profiles&gt;
+        &lt;profile&gt;
+            &lt;id&gt;my.nexus&lt;/id&gt;
+            &lt;!-- 3 REPOS ARE DECLARED --&gt;
+            &lt;repositories&gt;
+                &lt;repository&gt;
+                    &lt;id&gt;mynexus.releases&lt;/id&gt;
+                    &lt;name&gt;mynexus Releases&lt;/name&gt;
+                    &lt;url&gt;http://${URL-TO-YOUR-NEXUS-REPOS}/releases&lt;/url&gt;
+                    &lt;releases&gt;
+                        &lt;enabled&gt;true&lt;/enabled&gt;
+                        &lt;updatePolicy&gt;always&lt;/updatePolicy&gt;
+                    &lt;/releases&gt;
+                    &lt;snapshots&gt;
+                        &lt;enabled&gt;false&lt;/enabled&gt;
+                        &lt;updatePolicy&gt;always&lt;/updatePolicy&gt;
+                    &lt;/snapshots&gt;
+                &lt;/repository&gt;
+                &lt;repository&gt;
+                    &lt;id&gt;mynexus.snapshots&lt;/id&gt;
+                    &lt;name&gt;mynexus Snapshots&lt;/name&gt;
+                    &lt;url&gt;http://${URL-TO-YOUR-NEXUS-REPOS}/snapshots&lt;/url&gt;
+                    &lt;releases&gt;
+                        &lt;enabled&gt;false&lt;/enabled&gt;
+                        &lt;updatePolicy&gt;always&lt;/updatePolicy&gt;
+                    &lt;/releases&gt;
+                    &lt;snapshots&gt;
+                        &lt;enabled&gt;true&lt;/enabled&gt;
+                        &lt;updatePolicy&gt;always&lt;/updatePolicy&gt;
+                    &lt;/snapshots&gt;
+                &lt;/repository&gt;
+            &lt;/repositories&gt;
+            &lt;pluginRepositories&gt;
+                &lt;pluginRepository&gt;
+                    &lt;id&gt;public&lt;/id&gt;
+                    &lt;name&gt;Public Repositories&lt;/name&gt;
+                    &lt;url&gt;http://${URL-TO-YOUR-NEXUS}/nexus/content/groups/public/&lt;/url&gt;
+                    &lt;releases&gt;
+                        &lt;enabled&gt;true&lt;/enabled&gt;
+                        &lt;updatePolicy&gt;always&lt;/updatePolicy&gt;
+                    &lt;/releases&gt;
+                    &lt;snapshots&gt;
+                        &lt;enabled&gt;true&lt;/enabled&gt;
+                        &lt;updatePolicy&gt;always&lt;/updatePolicy&gt;
+                    &lt;/snapshots&gt;
+                &lt;/pluginRepository&gt;
+            &lt;/pluginRepositories&gt;
+        &lt;/profile&gt;
+    &lt;/profiles&gt;
+    &lt;!-- HERE IS WHERE WE TELL MAVEN TO CHOOSE THE my.nexus PROFILE --&gt;
+    &lt;activeProfiles&gt;
+        &lt;activeProfile&gt;my.nexus&lt;/activeProfile&gt;
+    &lt;/activeProfiles&gt;
+&lt;/settings&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dsf-mirabaud-jenkins-nexus-integration.asciidoc_3.-use-it-in-jenkins-pipelines">3. Use it in Jenkins Pipelines</h2>
+<div class="sectionbody">
+
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:16:07 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

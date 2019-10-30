@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Troubleshooting for Developers</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body id="guide_dev_troubleshooting.asciidoc" class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="sect1">
+<h2 id="guide_dev_troubleshooting.asciidoc_cobigen-eclipse-or-cobigen-eclipse-test-has-build-errors-after-git-clone-or-pull">cobigen-eclipse or cobigen-eclipse-test has build errors after git clone or pull</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This might be caused as of the fact, that the <code>cobigen-eclipse*/lib</code> folder is not available after initial cloning or the contents of the lib folder are not synchonous with the dependencies specified in the pom.xml respectively with the classpath inclusions in the <code>plugin.xml</code> (tab runtime).</p>
+</div>
+<div class="sect3">
+<h4 id="guide_dev_troubleshooting.asciidoc_solution">Solution</h4>
+<div class="paragraph">
+<p>In any of these cases you can fix the issue by running a <code>mvn clean package -Pp2-build-mars</code>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide_dev_troubleshooting.asciidoc_getting-not-authorized-">Getting Not authorized , ReasonPhrase: Unauthorized</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You are facing an error like</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[ERROR] [ERROR] Some problems were encountered while processing the POMs:
+[ERROR] Unresolveable build extension: Plugin org.apache.maven.wagon:wagon-ftp:1
+.0-beta-6 or one of its dependencies could not be resolved: Failed to read artif
+act descriptor for org.apache.maven.wagon:wagon-ftp:jar:1.0-beta-6 @
+@
+[ERROR] The build could not read 1 project -&gt; [Help 1]
+[ERROR]
+[ERROR]   The project com.capgemini:cobigen-htmlplugin:1.1.0 (D:\toolscobigen\to
+ols-cobigen2\tools-cobigen\cobigen\cobigen-htmlplugin\pom.xml) has 1 error
+[ERROR]     Unresolveable build extension: Plugin org.apache.maven.wagon:wagon-f
+tp:1.0-beta-6 or one of its dependencies could not be resolved: Failed to read a
+rtifact descriptor for org.apache.maven.wagon:wagon-ftp:jar:1.0-beta-6: Could no
+t transfer artifact org.apache.maven.wagon:wagon-ftp:pom:1.0-beta-6 from/to publ
+ic (https://devon.s2-eu.capgemini.com/nexus/content/groups/public/): Not authori
+zed , ReasonPhrase: Unauthorized. -&gt; [Help 2]
+[ERROR]
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e swit
+ch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR]
+[ERROR] For more information about the errors and possible solutions, please rea
+d the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/ProjectBuildin
+gException
+[ERROR] [Help 2] http://cwiki.apache.org/confluence/display/MAVEN/PluginManagerE
+xception</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide_dev_troubleshooting.asciidoc_solution">Solution</h4>
+<div class="paragraph">
+<p>Please note the message <code>Not authorized , ReasonPhrase: Unauthorized. &#8594; [Help 2]</code>!</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Please check, that you run the command by using the console.bat or a simliar console initialized with the IDE environment variables.</p>
+</li>
+<li>
+<p>Please check your corporate login in the variables-customized.bat to be correct (<code>DEVON_NEXUS_USER</code> and <code>DEVON_NEXUS_PASSWD</code>). Make sure, that you restart the console.bat you are working in after changing the variables-customized.bat. Same holds for eclipse instances running. Please restart to make the new values accessible.</p>
+</li>
+<li>
+<p>Please check your password to <a href="http://www.robvanderwoude.com/escapechars.php">escape special characters</a>.</p>
+</li>
+<li>
+<p>Please check whether you are able to login to <a href="https://devon.s2-eu.capgemini.com" class="bare">https://devon.s2-eu.capgemini.com</a> and Nexus is up and running. If you cannot login, contact one of the main developers.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide_dev_troubleshooting.asciidoc_testing-changes-on-the-cobigen-core">Testing changes on the cobigen-core</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To test changes implemented on the <code>cobigen-core</code> you have to follow the next process:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open a console and step into <code>cobigen/cobigen-core-parent</code>. Run <code>mvn clean install</code> and remember the jar version you have just installed.</p>
+</li>
+<li>
+<p>On Eclipse, go to <code>cobigen/cobigen-eclipse</code> pom.xml and change the <code>&lt;version&gt;</code> of your cobigen-core.</p>
+</li>
+<li>
+<p>Also check on the <code>cobigen/cobigen-core-parent</code> pom-xml that it is using the just installed version.</p>
+</li>
+<li>
+<p>Open a console and step into <code>cobigen/cobigen-eclipse</code>. Run <code>mvn clean package -Pp2-build-mars,p2-build-stable,p2-build-experimental</code>.</p>
+</li>
+<li>
+<p>On Eclipse, go to <code>cobigen/cobigen-eclipse</code> and double-click 'plugins.xml'. On the bottom, click on 'runtime' tab. On 'classpath', add a new library and choose the jars you have just installed.</p>
+</li>
+<li>
+<p>Refresh on Eclipse, press F5 on the <code>cobigen-eclipse</code> inside Eclipse.</p>
+</li>
+<li>
+<p>If you still see compilation errors: On Eclipse, right-click <code>cobigen/cobigen-eclipse</code> &#8594; Maven &#8594; Update projects.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide_dev_troubleshooting.asciidoc_issues-with-workspace-when-oomph-automatic-updates-dont-work-especially-for-indian-colleagues">Issues with workspace when Oomph automatic updates don&#8217;t work (especially for Indian colleagues)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Executing eclipse-cobigen-development.bat file will open Eclipse with all the projects automatically imported. Oomph creates 'Working Sets' and set 'Top Level Elements' pointing to that working set. For Countries where proxy restricts Oomph to execute, we see no projects imported into project explorer/Navigator. Rather than trying manual import which later can give build issues we should follow below solution.
+Build Issues could be like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[ERROR] Cannot resolve project dependencies:
+[ERROR]   You requested to install 'com.capgemini.cobigen-htmlplugin 0.0.0' but it could not be found
+[ERROR]
+[ERROR] See http://wiki.eclipse.org/Tycho/Dependency_Resolution_Troubleshooting for help.
+[ERROR] Cannot resolve dependencies of MavenProject: com.capgemini:com.capgemini.cobigen.eclipse.test:3.0.1 @</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide_dev_troubleshooting.asciidoc_solution">Solution</h4>
+<div class="paragraph">
+<p>In Eclipse, you can click the small downward arrow in the upper right corner of the Navigator/Project Explorer view and go to 'Top Level Elements' and point them to 'Projects'. This should show all the projects inside Project Explorer View. Also, Each plugin should point to respective branch.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide_dev_troubleshooting.asciidoc_issue-when-testing-eclipse-plugin-by-running-as-eclipse-application.">Issue when testing Eclipse plugin by Running as Eclipse Application.</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Error message will be like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>1) Caused by: java.lang.ClassNotFoundException: An error occurred while automatically activating bundle com.devonfw.cobigen.eclipse
+2) org.osgi.framework.BundleException: Error starting module.
+3) org.eclipse.core.runtime.CoreException: Plug-in com.devonfw.cobigen.eclipse was unable to load class com.devonfw.cobigen.eclipse.workbenchcontrol.handler.XXXXHanlder.</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide_dev_troubleshooting.asciidoc_solution">Solution</h4>
+<div class="paragraph">
+<p>Delete or rename the runtime-EclipseApplication inside workspaces folder. Re- run and try setting up workspace in that environment again. It should work!!</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:18:27 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

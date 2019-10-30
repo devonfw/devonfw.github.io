@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Node.js design (deprecated)</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#nodejs-design.asciidoc">Node.js design (deprecated)</a>
+<ul class="sectlevel1">
+<li><a href="#nodejs-design.asciidoc_introduction">Introduction</a></li>
+<li><a href="#nodejs-design.asciidoc_basic-architecture-details">Basic architecture details</a></li>
+<li><a href="#nodejs-design.asciidoc_layers">Layers</a>
+<ul class="sectlevel2">
+<li><a href="#nodejs-design.asciidoc_service-layer">Service layer</a></li>
+<li><a href="#nodejs-design.asciidoc_logic-layer-and-data-access-layer">Logic layer and Data access layer</a></li>
+</ul>
+</li>
+<li><a href="#nodejs-design.asciidoc_security-with-json-web-token">Security with Json Web Token</a>
+<ul class="sectlevel2">
+<li><a href="#nodejs-design.asciidoc_jwt-basics">Jwt basics</a></li>
+<li><a href="#nodejs-design.asciidoc_jwt-implementation-details">Jwt implementation details</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="nodejs-design.asciidoc" class="sect0">Node.js design (deprecated)</h1>
+<div class="sect1">
+<h2 id="nodejs-design.asciidoc_introduction">Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Node.js backend for My Thai Star application is going to be based on:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Express.js</strong> as the web application framework</p>
+</li>
+<li>
+<p><strong>OASP4Fn</strong> as data access layer framework</p>
+</li>
+<li>
+<p><strong>DynamoDB</strong> as NoSQL Database</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To know more details about the above technologies please visit the following documentation:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://expressjs.com">Express.js</a></p>
+</li>
+<li>
+<p><a href="https://github.com/oasp/oasp4fn/wiki">OASP4Fn</a></p>
+</li>
+<li>
+<p><a href="https://aws.amazon.com/dynamodb/developer-resources/">DynamoDB</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="nodejs-design.asciidoc_basic-architecture-details">Basic architecture details</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This structure can be shown in the following example image:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/nodejs/folder_organization.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/nodejs/folder_organization.png" alt="folder organization"></a>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>public - All files which be exposed on the server directly</p>
+</li>
+<li>
+<p>src</p>
+<div class="ulist">
+<ul>
+<li>
+<p>database folder - Folder with scripts to create/delete/seed the database</p>
+</li>
+<li>
+<p>model - Folder with all data model</p>
+</li>
+<li>
+<p>routes - Folder with all Express.js routers</p>
+</li>
+<li>
+<p>utils - Folder with all utils like classes and functions</p>
+</li>
+<li>
+<p><em>app.ts</em> - File with Express.js declaration</p>
+</li>
+<li>
+<p><em>config.ts</em> - File with server configs</p>
+</li>
+<li>
+<p><em>logic.ts</em> - File with the business logic</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>test - Folder with all tests</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="nodejs-design.asciidoc_layers">Layers</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Service Layer: this layer will expose the REST api to exchange information with the client applications.</p>
+</li>
+<li>
+<p>Logic Layer: the layer in charge of hosting the business logic of the application.</p>
+</li>
+<li>
+<p>Data Access Layer: the layer to communicate with the data base.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="nodejs-design.asciidoc_service-layer">Service layer</h3>
+<div class="paragraph">
+<p>The services layer will be solved using REST services with <a href="https://expressjs.com">Express.js</a></p>
+</div>
+<div class="paragraph">
+<p>To give service to the defined <em>User Stories</em> we will need to implement the following services:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>provide all available dishes.</p>
+</li>
+<li>
+<p>save a booking.</p>
+</li>
+<li>
+<p>save an order.</p>
+</li>
+<li>
+<p>provide a list of bookings (only for waiters) and allow filtering.</p>
+</li>
+<li>
+<p>provide a list of orders (only for waiters) and allow filtering.</p>
+</li>
+<li>
+<p>login service (see the <em>Security</em> section).</p>
+</li>
+<li>
+<p>provide the <em>current user</em> data (see the <em>Security</em> section)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In order to be compatible with the other backend implementations, we must follow the <a href="https://github.com/devonfw/devon4j/wiki/guide-rest">naming conventions</a> proposed for <em>Devon4j</em> applications. We will define the following <em>end points</em> for the listed services.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>(POST) <code>/mythaistar/services/rest/dishmanagement/v1/dish/search</code>.</p>
+</li>
+<li>
+<p>(POST) <code>/mythaistar/services/rest/bookingmanagement/v1/booking</code>.</p>
+</li>
+<li>
+<p>(POST) <code>/mythaistar/services/rest/ordermanagement/v1/order</code>.</p>
+</li>
+<li>
+<p>(POST) <code>/mythaistar/services/rest/bookingmanagement/v1/booking/search</code>.</p>
+</li>
+<li>
+<p>(POST) <code>/mythaistar/services/rest/ordermanagement/v1/order/search</code>.</p>
+</li>
+<li>
+<p>(POST) <code>/mythaistar/services/rest/ordermanagement/v1/order/filter</code> (to filter with fields that does not belong to the Order entity).</p>
+</li>
+<li>
+<p>(POST) <code>/mythaistar/login</code>.</p>
+</li>
+<li>
+<p>(GET) <code>/mythaistar/services/rest/security/v1/currentuser/</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You can find all the details for the services implementation in the <a href="https://github.com/devonfw/my-thai-star/blob/develop/swagger/mythaistar.yaml">Swagger definition</a> included in the My Thai Star project on Github.</p>
+</div>
+<div class="paragraph">
+<p>To treat these services separately, the following routers were created:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>bookingmanagement: will answer all requests with the prefix <code>/mythaistar/services/rest/bookingmanagement/v1</code></p>
+</li>
+<li>
+<p>dishmanagement: will answer all requests with the prefix <code>/mythaistar/services/rest/dishmanagement/v1</code></p>
+</li>
+<li>
+<p>ordermanagement: will answer all requests with the prefix <code>/mythaistar/services/rest/ordermanagement/v1</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These routers will define the behavior for each service and use the logical layer.</p>
+</div>
+<div class="paragraph">
+<p>An example of service definition:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="javascript language-javascript">router.post('/booking/search', (req: types.CustomRequest, res: Response) =&gt; {
+    try {
+        // body content must be SearchCriteria
+        if (!types.isSearchCriteria(req.body)) {
+            throw {code: 400, message: 'No booking token given' };
+        }
+
+        // use the searchBooking method defined at business logic
+        business.searchBooking(req.body, (err: types.Error | null, bookingEntity: types.PaginatedList) =&gt; {
+            if (err) {
+                res.status(err.code || 500).json(err.message);
+            } else {
+                res.json(bookingEntity);
+            }
+        });
+    } catch (err) {
+        res.status(err.code || 500).json({ message: err.message });
+    }
+});</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="nodejs-design.asciidoc_logic-layer-and-data-access-layer">Logic layer and Data access layer</h3>
+<div class="paragraph">
+<p>In the <em>logic</em> layer we will locate all the <em>business logic</em> of the application. It will be located in the file logic.ts. If in this layer we need to get access to the data, we make use of data access layer directly, in this case using OASP4fn with the DynamoDB adapter.</p>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="javascript language-javascript">export async function cancelOrder(orderId: string, callback: (err: types.Error | null) =&gt; void) {
+    let order: dbtypes.Order;
+
+    try {
+        // Data access
+        order = await oasp4fn.table('Order', orderId).promise() as dbtypes.Order;
+
+        [...]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We could define the data access layer separately, but oasp4fn allows us to do this in a simple and clear way. So, we decided  to not separate the access layer to the logic business.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="nodejs-design.asciidoc_security-with-json-web-token">Security with Json Web Token</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For the <em>Authentication</em> and <em>Authorization</em> the app will implement the <a href="https://jwt.io/">json web token</a> protocol.</p>
+</div>
+<div class="sect2">
+<h3 id="nodejs-design.asciidoc_jwt-basics">Jwt basics</h3>
+<div class="paragraph">
+<p>Refer to <a href="java-design.html#jwt-basics">Jwt basiscs</a> for more information.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="nodejs-design.asciidoc_jwt-implementation-details">Jwt implementation details</h3>
+<div class="paragraph">
+<p>The <em>Json Web Token</em> pattern will be implemented based on the <a href="https://github.com/auth0/node-jsonwebtoken"><em>JSON web token</em></a> library available on npm.</p>
+</div>
+<div class="sect3">
+<h4 id="nodejs-design.asciidoc_authentication">Authentication</h4>
+<div class="paragraph">
+<p>Based on the <em>JSON web token</em> approach, we will implement a class <em>Authentication</em> to define the security <em>entry point</em> and filters. Also, as <em>My Thai Star</em> is a mainly <em>public</em> application, we will define here the resources that won&#8217;t be secured.</p>
+</div>
+<div class="paragraph">
+<p>List of <em>unsecured resources</em>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>/services/rest/dishmanagement/**</em>: to allow anonymous users to see the dishes info in the <em>menu</em> section.</p>
+</li>
+<li>
+<p><em>/services/rest/ordermanagement/v1/order</em>: to allow anonymous users to save an order. They will need a <em>booking token</em> but they won&#8217;t be authenticated to do this task.</p>
+</li>
+<li>
+<p><em>/services/rest/bookingmanagement/v1/booking</em>: to allow anonymous users to create a booking. Only a <em>booking token</em> is necessary to accomplish this task.</p>
+</li>
+<li>
+<p><em>/services/rest/bookingmanagement/v1/booking/cancel/**</em>: to allow cancelling a booking from an email. Only the <em>booking token</em> is needed.</p>
+</li>
+<li>
+<p><em>/services/rest/bookingmanagement/v1/invitedguest/accept/**</em>: to allow guests to accept an invite. Only a <em>guest token</em> is needed.</p>
+</li>
+<li>
+<p><em>/services/rest/bookingmanagement/v1/invitedguest/decline/**</em>: to allow guests to reject an invite. Only a <em>guest token</em> is needed.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To configure the <em>login</em> we will create an instance of <em>Authentication</em> in the app file and then we will use the methond <em>auth</em> for handle the requests to the /login endpoint.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="javascript language-javascript">app.post('/mythaistar/login', auth.auth);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To verify the presence of the <em>Authorization token</em> in the headers, we will register in the express the <em>Authentication.registerAuthentication</em> middleware. This middleware will check if the token is correct, if so, it will place the user in the request and continue to process it. If the token is not correct it will continue processing the request normally.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="javascript language-javascript">app.use(auth.registerAuthentication);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally, we have two default users created in the database:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>user: <em>waiter</em></p>
+</li>
+<li>
+<p>password: <em>waiter</em></p>
+</li>
+<li>
+<p>role: <em>WAITER</em></p>
+</li>
+<li>
+<p>user: <em>user0</em></p>
+</li>
+<li>
+<p>password: <em>password</em></p>
+</li>
+<li>
+<p>role: <em>CUSTOMER</em></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="nodejs-design.asciidoc_token-set-up">Token set up</h4>
+<div class="paragraph">
+<p>Following the <a href="https://jwt.io/introduction/">official documentation</a> the implementation details for the MyThaiStar&#8217;s jwt will be:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>Secret</em>: Used as part of the signature of the token, acting as a private key. It can be modified at config.ts file.</p>
+</li>
+<li>
+<p><em>Token Prefix</em> schema: Bearer. The token will look like <code>Bearer &lt;token&gt;</code></p>
+</li>
+<li>
+<p><em>Header</em>: Authorization. The response header where the token will be included. Also, in the requests, when checking the token it will be expected to be in the same header.</p>
+</li>
+<li>
+<p>The <em>Authorization</em> header should be part of the <code>Access-Control-Expose-Headers</code> header to allow clients access to the <em>Authorization</em> header content (the token);</p>
+</li>
+<li>
+<p>Signature Algorithm: To encrypt the token we will use the default algorithm HS512.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="nodejs-design.asciidoc_current-user-request">Current User request</h4>
+<div class="paragraph">
+<p>To provide to the client with the current user data our application should expose a service to return the user details. In this case the <em>Authentication</em> has a method called <em>getCurrentUser</em> which will return the user data. We only need register it at express.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="javascript language-javascript">app.get('/mythaistar/services/rest/security/v1/currentuser', auth.getCurrentUser);</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="nodejs-design.asciidoc_authorization">Authorization</h4>
+<div class="paragraph">
+<p>We need to secure three services, that only should be accessible for users with role <em>Waiter</em>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>(POST) <code>/mythaistar/services/rest/bookingmanagement/v1/booking/search</code>.</p>
+</li>
+<li>
+<p>(POST) <code>/mythaistar/services/rest/ordermanagement/v1/order/search</code>.</p>
+</li>
+<li>
+<p>(POST) <code>/mythaistar/services/rest/ordermanagement/v1/order/filter</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To ensure this, the <em>Authorization</em> class has the <em>securizedEndpoint</em> method that guarantees access based on the role. This method can be used as middleware in secure services. As the role is included in the token, once validated we will have this information in the request and the middleware can guarantee access or return a 403 error.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="javascript language-javascript">app.use('/mythaistar/services/rest/ordermanagement/v1/order/filter', auth.securizedEndpoint('WAITER'));
+app.use('/mythaistar/services/rest/ordermanagement/v1/order/search', auth.securizedEndpoint('WAITER'));
+app.use('/mythaistar/services/rest/bookingmanagement/v1/booking/search', auth.securizedEndpoint('WAITER'));</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:17:56 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

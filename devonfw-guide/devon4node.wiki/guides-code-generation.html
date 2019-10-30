@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code Generation</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guides-code-generation.asciidoc">Code Generation</a>
+<ul class="sectlevel1">
+<li><a href="#guides-code-generation.asciidoc_differences-between-tools">Differences between tools</a></li>
+<li><a href="#guides-code-generation.asciidoc_devon4node-cli">devon4node CLI</a>
+<ul class="sectlevel2">
+<li><a href="#guides-code-generation.asciidoc_new-application">New application</a></li>
+<li><a href="#guides-code-generation.asciidoc_generate-more-components">Generate more components</a></li>
+<li><a href="#guides-code-generation.asciidoc_generate-database-migrations">Generate database migrations</a></li>
+</ul>
+</li>
+<li><a href="#guides-code-generation.asciidoc_cobigen">CobiGen</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guides-code-generation.asciidoc" class="sect0">Code Generation</h1>
+<div class="paragraph">
+<p>As we mention in the page <a href="#guide-key-principles.asciidoc">key principles</a>, one of our key principles is Productivity. In order to provide that productivity, we have some tools to generate code. These tools will help you generate the common parts of the application so that you can focus only on the specific functionality.</p>
+</div>
+<div class="paragraph">
+<p>Those tools are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#guides-cli.asciidoc">devon4node CLI</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/tools-cobigen">CobiGen</a></p>
+</li>
+</ul>
+</div>
+<div class="sect1">
+<h2 id="guides-code-generation.asciidoc_differences-between-tools">Differences between tools</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As you may have noticed, we have two tools to generate code, instead of having just one. What is the reason? The reason is that each tool starts from a different input. devon4node CLI receives user input, while cobigen receives code already exists and generates the rest accordingly. So, in order to increase the productivity, we can combine the use of both.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guides-code-generation.asciidoc_devon4node-cli">devon4node CLI</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The description of devon4node CLI is discussed on his <a href="#guides-cli.asciidoc">page</a>. Anyway, in this page we will explain how to use it with the interactive mode.</p>
+</div>
+<div class="sect2">
+<h3 id="guides-code-generation.asciidoc_new-application">New application</h3>
+<div class="paragraph">
+<p>To create a new devon4node application, you just need to type the command <code>devon4node new</code></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/new-app1.jpg" alt="new app1">
+</div>
+</div>
+<div class="paragraph">
+<p>The interactive mode will request you some input. First, you need to choose the general components of the application. Those are described in the <a href="#guides-cli.asciidoc">devon4node CLI</a> page.</p>
+</div>
+<div class="paragraph">
+<p>If you choose database, then you can select the database that you want:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/new-app2.jpg" alt="new app2">
+</div>
+</div>
+<div class="paragraph">
+<p>Then, you can choose to create application modules or not.</p>
+</div>
+<div class="paragraph">
+<p>If yes, you need introduce the module name:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/new-app3.jpg" alt="new app3">
+</div>
+</div>
+<div class="paragraph">
+<p>And then, select the components</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/new-app4.jpg" alt="new app4">
+</div>
+</div>
+<div class="paragraph">
+<p>and names</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/new-app5.jpg" alt="new app5">
+</div>
+</div>
+<div class="paragraph">
+<p>It will generate some files:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>CREATE /test-app/.prettierrc (51 bytes)
+CREATE /test-app/nest-cli.json (67 bytes)
+CREATE /test-app/package.json (2358 bytes)
+CREATE /test-app/README.md (3370 bytes)
+CREATE /test-app/tsconfig.build.json (97 bytes)
+CREATE /test-app/tsconfig.json (568 bytes)
+CREATE /test-app/tslint.json (426 bytes)
+CREATE /test-app/src/main.ts (1033 bytes)
+CREATE /test-app/test/app.e2e-spec.ts (561 bytes)
+CREATE /test-app/test/jest-e2e.json (183 bytes)
+CREATE /test-app/src/app/app.controller.spec.ts (617 bytes)
+CREATE /test-app/src/app/app.controller.ts (274 bytes)
+CREATE /test-app/src/app/app.module.ts (371 bytes)
+CREATE /test-app/src/app/app.service.ts (142 bytes)
+CREATE /test-app/src/app/core/core.module.ts (1047 bytes)
+CREATE /test-app/src/app/shared/logger/winston.logger.ts (1081 bytes)
+CREATE /test-app/src/app/core/configuration/configuration.module.ts (214 bytes)
+CREATE /test-app/src/app/core/configuration/model/index.ts (24 bytes)
+CREATE /test-app/src/app/core/configuration/model/types.ts (280 bytes)
+CREATE /test-app/src/app/core/configuration/services/configuration.service.spec.ts (2950 bytes)
+CREATE /test-app/src/app/core/configuration/services/configuration.service.ts (1078 bytes)
+CREATE /test-app/src/app/core/configuration/services/index.ts (42 bytes)
+CREATE /test-app/src/config/default.ts (322 bytes)
+CREATE /test-app/src/config/develop.ts (817 bytes)
+CREATE /test-app/src/config/production.ts (817 bytes)
+CREATE /test-app/src/config/test.ts (816 bytes)
+CREATE /test-app/src/config/uat.ts (817 bytes)
+CREATE /test-app/docker-compose.yml (25 bytes)
+CREATE /test-app/ormconfig.json (467 bytes)
+CREATE /test-app/src/app/shared/model/entities/base-entity.entity.ts (517 bytes)
+CREATE /test-app/src/app/core/auth/auth.module.ts (897 bytes)
+CREATE /test-app/src/app/core/auth/controllers/auth.controller.spec.ts (3086 bytes)
+CREATE /test-app/src/app/core/auth/controllers/auth.controller.ts (1087 bytes)
+CREATE /test-app/src/app/core/auth/controllers/index.ts (36 bytes)
+CREATE /test-app/src/app/core/auth/decorators/index.ts (36 bytes)
+CREATE /test-app/src/app/core/auth/decorators/roles.decorator.spec.ts (870 bytes)
+CREATE /test-app/src/app/core/auth/decorators/roles.decorator.ts (124 bytes)
+CREATE /test-app/src/app/core/auth/guards/index.ts (32 bytes)
+CREATE /test-app/src/app/core/auth/guards/roles.guard.spec.ts (2354 bytes)
+CREATE /test-app/src/app/core/auth/guards/roles.guard.ts (712 bytes)
+CREATE /test-app/src/app/core/auth/model/index.ts (74 bytes)
+CREATE /test-app/src/app/core/auth/model/roles.enum.ts (39 bytes)
+CREATE /test-app/src/app/core/auth/model/user-request.interface.ts (140 bytes)
+CREATE /test-app/src/app/core/auth/services/auth.service.spec.ts (3777 bytes)
+CREATE /test-app/src/app/core/auth/services/auth.service.ts (1076 bytes)
+CREATE /test-app/src/app/core/auth/services/index.ts (33 bytes)
+CREATE /test-app/src/app/core/auth/strategies/index.ts (33 bytes)
+CREATE /test-app/src/app/core/auth/strategies/jwt.strategy.spec.ts (713 bytes)
+CREATE /test-app/src/app/core/auth/strategies/jwt.strategy.ts (618 bytes)
+CREATE /test-app/src/app/core/user/user.module.ts (338 bytes)
+CREATE /test-app/src/app/core/user/model/index.ts (82 bytes)
+CREATE /test-app/src/app/core/user/model/dto/user-payload.dto.ts (188 bytes)
+CREATE /test-app/src/app/core/user/model/entities/user.entity.ts (542 bytes)
+CREATE /test-app/src/app/core/user/services/index.ts (33 bytes)
+CREATE /test-app/src/app/core/user/services/user.service.spec.ts (2127 bytes)
+CREATE /test-app/src/app/core/user/services/user.service.ts (1065 bytes)
+CREATE /test-app/test/auth/auth.service.mock.ts (948 bytes)
+CREATE /test-app/test/user/user.repository.mock.ts (1095 bytes)
+CREATE /test-app/src/app/test/test.module.ts (469 bytes)
+CREATE /test-app/src/app/test/model/entities/test.entity.ts (174 bytes)
+CREATE /test-app/src/app/test/model/index.ts (88 bytes)
+CREATE /test-app/src/app/test/controllers/test.crud.controller.ts (393 bytes)
+CREATE /test-app/src/app/test/services/test.crud.service.ts (394 bytes)
+CREATE /test-app/src/app/test/services/index.ts (69 bytes)
+CREATE /test-app/src/app/test/controllers/index.ts (75 bytes)
+CREATE /test-app/src/app/test/controllers/test.controller.spec.ts (496 bytes)
+CREATE /test-app/src/app/test/controllers/test.controller.ts (107 bytes)
+CREATE /test-app/src/app/test/services/test.service.spec.ts (464 bytes)
+CREATE /test-app/src/app/test/services/test.service.ts (92 bytes)
+CREATE /test-app/src/app/test/model/entities/another-test.entity.ts (181 bytes)</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then, install all dependencies, format the code and initialize git.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guides-code-generation.asciidoc_generate-more-components">Generate more components</h3>
+<div class="paragraph">
+<p>The <code>generate</code> command has also an interactive mode. To execute <code>generate</code> command in interactive mode, you only need to change to an existing application and then execute the command <code>devon4node generate -i</code></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/generate-interactive.jpg" alt="generate interactive">
+</div>
+</div>
+<div class="paragraph">
+<p>The functionality is the same as new command, but the difference is <code>generate</code> command do not generate the base application.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guides-code-generation.asciidoc_generate-database-migrations">Generate database migrations</h3>
+<div class="paragraph">
+<p>The last command that we have in order to generate command is <code>devon4node db migration:generate -n MigrationName</code>. It will connect to the database, read all entities and then it will generate a migration file with all sql queries need to transform the current status of the database to the status defined by the entities. If the database is empty, it will generate all sql queries need to create all tables defined in the entities. You can find a exmple in the <a href="https://github.com/devonfw/devon4node/blob/develop/samples/todo/src/migration/1571244118394-CreateTables.ts">todo example</a></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guides-code-generation.asciidoc_cobigen">CobiGen</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Currently, we do not have templates to generate devon4node code (we have planned to do that in the future). Instead, we have templates that read the code of a devon4node application and generate a devon4ng application. Visit the <a href="https://github.com/devonfw/tools-cobigen">CobiGen</a> page for more information.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:15:42 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

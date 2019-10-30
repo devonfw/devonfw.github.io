@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angular CI</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#angular-ci.asciidoc">Angular CI</a>
+<ul class="sectlevel1">
+<li><a href="#angular-ci.asciidoc_pipeline">Pipeline</a></li>
+<li><a href="#angular-ci.asciidoc_adjustments">Adjustments</a>
+<ul class="sectlevel2">
+<li><a href="#angular-ci.asciidoc_pipeline-environment">Pipeline Environment</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="angular-ci.asciidoc" class="sect0">Angular CI</h1>
+<div class="paragraph">
+<p>The Angular client-side of My Thai Star is going to have some specific needs for the CI-CD Pipeline to perform mandatory operations.</p>
+</div>
+<div class="sect1">
+<h2 id="angular-ci.asciidoc_pipeline">Pipeline</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Pipeline for the Angular client-side is going to be called <strong>MyThaiStar_FRONTEND_BUILD</strong>. It is located in the PL instance, under the <a href="https://devon.s2-eu.capgemini.com/jenkins/job/MTS/">MTS folder</a> (as previously explained). It is going to follow a process flow like this one:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="angular_pipeline_flow.PNG"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/ci/angular/angular_pipeline_flow.PNG" alt="angular pipeline flow"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>Each of those steps are called <em>stages</em> in the Jenkins context.Let&#8217;s see what those steps mean in the context of the Angular application:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Declarative: Checkout SCM</strong></p>
+<div class="paragraph">
+<p>Retrieves the project from the GitHub repository which it&#8217;s located. This step is not defined directly in our pipeline, but as it is loaded from the repository this step should always be done at the beginning.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="pipeline_config.PNG"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/ci/angular/pipeline-config.png" alt="pipeline config"></a>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Declarative: Tool Install</strong></p>
+<div class="paragraph">
+<p>The Pipeline needs some Tools to perform some operations with the Angular project. These tool is a correct version of <strong>NodeJS</strong> (10.14.0 LTS) with <strong>Yarn</strong> installed as global package.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="groovy language-groovy">tools {
+    nodejs "NodeJS 10.14.0"
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Loading Custom Tools</strong></p>
+<div class="paragraph">
+<p>The Pipeline also needs a browser in order to execute the tests, so in this step the chrome-stable will be loaded. We will use it in a headless mode.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="groovy language-groovy">tool chrome</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Fresh Dependency Installation</strong></p>
+<div class="paragraph">
+<p>The script <code>$ yarn</code> does a package installation. As we always clean the workspace after the pipeline, all packages must be installed in every execution.</p>
+</div>
+</li>
+<li>
+<p><strong>Code Linting</strong></p>
+<div class="paragraph">
+<p>This script executes a linting process of TypeScript. Rules can be defined in the <code>tslint.json</code> file of the project. It throws an exception whenever a file contains a non-compliant piece of code.</p>
+</div>
+</li>
+<li>
+<p><strong>Execute Angular tests</strong></p>
+<div class="paragraph">
+<p>The CI testing of the Angular client is different than the standard local testing (addapted to CI environments, as specified in the <strong>Addaptation</strong> section of document). This script just executes the following commands:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="groovy language-groovy">ng test --browsers ChromeHeadless --watch=false</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>SonarQube code analysis</strong></p>
+<div class="paragraph">
+<p>The script load and execute the tool <code>sonar-scanner</code>. This tool is loaded here because it&#8217;s not used in any other part of the pipeline. The <code>sonar-scanner</code> will take all code, upload it to sonarQube and wait until sonarQube send us a response with the quality of our code. If the code do not pass the quality gate, the pipeline will stop at this point.</p>
+</div>
+</li>
+<li>
+<p><strong>Build Application</strong></p>
+<div class="paragraph">
+<p>The building process of the Angular client would result in a folder called <code>/dist</code> in the main Angular&#8217;s directory. That folder is the one that is going to be served afterwards as an artifact. This process has also been addapted to some Deployment needs. This building script executes the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="groovy language-groovy">ng build --configuration=docker</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Deliver application into Nexus</strong></p>
+<div class="paragraph">
+<p>Once the scripts produce the Angular artifact (<code>/dist</code> folder), it&#8217;s time to package it and store into nexus.</p>
+</div>
+</li>
+<li>
+<p>Declarative: Post Actions</p>
+<div class="paragraph">
+<p>At the end, this step is always executed, even if a previous stage fail. We use this step to clean up the workspace for future executions</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="groovy language-groovy">post {
+    always {
+        cleanWs()
+    }
+}</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="angular-ci.asciidoc_adjustments">Adjustments</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Angular project Pipeline needed some "extra" features to complete all planned processes. Those features resulted in some additions to the project.</p>
+</div>
+<div class="sect2">
+<h3 id="angular-ci.asciidoc_pipeline-environment">Pipeline Environment</h3>
+<div class="paragraph">
+<p>In order to easily reuse the pipeline in other angular projects, all variables have been defined in the block environment. All variables have the default values that Production Line uses, so if you&#8217;re going to work in production line you won&#8217;t have to change anything. Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="groovy language-groovy">environment {
+    // Script for build the application. Defined at package.json
+    buildScript = 'build --configuration=docker'
+    // Script for lint the application. Defined at package.json
+    lintScript = 'lint'
+    // Script for test the application. Defined at package.json
+    testScript = 'test:ci'
+    // Angular directory
+    angularDir = 'angular'
+    // SRC folder. It will be angularDir/srcDir
+    srcDir = 'src'
+    // Name of the custom tool for chrome stable
+    chrome = 'Chrome-stable'
+
+    // sonarQube
+    // Name of the sonarQube tool
+    sonarTool = 'SonarQube'
+    // Name of the sonarQube environment
+    sonarEnv = "SonarQube"
+
+    // Nexus
+    // Artifact groupId
+    groupId = 'com.devonfw.mythaistar'
+    // Nexus repository ID
+    repositoryId = 'pl-nexus'
+    // Nexus internal URL
+    repositoryUrl = 'http://nexus3-core:8081/nexus3/repository/maven-snapshots'
+    // Maven global settings configuration ID
+    globalSettingsId = 'MavenSettings'
+    // Maven tool id
+    mavenInstallation = 'Maven3'
+}</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="angular-ci.asciidoc_description">Description</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>buildScript</strong>: script for build the applicaction. It must be defined at package.json.</p>
+<div class="paragraph">
+<p>Example (package.json):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+    "name": "mythaistar-restaurant",
+    ...
+    "scripts": {
+        ...
+        "build": "ng build",
+        ...
+    }
+    ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will be used as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="groovy language-groovy">sh """yarn ${buildScript}"""</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>lintScript</strong>: Script for lint the application. Defined at package.json</p>
+<div class="paragraph">
+<p>Example (package.json):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+    "name": "mythaistar-restaurant",
+    ...
+    "scripts": {
+        ...
+        "lint": "ng lint",
+        ...
+    }
+    ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will be used as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="groovy language-groovy">sh """yarn ${lintScript}"""</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>testScript</strong>: Script for test the application. Defined at package.json</p>
+<div class="paragraph">
+<p>Example (package.json):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+    "name": "mythaistar-restaurant",
+    ...
+    "scripts": {
+        ...
+        "test:ci": "npm run postinstall:web &amp;&amp; ng test --browsers ChromeHeadless --watch=false",
+        ...
+    }
+    ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will be used as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="groovy language-groovy">sh """yarn ${testScript}"""</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>angularDir</strong>: Relative route to angular application. In My Thai Star this is the angular folder. The actual directory (.) is also allowed.</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="angular_directory.PNG"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/ci/angular/angular_directory.png" alt="angular directory"></a>
+</div>
+</div>
+</li>
+<li>
+<p><strong>srcDir</strong>: Directory where you store the soruce code. For angular applications the default value is <code>src</code></p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="src_directory.PNG"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/ci/angular/src_directory.png" alt="src directory"></a>
+</div>
+</div>
+</li>
+<li>
+<p><strong>chrome</strong>: Since you need a browser to run your tests, we must provide one. This variable contains the name of the custom tool for google chrome.</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="chrome_installation.PNG"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/ci/angular/chrome_installation.png" alt="chrome installation"></a>
+</div>
+</div>
+</li>
+<li>
+<p><strong>sonarTool</strong>: Name of the sonarQube scanner installation.</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="sonar-scanner.PNG"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/ci/angular/sonar-scanner.png" alt="sonar scanner"></a>
+</div>
+</div>
+</li>
+<li>
+<p><strong>sonarEnv</strong>: Name of the sonarQube environment. SonarQube is the default value for PL.</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="sonar-env.PNG"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/ci/angular/sonar-env.png" alt="sonar env"></a>
+</div>
+</div>
+</li>
+<li>
+<p><strong>groupId</strong>: Group id of the application. It will be used to storage the application in nexus3</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="nexus3_groupid.PNG"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/ci/angular/nexus3_groupid.png" alt="nexus3 groupid"></a>
+</div>
+</div>
+</li>
+<li>
+<p><strong>repositoryId</strong>: Id of the nexus3 repository. It must be defined at maven global config file.</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="nexus3_id.PNG"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/ci/angular/nexus3_id.png" alt="nexus3 id"></a>
+</div>
+</div>
+</li>
+<li>
+<p><strong>repositoryUrl</strong>: The url of the repository.</p>
+</li>
+<li>
+<p><strong>globalSettingsId</strong>: The id of the global settings file.</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="nexus3_global_config.PNG"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/ci/angular/nexus3_global_config.png" alt="nexus3 global config"></a>
+</div>
+</div>
+</li>
+<li>
+<p>mavenInstallation: The name of the maven tool.</p>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="maven_tool.PNG"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/ci/angular/maven_tool.png" alt="maven tool"></a>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:17:40 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

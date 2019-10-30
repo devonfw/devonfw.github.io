@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>software</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#software.asciidoc">software</a>
+<ul class="sectlevel1">
+<li><a href="#software.asciidoc_repository">Repository</a></li>
+<li><a href="#software.asciidoc_shared">Shared</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="software.asciidoc" class="sect0">software</h1>
+<div class="paragraph">
+<p>The <code>software</code> folder contains the third party tools for your IDE such as <a href="#mvn.asciidoc">maven</a>, <a href="#npm.asciidoc">npm</a>, <a href="#java.asciidoc">java</a>, etc.
+With respect to the <a href="#license.asciidoc">licensing terms</a> you may create a custom archive containing a <code>devonfw-ide</code> together with the required software.
+However, to be platform indepentent and allow lightweight updates the <code>devonfw-ide</code> is capable to download and <a href="#install.asciidoc">install</a> the software automatically for you.</p>
+</div>
+<div class="sect1">
+<h2 id="software.asciidoc_repository">Repository</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>By default software is downloaded via the internet from public download URLs of the according tools. However, some projects may need specific tools or tool versions that are not publically available.
+In such case, they can create their own software repository (e.g. in a VPN) and <a href="#configuration.asciidoc">configure</a> the base URL of it via <code>DEVON_SOFTWARE_REPOSITORY</code> <a href="#variables.asciidoc">variable</a>.
+Then <code>devonfw-ide</code> will download all software from this repository only instead of the default public download URLs.
+This repository (URL) should be accessible within your network via HTTPS (or HTTP) and without any authentication.
+The repository needs to have the following structure:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>${DEVON_SOFTWARE_REPOSITORY}/«tool»/«version»/«tool»-«version»[-«os»].tgz</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>So for every tool <code>«tool»</code> (<a href="#java.asciidoc">java</a>, <a href="#mvn.asciidoc">maven</a>, <a href="#vscode.asciidoc">vscode</a>, <a href="#eclipse.asciidoc">eclipse</a>, etc.) you need to provide a folder in your repository.
+Within this folder for every supported version <code>«version»</code> you need a subfolder.
+This subfolder needs to contain the tool in that version for every operating system <code>«os»</code> (<code>windows</code>, <code>linux</code>, or <code>mac</code> - omitted if platform independent, e.g. for <code>maven</code>).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="software.asciidoc_shared">Shared</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>By default each installation of <code>devonfw-ide</code> has its own physical installations of the required tools in the desired versions stored in its local <code>software</code> folder.
+While this is great for isolation of <code>devonfw-ide</code> installations and to prevent side-effects, it can cause a huge waste of disc resources in case you are having many installations of <code>devonfw-ide</code>.
+If you are a power-user of <code>devonfw-ide</code> with more then ten or even up to hundreds of installations on your machine, you might love to share installations of a software tool in a particular version between multiple <code>devonfw-ide</code> installations.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-caution" title=""></i>
+</td>
+<td class="content">
+If you use this power-feature you are taking responsibility for side-effects and should not expect support. Also if you are using Windows please read <a href="https://www.joshkel.com/2018/01/18/symlinks-in-windows/">Symlinks in Windows</a> and make your mind if you really want to do so. You might also use this <a href="advanced-tooling.html#create-symbolic-links">hint</a> and maintain it manually without enabling the following feature.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In order to do so, you only need to <a href="#configuration.asciidoc">configure</a> the variable <code>DEVON_SOFTWARE_PATH</code> in your <code>~/devon.properties</code> pointing to an existing directory on your disc (e.g. <code>/projects/software</code> or <code>C:\projects\software</code>).
+Then <code>devonfw-ide</code> will install required software into <code>${DEVON_SOFTWARE_PATH}/${software_name}/${software_version}</code> as needed and create a symbolic link to it in <code>${DEVON_IDE_HOME}/software/${software_name}</code>.</p>
+</div>
+<div class="paragraph">
+<p>As a benefit another <code>devonfw-ide</code> installation will using the same software with the same version can re-use the existing installation and only needs to create the symbolic link. No more waste of having many identical JDK installations on your disc.</p>
+</div>
+<div class="paragraph">
+<p>As a drawback you need to be aware that specific tools may be "manipulated" after installation.
+The most common case is that a tool allows to install plugins or extensions such as all IDEs do. Such "manipulations" will cause side-effects between the different <code>devonfw-ide</code> installations sharing the same version of that tool.
+While this can also be a benefit it may also cause trouble.
+If you have a sensitive project that should not be affected by such side-effects, you may again override the <code>DEVON_SOFTWARE_PATH</code> variable to the empty value in your <code>${DEVON_IDE_HOME}/conf/devon.properties</code> of that sensitive installation:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>DEVON_SOFTWARE_PATH=</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will disable this feature particulary for that specific sensitive <code>devonfw-ide</code> installation but let you use it for all other ones.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:17:32 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

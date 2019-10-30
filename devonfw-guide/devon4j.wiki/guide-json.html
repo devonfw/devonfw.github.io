@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JSON</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-json.asciidoc">JSON</a>
+<ul class="sectlevel1">
+<li><a href="#guide-json.asciidoc_configure-json-mapping">Configure JSON Mapping</a></li>
+<li><a href="#guide-json.asciidoc_json-and-inheritance">JSON and Inheritance</a></li>
+<li><a href="#guide-json.asciidoc_custom-mapping">Custom Mapping</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-json.asciidoc" class="sect0">JSON</h1>
+<div class="paragraph">
+<p><a href="http://en.wikipedia.org/wiki/JSON">JSON</a> (JavaScript Object Notation) is a popular format to represent and exchange data especially for modern web-clients. For mapping Java objects to JSON and vice-versa there is no official standard API. We use the established and powerful open-source solution <a href="http://wiki.fasterxml.com/JacksonHome">Jackson</a>.
+Due to problems with the wiki of fasterxml you should try this alternative link: <a href="https://github.com/FasterXML/jackson#jackson-project-home-github">Jackson/AltLink</a>.</p>
+</div>
+<div class="sect1">
+<h2 id="guide-json.asciidoc_configure-json-mapping">Configure JSON Mapping</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order to avoid polluting business objects with proprietary Jackson annotations (e.g. <code>@JsonTypeInfo</code>, <code>@JsonSubTypes</code>, <code>@JsonProperty</code>) we propose to create a separate configuration class. Every devonfw application (sample or any app created from our <a href="#tutorial-newapp.asciidoc">app-template</a>) therefore has a class called <code>ApplicationObjectMapperFactory</code> that extends ObjectMapperFactory from the devon4j-rest module. It looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Named("ApplicationObjectMapperFactory")
+public class ApplicationObjectMapperFactory extends ObjectMapperFactory {
+
+  public RestaurantObjectMapperFactory() {
+    super();
+    // JSON configuration code goes here
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-json.asciidoc_json-and-inheritance">JSON and Inheritance</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you are using inheritance for your objects mapped to JSON then polymorphism can not be supported out-of-the box. So in general avoid polymorphic objects in JSON mapping. However, this is not always possible.
+Have a look at the following example from our sample application:</p>
+</div>
+<div id="guide-json.asciidoc_img-rest-inheritance" class="imageblock" style="text-align: center;">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/REST-Inheritance.png" alt="inheritance class diagram">
+</div>
+<div class="title">Figure 1. Transfer-Objects using Inheritance</div>
+</div>
+<div class="paragraph">
+<p>Now assume you have a <a href="guide-service-layer.html#rest">REST service operation</a> as Java method that takes a ProductEto as argument. As this is an abstract class the server needs to know the actual sub-class to instantiate.
+We typically do not want to specify the classname in the JSON as this should be an implementation detail and not part of the public JSON format (e.g. in case of a service interface). Therefore we use a symbolic name for each polymorphic subtype that is provided as virtual attribute @type within the JSON data of the object:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{ "@type": "Drink", ... }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Therefore you add configuration code to the constructor of <a href="#guide-json.asciidoc_configure-json-mapping">ApplicationObjectMapperFactory</a>. Here you can see an example from the sample application:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">setBaseClasses(ProductEto.class);
+addSubtypes(new NamedType(MealEto.class, "Meal"), new NamedType(DrinkEto.class, "Drink"),
+  new NamedType(SideDishEto.class, "SideDish"));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We use <code>setBaseClasses</code> to register all top-level classes of polymorphic objects. Further we declare all concrete polymorphic sub-classes together with their symbolic name for the JSON format via <code>addSubtypes</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-json.asciidoc_custom-mapping">Custom Mapping</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order to map custom <a href="#guide-datatype.asciidoc">datatypes</a> or other types that do not follow the Java bean conventions, you need to define a custom mapping. If you create objects dedicated for the JSON mapping you can easily avoid such situations. When this is not suitable follow these instructions to define the mapping:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>As an example, the use of JSR354 (<code>javax.money</code>) is appreciated in order to process monetary amounts properly. However, without custom mapping, the default mapping of Jackson will produce the following JSON for a <code>MonetaryAmount</code>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"currency": {"defaultFractionDigits":2, "numericCode":978, "currencyCode":"EUR"},
+"monetaryContext": {...},
+"number":6.99,
+"factory": {...}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As clearly can be seen, the JSON contains too much information and reveals implementation secrets that do not belong here. Instead the JSON output expected and desired would be:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"currency":"EUR","amount":"6.99"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Even worse, when we send the JSON data to the server, Jackson will see that <code>MonetaryAmount</code> is an interface and does not know how to instantiate it so the request will fail.
+Therefore we need a customized <a href="https://github.com/FasterXML/jackson-docs/wiki/JacksonHowToCustomSerializers">Serializer</a>.</p>
+</div>
+</li>
+<li>
+<p>We implement <code>MonetaryAmountJsonSerializer</code> to define how a <code>MonetaryAmount</code> is serialized to JSON:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public final class MonetaryAmountJsonSerializer extends JsonSerializer&lt;MonetaryAmount&gt; {
+
+  public static final String NUMBER = "amount";
+  public static final String CURRENCY = "currency";
+
+  public void serialize(MonetaryAmount value, JsonGenerator jgen, SerializerProvider provider) throws ... {
+    if (value != null) {
+      jgen.writeStartObject();
+      jgen.writeFieldName(MonetaryAmountJsonSerializer.CURRENCY);
+      jgen.writeString(value.getCurrency().getCurrencyCode());
+      jgen.writeFieldName(MonetaryAmountJsonSerializer.NUMBER);
+      jgen.writeString(value.getNumber().toString());
+      jgen.writeEndObject();
+    }
+  }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For composite datatypes it is important to wrap the info as an object (<code>writeStartObject()</code> and <code>writeEndObject()</code>). <code>MonetaryAmount</code> provides the information we need by the <code>getCurrency()</code> and <code>getNumber()</code>. So that we can easily write them into the JSON data.</p>
+</div>
+</li>
+<li>
+<p>Next, we implement <code>MonetaryAmountJsonDeserializer</code> to define how a <code>MonetaryAmount</code> is deserialized back as Java object from JSON:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public final class MonetaryAmountJsonDeserializer extends AbstractJsonDeserializer&lt;MonetaryAmount&gt; {
+  protected MonetaryAmount deserializeNode(JsonNode node) {
+    BigDecimal number = getRequiredValue(node, MonetaryAmountJsonSerializer.NUMBER, BigDecimal.class);
+    String currencyCode = getRequiredValue(node, MonetaryAmountJsonSerializer.CURRENCY, String.class);
+    MonetaryAmount monetaryAmount =
+        MonetaryAmounts.getAmountFactory().setNumber(number).setCurrency(currencyCode).create();
+    return monetaryAmount;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For composite datatypes we extend from <a href="https://github.com/devonfw/devon4j/blob/develop/modules/rest/src/main/java/com/devonfw/module/rest/service/impl/json/AbstractJsonDeserializer.java"><code>AbstractJsonDeserializer</code></a> as this makes our task easier. So we already get a <code>JsonNode</code> with the parsed payload of our datatype. Based on this API it is easy to retrieve individual fields from the payload without taking care of their order, etc.
+<code>AbstractJsonDeserializer</code> also provides methods such as <code>getRequiredValue</code> to read required fields and get them converted to the desired basis datatype. So we can easily read the amount and currency and construct an instance of <code>MonetaryAmount</code> via the official factory API.</p>
+</div>
+</li>
+<li>
+<p>Finally we need to register our custom (de)serializers with the following configuration code in the constructor of <a href="#guide-json.asciidoc_configure-json-mapping">ApplicationObjectMapperFactory</a>:+</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  SimpleModule module = getExtensionModule();
+  module.addDeserializer(MonetaryAmount.class, new MonetaryAmountJsonDeserializer());
+  module.addSerializer(MonetaryAmount.class, new MonetaryAmountJsonSerializer());</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now we can read and write <code>MonetaryAmount</code> from and to JSON as expected.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:13:35 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

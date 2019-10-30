@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Configuration</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-configuration.asciidoc">Configuration</a>
+<ul class="sectlevel1">
+<li><a href="#guide-configuration.asciidoc_internal-application-configuration">Internal Application Configuration</a>
+<ul class="sectlevel2">
+<li><a href="#guide-configuration.asciidoc_spring-boot-application">Spring Boot Application</a></li>
+<li><a href="#guide-configuration.asciidoc_standard-beans-configuration">Standard beans configuration</a></li>
+<li><a href="#guide-configuration.asciidoc_xml-based-beans-configuration">XML-based beans configuration</a></li>
+<li><a href="#guide-configuration.asciidoc_batch-configuration">Batch configuration</a></li>
+<li><a href="#guide-configuration.asciidoc_beanmapper-configuration">BeanMapper Configuration</a></li>
+<li><a href="#guide-configuration.asciidoc_security-configuration">Security configuration</a></li>
+<li><a href="#guide-configuration.asciidoc_websocket-configuration">WebSocket configuration</a></li>
+<li><a href="#guide-configuration.asciidoc_database-configuration">Database Configuration</a></li>
+</ul>
+</li>
+<li><a href="#guide-configuration.asciidoc_externalized-configuration">Externalized Configuration</a>
+<ul class="sectlevel2">
+<li><a href="#guide-configuration.asciidoc_environment-configuration">Environment Configuration</a></li>
+<li><a href="#guide-configuration.asciidoc_business-configuration">Business Configuration</a></li>
+</ul>
+</li>
+<li><a href="#guide-configuration.asciidoc_security">Security</a>
+<ul class="sectlevel2">
+<li><a href="#guide-configuration.asciidoc_password-encryption">Password Encryption</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-configuration.asciidoc" class="sect0">Configuration</h1>
+<div class="paragraph">
+<p>An application needs to be configurable in order to allow internal setup (like CDI) but also to allow externalized configuration of a deployed package (e.g. integration into runtime environment). Using <a href="http://projects.spring.io/spring-boot/">Spring Boot</a> (must read: <a href="http://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#using-boot">Spring Boot reference</a>) we rely on a comprehensive configuration approach following a "convention over configuration" pattern. This guide adds on to this by detailed instructions and best-practices how to deal with configurations.</p>
+</div>
+<div class="paragraph">
+<p>In general we distinguish the following kinds of configuration that are explained in the following sections:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#guide-configuration.asciidoc_internal-application-configuration">Internal Application configuration</a> maintained by developers</p>
+</li>
+<li>
+<p><a href="#guide-configuration.asciidoc_externalized-environment-configuration">Externalized Environment configuration</a> maintained by operators</p>
+</li>
+<li>
+<p><a href="#guide-configuration.asciidoc_business-configuration">Externalized Business configuration</a> maintained by business administrators</p>
+</li>
+</ul>
+</div>
+<div class="sect1">
+<h2 id="guide-configuration.asciidoc_internal-application-configuration">Internal Application Configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The application configuration contains all internal settings and wirings of the application (bean wiring, database mappings, etc.) and is maintained by the application developers at development time. There usually is a main configuration registered with main Spring Boot App, but differing configurations to support automated test of the application can be defined using profiles (not detailed in this guide).</p>
+</div>
+<div class="sect2">
+<h3 id="guide-configuration.asciidoc_spring-boot-application">Spring Boot Application</h3>
+<div class="paragraph">
+<p>The devonfw recommends using <a href="http://projects.spring.io/spring-boot/">spring-boot</a> to build web applications.
+For a complete documentation see the <a href="http://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/">Spring Boot Reference Guide</a>.</p>
+</div>
+<div class="paragraph">
+<p>With spring-boot you provide a simple <em>main class</em> (also called starter class) like this:
+com.devonfw.mtsj.application</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@SpringBootApplication(exclude = { EndpointAutoConfiguration.class })
+@EntityScan(basePackages = { "com.devonfw.mtsj.application" }, basePackageClasses = { AdvancedRevisionEntity.class })
+@EnableGlobalMethodSecurity(jsr250Enabled = true)
+@ComponentScan(basePackages = { "com.devonfw.mtsj.application.general", "com.devonfw.mtsj.application" })
+public class SpringBootApp {
+
+  /**
+   * Entry point for spring-boot based app
+   *
+   * @param args - arguments
+   */
+  public static void main(String[] args) {
+
+    SpringApplication.run(SpringBootApp.class, args);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In an devonfw application this main class is always located in the <code>&lt;basepackage&gt;</code> of the application package namespace (see <a href="coding-conventions.html#packages">package-conventions</a>). This is because a spring boot application will automatically do a classpath scan for components (spring-beans) and entities in the package where the application main class is located including all sub-packages. You can use the <code>@ComponentScan</code> and <code>@EntityScan</code> annotations to customize this behaviour.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-configuration.asciidoc_standard-beans-configuration">Standard beans configuration</h3>
+<div class="paragraph">
+<p>For basic bean configuration we rely on spring boot using mainly configuration classes and only occasionally XML configuration files. Some key principle to understand Spring Boot auto-configuration features:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Spring Boot auto-configuration attempts to automatically configure your Spring application based on the jar dependencies and annotated components found in your source code.</p>
+</li>
+<li>
+<p>Auto-configuration is non-invasive, at any point you can start to define your own configuration to replace specific parts of the auto-configuration by redefining your identically named bean (see also <code>exclude</code> attribute of <code>@SpringBootApplication</code> in example code above).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Beans are configured via annotations in your java code (see <a href="#guide-dependency-injection.asciidoc">dependency-injection</a>).</p>
+</div>
+<div class="paragraph">
+<p>For technical configuration you will typically write additional spring config classes annotated with <code>@Configuration</code> that provide bean implementations via methods annotated with <code>@Bean</code>. See <a href="http://docs.spring.io/spring-javaconfig/docs/1.0.0.M4/reference/html/ch02s02.html">spring @Bean documentation</a> for further details. Like in XML you can also use <code>@Import</code> to make a <code>@Configuration</code> class include other configurations.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-configuration.asciidoc_xml-based-beans-configuration">XML-based beans configuration</h3>
+<div class="paragraph">
+<p>It is still possible and allowed to provide (bean-) configurations using XML, though not recommended. These configuration files are no more bundled via a main xml config file but loaded individually from their respective owners, e.g. for unit-tests:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@SpringApplicationConfiguration(classes = { SpringBootApp.class }, locations = { "classpath:/config/app/batch/beans-productimport.xml" })
+public class ProductImportJobTest extends AbstractSpringBatchIntegrationTest {
+...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Configuration XML-files reside in an adequately named subfolder of:</p>
+</div>
+<div class="paragraph">
+<p><code>src/main/resources/app</code></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-configuration.asciidoc_batch-configuration">Batch configuration</h3>
+<div class="paragraph">
+<p>In the directory <code>src/main/resources/config/app/batch</code> we place the configuration for the batch jobs. Each file within this directory represents one batch job. See <a href="#guide-batch-layer.asciidoc">batch-layer</a> for further details.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-configuration.asciidoc_beanmapper-configuration">BeanMapper Configuration</h3>
+<div class="paragraph">
+<p>In the directory <code>src/main/resources/config/app/common</code> we place the configuration for the bean-mapping.
+See <a href="guide-beanmapping.html#bean-mapper-configuration">bean-mapper configuration</a> for further details.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-configuration.asciidoc_security-configuration">Security configuration</h3>
+<div class="paragraph">
+<p>The abstract base class <code>BaseWebSecurityConfig</code> should be extended to configure web application security thoroughly.
+A basic and secure configuration is provided which can be overridden or extended by subclasses.
+Subclasses must use the <code>@Profile</code> annotation to further discriminate between beans used in production and testing scenarios. See the following example:</p>
+</div>
+<div class="listingblock">
+<div class="title">How to extend <code>BaseWebSecurityConfig</code> for Production and Test</div>
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Configuration
+@EnableWebSecurity
+@Profile(SpringProfileConstants.JUNIT)
+public class TestWebSecurityConfig extends BaseWebSecurityConfig {...}
+
+@Configuration
+@EnableWebSecurity
+@Profile(SpringProfileConstants.NOT_JUNIT)
+public class WebSecurityConfig extends BaseWebSecurityConfig {...}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>See <a href="https://github.com/devonfw/my-thai-star/blob/develop/java/mtsj/core/src/main/java/com/devonfw/application/mtsj/general/service/impl/config/WebSecurityConfig.java">WebSecurityConfig</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-configuration.asciidoc_websocket-configuration">WebSocket configuration</h3>
+<div class="paragraph">
+<p>A websocket endpoint is configured within the business package as a Spring configuration class. The annotation <code>@EnableWebSocketMessageBroker</code> makes Spring Boot registering this endpoint.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">package your.path.to.the.websocket.config;
+...
+@Configuration
+@EnableWebSocketMessageBroker
+public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
+...</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-configuration.asciidoc_database-configuration">Database Configuration</h3>
+<div class="paragraph">
+<p>To choose database of your choice , set <code>spring.profiles.active=XXX</code> in <code>src/main/resources/config/application.properties</code>. Also, one has to set all the active spring profiles in this <code>application.properties</code> and not in any of the other <code>application.properies</code>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-configuration.asciidoc_externalized-configuration">Externalized Configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Externalized configuration is a configuration that is provided separately to a deployment package and can be maintained undisturbed by re-deployments.</p>
+</div>
+<div class="sect2">
+<h3 id="guide-configuration.asciidoc_environment-configuration">Environment Configuration</h3>
+<div class="paragraph">
+<p>The environment configuration contains configuration parameters (typically port numbers, host names, passwords, logins, timeouts, certificates, etc.) specific for the different environments. These are under the control of the operators responsible for the application.</p>
+</div>
+<div class="paragraph">
+<p>The environment configuration is maintained in <code>application.properties</code> files, defining various properties (see <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html">common application properties</a> for a list of properties defined by the spring framework).
+These properties are explained in the corresponding configuration sections of the guides for each topic:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="guide-jpa.html#database-system-and-access">persistence configuration</a></p>
+</li>
+<li>
+<p><a href="guide-service-layer.html#jax-rs-configuration">service configuration</a></p>
+</li>
+<li>
+<p><a href="guide-logging.html#configuration">logging guide</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For a general understanding how spring-boot is loading and boostrapping your <code>application.properties</code> see <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html">spring-boot external configuration</a>.
+The following properties files are used in every devonfw application:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>src/main/resources/application.properties</code> providing a default configuration - bundled and deployed with the application package. It further acts as a template to derive a tailored minimal environment-specific configuration.</p>
+</li>
+<li>
+<p><code>src/main/resources/config/application.properties</code> providing additional properties only used at development time (for all local deployment scenarios). This property file is excluded from all packaging.</p>
+</li>
+<li>
+<p><code>src/test/resources/config/application.properties</code> providing additional properties only used for testing (JUnits based on <a href="#guide-testing.asciidoc">spring test</a>).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For other environments where the software gets deployed such as <code>test</code>, <code>acceptance</code> and <code>production</code> you need to provide a tailored copy of <code>application.properties</code>. The location depends on the deployment strategy:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>standalone run-able Spring Boot App using embedded tomcat: <code>config/application.properties</code> under the installation directory of the spring boot application.</p>
+</li>
+<li>
+<p>dedicated tomcat (one tomcat per app): <code>$CATALINA_BASE/lib/config/application.properties</code></p>
+</li>
+<li>
+<p>tomcat serving a number of apps (requires expanding the wars): <code>$CATALINA_BASE/webapps/&lt;app&gt;/WEB-INF/classes/config</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In this <code>application.properties</code> you only define the minimum properties that are environment specific and inherit everything else from the bundled <code>src/main/resources/application.properties</code>. In any case, make very sure that the classloader will find the file.</p>
+</div>
+<div class="paragraph">
+<p>Make sure your properties are thoroughly documented by providing a comment to each property. This inline documentation is most valuable for your operating department.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-configuration.asciidoc_business-configuration">Business Configuration</h3>
+<div class="paragraph">
+<p>The business configuration contains all business configuration values of the application, which can be edited by administrators through the GUI. The business configuration values are stored in the database in key/value pairs.</p>
+</div>
+<div class="paragraph">
+<p>The database table <code>business_configuration</code> has the following columns:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ID</p>
+</li>
+<li>
+<p>Property name</p>
+</li>
+<li>
+<p>Property type (Boolean, Integer, String)</p>
+</li>
+<li>
+<p>Property value</p>
+</li>
+<li>
+<p>Description</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>According to the entries in this table, the administrative GUI shows a generic form to change business configuration. The hierarchy of the properties determines the place in the GUI, so the GUI bundles properties from the same hierarchy level and name. Boolean values are shown as checkboxes, integer and string values as text fields. The properties are read and saved in a typed form, an error is raised if you try to save a string in an integer property for example.</p>
+</div>
+<div class="paragraph">
+<p>We recommend the following base layout for the hierarchical business configuration:</p>
+</div>
+<div class="paragraph">
+<p><code>component.[subcomponent].[subcomponent].propertyname</code></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-configuration.asciidoc_security">Security</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Often you need to have passwords (for databases, third-party services, etc.) as part of your configuration. These are typically environment specific (see above). However, with DevOps and continuous-deployment you might be tempted to commit such configurations into your version-control (e.g. <code>git</code>). Doing that with plain text passwords is a severe problem especially for production systems. Never do that! Instead we offer some suggestions how to deal with sensible configurations:</p>
+</div>
+<div class="sect2">
+<h3 id="guide-configuration.asciidoc_password-encryption">Password Encryption</h3>
+<div class="paragraph">
+<p>A simple but reasonable approach is to configure the passwords encrypted with a master-password. The master-password should be a strong secret that is specific for each environment. It must never be committed to version-control.
+In order to support encrypted passwords in spring-boot <code>application.properties</code> all you need to do is to add <a href="https://github.com/ulisesbocchio/jasypt-spring-boot#jasypt-spring-boot">jasypt-spring-boot</a> as dependency in your <code>pom.xml</code>(please check for recent version):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.github.ulisesbocchio&lt;/groupId&gt;
+  &lt;artifactId&gt;jasypt-spring-boot-starter&lt;/artifactId&gt;
+  &lt;version&gt;1.17&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will smoothly integrate <a href="http://jasypt.org/">jasypt</a> into your <a href="https://projects.spring.io/spring-boot/">spring-boot</a> application. Read this <a href="https://wiki.jasig.org/display/CASUM/HOWTO+Use+Jasypt+to+encrypt+passwords+in+configuration+files">HOWTO</a> to learn how to encrypt and decrypt passwords using jasypt. Here is a simple example output of an enctrypted password (of course you have to use strong passwords instead of <code>secret</code> and <code>postgres</code> - this is only an example):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">----ARGUMENTS-------------------
+
+input: postgres
+password: secret
+
+----OUTPUT----------------------
+
+jd5ZREpBqxuN9ok0IhnXabgw7V3EoG2p</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The master-password can be configured on your target environment via the property <code>jasypt.encryptor.password</code>. As system properties given on the command-line are visible in the process list, we recommend to use an <code>config/application.yml</code> file only for this purpose (as we recommended to use <code>application.properties</code> for regular configs):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>jasypt:
+    encryptor:
+        password: secret</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>(of course you will replace <code>secret</code> with a strong password). In case you happen to have multiple apps on the same machine, you can symlink the <code>application.yml</code> from a central place.
+Now you are able to put encrypted passwords into your <code>application.properties</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>spring.datasource.password=ENC(jd5ZREpBqxuN9ok0IhnXabgw7V3EoG2p)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To prevent jasypt to throw an exception in dev or test scenarios simply put this in your local config (<code>src/main/config/application.properties</code> and same for <code>test</code>, see above for details):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>jasypt.encryptor.password=none</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Is this Security by Obscurity?</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Yes, from the point of view to protect the passwords on the target environment this is nothing but security by obscurity. If an attacker somehow got full access to the machine this will only cause him to spend some more time.</p>
+</li>
+<li>
+<p>No, if someone only gets the configuration file. So all your developers might have access to the version-control where the config is stored. Others might have access to the software releases that include this configs. But without the master-password that should only be known to specific operators none else can decrypt the password (except with brute-force what will take a very long time, see jasypt for details).</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:13:19 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

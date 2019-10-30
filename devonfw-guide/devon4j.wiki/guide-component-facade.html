@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Component Facade</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-component-facade.asciidoc">Component Facade</a>
+<ul class="sectlevel1">
+<li><a href="#guide-component-facade.asciidoc_api">API</a></li>
+<li><a href="#guide-component-facade.asciidoc_implementation">Implementation</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-component-facade.asciidoc" class="sect0">Component Facade</h1>
+<div class="paragraph">
+<p>For each component of the application the <a href="#guide-logic-layer.asciidoc">logic layer</a> defines a component facade.
+This is an interface defining all business operations of the component.
+It carries the name of the component (<code>«Component»</code>) and has an implementation named <code>«Component»Impl</code> (see <a href="#guide-component-facade.asciidoc_implementation">implementation</a>).</p>
+</div>
+<div class="sect1">
+<h2 id="guide-component-facade.asciidoc_api">API</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The component facade interface defines the logic API of the component and has to be business oriented.
+This means that all parameters and return types of all methods from this API have to be business <a href="#guide-transferobject.asciidoc">transfer-objects</a>, <a href="#guide-datatype.asciidoc">datatypes</a> (<code>String</code>, <code>Integer</code>, <code>MyCustomerNumber</code>, etc.), or collections of these.
+The API may also only access objects of other business components listed in the (transitive) dependencies of the <a href="architecture.html#business-architecture">business-architecture</a>.</p>
+</div>
+<div class="paragraph">
+<p>Here is an example how such an API may look like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public interface Bookingmanagement {
+
+  BookingEto findBooking(Long id);
+
+  BookingCto findBookingCto(Long id);
+
+  Page&lt;BookingEto&gt; findBookingEtos(BookingSearchCriteriaTo criteria);
+
+  void approveBooking(BookingEto booking);
+
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-component-facade.asciidoc_implementation">Implementation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The implementation of an interface from the <a href="#guide-logic-layer.asciidoc">logic layer</a> (a component facade or a <a href="#guide-usecase.asciidoc">use-case</a>) carries the name of that interface with the suffix <code>Impl</code> and is annotated with <code>@Named</code>.
+An implementation typically needs access to the persistent data.
+This is done by <a href="#guide-dependency-injection.asciidoc">injecting</a> the corresponding <a href="#guide-repository.asciidoc">repository</a> (or <a href="#guide-dao.asciidoc">DAO</a>).
+According to <a href="architecture.html#architecture-principles">data-sovereignty</a>, only repostories of the same business component may be accessed directly.
+For accessing data from other components the implementation has to use the corresponding API of the logic layer (the component facade). Further, it shall not expose persistent entities from the <a href="#guide-dataaccess-layer.asciidoc">dataaccess layer</a> and has to map them to <a href="#guide-transferobject.asciidoc">transfer objects</a> using the <a href="#guide-beanmapping.asciidoc">bean-mapper</a>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Named
+@Transactional
+public class BookingmanagementImpl extends AbstractComponentFacade implements Bookingmanagement {
+
+  @Inject
+  private BookingRepository bookingRepository;
+
+  @Override
+  public BookingEto findBooking(Long id) {
+
+    LOG.debug("Get Booking with id {} from database.", id);
+    BookingEntity entity = this.bookingRepository.findOne(id);
+    return getBeanMapper().map(entity, BookingEto.class));
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As you can see, <a href="guide-jpa.html#entity">entities</a> (<code>BookingEntity</code>) are mapped to corresponding <a href="guide-transferobject.html#eto">ETOs</a> (<code>BookingEto</code>).
+Further details about this can be found in <a href="#guide-beanmapping.asciidoc">bean-mapping</a>.</p>
+</div>
+<div class="paragraph">
+<p>For complex applications, the component facade consisting of many different methods.
+For better maintainability in such case it is recommended to split it into separate <a href="#guide-usecase.asciidoc">use-cases</a> that are then only aggregated by the component facade.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:13:17 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

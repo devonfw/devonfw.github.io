@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cookbook OSS Compliance</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#Cookbook-OSS-Compliance.asciidoc">Cookbook OSS Compliance</a>
+<ul class="sectlevel1">
+<li><a href="#cookbook-oss-compliance.asciidoc_preface">Preface</a></li>
+<li><a href="#cookbook-oss-compliance.asciidoc_obligations-when-using-oss">Obligations when using OSS</a></li>
+<li><a href="#cookbook-oss-compliance.asciidoc_automate-oss-handling">Automate OSS handling</a></li>
+<li><a href="#cookbook-oss-compliance.asciidoc_configure-the-mojo-maven-license-plugin">Configure the Mojo Maven License Plugin</a>
+<ul class="sectlevel2">
+<li><a href="#cookbook-oss-compliance.asciidoc_declare-additional-licenses">Declare additional licenses</a></li>
+<li><a href="#cookbook-oss-compliance.asciidoc_redefine-wrongly-detected-licenses">Redefine wrongly detected licenses</a></li>
+<li><a href="#cookbook-oss-compliance.asciidoc_merge-licenses">Merge licenses</a></li>
+</ul>
+</li>
+<li><a href="#cookbook-oss-compliance.asciidoc_retrieve-licenses-list">Retrieve licenses list</a></li>
+<li><a href="#cookbook-oss-compliance.asciidoc_create-an-oss-inventory">Create an OSS inventory</a></li>
+<li><a href="#cookbook-oss-compliance.asciidoc_create-a-third-party-file">Create a THIRD PARTY file</a></li>
+<li><a href="#cookbook-oss-compliance.asciidoc_download-and-package-oss-sourcecode">Download and package OSS SourceCode</a></li>
+<li><a href="#cookbook-oss-compliance.asciidoc_handle-oss-within-ci-process">Handle OSS within CI-process</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="Cookbook-OSS-Compliance.asciidoc" class="sect0">Cookbook OSS Compliance</h1>
+<div class="openblock partintro">
+<div class="content">
+This chapter helps you to gain transparency on OSS usage and reach OSS compliance in your project.
+</div>
+</div>
+<div class="sect1">
+<h2 id="cookbook-oss-compliance.asciidoc_preface">Preface</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>devonfw, as most Java software, makes strong use of Open Source Software (OSS). It is using about 150 OSS products on the server only and on the client even more. Using a platform like devonfw to develop your own custom solution requires handling contained OSS correctly, i.e acting <em>OSS-compliant</em>.</p>
+</div>
+<div class="paragraph">
+<p>Please read the Open Source policy of your company first, e.g. the <a href="https://talent.capgemini.com/media_library/Medias/Common_images/OSS_Policy__Final.pdf">Capgemini OSS Policy</a> which contains a short, comprehensive and well written explanation on relevant OSS-knowledge. Make sure you:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>understand the copyleft effect and its effect in commercial projects</p>
+</li>
+<li>
+<p>understand the 3 license categories: "permissive", "weak copyleft" and "strong copyleft"</p>
+</li>
+<li>
+<p>know prominent license types as e.g. "Apache-2.0" or GPL-3.0" and what copyleft-category they are in</p>
+</li>
+<li>
+<p>are aware that some OSS offer dual/multi-licenses</p>
+</li>
+<li>
+<p>Understand that OSS libraries often come with sub-dependencies of other OSS carying licenses themselfes</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To define sufficient OSS compliance measures, contact your IP officer or legal team as early as possible, especially if you develop software for clients.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="cookbook-oss-compliance.asciidoc_obligations-when-using-oss">Obligations when using OSS</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you create a custom solution containing OSS, this in legal sense is a "derived" work. If you distribute your derived work to your business client or any other legal entity in binary packaged form, the license obligations of contained OSS get into effect. Ignoring these leads to a license infringement which can create high damage.</p>
+</div>
+<div class="paragraph">
+<p>To carefully handle these obligations you must:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>maintain an OSS inventory (to gain transparency on OSS usage and used licenses)</p>
+</li>
+<li>
+<p>check license conformity depending on usage/distribution in a commercial scenario</p>
+</li>
+<li>
+<p>check license compatibility between used OSS-licenses</p>
+</li>
+<li>
+<p>fulfill obligations defined by the OSS-licenses</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Obligations need to be checked per license. Frequent obligations are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>deliver the license terms of all used versions of the OSS licenses</p>
+</li>
+<li>
+<p>not to change any copyright statements or warranty exclusions contained in the used OSS components</p>
+</li>
+<li>
+<p>deliver the source code of the OSS components (e.g. on a data carrier)</p>
+</li>
+<li>
+<p>when modifying OSS, track any source code modification (including date and name of the employee/company)</p>
+</li>
+<li>
+<p>display OSS license notice in a user frontend (if any)</p>
+</li>
+<li>
+<p>other obligations depending on individual license</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="cookbook-oss-compliance.asciidoc_automate-oss-handling">Automate OSS handling</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Carefully judging the OSS usage in your project is a MANUAL activity! However, collecting OSS information and fulfilling license obligations should be automated as much as possible. A prominent professional tool to automate OSS compliance is the commercial software "Blackduck". Unfortunately it is rather expensive - either purchased or used as Saas.</p>
+</div>
+<div class="paragraph">
+<p>The most recommended lightweight tooling is a combination of Maven plugins. We will mainly use the <a href="http://www.mojohaus.org/license-maven-plugin/">Mojo Maven License Plugin</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="cookbook-oss-compliance.asciidoc_configure-the-mojo-maven-license-plugin">Configure the Mojo Maven License Plugin</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can use it from commandline but this will limit the ability to sustainably configure it (shown later).
+Therefore we add it permanently as a build-plugin to the project parent-pom like this (already contained in OASP-parent-pom):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;plugin&gt;
+  &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
+  &lt;artifactId&gt;license-maven-plugin&lt;/artifactId&gt;
+  &lt;version&gt;1.14&lt;/version&gt;
+
+  &lt;configuration&gt;
+    &lt;outputDirectory&gt;${project.build.directory}/generated-resources&lt;/outputDirectory&gt;
+    &lt;sortArtifactByName&gt;true&lt;/sortArtifactByName&gt;
+    &lt;includeTransitiveDependencies&gt;true&lt;/includeTransitiveDependencies&gt;
+    &lt;!-- the "missing file" declares licenses for dependencies that could not be detected automatically --&gt;
+    &lt;useMissingFile&gt;true&lt;/useMissingFile&gt;
+    &lt;!-- find the "missing files" in all child-projects at the following location --&gt;
+    &lt;missingFile&gt;src/license/THIRD-PARTY.properties&lt;/missingFile&gt;
+    &lt;!-- if the "missing files" are not yet existing in child-projects they will be created automatically --&gt;
+    &lt;failOnMissing&gt;false&lt;/failOnMissing&gt;
+    &lt;overrideFile&gt;src/license/override-THIRD-PARTY.properties&lt;/overrideFile&gt;
+    &lt;!-- harmonize different ways of writing license names --&gt;
+    &lt;licenseMerges&gt;
+      &lt;licenseMerge&gt;Apache-2.0|Apache 2.0&lt;/licenseMerge&gt;
+      &lt;licenseMerge&gt;Apache-2.0|Apache License, Version 2.0&lt;/licenseMerge&gt;
+      &lt;licenseMerge&gt;Apache-2.0|Apache Software License, Version 2.0&lt;/licenseMerge&gt;
+      &lt;licenseMerge&gt;Apache-2.0|The Apache Software License, Version 2.0&lt;/licenseMerge&gt;
+    &lt;/licenseMerges&gt;
+    &lt;encoding&gt;utf-8&lt;/encoding&gt;
+  &lt;/configuration&gt;
+&lt;/plugin&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the config above there are several settings that help to permanently improve the result of an automated OSS scan. We explain these now.</p>
+</div>
+<div class="sect2">
+<h3 id="cookbook-oss-compliance.asciidoc_declare-additional-licenses">Declare additional licenses</h3>
+<div class="paragraph">
+<p>Sometimes the licenses of used OSS cannot be resolved automatically. That is not the mistake of the maven-license-tool, but the mistake of the OSS author who didn&#8217;t make the respective license-information properly available.</p>
+</div>
+<div class="paragraph">
+<p>Declare additional licenses in a "missing file" within <em>each</em> maven-subproject: /src/license/THIRD-PARTY.properties.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml"># Generated by org.codehaus.mojo.license.AddThirdPartyMojo
+#-------------------------------------------------------------------------------
+# Already used licenses in project :
+# - ASF 2.0
+# - Apache 2
+...
+#-------------------------------------------------------------------------------
+# Please fill the missing licenses for dependencies :
+...
+dom4j--dom4j--1.6.1=BSD 3-Clause
+javax.servlet--jstl--1.2=CDDL
+...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In case the use of "missing files" is activated, but the THIRD-PARTY.properties-file is not yet existing, the first run of an "aggregate-add-third-party" goal (see below) will fail. Luckily the license-plugin just helped us and created the properties-files automatically (in each maven-subproject) and prefilled it with:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>a list of all detected licenses within the maven project</p>
+</li>
+<li>
+<p>all OSS libraries where a license could not be detected automatically.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You now need to fill in missing license information and rerun the plugin.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="cookbook-oss-compliance.asciidoc_redefine-wrongly-detected-licenses">Redefine wrongly detected licenses</h3>
+<div class="paragraph">
+<p>In case automatically detected licenses proof to be wrong by closer investigation, this wrong detection can be overwritten. Add a configuration to declare alternative licenses within each maven-subproject: /src/license/override-THIRD-PARTY.properties</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">com.sun.mail--javax.mail--1.5.6=Common Development and Distribution License 1.1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This can be also be useful for OSS that provides a multi-license to make a decision which license to actually choose .</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="cookbook-oss-compliance.asciidoc_merge-licenses">Merge licenses</h3>
+<div class="paragraph">
+<p>You will see that many prominent licenses come in all sorts of notations, e.g. Apache-2.0 as: "Apache 2" or "ASL-2.0" or "The Apache License, Version 2.0". The Mojo Maven License Plugin allows to harmonize different forms of a license-naming like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">    &lt;!-- harmonize different ways of writing license names --&gt;
+    &lt;licenseMerges&gt;
+      &lt;licenseMerge&gt;Apache-2.0|Apache 2.0&lt;/licenseMerge&gt;
+      &lt;licenseMerge&gt;Apache-2.0|Apache License, Version 2.0&lt;/licenseMerge&gt;
+      &lt;licenseMerge&gt;Apache-2.0|Apache Software License, Version 2.0&lt;/licenseMerge&gt;
+      &lt;licenseMerge&gt;Apache-2.0|The Apache Software License, Version 2.0&lt;/licenseMerge&gt;
+    &lt;/licenseMerges&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>License-names will be harmonized in the OSS report to one common term. We propose to harmonize to short-license-IDs defined by the <a href="https://spdx.org/">SPDX</a> standard.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="cookbook-oss-compliance.asciidoc_retrieve-licenses-list">Retrieve licenses list</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For a quick initial judgement of OSS license situation run the following maven command from commandline:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">$ mvn license:license-list</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You receive the summary list of all used OSS licenses on the cmd-out.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="cookbook-oss-compliance.asciidoc_create-an-oss-inventory">Create an OSS inventory</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To create an OSS inventory means to report on the overall bill of material of used OSS and corresponding licenses.
+Within the parent project, run the following maven goal from command line.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">$ mvn license:aggregate-download-licenses -Dlicense.excludedScopes=test,provided</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Running the aggregate-download-licenses goal creates two results.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>a license.xml that contains all used OSS depenencies (even sub-dependencies) with respective license information</p>
+</li>
+<li>
+<p>puts all used OSS-license-texts as html files into folder target/generated resources</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Carefully validate and judge the outcome of the license list. It is recommended to copy the license.xml to the project documentation and hand it over to your client. You may also import it into a spreadsheet to get a better overview.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="cookbook-oss-compliance.asciidoc_create-a-third-party-file">Create a THIRD PARTY file</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Within Java software it is a common practice to add a "THIRD-PARTY" text file to the distribution. Contained is a summary-list of all used OSS and respective licenses. This can also be achieved with the Mojo Maven License Plugin.</p>
+</div>
+<div class="paragraph">
+<p>Within the parent project, run the following maven goal from command line.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">$ mvn license:aggregate-add-third-party -Dlicense.excludedScopes=test,provided</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Find the THIRD-PARTY.txt in the folder: target\generated-resources. The goal aggregate-add-third-party also profits from configuration as outlined above.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="cookbook-oss-compliance.asciidoc_download-and-package-oss-sourcecode">Download and package OSS SourceCode</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Some OSS licenses require handing over the OSS source code which is packaged with your custom software to the client the solution is distributed to. It is a good practice to hand over the source code of <em>all</em> used OSS to your client. Collecting all source code can be accomplished by another Maven plugin: Apache Maven Dependency Plugin.</p>
+</div>
+<div class="paragraph">
+<p>It downloads all OSS Source Jars into the folder: \target\sources across the parent and all child maven projects.</p>
+</div>
+<div class="paragraph">
+<p>You configure the plugin like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;plugin&gt;
+  &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+  &lt;artifactId&gt;maven-dependency-plugin&lt;/artifactId&gt;
+  &lt;version&gt;3.0.2&lt;/version&gt;
+
+  &lt;configuration&gt;
+    &lt;classifier&gt;sources&lt;/classifier&gt;
+    &lt;failOnMissingClassifierArtifact&gt;false&lt;/failOnMissingClassifierArtifact&gt;
+    &lt;outputDirectory&gt;${project.build.directory}/sources&lt;/outputDirectory&gt;
+  &lt;/configuration&gt;
+  &lt;executions&gt;
+    &lt;execution&gt;
+      &lt;id&gt;src-dependencies&lt;/id&gt;
+      &lt;phase&gt;package&lt;/phase&gt;
+      &lt;goals&gt;
+        &lt;!-- use unpack-dependencies instead if you want to explode the sources --&gt;
+        &lt;goal&gt;copy-dependencies&lt;/goal&gt;
+      &lt;/goals&gt;
+    &lt;/execution&gt;
+  &lt;/executions&gt;
+&lt;/plugin&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You run the plugin from commandline like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">$ mvn dependency:copy-dependencies -Dclassifier=sources</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The plugin provides another goal that also unzips the jars, which is not recommended, since contents get mixed up.</p>
+</div>
+<div class="paragraph">
+<p>Deliver the OSS source jars to your client with the release of your custom solution. This has been done physically - e.g. on DVD.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="cookbook-oss-compliance.asciidoc_handle-oss-within-ci-process">Handle OSS within CI-process</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To automate OSS handling in the regular build-process (which is not recommended to start with) you may declare the following executions and goals in your maven-configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;plugin&gt;
+  ...
+
+  &lt;executions&gt;
+    &lt;execution&gt;
+      &lt;id&gt;aggregate-add-third-party&lt;/id&gt;
+      &lt;phase&gt;generate-resources&lt;/phase&gt;
+      &lt;goals&gt;
+        &lt;goal&gt;aggregate-add-third-party&lt;/goal&gt;
+      &lt;/goals&gt;
+    &lt;/execution&gt;
+
+    &lt;execution&gt;
+      &lt;id&gt;aggregate-download-licenses&lt;/id&gt;
+      &lt;phase&gt;generate-resources&lt;/phase&gt;
+      &lt;goals&gt;
+        &lt;goal&gt;aggregate-download-licenses&lt;/goal&gt;
+      &lt;/goals&gt;
+    &lt;/execution&gt;
+  &lt;/executions&gt;
+&lt;/plugin&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that the build may fail in case the OSS information was not complete. Check the build-output to understand and resolve the issue - like e.g. add missing license information in the "missing file".</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:16:59 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

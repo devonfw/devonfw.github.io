@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Testing</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-testing.asciidoc">Testing</a>
+<ul class="sectlevel1">
+<li><a href="#guide-testing.asciidoc_testing-concept">Testing Concept</a></li>
+<li><a href="#guide-testing.asciidoc_testing-smart-components">Testing Smart Components</a></li>
+<li><a href="#guide-testing.asciidoc_testing-state-transitions-performed-by-stores">Testing state transitions performed by stores</a></li>
+<li><a href="#guide-testing.asciidoc_testing-services">Testing services</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-testing.asciidoc" class="sect0">Testing</h1>
+<div class="paragraph">
+<p>This guide will cover the basics of testing logic inside your code with UnitTests.
+The guide assumes that you are familiar with Angular CLI (<a href="#guide-working-with-angular-cli.asciidoc">see the guide</a>)</p>
+</div>
+<div class="paragraph">
+<p>For testing your Angular application with UnitTests there are two main strategies:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Isolated UnitTests<br>
+Isolated unit tests examine an instance of a class all by itself without any dependence on Angular or any injected values.
+The amount of code and effort needed to create such tests in minimal.</p>
+</li>
+<li>
+<p>Angular Testing Utilities<br>
+Let you test components including their interaction with Angular.
+The amount of code and effort needed to create such tests is a little higher.</p>
+</li>
+</ol>
+</div>
+<div class="sect1">
+<h2 id="guide-testing.asciidoc_testing-concept">Testing Concept</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following figure shows you an overview of the application architecture devided in testing areas.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/testing-areas.svg"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/testing-areas.svg" alt="Testing Areas" width="450"></a>
+</div>
+<div class="title">Figure 1. Testing Areas</div>
+</div>
+<div class="paragraph">
+<p>There are three areas, which need to be covered by different testing strategies.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Components:<br>
+Smart Components need to be tested because they contain view logic.
+Also the interaction with 3rd party components needs to be tested.
+When a 3rd party component changes with an upgrade a test will be failing and warn you, that there is something wrong with the new version.
+Most of the time Dumb Components do not need to be teste because they mainly display data and do not contain any logic.
+Smart Components are alway tested with <strong>Angular Testing Utilities</strong>.
+For example selectors, which select data from the store and transform it further, need to be tested.</p>
+</li>
+<li>
+<p>Stores:<br>
+A store contains methods representing state transitions.
+If these methods contain logic, they need to be tested.
+Stores are always testet using <strong>Isolated UnitTests</strong>.</p>
+</li>
+<li>
+<p>Services:<br>
+Services contain Business Logic, which needs to be tested.
+UseCase Services represent a whole business use case.
+For instance this could be initializing a store with all the data that is needed for a dialog - loading, transforming, storing.
+Often <strong>Angular Testing Utilities</strong> are the optimal solution for testing UseCase Services, because they allow for an easy stubbing of the backend.
+All other services should be tested with <strong>Isolated UnitTests</strong> as they are much easier to write and maintain.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-testing.asciidoc_testing-smart-components">Testing Smart Components</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Testing Smart Components should assure the following.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Bindings are correct.</p>
+</li>
+<li>
+<p>Selectors which load data from the store are correct.</p>
+</li>
+<li>
+<p>Asynchronous behavior is correct (loading state, error state, "normal" state).</p>
+</li>
+<li>
+<p>Oftentimes through testing one realizes, that important edge cases are forgotten.</p>
+</li>
+<li>
+<p>Do these test become very complex, it is often an indicator for poor code quality in the component.
+Then the implementation is to be adjusted / refactored.</p>
+</li>
+<li>
+<p>When testing values received from the native DOM, you will test also that 3rd party libraries did not change with a version upgrade.
+A failing test will show you what part of a 3rd party library has changed.
+This is much better than the users doing this for you.
+For example a binding might fail because the property name was changed with a newer version of a 3rd party library.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>In the function <code>beforeEach()</code> the TestBed imported from <strong>Angular Testing Utilities</strong> needs to be initialized.
+The goal should be to define a minimal test-module with TestBed.
+The following code gives you an example.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 1. Example test setup for Smart Components</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">describe('PrintFlightComponent', () =&gt; {
+
+  let fixture: ComponentFixture&lt;PrintCPrintFlightComponentomponent&gt;;
+  let store: FlightStore;
+  let printServiceSpy: jasmine.SpyObj&lt;FlightPrintService&gt;;
+
+  beforeEach(() =&gt; {
+    const urlParam = '1337';
+    const activatedRouteStub = { params: of({ id: urlParam }) };
+    printServiceSpy = jasmine.createSpyObj('FlightPrintService', ['initializePrintDialog']);
+    TestBed.configureTestingModule({
+      imports: [
+        TranslateModule.forRoot(),
+        RouterTestingModule
+      ],
+      declarations: [
+        PrintFlightComponent,
+        PrintContentComponent,
+        GeneralInformationPrintPanelComponent,
+        PassengersPrintPanelComponent
+      ],
+      providers: [
+        FlightStore,
+        {provide: FlightPrintService, useValue: printServiceSpy},
+        {provide: ActivatedRoute, useValue: activatedRouteStub}
+      ]
+    });
+    fixture = TestBed.createComponent(PrintFlightComponent);
+    store = fixture.debugElement.injector.get(FlightStore);
+    fixture.detectChanges();
+  });
+
+  // ... test cases
+})</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It is important:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Use <code>RouterTestingModule`</code> instead of <code>RouterModule</code></p>
+</li>
+<li>
+<p>Use <code>TranslateModule.forRoot()</code> without translations
+This way you can test language-neutral without translation marks.</p>
+</li>
+<li>
+<p>Do not add a whole module from your application - in declarations add the tested Smart Component with all its Dumb Components</p>
+</li>
+<li>
+<p>The store should never be stubbed.
+If you need a complex test setup, just use the regular methods defined on the store.</p>
+</li>
+<li>
+<p>Stub all services used by the Smart Component.
+These are mostly UseCase services.
+They should not be tested by these tests.
+Only the correct call to their functions should be assured.
+The logic inside the UseCase services is tested with seperate tests.</p>
+</li>
+<li>
+<p><code>detectChanges()</code> performance an Angular Change Detection cycle (Angular refreshes all the bindings present in the view)</p>
+</li>
+<li>
+<p><code>tick()</code> performance a virtual marco task, <code>tick(1000)</code> is equal to the virtual passing of 1s.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The following test cases show the testing strategy in action.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 2. Example</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">it('calls initializePrintDialog for url parameter 1337', fakeAsync(() =&gt; {
+  expect(printServiceSpy.initializePrintDialog).toHaveBeenCalledWith(1337);
+}));
+
+it('creates correct loading subtitle', fakeAsync(() =&gt; {
+  store.setPrintStateLoading(123);
+  tick();
+  fixture.detectChanges();
+
+  const subtitle = fixture.debugElement.query(By.css('app-header-element .print-header-container span:last-child'));
+  expect(subtitle.nativeElement.textContent).toBe('PRINT_HEADER.FLIGHT STATE.IS_LOADING');
+}));
+
+it('creates correct subtitle for loaded flight', fakeAsync(() =&gt; {
+  store.setPrintStateLoadedSuccess({
+    id: 123,
+    description: 'Description',
+    iata: 'FRA',
+    name: 'Frankfurt',
+    // ...
+  });
+  tick();
+  fixture.detectChanges();
+
+  const subtitle = fixture.debugElement.query(By.css('app-header-element .print-header-container span:last-child'));
+  expect(subtitle.nativeElement.textContent).toBe('PRINT_HEADER.FLIGHT "FRA (Frankfurt)" (ID: 123)');
+}));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The examples show the basic testing method</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Set the store to a well-defined state</p>
+</li>
+<li>
+<p>check if the component displays the correct values</p>
+</li>
+<li>
+<p>&#8230;&#8203; via checking values inside the native DOM.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-testing.asciidoc_testing-state-transitions-performed-by-stores">Testing state transitions performed by stores</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Stores are always tested with <strong>Isolated UnitTests</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Actions triggered by <code>dispatchAction()</code> calls are asynchronously performed to alter the state.
+A good solution to test such a state transition is to use the done callback from Jasmine.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 3. Example for testing a store</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">let sut: FlightStore;
+
+beforeEach(() =&gt; {
+  sut = new FlightStore();
+});
+
+it('setPrintStateLoading sets print state to loading', (done: Function) =&gt; {
+  sut.setPrintStateLoading(4711);
+
+  sut.state$.pipe(first()).subscribe(result =&gt; {
+    expect(result.print.isLoading).toBe(true);
+    expect(result.print.loadingId).toBe(4711);
+    done();
+  });
+});
+
+it('toggleRowChecked adds flight with given id to selectedValues Property', (done: Function) =&gt; {
+  const flight: FlightTO = {
+    id: 12
+    // dummy data
+  };
+  sut.setRegisterabgleichListe([flight]);
+  sut.toggleRowChecked(12);
+
+  sut.state$.pipe(first()).subscribe(result =&gt; {
+    expect(result.selectedValues).toContain(flight);
+    done();
+  });
+});</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-testing.asciidoc_testing-services">Testing services</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When testing services both strategies - <strong>Isolated UnitTests</strong> and <strong>Angular Testing Utilities</strong> - are valid options.</p>
+</div>
+<div class="paragraph">
+<p>The goal of such tests are</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>assuring the behavior for valid data.</p>
+</li>
+<li>
+<p>assuring the behavior for invalid data.</p>
+</li>
+<li>
+<p>documenting functionality</p>
+</li>
+<li>
+<p>savely performing refactorings</p>
+</li>
+<li>
+<p>thinking about edge case behavior while testing</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For simple services <strong>Isolated UnitTests</strong> can be written.
+Writing these tests takes lesser effort and they can be written very fast.</p>
+</div>
+<div class="paragraph">
+<p>The following listing gives an example of such tests.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 4. Testing a simple services with <strong>Isolated UnitTests</strong></div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">let sut: IsyDatePipe;
+
+beforeEach(() =&gt; {
+  sut = new IsyDatePipe();
+});
+
+it('transform should return empty string if input value is empty', () =&gt; {
+  expect(sut.transform('')).toBe('');
+});
+
+it('transform should return empty string if input value is null', () =&gt; {
+  expect(sut.transform(undefined)).toBe('');
+});
+
+// ...more tests</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For testing Use Case services the Angular Testing Utilities should be used.
+The following listing gives an example.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 5. Test setup for testing use case services with Angular Testing Utilities</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">let sut: FlightPrintService;
+let store: FlightStore;
+let httpController: HttpTestingController;
+let flightCalculationServiceStub: jasmine.SpyObj&lt;FlightCalculationService&gt;;
+const flight: FlightTo = {
+  // ... valid dummy data
+};
+
+beforeEach(() =&gt; {
+  flightCalculationServiceStub = jasmine.createSpyObj('FlightCalculationService', ['getFlightType']);
+  flightCalculationServiceStub.getFlightType.and.callFake((catalog: string, type: string, key: string) =&gt; of(`${key}_long`));
+  TestBed.configureTestingModule({
+    imports: [
+      HttpClientTestingModule,
+      RouterTestingModule,
+    ],
+    providers: [
+      FlightPrintService,
+      FlightStore,
+      FlightAdapter,
+      {provide: FlightCalculationService, useValue: flightCalculationServiceStub}
+    ]
+  });
+
+  sut = TestBed.get(FlightPrintService);
+  store = TestBed.get(FlightStore);
+  httpController = TestBed.get(HttpTestingController);
+});</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When using TestBed, it is important</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>to import HttpClientTestingModule for stubbing the backend</p>
+</li>
+<li>
+<p>to import RouterTestingModule for stubbing the Angular router</p>
+</li>
+<li>
+<p>not to stub stores, adapters and business services</p>
+</li>
+<li>
+<p>to stub services from libraries like FlightCalculationService - the correct implementation of libraries should not be tested by these tests.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Testing backend communication looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 6. Testing backend communication with Angular HttpTestingController</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">it('loads flight if not present in store', fakeAsync(() =&gt; {
+  sut.initializePrintDialog(1337);
+  const processRequest = httpController.expectOne('/path/to/flight');
+  processRequest.flush(flight);
+
+  httpController.verify();
+}));
+
+it('does not load flight if present in store', fakeAsync(() =&gt; {
+  const flight = {...flight, id: 4711};
+  store.setRegisterabgleich(flight);
+
+  sut.initializePrintDialog(4711);
+  httpController.expectNone('/path/to/flight');
+
+  httpController.verify();
+}));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The first test assures a correct XHR request is performed if <code>initializePrintDialog()</code> is called and no data is in the store.
+The second test assures no XHR request ist performed if the needed data is already in the store.</p>
+</div>
+<div class="paragraph">
+<p>The next steps are checks for the correct implementation of logic.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 7. Example testing a Use Case service</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">it('creates flight destination for valid key in svz', fakeAsync(() =&gt; {
+  const flightTo: FlightTo = {
+    ...flight,
+    id: 4712,
+    profile: '77'
+  };
+  store.setFlight(flightTo);
+  let result: FlightPrintContent|undefined;
+
+  sut.initializePrintDialog(4712);
+  store.select(s =&gt; s.print.content).subscribe(content =&gt; result = content);
+  tick();
+
+  expect(result!.destination).toBe('77_long (ID: 77)');
+}));</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:15:27 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

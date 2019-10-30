@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guide for DBIntegration of PostGres Server</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-for-dbintegration-of-postgres-server">Guide for DBIntegration of PostGres Server</a>
+<ul class="sectlevel1">
+<li><a href="#postgres-installation-and-configuration-using-docker">PostGres Installation and Configuration using Docker</a></li>
+<li><a href="#postgres-installation-and-configuration">PostGres Installation and Configuration</a></li>
+<li><a href="#enabling-postgres-and-disabling-h2-database">Enabling PostGres and disabling H2 Database</a></li>
+<li><a href="#disabling-postgres-and-enabling-h2-database">Disabling PostGres and enabling H2 Database</a></li>
+<li><a href="#run-the-sample-application-with-the-angular-js-client">Run the sample application with the Angular JS Client</a></li>
+<li><a href="#run-the-sample-application-with-the-sencha-client">Run the sample application with the Sencha Client</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-for-dbintegration-of-postgres-server" class="sect0">Guide for DBIntegration of PostGres Server</h1>
+<div class="paragraph">
+<p>devon4j is by default configured with the H2 Databse.</p>
+</div>
+<div class="paragraph">
+<p>As a first step to integrate devon4j with the PostGres 9.5.4, PostGres 9.5.4 has to be installed. Following are the snapshots of the configuration chosen during various stages of installation .</p>
+</div>
+<div class="paragraph">
+<p><strong>Note</strong> : One can ignore the following section if they are well versed with the installation process  of PostGres 9.5.4.</p>
+</div>
+<div class="sect1">
+<h2 id="postgres-installation-and-configuration-using-docker">PostGres Installation and Configuration using Docker</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order to have a Postgres up and running with docker we can execute</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">docker run --name postgres -p 5432:5432 -e POSTGRES_PASSWORD=mysecretpassword -d postgres:9.5.4</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This makes Postgres avaiable on the docker-machine host on port 5432. If using docker on windows with docker toolbox it usually means that Postgres will be on 192.168.99.100 (please check the IP of your docker machine)</p>
+</div>
+<div class="paragraph">
+<p>So the configuration for the datasource url strig will be:</p>
+</div>
+<div class="paragraph">
+<p><code>jdbc:postgresql://192.168.99.100:5432/mydb?currentSchema=devon4j</code></p>
+</div>
+<div class="paragraph">
+<p>To check the installation or to have an interactive query tool with Postgres we can run another docker process like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">docker run -it --rm --link postgres:postgres postgres psql -h postgres -U postgres</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now we can create the databas and schema by running on the psql console</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">create database mydb;
+create schema devon4j;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="postgres-installation-and-configuration">PostGres Installation and Configuration</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Download <strong>PostGres 9.5.4</strong> for Windows 64 bit Operating System from <a href="http://www.enterprisedb.com/products-services-training/pgdownload#windows">here</a>. Screenshot of the download page below.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock" style="text-align: center;">
+<div class="content">
+<a class="image" href="https://github.com/devonfw/devon-guide/wiki/images/postgre/download_postgre.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/postgre/download_postgre.png" alt="download postgre" width="350" height="download postgre"></a>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Once installable for <strong>PostGres 9.5.4</strong> is downloaded , click on the installable  to start the installation process.It is shown in the below screenshot.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock" style="text-align: center;">
+<div class="content">
+<a class="image" href="https://github.com/devonfw/devon-guide/wiki/images/postgre/downloaded_postgre.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/postgre/downloaded_postgre.png" alt="downloaded postgre" width="350"></a>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The ‘Setup’ Wizard starts with screen shown below. Click Next button.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock" style="text-align: center;">
+<div class="content">
+<a class="image" href="https://github.com/devonfw/devon-guide/wiki/images/postgre/setup_postgre.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/postgre/setup_postgre.png" alt="setup postgre" width="350"></a>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>In the next step, select installation directory path and click Next button</p>
+</li>
+</ul>
+</div>
+<div class="imageblock" style="text-align: center;">
+<div class="content">
+<a class="image" href="https://github.com/devonfw/devon-guide/wiki/images/postgre/setup_installation_directory.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/postgre/setup_installation_directory.png" alt="setup installation directory" width="350"></a>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>In the next step, select data directory path and click Next button.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock" style="text-align: center;">
+<div class="content">
+<a class="image" href="https://github.com/devonfw/devon-guide/wiki/images/postgre/setup_data_directory.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/postgre/setup_data_directory.png" alt="setup data directory" width="350"></a>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>In the next step, enter the password for PostGres and click Next button.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock" style="text-align: center;">
+<div class="content">
+<a class="image" href="https://github.com/devonfw/devon-guide/wiki/images/postgre/setup_password.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/postgre/setup_password.png" alt="setup password" width="350"></a>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>In the next step, enter the port for PostGres and click Next button.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock" style="text-align: center;">
+<div class="content">
+<a class="image" href="https://github.com/devonfw/devon-guide/wiki/images/postgre/setup_port.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/postgre/setup_port.png" alt="setup port" width="350"></a>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>In the next step, select the Locale for PostGres and click Next button.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock" style="text-align: center;">
+<div class="content">
+<a class="image" href="https://github.com/devonfw/devon-guide/wiki/images/postgre/setup_advanced_options.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/postgre/setup_advanced_options.png" alt="setup advanced options" width="350"></a>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>In the next step, select the check box for launching the <strong>Stack Builder</strong> if needed and click Finish button.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock" style="text-align: center;">
+<div class="content">
+<a class="image" href="https://github.com/devonfw/devon-guide/wiki/images/postgre/setup_completing_postgre.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/postgre/setup_completing_postgre.png" alt="setup completing postgre" width="350"></a>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="enabling-postgres-and-disabling-h2-database">Enabling PostGres and disabling H2 Database</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Add an entry similar to the following entry in 'IPv4 local connections' section in  pg_hba.conf file that is located inside 'data' directory of PostGres installation. For instance , if the installation path of PostGres is D:\installations\PostGres9.5.4 , path of pg_hba.conf will be D:\installations\PostGres9.5.4\data\pg_hba.conf</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">host    all             postgres        10.102.114.142/32       trust</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the above entry , replace the IP details with details of your machine.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Assuming the schema created under <strong>PostGres</strong> database <strong>mydb</strong> is <strong>devon4j</strong>, execute the following script to create Flyway MetaData Table <strong>schema_version</strong> in the schema devon4j.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">﻿-- Table: devon4j.schema_version
+
+-- DROP TABLE devon4j.schema_version;
+
+CREATE TABLE devon4j.schema_version
+(
+  version_rank integer NOT NULL,
+  installed_rank integer NOT NULL,
+  version character varying(50) NOT NULL,
+  description character varying(200) NOT NULL,
+  type character varying(20) NOT NULL,
+  script character varying(1000) NOT NULL,
+  checksum integer,
+  installed_by character varying(100) NOT NULL,
+  installed_on timestamp without time zone NOT NULL DEFAULT now(),
+  execution_time integer NOT NULL,
+  success boolean NOT NULL,
+  CONSTRAINT schema_version_pk PRIMARY KEY (version)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE devon4j.schema_version
+  OWNER TO postgres;
+
+-- Index: devon4j.schema_version_ir_idx
+
+-- DROP INDEX devon4j.schema_version_ir_idx;
+
+CREATE INDEX schema_version_ir_idx
+  ON devon4j.schema_version
+  USING btree
+  (installed_rank);
+
+-- Index: devon4j.schema_version_s_idx
+
+-- DROP INDEX devon4j.schema_version_s_idx;
+
+CREATE INDEX schema_version_s_idx
+  ON devon4j.schema_version
+  USING btree
+  (success);
+
+-- Index: devon4j.schema_version_vr_idx
+
+-- DROP INDEX devon4j.schema_version_vr_idx;
+
+CREATE INDEX schema_version_vr_idx
+  ON devon4j.schema_version
+  USING btree
+  (version_rank);</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Uncomment <strong>Type</strong> annotation for ‘data’ attribute in devon4j-sample-core/src/main/java/io/oasp/gastronomy/restaurant/general/dataacess/api/<em>BinaryObjectEntity.java</em></p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Type(type = "org.hibernate.type.BinaryType")
+public Blob getData() {</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Uncomment the dependency for the PostGres 9.5.4 jdbc driver in devon4j-sample-core/<em>pom.xml</em>. Dependency for PostGres 9.5.4 is as follows :</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">&lt;dependency&gt;
+      &lt;groupId&gt;org.postgresql&lt;/groupId&gt;
+      &lt;artifactId&gt;postgresql&lt;/artifactId&gt;
+      &lt;version&gt;9.4.1211.jre7&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Change the value of following property ‘spring.datasource.url’ in following file ‘devon4j-sample-core/src/main/resources/config/<em>application-postgre.properties</em>’. Accordingly, change the following properties:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Hostname</p>
+</li>
+<li>
+<p>Port</p>
+</li>
+<li>
+<p>Database Name</p>
+</li>
+<li>
+<p>spring.datasource.username</p>
+</li>
+<li>
+<p>spring.datasource.password</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Run the script core/src/test/setup/postgresdb.bat for Windows Environment and the script core/src/test/setup/postgresdb.sh for Unix/Linux Environments.</p>
+</li>
+<li>
+<p>Make a copy of <em>bills.csv_at following path devon4j-sample-core/src/test/resources/BillExportJobTest/expected/ and rename it to _bills_h2.csv</em></p>
+</li>
+<li>
+<p>Rename the file <em>bills_pg.csv</em>  in devon4j-sample-core/src/test/resources/BillExportJobTest/expected/ to <em>bills.csv</em></p>
+</li>
+<li>
+<p>Comment the spring active profile <strong>h2mem</strong> and uncomment the spring active profile <strong>postgre</strong> in devon4j-sample-core/src/main/resources/config/<em>application.properties</em>.</p>
+</li>
+<li>
+<p>Comment the line that has spring active profile <strong>junit</strong> and comment the line that has spring active profiles <strong>junit</strong> and <strong>postgre</strong> separated by comma in the file devon4j-sample-core/src/test/resources/config/<em>application.properties</em>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Note</strong> : Make sure that JUNIT Test cases run successfully for devon4j Project using the command <strong>‘mvn clean install’</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Assuming that devon4j is integrated with the PostGres 9.5.4, following are the steps to enable H2 Database.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="disabling-postgres-and-enabling-h2-database">Disabling PostGres and enabling H2 Database</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Comment <strong>Type</strong> annotation for ‘data’ attribute in devon4j-sample-core/src/main/java/io/oasp/gastronomy/restaurant/general/dataacess/api/<em>BinaryObjectEntity.java</em></p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">//@Type(type = "org.hibernate.type.BinaryType")
+public Blob getData() {</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Comment the dependency for the PostGres 9.5.4 jdbc driver in devon4j-sample-core/<em>pom.xml</em>. Commented code below.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">&lt;!--
+    &lt;dependency&gt;
+      	&lt;groupId&gt;org.postgresql&lt;/groupId&gt;
+      	&lt;artifactId&gt;postgresql&lt;/artifactId&gt;
+      	&lt;version&gt;9.4.1211.jre7&lt;/version&gt;
+    &lt;/dependency&gt;
+--&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Run the script core/src/test/setup/disablepostgresdb.bat for Windows Environment and the script core/src/test/setup/disablepostgresdb.sh for Unix/Linux Environments.</p>
+</li>
+<li>
+<p>Make a copy of <em>bills.csv</em> at following path devon4j-sample-core/src/test/resources/BillExportJobTest/expected/ and rename it to <em>bills_pg.csv</em></p>
+</li>
+<li>
+<p>Rename <em>bills_h2.csv</em>  in devon4j-sample-core/src/test/resources/BillExportJobTest/expected/ to <em>bills.csv</em></p>
+</li>
+<li>
+<p>Uncomment the spring active profile <strong>h2mem</strong> and comment the spring active profile <strong>postgre</strong> in devon4j-sample-core/src/main/resources/config/<em>application.properties</em></p>
+</li>
+<li>
+<p>Uncomment the line that has spring active profile <strong>junit</strong> and comment the line that has spring active profiles <strong>junit</strong> and <strong>postgre</strong> separated by comma in the file devon4j-sample-core/src/test/resources/config/<em>application.properties</em></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Note:</strong> Make sure that JUNIT Test cases run successfully for devon4j Project using the command <strong>‘mvn clean install’</strong>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="run-the-sample-application-with-the-angular-js-client">Run the sample application with the Angular JS Client</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Follow the steps mentioned <a href="https://github.com/devonfw/devon/wiki/Client-GUI-Angular-run-oasp4js">here</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="run-the-sample-application-with-the-sencha-client">Run the sample application with the Sencha Client</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Follow the steps mentioned <a href="https://github.com/devonfw/devon/wiki/getting-started-deployment-on-tomcat">here</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Note</strong> : One has to recompile devon4j project by executing the command <strong>mvn clean install</strong> in <strong>devon4j</strong> project after doing the changes mentioned in the above said instructions.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:12:49 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

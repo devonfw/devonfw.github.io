@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Creating a Release</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#devonfw-release.asciidoc">Creating a Release</a>
+<ul class="sectlevel1">
+<li><a href="#devonfw-release.asciidoc_releasing-the-code">Releasing the code</a>
+<ul class="sectlevel2">
+<li><a href="#devonfw-release.asciidoc_configure-ossrh">Configure OSSRH</a></li>
+<li><a href="#devonfw-release.asciidoc_configure-pgp">Configure PGP</a></li>
+<li><a href="#devonfw-release.asciidoc_deploy-to-ossrh">Deploy to OSSRH</a></li>
+</ul>
+</li>
+<li><a href="#devonfw-release.asciidoc_releasing-the-maven-site">Releasing the maven-site</a></li>
+<li><a href="#devonfw-release.asciidoc_finalize-the-release">Finalize the Release</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="devonfw-release.asciidoc" class="sect0">Creating a Release</h1>
+<div class="paragraph">
+<p>This page documents how to create and publish a release of devon4j.</p>
+</div>
+<div class="paragraph">
+<p>For each release there is a <a href="https://github.com/devonfw/devon4j/milestones">milestone</a> that contains an issue for creating the release itself (the github issue of that issue is referred as <code>«issue»</code>). The release version is referred as «x.y.z».</p>
+</div>
+<div class="sect1">
+<h2 id="devonfw-release.asciidoc_releasing-the-code">Releasing the code</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To release the code follow these steps.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Create a clean clone of the repository:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">git clone https://github.com/devonfw/devon4j.git</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>In case you want to build a (bug fix) release from a different branch, switch to that branch:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">git checkout -b develop-«x.y» origin/develop-«x.y»</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Ensure your branch is up-to-date:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">git pull</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Ensure that the result is what you want to release (<code>mvn clean install</code>).</p>
+</li>
+<li>
+<p>Bump the release version by removing the <code>-SNAPSHOT</code> from <code>devon4j.version</code> property in top-level <code>pom.xml</code>.</p>
+</li>
+<li>
+<p>Create an annotated tag for your release:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">git tag -a release/x.y.z -m "#«issue»: tagged x.y.z"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>e.g For release 2.5.0 the command would look like</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">git tag -a release/2.5.0 -m "#618: tagged 2.5.0"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>where #618 is the issue number created for release itself under release milestone.
+You can confirm if the tag is created by listing out the tags with the following command</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>git tag</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="devonfw-release.asciidoc_configure-ossrh">Configure OSSRH</h3>
+<div class="paragraph">
+<p>For publishing artifacts to OSSRH, we need an OSSRH account with necessary rights for publishing and managing staging repositories. And configure this account in devonfw distribution to create connection and deploy to OSSRH.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If you do not already have an account on OSSRH, create an account on the link below
+<a href="https://issues.sonatype.org/secure/Signup!default.jspa" class="bare">https://issues.sonatype.org/secure/Signup!default.jspa</a></p>
+</li>
+<li>
+<p>You need manager access to deploy artifacts to OSSRH. For same contact devonfw administrators for OSSRH.</p>
+</li>
+<li>
+<p>Open file <code>conf/.m2/setting.xml</code> in your devon distribution (devon-ide) and add a new server with following details</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;server&gt;
+   &lt;id&gt;ossrh&lt;/id&gt;
+   &lt;username&gt;«ossrh_username»&lt;/username&gt;
+   &lt;password&gt;«ossrh_password»&lt;/password&gt;
+&lt;/server&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here <code>«ossrh_username»</code> and <code>«ossrh_password»</code> are the account details used to login into OSSRH and should have rights to publish artifacts to OSSRH for <code>groupId</code> name <code>com.devonfw</code> (and its children).
+Please use <a href="http://maven.apache.org/guides/mini/guide-encryption.html">password encryption</a> and prevent
+storing passwords in plain text.
+The id <code>ossrh</code> points to the OSSRH repository for snaphost and release declared in the  <code>&lt;distributionManagement&gt;</code> section of the <code>devon4j/pom.xml</code>.</p>
+</div>
+</li>
+<li>
+<p>Optionally you may want to explicitly define PGP key via the associated email-address:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;profile&gt;
+  &lt;id&gt;devon.ossrh&lt;/id&gt;
+  &lt;activation&gt;
+    &lt;activeByDefault&gt;true&lt;/activeByDefault&gt;
+  &lt;/activation&gt;
+  &lt;properties&gt;
+    &lt;gpg.keyname&gt;your.email@address.com&lt;/gpg.keyname&gt;
+  &lt;/properties&gt;
+&lt;/profile&gt;</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-release.asciidoc_configure-pgp">Configure PGP</h3>
+<div class="paragraph">
+<p>Artifacts should be PGP signed before they can be deployed to OSSRH. Artifacts can be signed either by using command line tool GnuPG or GUI based tool Gpg4win Kleopetra (preferred). Follow the steps below to sign artifacts using either of the two tools.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Download tools
+GnuPg - <a href="https://www.gnupg.org/download/" class="bare">https://www.gnupg.org/download/</a>
+gpg4win - <a href="https://www.gpg4win.org/download.html" class="bare">https://www.gpg4win.org/download.html</a></p>
+</li>
+<li>
+<p>Installation
+Installation is self explanatory for GnuPG and gpg4win. To verify installation of GnuPg, open windows command line and run "gpg --version or gpg2 --version"</p>
+</li>
+<li>
+<p>Generate PGP key pair for signing artifacts.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Remember the passphrase set for PGP keys as it will be used later for authentication during signing of artifacts by maven.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Using GnuPg follow either of the link below</p>
+</div>
+<div class="paragraph">
+<p><a href="http://central.sonatype.org/pages/working-with-pgp-signatures.html#generating-a-key-pair" class="bare">http://central.sonatype.org/pages/working-with-pgp-signatures.html#generating-a-key-pair</a></p>
+</div>
+<div class="paragraph">
+<p><a href="https://www.youtube.com/watch?v=DE3FVty3NgE&amp;feature=youtu.be" class="bare">https://www.youtube.com/watch?v=DE3FVty3NgE&amp;feature=youtu.be</a></p>
+</div>
+<div class="paragraph">
+<p>Using Kleopetra follow link below</p>
+</div>
+<div class="paragraph">
+<p><a href="https://www.deepdotweb.com/2015/02/21/pgp-tutorial-for-windows-kleopatra-gpg4win/" class="bare">https://www.deepdotweb.com/2015/02/21/pgp-tutorial-for-windows-kleopatra-gpg4win/</a></p>
+</div>
+<div class="paragraph">
+<p>Exporting PGP key to public key-server</p>
+</div>
+<div class="paragraph">
+<p>Using GnuPg - <a href="http://central.sonatype.org/pages/working-with-pgp-signatures.html#distributing-your-public-key" class="bare">http://central.sonatype.org/pages/working-with-pgp-signatures.html#distributing-your-public-key</a></p>
+</div>
+<div class="paragraph">
+<p>Using Kleopetra, click on the certificate entry you want to publish to OpenPGP certificate servers and select File &gt; Publish on Server as shown below. These instructions are as per Kleopatra 3.0.1-gpg4win-3.0.2, for latest versions there might be some variation.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/release/pgp_key_publish.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/release/pgp_key_publish.png" alt="pgp key publish" width="450"></a>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-release.asciidoc_deploy-to-ossrh">Deploy to OSSRH</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Go to the root of devon4j project and run following command. Make sure there are no spaces between comma separated profiles.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">mvn clean deploy -P deploy</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>A pop will appear asking for passphrase for PGP key. Enter the passphrase and press "OK".</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/release/pgpkey_passphrase.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/release/pgpkey_passphrase.png" alt="pgpkey passphrase" width="950"></a>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you face the error below, contact one of the people who have access to the repository for access rights.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/release/ossrh_publish_error_forbidden.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/release/ossrh_publish_error_forbidden.png" alt="ossrh publish error forbidden" width="950"></a>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Open <a href="https://oss.sonatype.org/">OSSRH</a>, login and open staging repositories.</p>
+</li>
+<li>
+<p>Find your deployment repository as <code>comdevonfw-NNNN</code> and check its <code>Content</code>.</p>
+</li>
+<li>
+<p>Then click on <code>Close</code> to close the repository and wait a minute.</p>
+</li>
+<li>
+<p>Refresh the repository and copy the URL.</p>
+</li>
+<li>
+<p>Create a vote for the release and paste the URL of the staging repository.</p>
+</li>
+<li>
+<p>After the vote has passed with success go back to OSSRH and and click on <code>Release</code> to publish the release and stage to maven central.</p>
+</li>
+<li>
+<p>Edit the top-level <code>pom.xml</code> and change <code>devon4j.version</code> property to the next planned release version including the <code>-SNAPSHOT</code> suffix.</p>
+</li>
+<li>
+<p>Commit and push the changes:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">git commit -m "#«issue»: open next snapshot version"
+git push</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>In case you build the release from a branch other that <code>develop</code> ensure to follow the next steps. Otherwise you are done here and can continue to the next section. To merge the changes (bug fixes) onto develop do:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">git checkout develop
+git merge develop-«x.y»</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>You most probably will have a conflict in the top-level <code>pom.xml</code>. Then resolve this conflict. In any case edit this <code>pom.xml</code> and ensure that it is still pointing to the latest planned <code>SNAPSHOT</code> for the <code>develop</code> branch.</p>
+</li>
+<li>
+<p>If there are local changes to the top-level <code>pom.xml</code>, commit them:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">git commit -m "#«issue»: open next snapshot version"</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Push the changes of your <code>develop</code> branch:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">git push</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-release.asciidoc_releasing-the-maven-site">Releasing the maven-site</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Create a new folder for your version in your checkout of <a href="https://github.com/devonfw/devonfw.github.io/tree/master/devon4j">devonfw.github.io/devon4j</a> (as <code>«x.y.z»</code>).</p>
+</li>
+<li>
+<p>Copy the just generated <code>devon4j-doc.pdf</code> into the new release version folder.</p>
+</li>
+<li>
+<p>Copy the <code>index.html</code> from the previous release to the new release version folder.</p>
+</li>
+<li>
+<p>Edit the new copy of <code>index.html</code> and replace all occurrences of the version to the new release as well as the release date.</p>
+</li>
+<li>
+<p>Generate the maven site from the <code>devon4j</code> release checkout (see <a href="#devonfw-release.asciidoc_releasing-the-core">code release</a>):</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">mvn site
+mvn site:deploy</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Review that the maven site is intact and copy it to the new release version folder (from <code>devon4j/target/devon4j/maven</code> to <code>devonfw.github.io/devon4j/«x.y.z»/maven</code>).</p>
+</li>
+<li>
+<p>Update the link in the <code>devon4j/index.html</code> to the latest stable documentation.</p>
+</li>
+<li>
+<p>Add, commit and push the new release version folder.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">git add «x.y.z»
+git commit -m "devonfw/devon4j#«issue»: released documentation"
+git push</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-release.asciidoc_finalize-the-release">Finalize the Release</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Close the issue of the release.</p>
+</li>
+<li>
+<p>Close the milestone of the release (if necessary correct the release date).</p>
+</li>
+<li>
+<p>Ensure that the new release is available in maven central.</p>
+</li>
+<li>
+<p>Write an announcement for the new release.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:13:03 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

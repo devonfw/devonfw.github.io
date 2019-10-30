@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XML Plug-in</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#cobigen-xmlplugin.asciidoc">XML Plug-in</a>
+<ul class="sectlevel1">
+<li><a href="#cobigen-xmlplugin.asciidoc_trigger-extension">Trigger extension</a>
+<ul class="sectlevel2">
+<li><a href="#cobigen-xmlplugin.asciidoc_containermatcher-type">ContainerMatcher type</a></li>
+<li><a href="#cobigen-xmlplugin.asciidoc_matcher-types">Matcher types</a></li>
+<li><a href="#cobigen-xmlplugin.asciidoc_variableassignment-types">VariableAssignment types</a></li>
+<li><a href="#cobigen-xmlplugin.asciidoc_xml-input-reader">XML input reader</a></li>
+</ul>
+</li>
+<li><a href="#cobigen-xmlplugin.asciidoc_merger-extensions">Merger extensions</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="cobigen-xmlplugin.asciidoc" class="sect0">XML Plug-in</h1>
+<div class="paragraph">
+<p>The CobiGen XML Plug-in comes with an input reader for xml artifacts, xml related trigger and matchers and provides different merge mechanisms for XML result documents.</p>
+</div>
+<div class="sect1">
+<h2 id="cobigen-xmlplugin.asciidoc_trigger-extension">Trigger extension</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><em>(since cobigen-xmlplugin v2.0.0)</em></p>
+</div>
+<div class="paragraph">
+<p>The XML Plug-in provides a trigger for xml related inputs. It accepts xml documents as input (see <a href="#cobigen-xmlplugin.asciidoc_xml-input-reader">XML input reader</a>) and provides additional matching and variable assignment mechanisms. The configuration in the <code>context.xml</code> for this trigger looks like this:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>type 'xml'</p>
+<div class="listingblock">
+<div class="title">Example of a xml trigger definition.</div>
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;trigger id="..." type="xml" templateFolder="..."&gt;
+    ...
+&lt;/trigger&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This trigger type enables xml documents as inputs.</p>
+</div>
+</li>
+<li>
+<p>type 'xpath'</p>
+<div class="listingblock">
+<div class="title">Example of a xpath trigger definition.</div>
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;trigger id="..." type="xpath" templateFolder="..."&gt;
+    ...
+&lt;/trigger&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This trigger type enables xml documents as container inputs, which consists of several subdocuments.</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="cobigen-xmlplugin.asciidoc_containermatcher-type">ContainerMatcher type</h3>
+<div class="paragraph">
+<p>A ContainerMatcher check if the input is a valid container.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>xpath: type: 'xpath'</p>
+<div class="listingblock">
+<div class="title">Example of a xml trigger definition with a nodename matcher.</div>
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;trigger id="..." type="xml" templateFolder="..."&gt;
+    &lt;containerMatcher type="xpath" value="./uml:Model//packagedElement[@xmi:type='uml:Class']"&gt;
+        ...
+    &lt;/matcher&gt;
+&lt;/trigger&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Before applying any Matcher, this containerMatcher checks if the XML file contais a node "uml:Model" with a childnode "packagedElement" which contains an attribute "xmi:type" with the value "uml:Class".</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="cobigen-xmlplugin.asciidoc_matcher-types">Matcher types</h3>
+<div class="paragraph">
+<p>With the trigger you might define matchers, which restrict the input upon specific aspects:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>xml: type 'nodename' &#8594; document&#8217;s root name matching</p>
+<div class="listingblock">
+<div class="title">Example of a xml trigger definition with a nodename matcher</div>
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;trigger id="..." type="xml" templateFolder="..."&gt;
+    &lt;matcher type="nodename" value="\D\w*"&gt;
+        ...
+    &lt;/matcher&gt;
+&lt;/trigger&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This trigger will be enabled if the root name of the declaring input document matches the given regular expression (<code>value</code>).</p>
+</div>
+</li>
+<li>
+<p>xpath: type: 'xpath' &#8594; matching a node with a xpath value</p>
+<div class="listingblock">
+<div class="title">Example of a xpath trigger definition with a xpath matcher.</div>
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;trigger id="..." type="xml" templateFolder="..."&gt;
+    &lt;matcher type="xpath" value="/packagedElement[@xmi:type='uml:Class']"&gt;
+        ...
+    &lt;/matcher&gt;
+&lt;/trigger&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This trigger will be enabled if the XML file contains a node "/packagedElement" where the "xmi:type" property equals "uml:Class".</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="cobigen-xmlplugin.asciidoc_variableassignment-types">VariableAssignment types</h3>
+<div class="paragraph">
+<p>Furthermore, it provides the ability to extract information from each input for further processing in the templates. The values assigned by variable assignments will be made available in template and the <code>destinationPath</code> of context.xml through the namespace <code>variables.&lt;key&gt;</code>. The XML Plug-in currently provides only one mechanism:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>type 'constant' &#8594; constant parameter</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;trigger id="..." type="xml" templateFolder="..."&gt;
+    &lt;matcher type="nodename" value="\D\w*"&gt;
+        &lt;variableAssignment type="constant" key="domain" value="restaurant" /&gt;
+    &lt;/matcher&gt;
+&lt;/trigger&gt;</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This variable assignment assigns the <code>value</code> to the <code>key</code> as a constant.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="cobigen-xmlplugin.asciidoc_xml-input-reader">XML input reader</h3>
+<div class="paragraph">
+<p>The Cobigen XML Plug-in implements an input reader for parsed xml documents. So API user can pass <code>org.w3c.dom.Document</code> objects for generation. For getting the right parsed xml inputs you can easily use the <code>xmlplugin.util.XmlUtil</code>, which provides static functionality to parse xml files or input streams and get the appropriate <code>Document</code> object.</p>
+</div>
+<div class="sect3">
+<h4 id="cobigen-xmlplugin.asciidoc_template-object">Template object</h4>
+<div class="paragraph">
+<p>Due to the heterogeneous structure an xml document can have, the xml input reader does not always create exactly the same model structure (in contrast to the java input reader). For example the model&#8217;s depth differs strongly, according to it&#8217;s input document. To allow navigational access to the nodes, the model also depends on the document&#8217;s element&#8217;s node names. All child elements with unique names, are directly accessable via their names. In addition it is possible to iterate over all child elements with held of the child list <code>Children</code>. So it is also possible to access child elements with non unique names.</p>
+</div>
+<div class="paragraph">
+<p>The XML input reader will create the following object model for template creation (<code><sub>EXAMPLEROOT</sub>, <sub>EXAMPLENODE1</sub>, <sub>EXAMPLENODE2</sub>, <sub>EXAMPLEATTR1</sub>,&#8230;&#8203;</code> are just used here as examples. Of course they will be replaced later by the actual node or attribute names):</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>~EXAMPLEROOT~</strong> ('Map&lt;String, Object&gt;' :: common element structure)</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>_nodeName_</strong> ('String' :: Simple name of the root node)</p>
+</li>
+<li>
+<p><strong>_text_</strong> ('String' :: Concatenated text content (PCDATA) of the root node)</p>
+</li>
+<li>
+<p><strong>TextNodes</strong> ('List&lt;String&gt;' :: List of all the root&#8217;s text node contents)</p>
+</li>
+<li>
+<p><strong>_at_~EXAMPLEATTR1~</strong> ('String' :: String representation of the attribute&#8217;s value)</p>
+</li>
+<li>
+<p><strong>_at_~EXAMPLEATTR2~</strong> ('String' :: String representation of the attribute&#8217;s value)</p>
+</li>
+<li>
+<p><strong>_at_&#8230;&#8203;</strong></p>
+</li>
+<li>
+<p><strong>Attributes</strong> ('List&lt;Map&lt;String, Object&gt;&gt;' :: List of the root&#8217;s attributes</p>
+<div class="ulist">
+<ul>
+<li>
+<p>at ('Map&lt;String, Object&gt;' :: List element)</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>_attName_</strong> ('String' :: Name of the attribute)</p>
+</li>
+<li>
+<p><strong>_attValue_</strong> ('String' :: String representation of the attribute&#8217;s value)</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Children</strong> ('List&lt;Map&lt;String, Object&gt;&gt;' :: List of the root&#8217;s child elements</p>
+<div class="ulist">
+<ul>
+<li>
+<p>child ('Map&lt;String, Object&gt;' :: List element)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>&#8230;&#8203;common element sub structure&#8230;&#8203;</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>~EXAMPLENODE1~</strong> ('Map&lt;String, Object&gt;' :: One of the root&#8217;s child nodes)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>&#8230;&#8203;common element structure&#8230;&#8203;</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>~EXAMPLENODE2~</strong> ('Map&lt;String, Object&gt;' :: One of the root&#8217;s child nodes)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>&#8230;&#8203;common element sub structure&#8230;&#8203;</p>
+</li>
+<li>
+<p><strong>~EXAMPLENODE21~</strong> ('Map&lt;String, Object&gt;' :: One of the nodes&#8217;s child nodes)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>&#8230;&#8203;common element structure&#8230;&#8203;</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>~EXAMPLENODE&#8230;&#8203;~</strong></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>~EXAMPLENODE&#8230;&#8203;~</strong></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In contrast to the java input reader, this xml input reader does currently not provide any additional template methods.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="cobigen-xmlplugin.asciidoc_merger-extensions">Merger extensions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The XML plugin uses the <a href="https://github.com/maybeec/lexeme">LeXeMe</a> merger library to produce semantically correct merge prodcuts. The following four merge strategies are implemented and can be configured in the <code>templates.xml</code>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>xmlmerge</code>: In case of a conflict the base value is preferred</p>
+</li>
+<li>
+<p><code>xmlmerge_override</code>: In case of a conflict the patch value is preferred</p>
+</li>
+<li>
+<p><code>xmlmerge_attachTexts</code>: In case of a conflict the base value is preferred. Attributes and text nodes will be merged where possible</p>
+</li>
+<li>
+<p><code>xmlmerge_override_attachTexts</code>: In case of a conflict the patch value is preferred. Attributes and text nodes will be merged where possible</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Currently only the document types included in LeXeMe are supported.
+On how the merger works consult the <a href="https://github.com/maybeec/lexeme/wiki">LeXeMe Wiki</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:18:23 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

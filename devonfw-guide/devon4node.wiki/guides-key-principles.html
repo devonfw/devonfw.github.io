@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Key Principles</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guides-key-principles.asciidoc">Key Principles</a>
+<ul class="sectlevel1">
+<li><a href="#guides-key-principles.asciidoc_simplicity">Simplicity</a></li>
+<li><a href="#guides-key-principles.asciidoc_reusability">Reusability</a></li>
+<li><a href="#guides-key-principles.asciidoc_productivity">Productivity</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guides-key-principles.asciidoc" class="sect0">Key Principles</h1>
+<div class="paragraph">
+<p>devon4node is built following some basic principles like:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/SOLID">SOLID</a></p>
+</li>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Software_design_pattern">Patterns</a></p>
+</li>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Open-source_model">Open</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>But key principles that best define devon4node (and are inherited from NestJS) are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Simplicity (aka <a href="https://en.wikipedia.org/wiki/KISS_principle">KISS</a>)</p>
+</li>
+<li>
+<p>Reusability</p>
+</li>
+<li>
+<p>Productivity</p>
+</li>
+</ul>
+</div>
+<div class="sect1">
+<h2 id="guides-key-principles.asciidoc_simplicity">Simplicity</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In devon4node we tryed to do everything as simple as possible. Following this princible we will be able to do easy to mantain applications.</p>
+</div>
+<div class="paragraph">
+<p>For example, in order to expose all CRUD operations for an entity, you only need to create a controller like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">@Crud({
+  model: {
+    type: Employee,
+  },
+})
+@CrudType(Employee)
+@Controller('employee/employees')
+export class EmployeeCrudController {
+  constructor(public service: EmployeeCrudService) {}
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can find this code in the <a href="#samples.asciidoc">employee example</a>. Only with this code your exposing the full CRUD operations for the employee entity. As you can see, it&#8217;s an empty class with some decorators and the <code>EmployeeCrudService</code> inyected as dependency. Simple, isn&#8217;t it? The <code>EmployeeCrudService</code> is also simple:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">@Injectable()
+export class EmployeeCrudService extends TypeOrmCrudService&lt;Employee&gt; {
+  constructor(@InjectRepository(Employee) repo: Repository&lt;Employee&gt;) {
+    super(repo);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Another empty class which extends from <code>TypeOrmCrudService&lt;Employee&gt;</code> and injects the Employee Repository as dependency. Nothing else.</p>
+</div>
+<div class="paragraph">
+<p>With these examples you can get an idea of how simple it can be to code a devon4node application .</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guides-key-principles.asciidoc_reusability">Reusability</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>NestJS (and devon4node) applications are designed in a modular way. This allows you to isolate some functionality in a module, and then reuse it in every application that you need. This is the same behaviour that Angular has. You can see it in the NestJS modules like <a href="https://github.com/nestjs/typeorm">TypeORM</a>, <a href="https://github.com/nestjs/swagger">Swagger</a> and others. Also, in devon4node we have the <a href="https://www.npmjs.com/package/@devon4node/mailer">Mailer module</a>.</p>
+</div>
+<div class="paragraph">
+<p>In your applications, you only need to import those modules and then you will be able to use the functionality that they implement. Example</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">@Module({
+  imports: [ AuthModule, ConfigurationModule ],
+})
+export class SomeModule {}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guides-key-principles.asciidoc_productivity">Productivity</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>devon4node is designed to create secure enterprise applications. But also, it allow you to do it in a fast way. To increase the productivity devon4node, devon4node provide a CLI with some commands in order to generate some boilerplate code.</p>
+</div>
+<div class="paragraph">
+<p>For example, to create a module you need to create a new file for a module (or copy it) and write the code, then you need to import it in the AppModule. This is a easy example, but you can introduce some errors: forget to import it in the AppModule, introduce errors with the copy/paste and so on. By using the command <code>devon4node g module --name &lt;module-name&gt;</code> it will do everything for you. Just a simple command. In this specific case probably you do not see any advantage, but there are other complex cases where you can generate more complex code with the <code>devon4node</code> command.</p>
+</div>
+<div class="paragraph">
+<p>See <a href="#guides-cli.asciidoc">CLI</a> and <a href="#guides-code-generation.asciidoc">code generation</a> in order to know how to increase your productivity creating devon4node applications.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:15:42 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

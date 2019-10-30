@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAP HANA</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-hana.asciidoc">SAP HANA</a>
+<ul class="sectlevel1">
+<li><a href="#guide-hana.asciidoc_driver">Driver</a></li>
+<li><a href="#guide-hana.asciidoc_developer-usage">Developer Usage</a></li>
+<li><a href="#guide-hana.asciidoc_pooling">Pooling</a></li>
+<li><a href="#guide-hana.asciidoc_fuzzy-search">Fuzzy Search</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-hana.asciidoc" class="sect0">SAP HANA</h1>
+<div class="paragraph">
+<p>This section contains hints for those who use <a href="https://www.sap.com/products/hana.html">SAP HANA</a>, a very powerful and fast RDBMS. If you have choosen a different persistence technology on purpose you can simply ignore this guide. Besides general hints about the driver there are tips for more tight integration with other SAP features or products.</p>
+</div>
+<div class="sect1">
+<h2 id="guide-hana.asciidoc_driver">Driver</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The hana JDBC driver is available in Maven Central what makes your life very easy. All you need is the following maven dependency:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>&lt;dependency&gt;
+  &lt;groupId&gt;com.sap.cloud.db.jdbc&lt;/groupId&gt;
+  &lt;artifactId&gt;ngdbc&lt;/artifactId&gt;
+  &lt;version&gt;${hana.driver.version}&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The variable <code>hana.driver.version</code> may be <code>2.3.55</code>, but check yourself at <a href="http://central.maven.org/maven2/com/sap/cloud/db/jdbc/ngdbc/" class="bare">http://central.maven.org/maven2/com/sap/cloud/db/jdbc/ngdbc/</a> for the proper or most recent version.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-hana.asciidoc_developer-usage">Developer Usage</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For your local development environment you will love the free <a href="https://developers.sap.com/topics/sap-hana-express.html">SAP HANA, Express Edition</a>.</p>
+</div>
+<div class="paragraph">
+<p>You can run HANA in several ways:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>On-premise</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Via a <a href="https://developers.sap.com/germany/tutorials/hxe-ua-install-using-docker.html">Docker image</a> (Linux only)</p>
+</li>
+<li>
+<p>Via a pre-configured <a href="https://developers.sap.com/group.hxe-install-vm.html">virtual machine</a> (Windows, Linux, OS X)</p>
+</li>
+<li>
+<p>Installed natively on your <a href="https://developers.sap.com/group.hxe-install-binary.html">local machine</a> (Linux only)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>In the cloud</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Via a pre-configured machine on the <a href="https://developers.sap.com/tutorials/hxe-gcp-getting-started-launcher.html">Google Cloud Platform</a></p>
+</li>
+<li>
+<p>Via a pre-configured machine in the <a href="https://developers.sap.com/tutorials/hxe-ms-azure-marketplace-getting-started.html">Microsoft Azure Cloud</a></p>
+</li>
+<li>
+<p>Via a pre-configured machine on <a href="https://developers.sap.com/tutorials/hxe-aws-setup.html">Amazon Web Services</a></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To get started with SAP HANA, Express Edition you can check out the <a href="https://developers.sap.com/topics/sap-hana-express.html#tutorials">tutorials</a> at the <a href="https://developers.sap.com/">SAP Developer Center</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-hana.asciidoc_pooling">Pooling</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>TODO</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-hana.asciidoc_fuzzy-search">Fuzzy Search</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>See <a href="https://blogs.sap.com/2015/08/28/dynamism-of-fuzzy-search-in-sap-hana/" class="bare">https://blogs.sap.com/2015/08/28/dynamism-of-fuzzy-search-in-sap-hana/</a> or the <a href="https://help.sap.com/viewer/691cb949c1034198800afde3e5be6570/latest/en-US/cc602780bb5710148aa2bf6cab3c015b.html">SAP HANA Search Developer Guide</a></p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:13:26 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

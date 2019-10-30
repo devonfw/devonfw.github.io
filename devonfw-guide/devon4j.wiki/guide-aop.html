@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aspect Oriented Programming (AOP)</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-aop.asciidoc">Aspect Oriented Programming (AOP)</a>
+<ul class="sectlevel1">
+<li><a href="#guide-aop.asciidoc_aop-key-principles">AOP Key Principles</a></li>
+<li><a href="#guide-aop.asciidoc_aop-usage">AOP Usage</a></li>
+<li><a href="#guide-aop.asciidoc_aop-debugging">AOP Debugging</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-aop.asciidoc" class="sect0">Aspect Oriented Programming (AOP)</h1>
+<div class="paragraph">
+<p><a href="http://en.wikipedia.org/wiki/Aspect-oriented_programming">AOP</a> is a powerful feature for cross-cutting concerns. However, if used extensive and for the wrong things an application can get unmaintainable. Therefore we give you the best practices where and how to use AOP properly.</p>
+</div>
+<div class="sect1">
+<h2 id="guide-aop.asciidoc_aop-key-principles">AOP Key Principles</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We follow these principles:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>We use <a href="http://docs.spring.io/spring/docs/2.5.4/reference/aop.html">spring AOP</a> based on dynamic proxies (and fallback to cglib).</p>
+</li>
+<li>
+<p>We avoid AspectJ and other mighty and complex AOP frameworks whenever possible</p>
+</li>
+<li>
+<p>We only use AOP where we consider it as necessary (see below).</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-aop.asciidoc_aop-usage">AOP Usage</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We recommend to use AOP with care but we consider it established for the following cross cutting concerns:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#guide-transactions.asciidoc">Transaction-Handling</a></p>
+</li>
+<li>
+<p><a href="guide-security.html#method-authorization">Authorization</a></p>
+</li>
+<li>
+<p><a href="#guide-validation.asciidoc">Validation</a></p>
+</li>
+<li>
+<p><a href="guide-logging.html#tracing">Trace-Logging</a> (for testing and debugging)</p>
+</li>
+<li>
+<p>Exception facades for <a href="#guide-service-layer.asciidoc">services</a> but only if no other solution is possible (use alternatives such as <a href="guide-service-layer.html#rest-exception-handling">JAX-RS provider</a> instead).</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-aop.asciidoc_aop-debugging">AOP Debugging</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When using AOP with dynamic proxies the debugging of your code can get nasty. As you can see by the red boxes in the call stack in the debugger there is a lot of magic happening while you often just want to step directly into the implementation skipping all the AOP clutter. When using Eclipse this can easily be archived by enabling <em>step filters</em>. Therefore you have to enable the feature in the Eclipse tool bar (highlighted in read).</p>
+</div>
+<div class="imageblock" style="text-align: center;">
+<div class="content">
+<a class="image" href="images/eclipse-debug-aop.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/eclipse-debug-aop.png" alt="AOP debugging"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>In order to properly make this work you need to ensure that the step filters are properly configured:</p>
+</div>
+<div class="imageblock" style="text-align: center;">
+<div class="content">
+<a class="image" href="images/eclipse-debug-step-filters.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/eclipse-debug-step-filters.png" alt="Step Filter Configuration"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>Ensure you have at least the following step-filters configured and active:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>ch.qos.logback.*
+com.devonfw.module.security.*
+java.lang.reflect.*
+java.security.*
+javax.persistence.*
+org.apache.commons.logging.*
+org.apache.cxf.jaxrs.client.*
+org.apache.tomcat.*
+org.h2.*
+org.springframework.*</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:13:06 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

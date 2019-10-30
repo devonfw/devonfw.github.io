@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to build DevOps module</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#How-to-build-DevOps-module.asciidoc">How to build DevOps module</a>
+<ul class="sectlevel1">
+<li><a href="#how-to-build-devops-module.asciidoc_prerequisites">Prerequisites</a></li>
+<li><a href="#how-to-build-devops-module.asciidoc_docker-service-installation">Docker service installation</a></li>
+<li><a href="#how-to-build-devops-module.asciidoc_git-installation">Git installation</a></li>
+<li><a href="#how-to-build-devops-module.asciidoc_creating-special-system-users">Creating special system users</a></li>
+<li><a href="#how-to-build-devops-module.asciidoc_cloning-the-repository">Cloning the repository</a></li>
+<li><a href="#how-to-build-devops-module.asciidoc_enabling-docker-remote-api">Enabling Docker remote API</a></li>
+<li><a href="#how-to-build-devops-module.asciidoc_jenkins-with-docker">Jenkins with Docker</a></li>
+</ul>
+</li>
+<li><a href="#How-to-build-DevOps-module.asciidoc">Running module</a>
+<ul class="sectlevel1">
+<li><a href="#how-to-build-devops-module.asciidoc_configuring-slaves">Configuring slaves</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="How-to-build-DevOps-module.asciidoc" class="sect0">How to build DevOps module</h1>
+<div class="sect1">
+<h2 id="how-to-build-devops-module.asciidoc_prerequisites">Prerequisites</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>64-bit Linux operating server system (recommended: Ubuntu 16.04 LTS server - <a href="https://www.ubuntu.com/download/server/thank-you?version=16.04.3&amp;architecture=amd64">Download</a></p>
+</li>
+<li>
+<p>Non-root user with sudo privileges (the default user created during the operating system installation process)</p>
+</li>
+<li>
+<p>Docker - open source software platform to create, deploy and manage virtualized application containers on a common operating system (OS), with an ecosystem of allied tools.</p>
+</li>
+<li>
+<p>git - version control system software to clone module code</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="how-to-build-devops-module.asciidoc_docker-service-installation">Docker service installation</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>$  curl -fsSL get.docker.com -o get-docker.sh
+
+$  sh get-docker.sh</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="how-to-build-devops-module.asciidoc_git-installation">Git installation</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>$  sudo apt-get install git</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="how-to-build-devops-module.asciidoc_creating-special-system-users">Creating special system users</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>$  sudo useradd -M jenkins
+
+$  sudo usermod -L jenkins
+
+$  sudo usermod -a -G docker jenkins</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="how-to-build-devops-module.asciidoc_cloning-the-repository">Cloning the repository</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Check Your current directory, create a new for DevOps module in /home/&lt;YourUserName&gt;. Open it and enter git clone command</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>$  pwd
+   /home/&lt;YourUserName&gt;/
+$  mkdir dev_ops_module
+$  cd dev_ops_module
+$  pwd
+   /home/&lt;YourUserName&gt;/dev_ops_module
+$  git clone https://bitbucket.org/lukasz_stefaniszyn/jenkinsdockercompose.git</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="how-to-build-devops-module.asciidoc_enabling-docker-remote-api">Enabling Docker remote API</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Enable Docker remote API - By default, due to security reasons, Docker runs via a non-networked Unix socket. This solution allows only local communication. The Docker daemon in Ubuntu 16.04 is configured by the system, so You need to modify file <code>/lib/systemd/system/docker.service</code>. You&#8217;ll enable the access to the Docker daemon from specific IP address.</p>
+</div>
+<div class="paragraph">
+<p>Allow port communication:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>$  sudo ufw allow 4243/tcp
+$  sudo ufw allow 32000:33000/tcp</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Open file docker service and replace variable <code>ExecStart</code> value:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>$  sudo nano /lib/systemd/system/docker.service
+#
+# Find variable ExecStart and change value to: /usr/bin/dockerd -H tcp://0.0.0.0:4243 -H unix:///var/run/docker.sock
+#
+
+$  ExecStart=/usr/bin/dockerd -H tcp://0.0.0.0:4243 -H unix:///var/run/docker.sock</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Finish editing this file: Nano: <code>Ctrl + X</code> and <code>Y</code> Vi: <code>Esc + wq</code></p>
+</div>
+<div class="paragraph">
+<p>Restart deamon and docker service:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>$  sudo systemctl daemon-reload
+$  sudo service docker restart</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Please, test the configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>$  curl --noproxy GET http://127.0.0.1:4243/version</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The answer should be similar to the one shown in the picture:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/devops/Api_version_test.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devops/Api_version_test.png" alt="Api version test" width="450"></a>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="how-to-build-devops-module.asciidoc_jenkins-with-docker">Jenkins with Docker</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Execute commands:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>$  sudo apt-get upgrade -y
+$  sudo apt-get install -y sudo libltdl-dev
+$  GID=$(cut -d: -f3 &lt; &lt;(getent group docker))</code></pre>
+</div>
+</div>
+</div>
+</div>
+<h1 id="How-to-build-DevOps-module.asciidoc" class="sect0">Running module</h1>
+<div class="paragraph">
+<p>Open JenkinsDockerCompose directory and print the path by <code>pwd</code> command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>$ pwd
+/home/&lt;YourUserName&gt;/dev_ops_module
+$ cd jenkinsdockercompose
+$ pwd
+/home/&lt;YourUserName&gt;/dev_ops_module/jenkinsdockercompose/</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s edit a configuration file <code>create_and_run.sh</code>. You can use default system text editors such as "nano" or "vi":</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>$ nano create_and_run.sh</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Replace variable value in the second line with the path previously displayed: <code>/home/&lt;YourUserName&gt;/dev_ops_module/jenkinsdockercompose/</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>1  echo "Set global variables"
+2  REPO_HOME=/home/&lt;DefaultUserName&gt;/dev_ops_module/jenkinsdockercompose/</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Finish editing this file: Nano: <code>Ctrl + X</code> and <code>Y</code> Vi: <code>Esc + wq</code> and run the script:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>$ sudo ./create_and_run.sh</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Wait until the end of the building process. It can take a few minutes. What happened there?</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Setting global variables</p>
+</li>
+<li>
+<p>Removing older docker images (if they exist)</p>
+</li>
+<li>
+<p>Building jenkins_home_security image</p>
+</li>
+<li>
+<p>Building jenkins_home_jobs image</p>
+</li>
+<li>
+<p>Building jenkins_home_mng image</p>
+</li>
+<li>
+<p>Start Jenkins</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Run web browser with address <code><a href="http://&lt;server-ip-address&gt;:8080" class="bare">http://&lt;server-ip-address&gt;:8080</a></code>. If the configuration is correct, the Jenkins main page will be displayed.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/devops/Jenkins_main_page.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devops/Jenkins_main_page.png" alt="Jenkins main page" width="450"></a>
+</div>
+</div>
+<div class="sect1">
+<h2 id="how-to-build-devops-module.asciidoc_configuring-slaves">Configuring slaves</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Login as jenkins admin and run web browser with address <code><a href="http://&lt;server-ip-address&gt;:8080/configure" class="bare">http://&lt;server-ip-address&gt;:8080/configure</a></code></p>
+</div>
+<div class="paragraph">
+<p>Find API ip address option and change it to <code><a href="http://&lt;server-ip-address&gt;:4243" class="bare">http://&lt;server-ip-address&gt;:4243</a></code></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/devops/Jenkins_api_gui_test.PNG"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devops/Jenkins_api_gui_test.PNG" alt="Jenkins api gui test" width="450"></a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:16:33 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Securing the application</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#tutorial-security.asciidoc">Securing the application</a>
+<ul class="sectlevel1">
+<li><a href="#tutorial-security.asciidoc_cors-filter">CORS filter</a></li>
+<li><a href="#tutorial-security.asciidoc_csrf-filter">CSRF filter</a></li>
+<li><a href="#tutorial-security.asciidoc_securing-methods">Securing methods</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="tutorial-security.asciidoc" class="sect0">Securing the application</h1>
+<div class="sect1">
+<h2 id="tutorial-security.asciidoc_cors-filter">CORS filter</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Cross-origin resource sharing (CORS) is a mechanism that allows restricted resources on a web page to be requested from another domain outside the domain from which the resource originated.</p>
+</div>
+<div class="paragraph">
+<p>AJAX (XMLHttpRequest) requests have been limited to accessing the same domain as the parent web page (as per the same-origin security policy), so "Cross-domain" AJAX requests are forbidden by default because of their ability to perform advanced requests that introduce many security issues.</p>
+</div>
+<div class="paragraph">
+<p>So to manage and solve that in devonfw&#8230;&#8203; TODO</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="tutorial-security.asciidoc_csrf-filter">CSRF filter</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Cross-Site Request Forgery (CSRF) is an attack that forces an end user to execute unwanted actions on a web application in which they&#8217;re currently authenticated.</p>
+</div>
+<div class="paragraph">
+<p>In <a href="https://www.owasp.org/index.php/Main_Page">OWASP</a> (Open Web Application Security Project) they talk about this vulnerability and they have written a guide to prevent CSRF attacks (<a href="https://www.owasp.org/index.php/CSRF_Prevention_Cheat_Sheet">CSRF Prevention</a>).</p>
+</div>
+<div class="paragraph">
+<p>devonfw uses the synchronizer token pattern to avoid this problem. This solution is to ensure that each request requires, in addition to our session cookie, a randomly generated token as an HTTP parameter. When a request is submitted, the server must look up the expected value for the parameter and compare it against the actual value in the request. If the values do not match, the request should fail.</p>
+</div>
+<div class="paragraph">
+<p>devonfw has extended the Csrf Spring filter and has applied it to REST request, by devonfw convention, the request to the path <code>/services/rest/**</code>.
+This filter is active by default, but it can be disabled changing the value of the system property <code>CsrfDisabled</code>.</p>
+</div>
+<div class="paragraph">
+<p>devonfw also provides a REST service that allow to retrieve the CSRF token in the URL: <code>services/rest/security/v1/csrftoken/</code></p>
+</div>
+<div class="paragraph">
+<p>At this point we have resolved the issue in the server side but we have to manage the token in the client side. This is responsability for the client side developers so we should retrive the CSRF token after the login and then, we should send the token in every request to the server.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="tutorial-security.asciidoc_securing-methods">Securing methods</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>devonfw focus on role-based authorization to cope with authorization for executing use case of an application. devonfw use the JSR250 annotations, mainly @RolesAllowed, for authorizing method calls against the permissions defined in the annotation body. This has to be done for each use-case method in logic layer
+This is an example of how to annotate the methods with RolesAllowed:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public class UcFindTableImpl extends AbstractTableUc implements UcFindTable {
+
+  private static final Logger LOG = LoggerFactory.getLogger(UcFindTableImpl.class);
+
+  @Override
+  @RolesAllowed(PermissionConstants.FIND_TABLE)
+  public TableEto findTable(Long id) {
+    ...
+  }
+
+}
+
+public class UcManageTableImpl extends AbstractTableUc implements UcManageTable {
+
+  @Override
+  @RolesAllowed(PermissionConstants.DELETE_TABLE)
+  public void deleteTable(Long tableId) {
+    ...
+  }
+
+  @Override
+  @RolesAllowed(PermissionConstants.SAVE_TABLE)
+  public TableEto saveTable(@Valid TableEto table) {
+     ...
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We have defined the value of the annotation RolesAllowed as constants, so we need to create a constant class for this purpose. Continuing with the example, that is our constant class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">/**
+ * Contains constants for the keys of all {@link AccessControlPermission}s.
+ */
+public abstract class PermissionConstants {
+
+  /** {@link AccessControlPermission} to retrieve table. */
+  public static final String FIND_TABLE = "FindTable";
+
+  /** {@link AccessControlPermission} to save table. */
+  public static final String SAVE_TABLE = "SaveTable";
+
+  /** {@link AccessControlPermission} to remove table. */
+  public static final String DELETE_TABLE = "DeleteTable";
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:14:08 UTC
+</div>
+</div>
+</div>
+</body>
+</html>

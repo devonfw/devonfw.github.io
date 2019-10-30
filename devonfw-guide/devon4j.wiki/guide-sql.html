@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQL</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline my-2 my-lg-0">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-brand text-white mr-auto ml-3" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-sql.asciidoc">SQL</a>
+<ul class="sectlevel1">
+<li><a href="#guide-sql.asciidoc_naming-conventions">Naming Conventions</a>
+<ul class="sectlevel2">
+<li><a href="#guide-sql.asciidoc_ddl">DDL</a></li>
+<li><a href="#guide-sql.asciidoc_data">Data</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-sql.asciidoc" class="sect0">SQL</h1>
+<div class="paragraph">
+<p>For general guides on dealing or avoiding SQL, preventing SQL-injection, etc. you should study <a href="#guide-dataaccess-layer.asciidoc">data-access layer</a>.</p>
+</div>
+<div class="sect1">
+<h2 id="guide-sql.asciidoc_naming-conventions">Naming Conventions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Here we define naming conventions that you should follow whenever you write SQL files:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>All SQL-Keywords in UPPER CASE</p>
+</li>
+<li>
+<p>Table names in upper CamlCase (e.g. <code>RestaurantOrder</code>)</p>
+</li>
+<li>
+<p>Column names in camlCase (e.g. <code>drinkState</code>)</p>
+</li>
+<li>
+<p>Indentation should be 2 spaces as suggested by devonfw for every format.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="guide-sql.asciidoc_ddl">DDL</h3>
+<div class="paragraph">
+<p>For DDLs follow these additional guidelines:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ID column names without underscore (e.g. <code>tableId</code>)</p>
+</li>
+<li>
+<p>Define columns and constraints inline in the statement to create the table</p>
+</li>
+<li>
+<p>Indent column types so they all start in the same text column</p>
+</li>
+<li>
+<p>Constraints should be named explicitly (to get a reasonable hint error messages) with:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>PK_{table}</code> for primary key (name optional here as PK constraint are fundamental)</p>
+</li>
+<li>
+<p><code>FK_{table}_{property}</code> for foreign keys (<code>{table}</code> and <code>{property}</code> are both on the source where the foreign key is defined)</p>
+</li>
+<li>
+<p><code>UC_{table}_{property}[_{propertyN}]*</code> for unique constraints</p>
+</li>
+<li>
+<p><code>CK_{table}_{check}</code> for check constraints (<code>{check}</code> describes the check, if it is defined on a single property it should start with the property).</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Databases have hard limitations for names (e.g. 30 characters). If you have to shorten names try to define common abbreviations in your project for according (business) terms. Especially do not just truncate the names at the limit.</p>
+</li>
+<li>
+<p>If possible add comments on table and columns to help DBAs understanding your schema. This is also honored by many tools (not only DBA-tools).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Here is a brief example of a DDL:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="sql language-sql">CREATE SEQUENCE HIBERNATE_SEQUENCE START WITH 1000000;
+
+-- *** Table ***
+CREATE TABLE Table (
+  id BIGINT NOT NULL AUTO_INCREMENT,
+  modificationCounter INTEGER NOT NULL,
+  seatsNumber INTEGER NOT NULL,
+  CONSTRAINT PK_Table PRIMARY KEY(id)
+);
+
+-- *** UserRole ***
+CREATE TABLE UserRole (
+  id BIGINT NOT NULL AUTO_INCREMENT,
+  modificationCounter INTEGER NOT NULL,
+  name VARCHAR (255),
+  active BOOLEAN,
+  CONSTRAINT PK_UserRole PRIMARY KEY(id)
+-- *** User ***
+CREATE TABLE User (
+  id BIGINT NOT NULL AUTO_INCREMENT,
+  modificationCounter INTEGER NOT NULL,
+  username VARCHAR (255) NULL,
+  password VARCHAR (255) NULL,
+  email VARCHAR (120) NULL,
+  idRole BIGINT NOT NULL,
+  CONSTRAINT PK_User PRIMARY KEY(id),
+  CONSTRAINT PK_User_idRole FOREIGN KEY(idRole) REFERENCES UserRole(id) NOCHECK
+);
+COMMENT ON TABLE User is 'The users of the restaurant site';
+...</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-sql.asciidoc_data">Data</h3>
+<div class="paragraph">
+<p>For insert, update, delete, etc. of data SQL scripts should additionally follow these guidelines:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Inserts always with the same order of columns in blocks for each table.</p>
+</li>
+<li>
+<p>Insert column values always starting with id, modificationCounter, [dtype, ] &#8230;&#8203;</p>
+</li>
+<li>
+<p>List columns with fixed length values (boolean, number, enums, etc.) before columns with free text to support alignment of multiple insert statements</p>
+</li>
+<li>
+<p>Pro Tip: Get familiar with column mode of <code>notepad++</code> when editing large blocks of similar insert statements.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>INSERT INTO UserRole(id, modificationCounter, name, active) VALUES (0, 1, 'Customer', true);
+INSERT INTO UserRole(id, modificationCounter, name, active) VALUES (1, 1, 'Waiter', true);
+INSERT INTO User(id, modificationCounter, username, password, email, idRole) VALUES (0, 1, 'user0', 'password', 'user0@mail.com', 0);
+INSERT INTO User(id, modificationCounter, username, password, email, idRole) VALUES (1, 1, 'waiter', 'waiter', 'waiter@mail.com', 1);
+
+INSERT INTO Table(id, modificationCounter, seatsNumber) VALUES (0, 1, 4);
+INSERT INTO Table(id, modificationCounter, seatsNumber) VALUES (1, 1, 4);
+INSERT INTO Table(id, modificationCounter, seatsNumber) VALUES (2, 1, 4);
+INSERT INTO Table(id, modificationCounter, seatsNumber) VALUES (3, 1, 4);
+INSERT INTO Table(id, modificationCounter, seatsNumber) VALUES (4, 1, 6);
+INSERT INTO Table(id, modificationCounter, seatsNumber) VALUES (5, 1, 6);
+INSERT INTO Table(id, modificationCounter, seatsNumber) VALUES (6, 1, 6);
+INSERT INTO Table(id, modificationCounter, seatsNumber) VALUES (7, 1, 8);
+INSERT INTO Table(id, modificationCounter, seatsNumber) VALUES (8, 1, 8);
+...</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>See also <a href="#guide-database-migration.asciidoc">Database Migrations</a>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">About defonfw</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Features</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Stack technology</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">User guide</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#/index.html">Contributors</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Privacy</a></p>
+</li>
+<li>
+<p><a href="#/index.html">License</a></p>
+</li>
+<li>
+<p><a href="#/index.html">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote">
+
+Last updated 2019-10-30 13:13:46 UTC
+</div>
+</div>
+</div>
+</body>
+</html>
