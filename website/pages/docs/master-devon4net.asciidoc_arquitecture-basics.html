@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2019-10-31 09:23:45 UTC">
+<meta name="author" content="Updated at 2019-10-31 11:34:27 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -491,7 +491,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2019-10-31 09:24:04 UTC</span><br>
+<span id="author" class="author">Updated at 2019-10-31 11:34:38 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -507,6 +507,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="master-devon4net.asciidoc.html">V. devon4net</a>
 <ul class="sectlevel1">
 <li><a href="master-devon4net.asciidoc_arquitecture-basics.html"><span class="toc-current">21. Arquitecture basics</span></a>
+<ul class="sectlevel2">
+<li><a href="master-devon4net.asciidoc_arquitecture-basics.html#architecture_guide.asciidoc">21.1. Introduction</a>
+</li>
+</ul>
 </li>
 <li><a href="master-devon4net.asciidoc_coding-conventions.html">22. Coding conventions</a>
 </li>
@@ -544,8 +548,595 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect1">
 <h2 id="master-devon4net.asciidoc_arquitecture-basics">21. Arquitecture basics</h2>
 <div class="sectionbody">
+<!-- toc disabled -->
+<div class="sect2">
+<h3 id="architecture_guide.asciidoc">21.1. Introduction</h3>
 <div class="paragraph">
-<p>Unresolved directive in devon4net.wiki/master-devon4net.asciidoc - include::architecture_guide.asciidoc[leveloffset=2]</p>
+<p>The <a href="http://oasp.io"><em>Open Application Standard Platform</em> (OASP)</a> provides a solution to building applications which combine best-in-class frameworks and libraries as well as industry proven practices and code conventions.
+It massively speeds up development, reduces risks and helps you to deliver better results.</p>
+</div>
+<div class="sect3">
+<h4 id="architecture_guide.asciidoc_overview-onion-design">21.1.1. Overview Onion Design</h4>
+<div class="paragraph">
+<p>This guide shows the overall proposed architecture in terms of separated layers making use the Onion architecture pattern. Each layers represents a logical group of components and functionality. In this guide you will learn the basics of the proposed architecture based in layers in order to develop software making use of the best practices.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="architecture_guide.asciidoc_layer-specification">21.1.2. Layer specification</h4>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>It is important to understand the distinction between layers and tiers. <em>Layers</em> describe the logical groupings of the functionality and components in an application; whereas <em>tiers</em> describe the physical distribution of the functionality and components on separate servers, computers, networks, or remote locations. Although both layers and tiers use the same set of names (presentation, business, services, and data), remember that only tiers imply a physical separation. It is quite common to locate more than one layer on the same physical machine (the same tier). You can think of the term tier as referring to physical distribution patterns such as two-tier, three-tier, and <em>n</em>-tier.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#x2014; Layered Application Guidelines<br>
+<cite>MSDN Microsoft</cite>
+</div>
+</div>
+<div class="paragraph">
+<p>The proposed architecture makes use of cooperating components called layers. Each layer contains a set of components capable to develop a specific functionality.</p>
+</div>
+<div class="paragraph">
+<p>The next figure represents the different layers:</p>
+</div>
+<div id="architecture_guide.asciidoc_img-t-architecture" class="imageblock">
+<div class="content">
+<a class="image" href="images/onion.png"><img src="images/onion.png" alt="technical architecture" width="450"></a>
+</div>
+<div class="title">Figure 91. High level architecture representation</div>
+</div>
+<div class="paragraph">
+<p>The layers are separated in phisical tiers making use of interfaces. This pattern makes possible to be flexible in different kind of projects maximizing performance and deployment strategies (synchronous/asynchronous access, security, component deployment in different environments, microservices&#x2026;&#x200B;). Another important point is to provide automated unit testing or test-driven development (TDD) facilities.</p>
+</div>
+<div class="sect5">
+<h6 id="architecture_guide.asciidoc_application-layer">Application layer</h6>
+<div class="paragraph">
+<p>The <em>Application Layer</em> encapsulates the different .Net projects and its resource dependencies and manages the user interaction depending on the project&#x2019;s nature.</p>
+</div>
+<div id="architecture_guide.asciidoc_img-t-architecture" class="imageblock">
+<div class="content">
+<a class="image" href="images/project_nature.png"><img src="images/project_nature.png" alt="technical architecture" width="850"></a>
+</div>
+<div class="title">Figure 92. Net application stack</div>
+</div>
+<div class="paragraph">
+<p>The given application template integrates Swagger contract automatic generation. This provides the possibility to external applications (angular, mobile apps, external services&#x2026;&#x200B;) to consume the data from a well defined exposed contract.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="architecture_guide.asciidoc_business-layer">Business layer</h6>
+<div class="paragraph">
+<p>The business layer implements the core functionality of the application and encapsulates the component&#x2019;s logic.
+This layer provides the interface between the data transformation and the application expositure. This allow the data to be optimized and ready for different data consumers.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="architecture_guide.asciidoc_service-layer">Service layer</h6>
+<div class="paragraph">
+<p>The service layer orchestrates the data obtained between the <em>Domain Layer</em> and the <em>Business Layer</em>. Also transforms the data to be used more efficently between layers.</p>
+</div>
+<div class="paragraph">
+<p>So, if a service needs the help of another service or repository, the implemented Dependency Injection is the solution to accomplish the task.</p>
+</div>
+<div class="paragraph">
+<p>In order to be as flexible as the implementation of <em>Repository Pattern</em> in the <em>Data Layer</em> , each service implementation inherits from EntityService class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#">    public class Service&lt;TContext&gt; : IService where TContext: DbContext</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Once more &lt;T&gt; is the mapped class which reference the entity from the database context. This abstraction allows to write services implementation with different database contexts
+</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="architecture_guide.asciidoc_domain-layer">Domain layer</h6>
+<div class="paragraph">
+<p>The data layer provides access to data directly exposed from other systems. The main source use to be a data base system. The provided template makes use of <em>Entity Framwork</em> solution from Microsoft in order to achieve this functionality.</p>
+</div>
+<div class="paragraph">
+<p>To make a good use of this technology, <em>Repository Pattern</em> has been implemented with the help of <em>Unit Of Work</em> pattern. Also, the use of generic types are makes this solution to be the most flexible.</p>
+</div>
+<div class="paragraph">
+<p>Regarding to data base source, each entity is mapped as a class. Repository pattern allows to use this mapped clasess to acces the data base via Entity framework:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-C#" data-lang="C#"> public class UnitOfWork&lt;TContext&gt; : IUnitOfWork&lt;TContext&gt; where TContext : DbContext</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Where &lt;T&gt; is the mapped class which reference the entity from the database.
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>The repository and unit of work patterns are create an abstraction layer between the data access layer and the business logic layer of an application.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="architecture_guide.asciidoc_cross-cutting-concerns">Cross-Cutting concerns</h6>
+<div class="paragraph">
+<p>Cross-cutting provides the implementation functionality that spans layers. Each functionality is implemented through components able to work stand alone. This approach provides better reusability and mantainability.</p>
+</div>
+<div class="paragraph">
+<p>A common component set of cross cutting components include different types of functionality regarding to athentication, authorization, security, caching, configuration, logging, and communication.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="architecture_guide.asciidoc_communication-between-layers-interfaces">21.1.3. Communication between Layers: Interfaces</h4>
+<div class="paragraph">
+<p>The main target of the use of interfaces is to loose coupling between layers and minimize dependencies.</p>
+</div>
+<div class="paragraph">
+<p>Public interfaces allow to hide implementation details of the components within the layers making use of dependency inversion.</p>
+</div>
+<div class="paragraph">
+<p>In order to make this possible, we make use of <em>Dependency Injection Pattern</em> (implementation of dependency inversion) given by default in <em>.Net Core</em>.</p>
+</div>
+<div class="paragraph">
+<p>The provided <em>Data Layer</em> contains the abstract clases to inherite from. All new repository and service classes must inherit from them, also the must implement their own interfaces.</p>
+</div>
+<div id="architecture_guide.asciidoc_img-t-architecture" class="imageblock">
+<div class="content">
+<a class="image" href="images/laryer_arch_detail.png"><img src="images/laryer_arch_detail.png" alt="technical architecture" width="750"></a>
+</div>
+<div class="title">Figure 93. Architecture representation in deep</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="architecture_guide.asciidoc_templates">21.1.4. Templates</h4>
+<div class="sect4">
+<h5 id="architecture_guide.asciidoc_state-of-the-art">State of the art</h5>
+<div class="paragraph">
+<p>The provided bundle contains two .Net templates (Classic .Net Framework 4.5+ and .Net Core Framework).</p>
+</div>
+<div class="paragraph">
+<p>Both templates share the same architecture. the current version contains the next functionalities implemented:</p>
+</div>
+<div id="architecture_guide.asciidoc_img-t-architecture" class="imageblock">
+<div class="content">
+<a class="image" href="images/functionality_stack.png"><img src="images/functionality_stack.png" alt="technical architecture" width="820"></a>
+</div>
+<div class="title">Figure 94. Current available functionality</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="architecture_guide.asciidoc_software-stack">Software stack</h5>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 22. Technology Stack of OASP</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Topic</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Detail</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Implementation</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">runtime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">language &amp; VM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Microsoft .Net 4.6 oder .Net Core Version</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="master-devon4j.asciidoc_layers.html#guide-dataaccess-layer.asciidoc">persistence</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OR-mapper</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://msdn.microsoft.com/en-us/data/ee712907.aspx">Entity Framework Core / Entity Framework 6 - Code TBD</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="master-devon4j.asciidoc_layers.html#guide-service-layer.asciidoc">service</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="guide-service-layer.html#rest">REST services</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.asp.net/web-api">Web API</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="master-devon4j.asciidoc_layers.html#guide-service-layer.asciidoc">service - integration to external systems - optional</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="guide-service-layer.html#soap">SOAP services</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://msdn.microsoft.com/en-us/library/dd456779(v=vs.110).aspx">WCF</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="master-devon4j.asciidoc_guides.html#guide-logging.asciidoc">logging</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">framework</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/serilog/serilog-extensions-logging">Serilog</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="master-devon4j.asciidoc_guides.html#guide-validation.asciidoc">validation</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">framework</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.newtonsoft.com/jsonschema/help/html/GenerateWithDataAnnotations.htm">NewtonSoft Json</a>, <a href="http://www.asp.net/mvc/overview/older-versions-1/models-data/validation-with-the-data-annotation-validators-cs">DataAnnotations</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">component management</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="master-devon4j.asciidoc_guides.html#guide-dependency-injection.asciidoc">dependency injection</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://unity.codeplex.com">Unity</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="master-devon4j.asciidoc_guides.html#guide-security.asciidoc">security</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Authentication &amp; Authorization</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://jwt.io">JWT</a> <a href="https://msdn.microsoft.com/en-us/library/fkytk30f(v=vs.110).aspx">.Net Security - Token based, local Authentication Provider</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unit tests</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">framework</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://xunit.github.io/">xUnit</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="architecture_guide.asciidoc_target-platforms">Target platforms</h5>
+<div class="paragraph">
+<p>Thanks to the new .Net Core platform from Microsoft, the developed software can be published Windows, Linux, OS X and Android platforms.</p>
+</div>
+<div class="paragraph">
+<p>The compete RID (Runtime Identifier) catalog is this:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Windows</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Portable</p>
+<div class="ulist">
+<ul>
+<li>
+<p>win-x86</p>
+</li>
+<li>
+<p>win-x64</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Windows 7 / Windows Server 2008 R2</p>
+<div class="ulist">
+<ul>
+<li>
+<p>win7-x64</p>
+</li>
+<li>
+<p>win7-x86</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Windows 8 / Windows Server 2012</p>
+<div class="ulist">
+<ul>
+<li>
+<p>win8-x64</p>
+</li>
+<li>
+<p>win8-x86</p>
+</li>
+<li>
+<p>win8-arm</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Windows 8.1 / Windows Server 2012 R2</p>
+<div class="ulist">
+<ul>
+<li>
+<p>win81-x64</p>
+</li>
+<li>
+<p>win81-x86</p>
+</li>
+<li>
+<p>win81-arm</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Windows 10 / Windows Server 2016</p>
+<div class="ulist">
+<ul>
+<li>
+<p>win10-x64</p>
+</li>
+<li>
+<p>win10-x86</p>
+</li>
+<li>
+<p>win10-arm</p>
+</li>
+<li>
+<p>win10-arm64</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Linux</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Portable</p>
+<div class="ulist">
+<ul>
+<li>
+<p>linux-x64</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>CentOS</p>
+<div class="ulist">
+<ul>
+<li>
+<p>centos-x64</p>
+</li>
+<li>
+<p>centos.7-x64</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Debian</p>
+<div class="ulist">
+<ul>
+<li>
+<p>debian-x64</p>
+</li>
+<li>
+<p>debian.8-x64</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Fedora</p>
+<div class="ulist">
+<ul>
+<li>
+<p>fedora-x64</p>
+</li>
+<li>
+<p>fedora.24-x64</p>
+</li>
+<li>
+<p>fedora.25-x64 (.NET Core 2.0 or later versions)</p>
+</li>
+<li>
+<p>fedora.26-x64 (.NET Core 2.0 or later versions)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Gentoo (.NET Core 2.0 or later versions)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>gentoo-x64</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>openSUSE</p>
+<div class="ulist">
+<ul>
+<li>
+<p>opensuse-x64</p>
+</li>
+<li>
+<p>opensuse.42.1-x64</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Oracle Linux</p>
+<div class="ulist">
+<ul>
+<li>
+<p>ol-x64</p>
+</li>
+<li>
+<p>ol.7-x64</p>
+</li>
+<li>
+<p>ol.7.0-x64</p>
+</li>
+<li>
+<p>ol.7.1-x64</p>
+</li>
+<li>
+<p>ol.7.2-x64</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Red Hat Enterprise Linux</p>
+<div class="ulist">
+<ul>
+<li>
+<p>rhel-x64</p>
+</li>
+<li>
+<p>rhel.6-x64 (.NET Core 2.0 or later versions)</p>
+</li>
+<li>
+<p>rhel.7-x64</p>
+</li>
+<li>
+<p>rhel.7.1-x64</p>
+</li>
+<li>
+<p>rhel.7.2-x64</p>
+</li>
+<li>
+<p>rhel.7.3-x64 (.NET Core 2.0 or later versions)</p>
+</li>
+<li>
+<p>rhel.7.4-x64 (.NET Core 2.0 or later versions)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Tizen (.NET Core 2.0 or later versions)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>tizen</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Ubuntu</p>
+<div class="ulist">
+<ul>
+<li>
+<p>ubuntu-x64</p>
+</li>
+<li>
+<p>ubuntu.14.04-x64</p>
+</li>
+<li>
+<p>ubuntu.14.10-x64</p>
+</li>
+<li>
+<p>ubuntu.15.04-x64</p>
+</li>
+<li>
+<p>ubuntu.15.10-x64</p>
+</li>
+<li>
+<p>ubuntu.16.04-x64</p>
+</li>
+<li>
+<p>ubuntu.16.10-x64</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Ubuntu derivatives</p>
+<div class="ulist">
+<ul>
+<li>
+<p>linuxmint.17-x64</p>
+</li>
+<li>
+<p>linuxmint.17.1-x64</p>
+</li>
+<li>
+<p>linuxmint.17.2-x64</p>
+</li>
+<li>
+<p>linuxmint.17.3-x64</p>
+</li>
+<li>
+<p>linuxmint.18-x64</p>
+</li>
+<li>
+<p>linuxmint.18.1-x64 (.NET Core 2.0 or later versions)</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>OS X</p>
+<div class="ulist">
+<ul>
+<li>
+<p>osx-x64 (.NET Core 2.0 or later versions)</p>
+</li>
+<li>
+<p>osx.10.10-x64</p>
+</li>
+<li>
+<p>osx.10.11-x64</p>
+</li>
+<li>
+<p>osx.10.12-x64 (.NET Core 1.1 or later versions)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Android</p>
+<div class="ulist">
+<ul>
+<li>
+<p>android</p>
+</li>
+<li>
+<p>android.21</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="architecture_guide.asciidoc_external-links">21.1.5. External links</h4>
+<div class="paragraph">
+<p><a href="https://docs.microsoft.com/en-us/dotnet/standard/frameworks">.Net Frameworks</a></p>
+</div>
+<div class="paragraph">
+<p><a href="https://docs.microsoft.com/en-us/ef/">Entity Framwork documentation from Microsoft</a></p>
+</div>
+<div class="paragraph">
+<p><a href="https://swagger.io/">Swagger API tooling</a></p>
+</div>
+<div class="paragraph">
+<p><a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/dependency-injection">Dependency Injection in .NET Core</a></p>
+</div>
+<div class="paragraph">
+<p><a href="https://jwt.io">Json Web Token</a></p>
+</div>
+<div class="paragraph">
+<p><a href="https://xunit.github.io/">Unit Testing (xUnit)</a></p>
+</div>
+<div class="paragraph">
+<p><a href="https://docs.microsoft.com/en-us/dotnet/core/rid-catalog">Runtime IDentifier for publishing</a></p>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -671,7 +1262,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2019-10-31 09:22:10 UTC
+Last updated 2019-10-31 11:32:49 UTC
 </sub></div>
 
 
