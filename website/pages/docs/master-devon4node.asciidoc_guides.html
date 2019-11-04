@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2019-11-04 09:02:07 UTC">
+<meta name="author" content="Updated at 2019-11-04 09:17:08 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -500,7 +500,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2019-11-04 09:02:19 UTC</span><br>
+<span id="author" class="author">Updated at 2019-11-04 09:17:22 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -529,13 +529,21 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="master-devon4node.asciidoc_guides.html#guides-code-generation.asciidoc">30.3. Code Generation</a>
 </li>
-<li><a href="master-devon4node.asciidoc_guides.html#guides-swagger.asciidoc">30.4. Swagger</a>
+<li><a href="master-devon4node.asciidoc_guides.html#guides-coding-conventions.asciidoc">30.4. Coding Conventions</a>
 </li>
-<li><a href="master-devon4node.asciidoc_guides.html#guides-serializer.asciidoc">30.5. Serializer</a>
+<li><a href="master-devon4node.asciidoc_guides.html#guides-dependency-injection.asciidoc">30.5. Dependency Injection</a>
 </li>
-<li><a href="master-devon4node.asciidoc_guides.html#guides-logger.asciidoc">30.6. Logger</a>
+<li><a href="master-devon4node.asciidoc_guides.html#guides-configuration-module.asciidoc">30.6. Configuration Module</a>
 </li>
-<li><a href="master-devon4node.asciidoc_guides.html#guides-mailer.asciidoc">30.7. Mailer Module</a>
+<li><a href="master-devon4node.asciidoc_guides.html#guides-auth-jwt.asciidoc">30.7. Auth JWT module</a>
+</li>
+<li><a href="master-devon4node.asciidoc_guides.html#guides-swagger.asciidoc">30.8. Swagger</a>
+</li>
+<li><a href="master-devon4node.asciidoc_guides.html#guides-serializer.asciidoc">30.9. Serializer</a>
+</li>
+<li><a href="master-devon4node.asciidoc_guides.html#guides-logger.asciidoc">30.10. Logger</a>
+</li>
+<li><a href="master-devon4node.asciidoc_guides.html#guides-mailer.asciidoc">30.11. Mailer Module</a>
 </li>
 </ul>
 </li>
@@ -674,10 +682,26 @@ export class SomeModule {}</code></pre>
 <div class="sect2">
 <h3 id="guides-cli.asciidoc">30.2. devon4node CLI</h3>
 <div class="paragraph">
-<p>devon4node CLI is a tool designed to manage devon4node applications in a easy way. In this page we will explain all commands available and their arguments.</p>
+<p>devon4node CLI is a tool designed to manage devon4node applications in a easy way. Highly inspired by Nest CLI.</p>
+</div>
+<div class="paragraph">
+<p>In this page we will explain all commands available and their arguments.</p>
 </div>
 <div class="sect3">
-<h4 id="guides-cli.asciidoc_devon4node">30.2.1. devon4node</h4>
+<h4 id="guides-cli.asciidoc_prerequisites">30.2.1. Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>NodeJS lts</p>
+</li>
+<li>
+<p>yarn</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guides-cli.asciidoc_devon4node">30.2.2. devon4node</h4>
 <div class="paragraph">
 <p>After install the devon4node CLI package <code>npm i -g @devon4node/cli</code>, the command <code>devon4node</code> (or <code>d4n</code>) must be available in your system. This have <code>new</code>, <code>generate</code> and <code>db</code> subcommands and also accepts the following arguments:</p>
 </div>
@@ -2403,7 +2427,7 @@ devon4node generate service --name my-service</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="guides-cli.asciidoc_command-autocompletion">30.2.2. Command autocompletion</h4>
+<h4 id="guides-cli.asciidoc_command-autocompletion">30.2.3. Command autocompletion</h4>
 <div class="paragraph">
 <p>In order to enable the command autocompletion, you need to add the following code to your .bashrc or .zshrc:</p>
 </div>
@@ -2622,7 +2646,500 @@ CREATE /test-app/src/app/test/model/entities/another-test.entity.ts (181 bytes)<
 </div>
 </div>
 <div class="sect2">
-<h3 id="guides-swagger.asciidoc">30.4. Swagger</h3>
+<h3 id="guides-coding-conventions.asciidoc">30.4. Coding Conventions</h3>
+<div class="paragraph">
+<p>devon4node defines some coding conventions in order to improve the readability, reduce the merge conflicts and be able to develop applications in an industrialized way.</p>
+</div>
+<div class="paragraph">
+<p>In order to ensure that you are following the devon4node coding conventions, you can use the following tools:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>TSLint</code>: <a href="https://palantir.github.io/tslint/">TSLint</a> is an extensible static analysis tool that checks TypeScript code for readability, maintainability, and functionality errors. We recommend to use the TSLint VSCode extension (included in the devonfw Platform Extension Pack) in order to be able to see the linting error while you are developing.</p>
+</li>
+<li>
+<p><code>Prettier</code>: <a href="https://prettier.io/">Prettier</a> is a code formatter. We recommend to use the Prettier VSCode extension (included in the devonfw Platform Extension Pack) and enable the <code>editor.formatOnSave</code> option.</p>
+</li>
+<li>
+<p><code>devon4node CLI</code>: this tool will generate code follwing the devon4node coding conventions. Also, when you generate a new project using the devon4node CLI, it generates the configuration files for TSLint and Prettier that satisfy the devon4node coding conventions.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>When you combine all tools, you can be sure that you follow the devon4node coding conventions.</p>
+</div>
+<div class="sect3">
+<h4 id="guides-coding-conventions.asciidoc_detailed-devon4node-coding-conventions">30.4.1. Detailed devon4node Coding Conventions</h4>
+<div class="paragraph">
+<p>Here we will detail some of most important devon4node coding conventions. To be sure that you follows all devon4node coding conventions use the tools described before.</p>
+</div>
+<div class="sect4">
+<h5 id="guides-coding-conventions.asciidoc_indentation">Indentation</h5>
+<div class="paragraph">
+<p>All devon4node code files must be indented using spaces. The indentation with must be 2 spaces.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guides-coding-conventions.asciidoc_white-space">White space</h5>
+<div class="paragraph">
+<p>In order to improve the readability of your code, you must introduce whitespaces. Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">if(condition){</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>must be</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">if (condition) {</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guides-coding-conventions.asciidoc_naming-conventions">Naming conventions</h5>
+<div class="sect5">
+<h6 id="guides-coding-conventions.asciidoc_file-naming">File naming</h6>
+<div class="paragraph">
+<p>The file name must follow the pattern: (name in kebap case).(kind of component).(extension)
+The test file name must follow the pattern: (name in kebap case).(kind of component).spec.(extension)</p>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>auth-jwt.service.ts
+auth-jwt.service.spec.ts</pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="guides-coding-conventions.asciidoc_interface-naming">Interface naming</h6>
+<div class="paragraph">
+<p>The interface names must be in pascal case, and must start with I. There is some controversy in starting the interface names with an I, but we decided to do it because is most of cases you will have an interface and a class with the same name, so, to differentiate them, we decided to start the interfaces with I. Other devonfw stacks solves it by adding the suffix <code>Impl</code> in the class implementations.</p>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>interface ICoffee {}</pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="guides-coding-conventions.asciidoc_class-naming">Class naming</h6>
+<div class="paragraph">
+<p>The class names must be in pascal case.</p>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>class Coffee {}</pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="guides-coding-conventions.asciidoc_variable-naming">Variable naming</h6>
+<div class="paragraph">
+<p>All variable names must be in camel case.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>const coffeeList: Coffe[];</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guides-coding-conventions.asciidoc_declarations">Declarations</h5>
+<div class="paragraph">
+<p>For all variable declarations we must use <code>const</code> or <code>let</code>. <code>var</code> is forbidden. We preffer to use <code>const</code> when possible.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guides-coding-conventions.asciidoc_programming-practices">Programming practices</h5>
+<div class="sect5">
+<h6 id="guides-coding-conventions.asciidoc_trailing-comma">Trailing comma</h6>
+<div class="paragraph">
+<p>All statements must end with a trailing comma.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="guides-coding-conventions.asciidoc_arrow-functions">Arrow functions</h6>
+<div class="paragraph">
+<p>All anonymous functions must be definned with the arrow function notation. In most of cases it&#x2019;s not a problem, but sometimes, when you do not want to bind <code>this</code> when you define the function, you can use the other function definition. In this special cases you must disable the linter for those sentence.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="guides-coding-conventions.asciidoc_comments">Comments</h6>
+<div class="paragraph">
+<p>Comments must start with a whitespace. Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">//This is a bad comment
+// This is OK</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="guides-coding-conventions.asciidoc_quotemarks">Quotemarks</h6>
+<div class="paragraph">
+<p>For string definitions, we must use single quotes.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="guides-coding-conventions.asciidoc_if-statements">if statements</h6>
+<div class="paragraph">
+<p>In all if statements you always must use brackets. Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">// Bad if statement
+if (condition)
+  return true;
+
+// Good if statement
+if (condition) {
+  return true;
+}</code></pre>
+</div>
+</div>
+<!-- toc disabled -->
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guides-dependency-injection.asciidoc">30.5. Dependency Injection</h3>
+<div class="paragraph">
+<p>The <a href="https://en.wikipedia.org/wiki/Dependency_injection">dependency injection</a> is a well-known common design pattern applied by frameworks in all languages, like <a href="https://spring.io/">Spring</a> in Java, <a href="https://angular.io/">Angular</a> and others. The intention of this page is not to explain how dependency injection works, but instead how it is addressed by NestJS.</p>
+</div>
+<div class="paragraph">
+<p>NestJS resolve the dependency injection in their modules. When you define a provider in a module, it can be injected in all components of the module. By default, those providers are only available in the module where it is defined. The only way to export a module provider to other modules which import it is adding those provider to the export array. You can also reexport modules.</p>
+</div>
+<div class="sect3">
+<h4 id="guides-dependency-injection.asciidoc_inject-dependencies-in-nestjs">30.5.1. Inject dependencies in NestJS</h4>
+<div class="paragraph">
+<p>In oder to inject a dependency in a NestJS component, you need to declare it in the component constructor. Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">export class CoffeeController {
+  constructor(public readonly conffeeService: CoffeeService) {}
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>NestJS can resolve all dependencies that are defined in the module as provider, and also the dependencies exported by the modules imported. Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">@Module({
+  controllers: [CoffeeController],
+  providers: [CoffeeService],
+})
+export class CoffeeModule {}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Inject dependencies in the constructor is the is the preferred choice, but, sometimes it is not possible. For example, when you are extending another class and want to keep the constructor definition. In this specific cases we can inject dependencies in the class properties. Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">export class CoffeeController {
+  @Inject(CoffeeService)
+  private readonly conffeeService: CoffeeService;
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guides-dependency-injection.asciidoc_dependency-graph">30.5.2. Dependency Graph</h4>
+<div class="imageblock">
+<div class="content">
+<img src="images/plantuml/dependency-injection1.png" alt="dependency injection1">
+</div>
+</div>
+<div class="paragraph">
+<p>In the previous image, the Module A can inject dependencies exported by Module B, Module E and Module F. If module B reexport Module C and Module D, they are also accesibles by Module A.</p>
+</div>
+<div class="paragraph">
+<p>If there is a conflict with the injection token, it resolves the provider with less distance with the module. For example: if the modules C and F exports a <code>UserService</code> provider, the Module A will resolve the <code>UserService</code> exported by the Module F, because the distance from Module A to Module F is 1, and the distance from Module A to Module C is 2.</p>
+</div>
+<div class="paragraph">
+<p>When you define a module as global, the dependency injection system is the same. The only difference is now all modules as a link to the global module. For example, if we make the Module C as global the dependency graph will be:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/plantuml/dependency-injection2.png" alt="dependency injection2">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guides-dependency-injection.asciidoc_custom-providers">30.5.3. Custom providers</h4>
+<div class="paragraph">
+<p>When you want to change the provider name, you can use a NestJS feature called <a href="https://docs.nestjs.com/fundamentals/custom-providers">custom providers</a>. For example, if you want to define a provider called <code>MockUserService</code> with the provider token <code>UserService</code> you can define it like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">@Module({
+  providers: [{
+    provide: UserService,
+    useValue: MockUserService,
+  }],
+})</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With this, when you inject want to inject UserService as dependency, the MockUserService will be injected.</p>
+</div>
+<div class="paragraph">
+<p>Custom provider token can be also a string:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">@Module({
+  providers: [{
+    provide: &apos;USER_SERVICE&apos;,
+    useValue: MockUserService,
+  }],
+})</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>but now, when you want to inject it as dependency you need to use the @Inject decorator.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">constructor(@Inject(&apos;USER_SERVICE&apos;) userService: any) {}</code></pre>
+</div>
+</div>
+<!-- toc disabled -->
+</div>
+</div>
+<div class="sect2">
+<h3 id="guides-configuration-module.asciidoc">30.6. Configuration Module</h3>
+<div class="paragraph">
+<p>devon4node provides a way to generate a configuration module inside your appication. To generate it you only need to execute the command <code>devon4node generate config-module</code>. This command will generate inside your application:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Configuration module inside the core module.</p>
+</li>
+<li>
+<p>config folder where all environment configuration are stored.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>default configuration: configuration for your local development environment.</p>
+</li>
+<li>
+<p>develop environment configuration for the develop environment.</p>
+</li>
+<li>
+<p>uat environment configuration for the uat environment.</p>
+</li>
+<li>
+<p>production environment configuration for the production environment.</p>
+</li>
+<li>
+<p>production environment configuration for the production environment.</p>
+</li>
+<li>
+<p>test environment configuration used by test.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+some code generators will add some properties to this module, so, be sure that the config module is the first module that you generate in your application.
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="sect3">
+<h4 id="guides-configuration-module.asciidoc_use-the-configuration-service">30.6.1. Use the configuration service</h4>
+<div class="paragraph">
+<p>To use the configuration service, you only need to inject it as dependency. As configuration module is defined in the core module, it will be available everywhere in your application. Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">export class MyProvider {
+  constructor(public readonly configService: ConfigurationService) {}
+
+  myMethod() {
+    return this.confiService.isDev;
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guides-configuration-module.asciidoc_choose-an-environment-file">30.6.2. Choose an environment file</h4>
+<div class="paragraph">
+<p>By default, when you use the configuration service it will take the properties defined in the default.ts file. If you want to change the configuration file, you only need to set the NODE_ENV environment property with the name of the desired environment. Examples: in windows execute <code>set NODE_ENV=develop</code> before executing the application, in linux execute <code>NODE_ENV=develop</code> before executing the application or <code>NODE_ENV=develop yarn start</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guides-configuration-module.asciidoc_override-configuration-properties">30.6.3. Override configuration properties</h4>
+<div class="paragraph">
+<p>Sometimes, you want to keep some configuration property secure, and you do not want to publish it to the repository, or you want to reuse some configuration file but you need to change some properties. For those scenarios, you can override configuration properties by defining a environment variable with the same name. For example, if you want to override the property host, you can do: <code>set host=&quot;newhost&quot;</code>. It also works with objects. For example, if you want to change the value of secret in the property jwtConfig for <a href="https://github.com/devonfw/devon4node/blob/develop/samples/employee/src/config/develop.ts">this example</a>, you can set a environment variable like this: <code>set jwtConfig=&quot;{&quot;secret&quot;: &quot;newsecret&quot;}&quot;</code>. As you can see, this environment variable has a JSON value. It will take object and merge the jwtConfig property with the properties defined inside the environment variable. It other properties maintain their value. The behaviour is the same for the nested objects.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guides-configuration-module.asciidoc_add-a-configuration-property">30.6.4. Add a configuration property</h4>
+<div class="paragraph">
+<p>In order to add a new property to the configuration module, you need to follow some steps:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Add the property to IConfig interface in <code>src/app/core/configuration/types.ts</code> file. With this, we can ensure that the <code>ConfigurationService</code> and the environment files has those property at compiling time.</p>
+</li>
+<li>
+<p>Add the new property getter to <code>ConfigurationService</code>. You must use the <code>get</code> method of <code>ConfigurationService</code> to ensure that the property will be loaded from the desired config file. You can also add extra logic if needed.</p>
+</li>
+<li>
+<p>Add the property to all config files inside the <code>src/config</code> folder.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="paragraph">
+<p>We want to add the property <code>devonfwUrl</code> to our ConfigurationService, so:</p>
+</div>
+<div class="paragraph">
+<p>We add the following code in IConfig interface:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">devonfwUrl: string;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then, we add the getter in the <code>ConfigurationService</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">get devonfwUrl(): string {
+  return this.get(&apos;devonfwUrl&apos;)!;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally, we add the definition in all config files:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">devonfwUrl: &apos;https://devonfw.com&apos;,</code></pre>
+</div>
+</div>
+<!-- toc disabled -->
+</div>
+</div>
+<div class="sect2">
+<h3 id="guides-auth-jwt.asciidoc">30.7. Auth JWT module</h3>
+<div class="paragraph">
+<p>devon4node provides a way to generate a default authentication module using JWT (JSON Web Token). It uses the <code>@nestjs/passport</code> library descrbe <a href="https://docs.nestjs.com/techniques/authentication">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>To generate the devon4node auth-jwt module you only need to execute the command: <code>devon4node generate auth-jwt</code>. We generate this module inside the applications instead of distributing a npm package because this module is prone to be modified depending on the requirements. It alse generate a basic user module.</p>
+</div>
+<div class="paragraph">
+<p>In this page we will explain the default implementation provided by devon4node. For more information about authentication, JWT, passport and other you can see:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://jwt.io/introduction/">JWT</a></p>
+</li>
+<li>
+<p><a href="https://docs.nestjs.com/techniques/authentication">NestJS authentication</a></p>
+</li>
+<li>
+<p><a href="https://www.npmjs.com/package/passport">Passport</a></p>
+</li>
+<li>
+<p><a href="https://www.npmjs.com/package/passport-jwt">Passport JWT</a></p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="guides-auth-jwt.asciidoc_auth-jwt-endpoints">30.7.1. Auth JWT endpoints</h4>
+<div class="paragraph">
+<p>In order to execute authentication operations, the auth-jwt module exposes the following endpoints:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>POST /auth/login</code>: receive an username and a password and return the token in the header if the combination of username and password is correct.</p>
+</li>
+<li>
+<p><code>POST /auth/register</code>: register a new user.</p>
+</li>
+<li>
+<p><code>GET /auth/currentuser</code>: return the user data if he is authenticated.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guides-auth-jwt.asciidoc_protect-endpoints-with-auth-jwt">30.7.2. Protect endpoints with auth-jwt</h4>
+<div class="paragraph">
+<p>In order to protect your endpoints with auth-jwt module you only need to add the <code>AuthGuard()</code> in the <code>UseGuards</code> decorator. Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">@Get(&apos;currentuser&apos;)
+@UseGuards(AuthGuard())
+currentUser(@Request() req: UserRequest) {
+  return req.user;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now, all request to currentuser are protected by the AuthGuard.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guides-auth-jwt.asciidoc_role-base-access-control">30.7.3. Role base Access Control</h4>
+<div class="paragraph">
+<p>The auth-jwt module provides also a way to control the access to some endpoints by using roles. For example, if you want to grant access to a endpoint only to admins, you only need to add the <code>Roles</code> decorator to those endpoints with the roles allowed. Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">@Get(&apos;currentuser&apos;)
+@UseGuards(AuthGuard())
+@Roles(roles.ADMIN)
+currentUser(@Request() req: UserRequest) {
+  return req.user;
+}</code></pre>
+</div>
+</div>
+<!-- toc disabled -->
+</div>
+</div>
+<div class="sect2">
+<h3 id="guides-swagger.asciidoc">30.8. Swagger</h3>
 <div class="paragraph">
 <p>We can use swagger (OpenAPI) in order to describe the endpoints that our application exposes.</p>
 </div>
@@ -2653,7 +3170,7 @@ the OpenAPI specification that this module will emmit is v2.0. The OpenAPI v3.0 
 <!-- toc disabled -->
 </div>
 <div class="sect2">
-<h3 id="guides-serializer.asciidoc">30.5. Serializer</h3>
+<h3 id="guides-serializer.asciidoc">30.9. Serializer</h3>
 <div class="paragraph">
 <p>Serialization is the process of translating data structures or object state into a format that can be transmitted across network and reconstructed later.</p>
 </div>
@@ -2719,7 +3236,7 @@ the OpenAPI specification that this module will emmit is v2.0. The OpenAPI v3.0 
 <!-- toc disabled -->
 </div>
 <div class="sect2">
-<h3 id="guides-logger.asciidoc">30.6. Logger</h3>
+<h3 id="guides-logger.asciidoc">30.10. Logger</h3>
 <div class="paragraph">
 <p>When you create a new devon4node application, it already has a logger: <code>src/app/shared/logger/winston.logger.ts</code>. This logger provide the methods <code>log</code>, <code>error</code> and <code>warn</code>. All of those methods will write a log message, but with a different log level.</p>
 </div>
@@ -2730,7 +3247,7 @@ the OpenAPI specification that this module will emmit is v2.0. The OpenAPI v3.0 
 <p>As you can see it is a simple example about how to use logger in a devon4node application. It will be update to a complex one in the next versions.</p>
 </div>
 <div class="sect3">
-<h4 id="guides-logger.asciidoc_how-to-use-logger">30.6.1. How to use logger</h4>
+<h4 id="guides-logger.asciidoc_how-to-use-logger">30.10.1. How to use logger</h4>
 <div class="paragraph">
 <p>In order to use the logger you only need to inject the logger as a dependecy:</p>
 </div>
@@ -2754,7 +3271,7 @@ the OpenAPI specification that this module will emmit is v2.0. The OpenAPI v3.0 
 </div>
 </div>
 <div class="sect2">
-<h3 id="guides-mailer.asciidoc">30.7. Mailer Module</h3>
+<h3 id="guides-mailer.asciidoc">30.11. Mailer Module</h3>
 <div class="paragraph">
 <p>This module enables you to send emails in devon4node. It also provides a template engine using Handlebars.</p>
 </div>
@@ -2762,7 +3279,7 @@ the OpenAPI specification that this module will emmit is v2.0. The OpenAPI v3.0 
 <p>It is a NestJS module that inject into your application a MailerService, which is the responsible to send the emails using the nodemailer library.</p>
 </div>
 <div class="sect3">
-<h4 id="guides-mailer.asciidoc_installing">30.7.1. Installing</h4>
+<h4 id="guides-mailer.asciidoc_installing">30.11.1. Installing</h4>
 <div class="paragraph">
 <p>Execute the following command in a devon4node project:</p>
 </div>
@@ -2773,7 +3290,7 @@ the OpenAPI specification that this module will emmit is v2.0. The OpenAPI v3.0 
 </div>
 </div>
 <div class="sect3">
-<h4 id="guides-mailer.asciidoc_configuring">30.7.2. Configuring</h4>
+<h4 id="guides-mailer.asciidoc_configuring">30.11.2. Configuring</h4>
 <div class="paragraph">
 <p>To configure the mailer module, you only need to import it in your application into another module. Example:</p>
 </div>
@@ -2877,7 +3394,7 @@ Then, you need to call to forRoot function in the module imports. Example:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="guides-mailer.asciidoc_usage">30.7.3. Usage</h4>
+<h4 id="guides-mailer.asciidoc_usage">30.11.3. Usage</h4>
 <div class="paragraph">
 <p>In order to use, you only need to inject using the dependency injection the MailerService.</p>
 </div>
@@ -3023,7 +3540,7 @@ this.mailer.sendTemplateMail(&apos;example@example.com&apos;, &apos;This is a su
 </div>
 </div>
 <div class="sect3">
-<h4 id="guides-mailer.asciidoc_handlebars-templates">30.7.4. Handlebars templates</h4>
+<h4 id="guides-mailer.asciidoc_handlebars-templates">30.11.4. Handlebars templates</h4>
 <div class="paragraph">
 <p>As mentioned above, this module allow you to use Handlebars as template engine, but it is optional. If you do not need the Handlebars, you just need to keep the hbsOptions undefined.</p>
 </div>
@@ -3036,7 +3553,7 @@ At the moment of module initialization, it will read the content of the template
 </div>
 </div>
 <div class="sect3">
-<h4 id="guides-mailer.asciidoc_local-development">30.7.5. Local development</h4>
+<h4 id="guides-mailer.asciidoc_local-development">30.11.5. Local development</h4>
 <div class="paragraph">
 <p>If you want to work with this module but you dont have a SMTP server, you can use the <code>streamTransport</code>. Example:</p>
 </div>
@@ -3189,7 +3706,7 @@ mail.message.pipe(process.stdout);</code></pre>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2019-11-04 09:00:27 UTC
+Last updated 2019-11-04 09:15:32 UTC
 </sub></div>
 
 

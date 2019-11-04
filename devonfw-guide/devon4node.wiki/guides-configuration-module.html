@@ -35,7 +35,7 @@
 <script>hljs.initHighlightingOnLoad()</script>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
-<body id="guides-configuration-module.asciidoc" class="article">
+<body class="article">
 <div id="website-navbar" class="website-navbar">
 <button id="menu-button" class="menu-button">
   <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
@@ -81,7 +81,154 @@
 <div id="sidebar" class="wiki-sidebar"></div>
 
 <div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guides-configuration-module.asciidoc">Configuration Module</a>
+<ul class="sectlevel1">
+<li><a href="#guides-configuration-module.asciidoc_use-the-configuration-service">Use the configuration service</a></li>
+<li><a href="#guides-configuration-module.asciidoc_choose-an-environment-file">Choose an environment file</a></li>
+<li><a href="#guides-configuration-module.asciidoc_override-configuration-properties">Override configuration properties</a></li>
+<li><a href="#guides-configuration-module.asciidoc_add-a-configuration-property">Add a configuration property</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guides-configuration-module.asciidoc" class="sect0">Configuration Module</h1>
+<div class="paragraph">
+<p>devon4node provides a way to generate a configuration module inside your appication. To generate it you only need to execute the command <code>devon4node generate config-module</code>. This command will generate inside your application:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Configuration module inside the core module.</p>
+</li>
+<li>
+<p>config folder where all environment configuration are stored.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>default configuration: configuration for your local development environment.</p>
+</li>
+<li>
+<p>develop environment configuration for the develop environment.</p>
+</li>
+<li>
+<p>uat environment configuration for the uat environment.</p>
+</li>
+<li>
+<p>production environment configuration for the production environment.</p>
+</li>
+<li>
+<p>production environment configuration for the production environment.</p>
+</li>
+<li>
+<p>test environment configuration used by test.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+some code generators will add some properties to this module, so, be sure that the config module is the first module that you generate in your application.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect1">
+<h2 id="guides-configuration-module.asciidoc_use-the-configuration-service">Use the configuration service</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To use the configuration service, you only need to inject it as dependency. As configuration module is defined in the core module, it will be available everywhere in your application. Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">export class MyProvider {
+  constructor(public readonly configService: ConfigurationService) {}
 
+  myMethod() {
+    return this.confiService.isDev;
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guides-configuration-module.asciidoc_choose-an-environment-file">Choose an environment file</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>By default, when you use the configuration service it will take the properties defined in the default.ts file. If you want to change the configuration file, you only need to set the NODE_ENV environment property with the name of the desired environment. Examples: in windows execute <code>set NODE_ENV=develop</code> before executing the application, in linux execute <code>NODE_ENV=develop</code> before executing the application or <code>NODE_ENV=develop yarn start</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guides-configuration-module.asciidoc_override-configuration-properties">Override configuration properties</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Sometimes, you want to keep some configuration property secure, and you do not want to publish it to the repository, or you want to reuse some configuration file but you need to change some properties. For those scenarios, you can override configuration properties by defining a environment variable with the same name. For example, if you want to override the property host, you can do: <code>set host="newhost"</code>. It also works with objects. For example, if you want to change the value of secret in the property jwtConfig for <a href="https://github.com/devonfw/devon4node/blob/develop/samples/employee/src/config/develop.ts">this example</a>, you can set a environment variable like this: <code>set jwtConfig="{"secret": "newsecret"}"</code>. As you can see, this environment variable has a JSON value. It will take object and merge the jwtConfig property with the properties defined inside the environment variable. It other properties maintain their value. The behaviour is the same for the nested objects.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guides-configuration-module.asciidoc_add-a-configuration-property">Add a configuration property</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order to add a new property to the configuration module, you need to follow some steps:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Add the property to IConfig interface in <code>src/app/core/configuration/types.ts</code> file. With this, we can ensure that the <code>ConfigurationService</code> and the environment files has those property at compiling time.</p>
+</li>
+<li>
+<p>Add the new property getter to <code>ConfigurationService</code>. You must use the <code>get</code> method of <code>ConfigurationService</code> to ensure that the property will be loaded from the desired config file. You can also add extra logic if needed.</p>
+</li>
+<li>
+<p>Add the property to all config files inside the <code>src/config</code> folder.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="paragraph">
+<p>We want to add the property <code>devonfwUrl</code> to our ConfigurationService, so:</p>
+</div>
+<div class="paragraph">
+<p>We add the following code in IConfig interface:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">devonfwUrl: string;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then, we add the getter in the <code>ConfigurationService</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">get devonfwUrl(): string {
+  return this.get('devonfwUrl')!;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally, we add the definition in all config files:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">devonfwUrl: 'https://devonfw.com',</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer" class="footer">
 <div class="openblock footerLinks">
@@ -210,7 +357,7 @@
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2019-11-04 08:58:49 UTC
+Last updated 2019-11-04 09:13:54 UTC
 </sub></div>
 </div>
 </div>
