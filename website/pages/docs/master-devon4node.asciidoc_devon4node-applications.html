@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2019-11-04 13:17:54 UTC">
+<meta name="author" content="Updated at 2019-11-04 16:00:29 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -500,7 +500,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2019-11-04 13:18:05 UTC</span><br>
+<span id="author" class="author">Updated at 2019-11-04 16:00:40 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -526,6 +526,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="master-devon4node.asciidoc_devon4node-applications.html"><span class="toc-current">31. devon4node applications</span></a>
 <ul class="sectlevel2">
 <li><a href="master-devon4node.asciidoc_devon4node-applications.html#samples.asciidoc">31.1. devon4node Samples</a>
+</li>
+<li><a href="master-devon4node.asciidoc_devon4node-applications.html#samples-step-by-step.asciidoc">31.2. Create the employee sample step by step</a>
 </li>
 </ul>
 </li>
@@ -648,6 +650,479 @@ $ yarn start</code></pre>
 </div>
 <div class="paragraph">
 <p>In order to see the execution order, you can call to <code><a href="http://localhost:3000/v1" class="bare">http://localhost:3000/v1</a></code>. It will show you the execution order of all components except the filters. If you want to know the execution order while a filter is applied, call to the endpoint with the following queries: <code>?hello=error</code>, <code>?hello=controller</code>, <code>?hello=global</code>.</p>
+</div>
+<!-- toc disabled -->
+</div>
+</div>
+<div class="sect2">
+<h3 id="samples-step-by-step.asciidoc">31.2. Create the employee sample step by step</h3>
+<div class="sect3">
+<h4 id="samples-step-by-step.asciidoc_application-requisites">31.2.1. Application requisites</h4>
+<div class="paragraph">
+<p>The employee application needs:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A configuration module</p>
+</li>
+<li>
+<p>A SQLite in memory database</p>
+</li>
+<li>
+<p>Security: CORS</p>
+</li>
+<li>
+<p>Swagger support</p>
+</li>
+<li>
+<p>Authentication using JWT</p>
+</li>
+<li>
+<p>CRUD for manage employees. The employees will have the following properties:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>name</p>
+</li>
+<li>
+<p>surname</p>
+</li>
+<li>
+<p>email</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="samples-step-by-step.asciidoc_create-the-application">31.2.2. Create the application</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Install devon4node CLI</p>
+<div class="paragraph">
+<p>Execute the command <code>npm i -g @devon4node/cli</code></p>
+</div>
+</li>
+<li>
+<p>Create the new application</p>
+<div class="paragraph">
+<p>Execute the command <code>devon4node new employee</code></p>
+</div>
+<div class="paragraph">
+<p>Then, you need to select the components interactively. The result will be:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/sample/new-app.png" alt="new app">
+</div>
+</div>
+<div class="paragraph">
+<p>With this, you will generate the following files:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>/employee/.prettierrc
+/employee/nest-cli.json
+/employee/package.json
+/employee/README.md
+/employee/tsconfig.build.json
+/employee/tsconfig.json
+/employee/tslint.json
+/employee/src/main.ts
+/employee/test/app.e2e-spec.ts
+/employee/test/jest-e2e.json
+/employee/src/app/app.controller.spec.ts
+/employee/src/app/app.controller.ts
+/employee/src/app/app.module.ts
+/employee/src/app/app.service.ts
+/employee/src/app/core/core.module.ts
+/employee/src/app/shared/logger/winston.logger.ts
+/employee/src/app/core/configuration/configuration.module.ts
+/employee/src/app/core/configuration/model/index.ts
+/employee/src/app/core/configuration/model/types.ts
+/employee/src/app/core/configuration/services/configuration.service.spec.ts
+/employee/src/app/core/configuration/services/configuration.service.ts
+/employee/src/app/core/configuration/services/index.ts
+/employee/src/config/default.ts
+/employee/src/config/develop.ts
+/employee/src/config/production.ts
+/employee/src/config/test.ts
+/employee/src/config/uat.ts
+/employee/docker-compose.yml
+/employee/ormconfig.json
+/employee/src/app/shared/model/entities/base-entity.entity.ts
+/employee/src/app/core/auth/auth.module.ts
+/employee/src/app/core/auth/controllers/auth.controller.spec.ts
+/employee/src/app/core/auth/controllers/auth.controller.ts
+/employee/src/app/core/auth/controllers/index.ts
+/employee/src/app/core/auth/decorators/index.ts
+/employee/src/app/core/auth/decorators/roles.decorator.spec.ts
+/employee/src/app/core/auth/decorators/roles.decorator.ts
+/employee/src/app/core/auth/guards/index.ts
+/employee/src/app/core/auth/guards/roles.guard.spec.ts
+/employee/src/app/core/auth/guards/roles.guard.ts
+/employee/src/app/core/auth/model/index.ts
+/employee/src/app/core/auth/model/roles.enum.ts
+/employee/src/app/core/auth/model/user-request.interface.ts
+/employee/src/app/core/auth/services/auth.service.spec.ts
+/employee/src/app/core/auth/services/auth.service.ts
+/employee/src/app/core/auth/services/index.ts
+/employee/src/app/core/auth/strategies/index.ts
+/employee/src/app/core/auth/strategies/jwt.strategy.spec.ts
+/employee/src/app/core/auth/strategies/jwt.strategy.ts
+/employee/src/app/core/user/user.module.ts
+/employee/src/app/core/user/model/index.ts
+/employee/src/app/core/user/model/dto/user-payload.dto.ts
+/employee/src/app/core/user/model/entities/user.entity.ts
+/employee/src/app/core/user/services/index.ts
+/employee/src/app/core/user/services/user.service.spec.ts
+/employee/src/app/core/user/services/user.service.ts
+/employee/test/auth/auth.service.mock.ts
+/employee/test/user/user.repository.mock.ts
+/employee/src/app/employee/employee.module.ts
+/employee/src/app/employee/model/entities/employee.entity.ts
+/employee/src/app/employee/model/index.ts
+/employee/src/app/employee/controllers/employee.crud.controller.ts
+/employee/src/app/employee/services/employee.crud.service.ts
+/employee/src/app/employee/services/index.ts
+/employee/src/app/employee/controllers/index.ts</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Open the VSCode</p>
+<div class="paragraph">
+<p>Execute the commands:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>cd employee
+code .</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Fill in the entity: src/app/employee/model/entities/employee.entity.ts</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Add the columns</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">@Entity()
+export class Employee extends BaseEntity {
+  @Column(&apos;varchar&apos;, { length: 255, nullable: true })
+  name?: string;
+
+  @Column(&apos;varchar&apos;, { length: 255, nullable: true })
+  surname?: string;
+
+  @Column(&apos;varchar&apos;, { length: 255, nullable: true })
+  email?: string;
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Add the validations</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">@Entity()
+export class Employee extends BaseEntity {
+  @IsDefined({ groups: [CrudValidationGroups.CREATE] })
+  @IsOptional({ groups: [CrudValidationGroups.UPDATE] })
+  @MaxLength(255)
+  @Column(&apos;varchar&apos;, { length: 255, nullable: true })
+  name?: string;
+
+  @IsDefined({ groups: [CrudValidationGroups.CREATE] })
+  @IsOptional({ groups: [CrudValidationGroups.UPDATE] })
+  @MaxLength(255)
+  @Column(&apos;varchar&apos;, { length: 255, nullable: true })
+  surname?: string;
+
+  @IsDefined({ groups: [CrudValidationGroups.CREATE] })
+  @IsOptional({ groups: [CrudValidationGroups.UPDATE] })
+  @MaxLength(255)
+  @IsEmail()
+  @Column(&apos;varchar&apos;, { length: 255, nullable: true })
+  email?: string;
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Add the transformations</p>
+<div class="paragraph">
+<p>In this specific case, we will not transform any property, but you can see an example in the <code>src/app/shared/model/entities/base-entity.entity.ts</code> file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">export abstract class BaseEntity {
+  @PrimaryGeneratedColumn(&apos;increment&apos;)
+  id!: number;
+
+  @VersionColumn({ default: 1 })
+  @Exclude({ toPlainOnly: true })
+  version!: number;
+
+  @CreateDateColumn()
+  @Exclude({ toPlainOnly: true })
+  createdAt!: string;
+
+  @UpdateDateColumn()
+  @Exclude({ toPlainOnly: true })
+  updatedAt!: string;
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Add swagger metadata</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">@Entity()
+export class Employee extends BaseEntity {
+  @ApiModelPropertyOptional()
+  @IsDefined({ groups: [CrudValidationGroups.CREATE] })
+  @IsOptional({ groups: [CrudValidationGroups.UPDATE] })
+  @MaxLength(255)
+  @Column(&apos;varchar&apos;, { length: 255, nullable: true })
+  name?: string;
+
+  @ApiModelPropertyOptional()
+  @IsDefined({ groups: [CrudValidationGroups.CREATE] })
+  @IsOptional({ groups: [CrudValidationGroups.UPDATE] })
+  @MaxLength(255)
+  @Column(&apos;varchar&apos;, { length: 255, nullable: true })
+  surname?: string;
+
+  @ApiModelPropertyOptional()
+  @IsDefined({ groups: [CrudValidationGroups.CREATE] })
+  @IsOptional({ groups: [CrudValidationGroups.UPDATE] })
+  @MaxLength(255)
+  @IsEmail()
+  @Column(&apos;varchar&apos;, { length: 255, nullable: true })
+  email?: string;
+}</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Add swagger metadata to <code>src/app/employee/controllers/employee.crud.controller.ts</code></p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">@ApiUseTags(&apos;employee&apos;)</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Generate database migrations</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Build the application: <code>yarn build</code></p>
+</li>
+<li>
+<p>Generate the tables creation migration: <code>devon4node db migration:generate -n CreateTables</code></p>
+<div class="imageblock">
+<div class="content">
+<img src="images/sample/generate-migrations.png" alt="generate migrations">
+</div>
+</div>
+<div class="paragraph">
+<p>The optput will be something similar to:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">export class CreateTables1572480273012 implements MigrationInterface {
+  name = &apos;CreateTables1572480273012&apos;;
+
+  public async up(queryRunner: QueryRunner): Promise&lt;any&gt; {
+    await queryRunner.query(
+      `CREATE TABLE &quot;user&quot; (&quot;id&quot; integer PRIMARY KEY AUTOINCREMENT NOT NULL, &quot;version&quot; integer NOT NULL DEFAULT (1), &quot;createdAt&quot; datetime NOT NULL DEFAULT (datetime(&apos;now&apos;)), &quot;updatedAt&quot; datetime NOT NULL DEFAULT (datetime(&apos;now&apos;)), &quot;username&quot; varchar(255) NOT NULL, &quot;password&quot; varchar(255) NOT NULL, &quot;role&quot; integer NOT NULL DEFAULT (0))`,
+      undefined,
+    );
+    await queryRunner.query(
+      `CREATE TABLE &quot;employee&quot; (&quot;id&quot; integer PRIMARY KEY AUTOINCREMENT NOT NULL, &quot;version&quot; integer NOT NULL DEFAULT (1), &quot;createdAt&quot; datetime NOT NULL DEFAULT (datetime(&apos;now&apos;)), &quot;updatedAt&quot; datetime NOT NULL DEFAULT (datetime(&apos;now&apos;)), &quot;name&quot; varchar(255), &quot;surname&quot; varchar(255), &quot;email&quot; varchar(255))`,
+      undefined,
+    );
+  }
+
+  public async down(queryRunner: QueryRunner): Promise&lt;any&gt; {
+    await queryRunner.query(`DROP TABLE &quot;employee&quot;`, undefined);
+    await queryRunner.query(`DROP TABLE &quot;user&quot;`, undefined);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The number in the name is a timestamp, so may change in your application.</p>
+</div>
+</li>
+<li>
+<p>Create a migration to insert data:`devon4node db migration:create -n InsertData`</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/sample/insert-data.png" alt="insert data">
+</div>
+</div>
+<div class="paragraph">
+<p>and fill in with the following code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">export class InsertData1572480830290 implements MigrationInterface {
+  public async up(queryRunner: QueryRunner): Promise&lt;any&gt; {
+    await queryRunner.query(
+      `INSERT INTO EMPLOYEE(id, name, surname, email) VALUES(1, &apos;Stefano&apos;, &apos;Rossini&apos;, &apos;stefano.rossini@capgemini.com&apos;);`,
+    );
+    await queryRunner.query(
+      `INSERT INTO EMPLOYEE(id, name, surname, email) VALUES(2, &apos;Angelo&apos;, &apos;Muresu&apos;, &apos;angelo.muresu@capgemini.com&apos;);`,
+    );
+    await queryRunner.query(
+      `INSERT INTO EMPLOYEE(id, name, surname, email) VALUES(3, &apos;Jaime&apos;, &apos;Gonzalez&apos;, &apos;jaime.diaz-gonzalez@capgemini.com&apos;);`,
+    );
+    await queryRunner.query(
+      `INSERT INTO EMPLOYEE(id, name, surname, email) VALUES(4, &apos;Dario&apos;, &apos;Rodriguez&apos;, &apos;dario.rodriguez-gonzalez@capgemini.com&apos;);`,
+    );
+    await queryRunner.query(`INSERT INTO USER(id, username, password, role) VALUES(?, ?, ?, ?);`, [
+      1,
+      &apos;user&apos;,
+      await hash(&apos;password&apos;, await genSalt(12)),
+      roles.USER,
+    ]);
+    await queryRunner.query(`INSERT INTO USER(id, username, password, role) VALUES(?, ?, ?, ?);`, [
+      2,
+      &apos;admin&apos;,
+      await hash(&apos;admin&apos;, await genSalt(12)),
+      roles.ADMIN,
+    ]);
+  }
+
+  public async down(queryRunner: QueryRunner): Promise&lt;any&gt; {
+    await queryRunner.query(`DELETE FROM EMPLOYEE`);
+    await queryRunner.query(`DELETE FROM USER`);
+  }
+}</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Start the application: <code>yarn start:dev</code></p>
+<div class="imageblock">
+<div class="content">
+<img src="images/sample/start-app.png" alt="start app">
+</div>
+</div>
+</li>
+<li>
+<p>Check the swagger endpoint: <code><a href="http://localhost:3000/v1/api" class="bare">http://localhost:3000/v1/api</a></code></p>
+<div class="imageblock">
+<div class="content">
+<img src="images/sample/swagger.png" alt="swagger">
+</div>
+</div>
+</li>
+<li>
+<p>Make petitions to the employee CRUD: <code><a href="http://localhost:3000/v1/employee/employees" class="bare">http://localhost:3000/v1/employee/employees</a></code></p>
+<div class="imageblock">
+<div class="content">
+<img src="images/sample/employees.png" alt="employees">
+</div>
+</div>
+</li>
+<li>
+<p>Write the tests</p>
+<div class="paragraph">
+<p>As we do not create any method, only add some properties to the entity, all application must be tested by the autogenerated code. As we add some modules, you need to uncomment some lines in the <code>src/app/core/configuration/services/configuration.service.spec.ts</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">describe(&apos;ConfigurationService&apos;, () =&gt; {
+  const configService: ConfigurationService = new ConfigurationService();
+
+  it(&apos;should return the values of test config file&apos;, () =&gt; {
+    expect(configService.isDev).toStrictEqual(def.isDev);
+    expect(configService.host).toStrictEqual(def.host);
+    expect(configService.port).toStrictEqual(def.port);
+    expect(configService.clientUrl).toStrictEqual(def.clientUrl);
+    expect(configService.globalPrefix).toStrictEqual(def.globalPrefix);
+    // Remove comments if you add those modules
+    expect(configService.database).toStrictEqual(def.database);
+    expect(configService.swaggerConfig).toStrictEqual(def.swaggerConfig);
+    expect(configService.jwtConfig).toStrictEqual(def.jwtConfig);
+    // expect(configService.mailerConfig).toStrictEqual(def.mailerConfig);
+  });
+  it(&apos;should take the value of environment varible if defined&apos;, () =&gt; {
+    process.env.isDev = &apos;true&apos;;
+    process.env.host = &apos;notlocalhost&apos;;
+    process.env.port = &apos;123456&apos;;
+    process.env.clientUrl = &apos;http://theclienturl.net&apos;;
+    process.env.globalPrefix = &apos;v2&apos;;
+    process.env.swaggerConfig = JSON.stringify({
+      swaggerTitle: &apos;Test Application&apos;,
+    });
+    process.env.database = JSON.stringify({
+      type: &apos;oracle&apos;,
+      cli: { entitiesDir: &apos;src/notentitiesdir&apos; },
+    });
+    process.env.jwtConfig = JSON.stringify({ secret: &apos;NOTSECRET&apos; });
+    // process.env.mailerConfig = JSON.stringify({ mailOptions: { host: &apos;notlocalhost&apos; }});
+
+    expect(configService.isDev).toBe(true);
+    expect(configService.host).toBe(&apos;notlocalhost&apos;);
+    expect(configService.port).toBe(123456);
+    expect(configService.clientUrl).toBe(&apos;http://theclienturl.net&apos;);
+    expect(configService.globalPrefix).toBe(&apos;v2&apos;);
+    const database: any = { ...def.database, type: &apos;oracle&apos; };
+    database.cli.entitiesDir = &apos;src/notentitiesdir&apos;;
+    expect(configService.database).toStrictEqual(database);
+    expect(configService.swaggerConfig).toStrictEqual({
+      ...def.swaggerConfig,
+      swaggerTitle: &apos;Test Application&apos;,
+    });
+    expect(configService.jwtConfig).toStrictEqual({
+      ...def.jwtConfig,
+      secret: &apos;NOTSECRET&apos;,
+    });
+    // const mail: any = { ...def.mailerConfig };
+    // mail.mailOptions.host = &apos;notlocalhost&apos;;
+    // expect(configService.mailerConfig).toStrictEqual(mail);
+
+    process.env.isDev = undefined;
+    process.env.host = undefined;
+    process.env.port = undefined;
+    process.env.clientUrl = undefined;
+    process.env.globalPrefix = undefined;
+    process.env.database = undefined;
+    process.env.swaggerConfig = undefined;
+    process.env.jwtConfig = undefined;
+    // process.env.mailerConfig = undefined;
+  });
+});</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And the output should be:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/sample/test.png" alt="test">
+</div>
+</div>
+</li>
+</ol>
 </div>
 </div>
 </div>
@@ -776,7 +1251,7 @@ $ yarn start</code></pre>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2019-11-04 13:16:09 UTC
+Last updated 2019-11-04 15:58:53 UTC
 </sub></div>
 
 

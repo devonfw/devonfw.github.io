@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2019-11-04 13:17:54 UTC">
+<meta name="author" content="Updated at 2019-11-04 16:00:29 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -500,7 +500,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2019-11-04 13:18:05 UTC</span><br>
+<span id="author" class="author">Updated at 2019-11-04 16:00:40 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -539,11 +539,15 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="master-devon4node.asciidoc_guides.html#guides-swagger.asciidoc">30.8. Swagger</a>
 </li>
-<li><a href="master-devon4node.asciidoc_guides.html#guides-serializer.asciidoc">30.9. Serializer</a>
+<li><a href="master-devon4node.asciidoc_guides.html#guides-typeorm.asciidoc">30.9. TypeORM</a>
 </li>
-<li><a href="master-devon4node.asciidoc_guides.html#guides-logger.asciidoc">30.10. Logger</a>
+<li><a href="master-devon4node.asciidoc_guides.html#guides-serializer.asciidoc">30.10. Serializer</a>
 </li>
-<li><a href="master-devon4node.asciidoc_guides.html#guides-mailer.asciidoc">30.11. Mailer Module</a>
+<li><a href="master-devon4node.asciidoc_guides.html#guides-validation.asciidoc">30.11. Validation</a>
+</li>
+<li><a href="master-devon4node.asciidoc_guides.html#guides-logger.asciidoc">30.12. Logger</a>
+</li>
+<li><a href="master-devon4node.asciidoc_guides.html#guides-mailer.asciidoc">30.13. Mailer Module</a>
 </li>
 </ul>
 </li>
@@ -3170,7 +3174,133 @@ the OpenAPI specification that this module will emmit is v2.0. The OpenAPI v3.0 
 <!-- toc disabled -->
 </div>
 <div class="sect2">
-<h3 id="guides-serializer.asciidoc">30.9. Serializer</h3>
+<h3 id="guides-typeorm.asciidoc">30.9. TypeORM</h3>
+<div class="paragraph">
+<p>TypeORM is the default ORM provided by devon4node. It supports MySQL, MariaDB, Postgres, CockroachDB, SQLite, Microsoft SQL Server, Oracle, sql.js relational dabases and also supports MongoDB NoSQL database.</p>
+</div>
+<div class="paragraph">
+<p>Add TypeORM support to a devon4node application is very easy: you only need to execute the command <code>devon4node generate typeorm</code> and it will add all required dependencies to the project and also imports the @nestjs/typeorm module.</p>
+</div>
+<div class="paragraph">
+<p>For more information about TypeORM and the integration with NestJS you can visit <a href="https://typeorm.io">TypeORM webpage</a>, <a href="https://github.com/typeorm/typeorm">TypeORM GitHub repository</a> and <a href="https://docs.nestjs.com/recipes/sql-typeorm">NestJS TypeORM documentation page</a></p>
+</div>
+<div class="sect3">
+<h4 id="guides-typeorm.asciidoc_configuration">30.9.1. Configuration</h4>
+<div class="paragraph">
+<p>When you have the configuration module, the typeorm generator will add one property in order to be able to configure the database depending on the environment. Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">database: {
+  type: &apos;sqlite&apos;,
+  database: &apos;:memory:&apos;,
+  synchronize: false,
+  migrationsRun: true,
+  logging: true,
+  entities: [&apos;dist/**/*.entity.js&apos;],
+  migrations: [&apos;dist/migration/**/*.js&apos;],
+  subscribers: [&apos;dist/subscriber/**/*.js&apos;],
+  cli: {
+    entitiesDir: &apos;src/entity&apos;,
+    migrationsDir: &apos;src/migration&apos;,
+    subscribersDir: &apos;src/subscriber&apos;,
+  },
+},</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This object is a TypeORM ConnectionOptions. For fore information about it visit the <a href="https://typeorm.io/#/connection-options/">TypeORM Connection Options page</a>.</p>
+</div>
+<div class="paragraph">
+<p>There is also a special case: the default configuration. As the devon4node CLI need the database configuration when you use the <code>devon4node db</code> command, we also provide the ormconfig.json file. In this file you must put the configuration for you local environment. In order to do not have duplicated the configuration for local environment, in the default config file the database property is setted like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">database: require(&apos;../../ormconfig.json&apos;),</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>So, you only need to maintain the ormconfig.json file for the local environment.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guides-typeorm.asciidoc_entity">30.9.2. Entity</h4>
+<div class="paragraph">
+<p>Entity is a class that maps to a database table. The devon4node CLI has a generator to create new entities. You only need to execute the command <code>devon4node generate entity --name &lt;module-name&gt;/&lt;entity-name&gt;</code> and it generate the entity.</p>
+</div>
+<div class="paragraph">
+<p>In the entity, you must define all columns, relations, primary keys of your database table. By default, devon4node provides a class named <code>BaseEntity</code>. All entities created with the devon4node CLI will extends the <code>BaseEntity</code>. This entity provides you some common columns:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>id: the primary key of you table</p>
+</li>
+<li>
+<p>version: the version of the entry (used for auditing purposes)</p>
+</li>
+<li>
+<p>createdAt: creation date of the entry (used for auditing purposes)</p>
+</li>
+<li>
+<p>updatedAt: last update date of the entry (used for auditing purposes)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For more information about Entities, please visit the <a href="https://typeorm.io/#/entities">TypeORM entities page</a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guides-typeorm.asciidoc_repository">30.9.3. Repository</h4>
+<div class="paragraph">
+<p>With repositories, you can manage (insert, update, delete, load, etc.) a concrete entity. Using this pattern, we have separated the data (Entities) from the methods to manage it (Repositories).</p>
+</div>
+<div class="paragraph">
+<p>To use a repository you only need to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Import it in the module as follows:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">@Module({
+  imports: [TypeOrmModule.forFeature([Employee])],
+})</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+if you generate the entities with the devon4node CLI, this step is not neccesary, devon4node CLI do it for you.
+</td>
+</tr>
+</tbody></table>
+</div>
+</li>
+<li>
+<p>Inject the repository as dependency in your service:</p>
+<div class="listingblock">
+<div class="content">
+<pre>constructor(@InjectRepository(Employee) employeeRepository: Repository&lt;Employee&gt;) {}</pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You can see more details in the <a href="https://docs.nestjs.com/techniques/database">NestJS database</a> and <a href="https://docs.nestjs.com/recipes/sql-typeorm">NestJS TypeORM</a> documentation pages.</p>
+</div>
+<!-- toc disabled -->
+</div>
+</div>
+<div class="sect2">
+<h3 id="guides-serializer.asciidoc">30.10. Serializer</h3>
 <div class="paragraph">
 <p>Serialization is the process of translating data structures or object state into a format that can be transmitted across network and reconstructed later.</p>
 </div>
@@ -3236,7 +3366,72 @@ the OpenAPI specification that this module will emmit is v2.0. The OpenAPI v3.0 
 <!-- toc disabled -->
 </div>
 <div class="sect2">
-<h3 id="guides-logger.asciidoc">30.10. Logger</h3>
+<h3 id="guides-validation.asciidoc">30.11. Validation</h3>
+<div class="paragraph">
+<p>To be sure that your application will works well, you must validate any input data. devon4node by default provides a <code>ValidationPipe</code>. This <code>ValidationPipe</code> is the responsible of validate the request input and, if the input do not pass the validation process, it returns a <code>400 Bad Request</code> error.</p>
+</div>
+<div class="sect3">
+<h4 id="guides-validation.asciidoc_defining-validators">30.11.1. Defining Validators</h4>
+<div class="paragraph">
+<p>The <code>ValidationPipe</code> needs to know how to validate the input. For that purpose we use the <code>class-validator</code> package. This package allows you to define the validation of a class by using decorators.</p>
+</div>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">export class Coffee {
+  @IsDefined()
+  @IsString()
+  @MaxLength(255)
+  name: string;
+
+  @IsDefined()
+  @IsString()
+  @MaxLength(25)
+  type: string;
+
+  @IsDefined()
+  @IsNumber()
+  quantity: number;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As you can see in the previous example, we used some decorators in order to define the validators for every property of the Coffee class. You can find all decorators in the <a href="https://github.com/typestack/class-validator">class-validator github repository</a>.</p>
+</div>
+<div class="paragraph">
+<p>Now, when you want to receive a Coffee as input in some endpoint, it will execute the validations before executing the handler function.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+In order to be able to use the class-validator package, you must use classes instead of interfaces. As you know interfaces disappear at compiling time, and class-validator need to know the metadata of the properties in order to be able to validate.
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The <code>ValidationPipe</code> only works if you put a specific type in the handler definition. For example, if you define a handler like <code>getCoffee(@Body() coffee: any): Coffee {}</code> the ValidationPipe will not do anything. You must specify the type of the input: <code>getCoffee(@Body() coffee: Coffee): Coffee {}</code>
+</td>
+</tr>
+</tbody></table>
+</div>
+<!-- toc disabled -->
+</div>
+</div>
+<div class="sect2">
+<h3 id="guides-logger.asciidoc">30.12. Logger</h3>
 <div class="paragraph">
 <p>When you create a new devon4node application, it already has a logger: <code>src/app/shared/logger/winston.logger.ts</code>. This logger provide the methods <code>log</code>, <code>error</code> and <code>warn</code>. All of those methods will write a log message, but with a different log level.</p>
 </div>
@@ -3247,7 +3442,7 @@ the OpenAPI specification that this module will emmit is v2.0. The OpenAPI v3.0 
 <p>As you can see it is a simple example about how to use logger in a devon4node application. It will be update to a complex one in the next versions.</p>
 </div>
 <div class="sect3">
-<h4 id="guides-logger.asciidoc_how-to-use-logger">30.10.1. How to use logger</h4>
+<h4 id="guides-logger.asciidoc_how-to-use-logger">30.12.1. How to use logger</h4>
 <div class="paragraph">
 <p>In order to use the logger you only need to inject the logger as a dependecy:</p>
 </div>
@@ -3271,7 +3466,7 @@ the OpenAPI specification that this module will emmit is v2.0. The OpenAPI v3.0 
 </div>
 </div>
 <div class="sect2">
-<h3 id="guides-mailer.asciidoc">30.11. Mailer Module</h3>
+<h3 id="guides-mailer.asciidoc">30.13. Mailer Module</h3>
 <div class="paragraph">
 <p>This module enables you to send emails in devon4node. It also provides a template engine using Handlebars.</p>
 </div>
@@ -3279,7 +3474,7 @@ the OpenAPI specification that this module will emmit is v2.0. The OpenAPI v3.0 
 <p>It is a NestJS module that inject into your application a MailerService, which is the responsible to send the emails using the nodemailer library.</p>
 </div>
 <div class="sect3">
-<h4 id="guides-mailer.asciidoc_installing">30.11.1. Installing</h4>
+<h4 id="guides-mailer.asciidoc_installing">30.13.1. Installing</h4>
 <div class="paragraph">
 <p>Execute the following command in a devon4node project:</p>
 </div>
@@ -3290,7 +3485,7 @@ the OpenAPI specification that this module will emmit is v2.0. The OpenAPI v3.0 
 </div>
 </div>
 <div class="sect3">
-<h4 id="guides-mailer.asciidoc_configuring">30.11.2. Configuring</h4>
+<h4 id="guides-mailer.asciidoc_configuring">30.13.2. Configuring</h4>
 <div class="paragraph">
 <p>To configure the mailer module, you only need to import it in your application into another module. Example:</p>
 </div>
@@ -3394,7 +3589,7 @@ Then, you need to call to forRoot function in the module imports. Example:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="guides-mailer.asciidoc_usage">30.11.3. Usage</h4>
+<h4 id="guides-mailer.asciidoc_usage">30.13.3. Usage</h4>
 <div class="paragraph">
 <p>In order to use, you only need to inject using the dependency injection the MailerService.</p>
 </div>
@@ -3540,7 +3735,7 @@ this.mailer.sendTemplateMail(&apos;example@example.com&apos;, &apos;This is a su
 </div>
 </div>
 <div class="sect3">
-<h4 id="guides-mailer.asciidoc_handlebars-templates">30.11.4. Handlebars templates</h4>
+<h4 id="guides-mailer.asciidoc_handlebars-templates">30.13.4. Handlebars templates</h4>
 <div class="paragraph">
 <p>As mentioned above, this module allow you to use Handlebars as template engine, but it is optional. If you do not need the Handlebars, you just need to keep the hbsOptions undefined.</p>
 </div>
@@ -3553,7 +3748,7 @@ At the moment of module initialization, it will read the content of the template
 </div>
 </div>
 <div class="sect3">
-<h4 id="guides-mailer.asciidoc_local-development">30.11.5. Local development</h4>
+<h4 id="guides-mailer.asciidoc_local-development">30.13.5. Local development</h4>
 <div class="paragraph">
 <p>If you want to work with this module but you dont have a SMTP server, you can use the <code>streamTransport</code>. Example:</p>
 </div>
@@ -3706,7 +3901,7 @@ mail.message.pipe(process.stdout);</code></pre>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2019-11-04 13:16:09 UTC
+Last updated 2019-11-04 15:58:53 UTC
 </sub></div>
 
 
