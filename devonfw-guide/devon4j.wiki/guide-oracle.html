@@ -106,7 +106,7 @@
 You need an oracle account, then you can download it from <a href="https://www.oracle.com/technetwork/database/database-technologies/express-edition/downloads/index.html">here</a>.</p>
 </div>
 <div class="paragraph">
-<p>The most comfortable way to run it as needed is using docker. You can build your own docker image from the downloaded RPM using the <a href="https://github.com/oracle/docker-images/tree/master/OracleDatabase/SingleInstance">instructions and dockerfile from oracle</a>. (In case the build of the docker-image <a href="https://github.com/oracle/docker-images/issues/1133">fails reproducably</a> and you want to give up with the Dockerfiles from Oracle you can also try this inofficial <a href="https://github.com/fuzziebrain/docker-oracle-xe">docker-oracle-xe</a> solution).</p>
+<p>The most comfortable way to run it as needed is using docker. You can build your own docker image from the downloaded RPM using the <a href="https://github.com/oracle/docker-images/tree/master/OracleDatabase/SingleInstance">instructions and dockerfile from oracle</a>. (In case the build of the docker-image <a href="https://github.com/oracle/docker-images/issues/1133">fails reproducibly</a> and you want to give up with the Dockerfiles from Oracle you can also try this inofficial <a href="https://github.com/fuzziebrain/docker-oracle-xe">docker-oracle-xe</a> solution).</p>
 </div>
 <div class="paragraph">
 <p>To connect to your local XE database you need to use <code>xe</code> as the <code>SID</code> of your main database that can not be changed. The <code>hostname</code> should be <code>localhost</code> and the <code>port</code> is by default <code>1521</code> if you did not remap it with docker to something else. However, starting with XE 18c you need to be aware that oracle introduced a <a href="https://docs.oracle.com/database/121/CNCPT/cdbovrvw.htm">multi-tenant architecture</a>. Hence <code>xe</code> refers to the root <code>CDB</code> while you typically want to connect to the <code>PDB</code> (pluggable database) and XE ships with exactly one of this called <code>xepdb1</code>. To connect with <code>SQL Developer</code> switch <code>Connection Type</code> from <code>Basic</code> to <code>Advanced</code> and enter the <code>Custom JDBC URL</code> like e.g.</p>
@@ -206,7 +206,7 @@ spring.datasource.jmx-enabled=true
 <h2 id="guide-oracle.asciidoc_messaging">Messaging</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In case you want to do messaging based on JMS you might consider the <a href="https://docs.oracle.com/cd/E11882_01/server.112/e11013/aq_intro.htm">Oracle JMS</a> also called Oracle Streams Advanced Queuing, or Oracle Advanced Queuing, or OAQ or AQ for short. OAQ is a JMS provider based on the Oracle RDBMS and included in the DB product for no extra fee. OAQ has some features that exceede the JMS standard like a retention time (i.e. a built-in backup mechanism that allows to make messages "unread" within a configurable period of time so that these messages do not have to be resent by the sending application). Also, OAQ messages are stored in relational tables so they can easily be observed by a test driver in a system test scenario.
+<p>In case you want to do messaging based on JMS you might consider the <a href="https://docs.oracle.com/cd/E11882_01/server.112/e11013/aq_intro.htm">Oracle JMS</a> also called Oracle Streams Advanced Queuing, or Oracle Advanced Queuing, or OAQ or AQ for short. OAQ is a JMS provider based on the Oracle RDBMS and included in the DB product for no extra fee. OAQ has some features that exceed the JMS standard like a retention time (i.e. a built-in backup mechanism that allows to make messages "unread" within a configurable period of time so that these messages do not have to be resent by the sending application). Also, OAQ messages are stored in relational tables so they can easily be observed by a test driver in a system test scenario.
 Capgemini has used the <a href="https://projects.spring.io/spring-data-jdbc-ext/">Spring Data JDBC Extension</a> in order to process OAQ messages within <strong>the same technical transaction</strong> as the resulting Oracle RDBMS data changes <strong>without</strong> using 2PC and an XA-compliant transaction manager - which is not available out of the box in Tomcat. This is possible only due to the fact that OAQ queues and RDBMS tables actually reside in the same database. However, this is higher magic and should only be tried if high transaction rates must be achieved by avoiding 2PC.</p>
 </div>
 </div>
@@ -350,7 +350,7 @@ Capgemini has used the <a href="https://projects.spring.io/spring-data-jdbc-ext/
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2019-11-04 22:18:40 UTC
+Last updated 2019-11-05 10:58:49 UTC
 </sub></div>
 </div>
 </div>
