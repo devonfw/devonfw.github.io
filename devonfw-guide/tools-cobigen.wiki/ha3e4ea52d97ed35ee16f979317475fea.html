@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>CobiGen - Code-based incremental Generator</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#ha3e4ea52d97ed35ee16f979317475fea.asciidoc">CobiGen - Code-based incremental Generator</a>
+<ul class="sectlevel1">
+<li><a href="#ha3e4ea52d97ed35ee16f979317475fea.asciidoc_overview">Overview</a></li>
+<li><a href="#ha3e4ea52d97ed35ee16f979317475fea.asciidoc_architecture">Architecture</a></li>
+<li><a href="#ha3e4ea52d97ed35ee16f979317475fea.asciidoc_features-and-characteristics">Features and Characteristics</a></li>
+<li><a href="#ha3e4ea52d97ed35ee16f979317475fea.asciidoc_selection-of-current-and-past-cobigen-applications">Selection of current and past CobiGen applications</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="ha3e4ea52d97ed35ee16f979317475fea.asciidoc" class="sect0">CobiGen - Code-based incremental Generator</h1>
+<div class="sect1">
+<h2 id="ha3e4ea52d97ed35ee16f979317475fea.asciidoc_overview">Overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>CobiGen is a <strong>generic incremental generator</strong> for end to end code generation tasks, mostly used in Java projects.
+Due to a template-based approach, CobiGen <strong>generates any set of text-based documents and document fragments</strong>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Input (currently):</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Java classes</p>
+</li>
+<li>
+<p>XML-based files</p>
+</li>
+<li>
+<p>OpenAPI documents</p>
+</li>
+<li>
+<p>Possibly more inputs like WSDL, which is currently not implemented.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Output:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>any text-based document or document fragments specified by templates</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="ha3e4ea52d97ed35ee16f979317475fea.asciidoc_architecture">Architecture</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>CobiGen is build as an extensible framework for incremental code generation. It provides extension points for new input readers which allow reading new input types and converting them to an internally processed model. The model is used to process templates of different kinds to generate patches. The template processing will be done by different template engines. There is an extension point for template engines to support multiple ones as well. Finally, the patch will be structurally merged into potentially already existing code. To allow structural merge on different programming languages, the extension point for structural mergers has been introduced. Here you will see an overview of the currently available extension points and plug-ins:</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="ha3e4ea52d97ed35ee16f979317475fea.asciidoc_features-and-characteristics">Features and Characteristics</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Generate fresh files across all the layers of a application - ready to run.</p>
+</li>
+<li>
+<p>Add on to existing files merging code into it. E.g. generate new methods into existing java classes or adding nodes to an XML file. Merging of contents into existing files will be done using structural merge mechanisms.</p>
+</li>
+<li>
+<p>Structural merge mechanisms are currently implemented for Java, XML, Java Property Syntax, JSON, Basic HTML, Text Append, TypeScript.</p>
+</li>
+<li>
+<p>Conflicts can be resolved individually but automatically by former configuration for each template.</p>
+</li>
+<li>
+<p>CobiGen provides an <a href="#cobigen-eclipse_usage.asciidoc">Eclipse integration</a> as well as a <a href="#cobigen-maven_configuration.asciidoc">Maven Integration</a>.</p>
+</li>
+<li>
+<p>CobiGen comes with an extensive documentation for <a href="#cobigen-eclipse_installation.asciidoc">users</a> and <a href="#cobigen-core_configuration.asciidoc">developers</a>.</p>
+</li>
+<li>
+<p>Templates can be fully tailored to project needs - this is considered as a simple task.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="ha3e4ea52d97ed35ee16f979317475fea.asciidoc_selection-of-current-and-past-cobigen-applications">Selection of current and past CobiGen applications</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>General applications:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Generation of a <strong>Java CRUD application based on <a href="https://github.com/oasp/">devonfw</a> architecture</strong> including all software-layers on the server plus code for js-clients (Angular). You can find details <a href="#cobigen-usecases.asciidoc">here</a>.</p>
+</li>
+<li>
+<p>Generation of a <strong>Java CRUD application according to the Register Factory architecture</strong>. Persistence entities are the input for generation.</p>
+</li>
+<li>
+<p>Generation of <strong>builder classes for generating test data</strong> for JUnit-Tests. Input are the persistence entities.</p>
+</li>
+<li>
+<p>Generation of a <strong>EXT JS 6</strong> client with full CRUD operations connected a devon4j server.</p>
+</li>
+<li>
+<p>Generation of a <strong>Angular 6</strong> client with full CRUD operations connected a devon4j server.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Project-specific applications in the past:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Generation of an <strong>additional Java type hierarchy on top of existing Java classes</strong> in combination with additional methods to be integrated in the modified classes. Hibernate entities were considered as input as well as output of the generation. The rational in this case, was to generate an additional business object hierarchy on top of an existing data model for efficient business processing.</p>
+</li>
+<li>
+<p>Generation of <strong>hash- and equals-methods</strong> as well as copy constructors depending on the field types of the input Java class. Furthermore, CobiGen is able to re-generate these methods/constructors triggered by the user, i.e, when fields have been changed.</p>
+</li>
+<li>
+<p><strong>Extraction of JavaDoc</strong> of test classes and their methods for generating a csv test documentation. This test documentation has been further processed manually in Excel to provide a good overview about the currently available tests in the software system, which enables further human analysis.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started-what-is-devonfw.asciidoc.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started-why-should-i-use-devonfw.asciidoc.html">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started-what-is-devonfw.asciidoc.html#getting-started-what-is-devonfw.asciidoc_devonfw-technology-stack">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/master-general-start.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-devon4j.asciidoc_introduction.html#architecture.asciidoc">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/master-ide.asciidoc_integrated-development-environment.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/general-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2019-11-06 10:59:31 UTC
+</sub></div>
+</div>
+</div>
+</body>
+</html>
