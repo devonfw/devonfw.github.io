@@ -80,7 +80,7 @@ function getNewName(file) {
     .update(name)
     .digest('hex');
   console.log('hash for file: ' + hash);
-  return hash + parsedPath.base;
+  return parsedPath.name.slice(0, 1).toLowerCase() + hash + parsedPath.ext;
 }
 
 function rename(filesToRename) {
@@ -108,19 +108,20 @@ function renameFiles(filesFromTree, referenced) {
     for (const ref of references) {
       // get where the referenced file is located
       const refFilePath = path.join(fileDir, ref);
+      const objFound = filesFromTree.find((file) => file.path == refFilePath);
       console.log(
         '--------------------- UPDATING REFERENCES -------------------\n',
       );
 
       updateReferences(file, ref, getNewName(refFilePath));
-      const objFound = filesFromTree.find((file) => file.path == refFilePath);
 
       if (objFound) {
         filesToRename.add(refFilePath);
       } else {
-        console.warn('referenced file not found: ' + refFilePath);
-        console.warn('looking for:' + refFilePath + referenced.extension);
-        filesToRename.add(refFilePath + referenced.extension);
+        const refWithExt = refFilePath + referenced.extension;
+        console.warn(`referenced file not found: ${refFilePath}`);
+        console.warn(`looking for: ${refWithExt}`);
+        filesToRename.add(refWithExt);
       }
     }
   }
@@ -146,10 +147,7 @@ if (process.argv.length > 4) {
   const filteredTree = dirTree(path.join(__dirname, folder), {
     extensions: extensionRegex,
   });
-
   const filesFromTree = justFiles(filteredTree);
-
-  console.log(filesFromTree);
 
   renameFiles(filesFromTree, referencedFile);
 }
