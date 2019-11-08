@@ -72,8 +72,10 @@ class DirTree extends HTMLDivElement {
     function detailsTemplate(fileInfo) {
       let details = `
         <div class="col-12 col-sm-8">
-          <h4 class="font-weight-bold details-title">${fileInfo.title}</h4>
-          <p class="mt-4 details-content">${fileInfo.text}</p>
+          <a href="${fileInfo.url}" class="d-flex align-items-center td-hover-none">
+            <h4 class="font-weight-bold mb-0 details-title">${fileInfo.title}</h4><div class="custom-bullet forward-arrow ml-3"></div>
+          </a>
+          <p class="mt-4 pt-1 details-content">${fileInfo.text}</p>
         </div>
         <div class="col-12 col-sm-4 details-references">
           <h4>Links</h4>
@@ -111,10 +113,11 @@ class DirTree extends HTMLDivElement {
         const dir = aux.find('.directory');
         const title = dir.find('h2').text();
         const text = getText(dir);
+        const url = `${path.dir}/${path.file}`;
         const commonLinks = aux.find('.common-links a');
         const videosLinks = aux.find('.videos-links a');
 
-        const fileInfo = { title, text };
+        const fileInfo = { title, text, url };
         const details = detailsTemplate(fileInfo);
         $('.dir-component .dir-tree-detail').html(details);
         $('.dir-component .details-links').html(commonLinks);
