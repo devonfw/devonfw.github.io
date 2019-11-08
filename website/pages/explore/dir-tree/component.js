@@ -72,10 +72,7 @@ class DirTree extends HTMLDivElement {
     function detailsTemplate(fileInfo) {
       let details = `
         <div class="col-12 col-sm-8">
-          <h4 class="font-weight-bold details-first-title">
-            More info <div class="custom-bullet forward-arrow ml-3 mt-1"></div>
-          </h4>
-          <h4 class="font-weight-bold mt-3 details-title">${fileInfo.title}</h4>
+          <h4 class="font-weight-bold details-title">${fileInfo.title}</h4>
           <p class="mt-4 details-content">${fileInfo.text}</p>
         </div>
         <div class="col-12 col-sm-4 details-references">
