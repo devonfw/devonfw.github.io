@@ -303,6 +303,13 @@ Some 3rd party libraries were parsing the Java version in a very naive way makin
 </tbody>
 </table>
 </div>
+<div class="sect3">
+<h4 id="guide-jdk.asciidoc_resourcebundles">ResourceBundles</h4>
+<div class="paragraph">
+<p>For internationalization (i18n) and localization (l10n) <code>ResourceBundle</code> is used for language and country specific texts and configurations as properties (e.g. <code>MyResourceBundle_de.properties</code>). With Java modules there are changes and impacts you need to know to get things working. The most important change is documented in the <a href="https://docs.oracle.com/javase/9/docs/api/java/util/ResourceBundle.html#bundleprovider">JavaDoc of ResourceBundle</a>. However, instead of using <a href="https://docs.oracle.com/javase/9/docs/api/java/util/spi/ResourceBundleProvider.html">ResourceBundleProvider</a> and refactoring your entire code causing incompatibilities, you can simply put the resource bundles in a regular JAR on the classpath rather than a named module (or into the lauching app).
+If you want to implement (new) Java modules with i18n support, you can have a look at <a href="https://github.com/m-m-m/nls#mmm-nls">mmm-nls</a>.</p>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="guide-jdk.asciidoc_buildtime-changes">Buildtime Changes</h3>
@@ -411,6 +418,28 @@ For maven the new solution is <a href="https://spotbugs.github.io/spotbugs-maven
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect3">
+<h4 id="guide-jdk.asciidoc_maven-usage">Maven Usage</h4>
+<div class="paragraph">
+<p>With Java modules you can not run Javadoc standalone anymore or you will get this error when running <code>mvn javadoc:javadoc</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[ERROR] Failed to execute goal org.apache.maven.plugins:maven-javadoc-plugin:3.1.1:javadoc (default-cli) on project mmm-base: An error has occurred in Javadoc report generation:
+[ERROR] Exit code: 1 - error: module not found: io.github.mmm.base
+[ERROR]
+[ERROR] Command line was: /projects/mmm/software/java/bin/javadoc @options @packages @argfile</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As a solution or workaround you need to include the <code>compile</code> goal into your build lifecycle so the module-path is properly configured:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mvn compile javadoc:javadoc</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -570,7 +599,7 @@ For maven the new solution is <a href="https://spotbugs.github.io/spotbugs-maven
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2019-11-08 13:29:55 UTC
+Last updated 2019-11-10 10:14:14 UTC
 </sub></div>
 </div>
 </div>
