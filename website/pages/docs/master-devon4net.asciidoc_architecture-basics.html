@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2019-11-11 15:31:34 UTC">
+<meta name="author" content="Updated at 2019-11-11 15:59:45 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -515,7 +515,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2019-11-11 15:31:44 UTC</span><br>
+<span id="author" class="author">Updated at 2019-11-11 15:59:54 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -576,7 +576,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect2">
 <h3 id="architecture_guide.asciidoc">21.1. Introduction</h3>
 <div class="paragraph">
-<p>The <a href="http://oasp.io"><em>Open Application Standard Platform</em> (OASP)</a> provides a solution to building applications which combine best-in-class frameworks and libraries as well as industry proven practices and code conventions.
+<p>The <a href="https://devonfw.com"><em>devonfw platform</em></a> provides a solution to building applications which combine best-in-class frameworks and libraries as well as industry proven practices and code conventions.
 It massively speeds up development, reduces risks and helps you to deliver better results.</p>
 </div>
 <div class="sect3">
@@ -606,7 +606,7 @@ It massively speeds up development, reduces risks and helps you to deliver bette
 </div>
 <div id="architecture_guide.asciidoc_img-t-architecture" class="imageblock">
 <div class="content">
-<a class="image" href="images/onion.png"><img src="images/onion.png" alt="technical architecture" width="450"></a>
+<a class="image" href="images/onion_architecture.png"><img src="images/onion_architecture.png" alt="technical architecture" width="450"></a>
 </div>
 <div class="title">Figure 91. High level architecture representation</div>
 </div>
@@ -625,7 +625,7 @@ It massively speeds up development, reduces risks and helps you to deliver bette
 <div class="title">Figure 92. Net application stack</div>
 </div>
 <div class="paragraph">
-<p>The given application template integrates Swagger contract automatic generation. This provides the possibility to external applications (angular, mobile apps, external services&#x2026;&#x200B;) to consume the data from a well defined exposed contract.</p>
+<p>The provided application template implements an dotnet API application. Also integrates by default the Swagger client. This provides the possibility to share the contract with external applications (angular, mobile apps, external services&#x2026;&#x200B;).</p>
 </div>
 </div>
 <div class="sect5">
@@ -634,31 +634,67 @@ It massively speeds up development, reduces risks and helps you to deliver bette
 <p>The business layer implements the core functionality of the application and encapsulates the component&#x2019;s logic.
 This layer provides the interface between the data transformation and the application exposition. This allow the data to be optimized and ready for different data consumers.</p>
 </div>
-</div>
-<div class="sect5">
-<h6 id="architecture_guide.asciidoc_service-layer">Service layer</h6>
 <div class="paragraph">
-<p>The service layer orchestrates the data obtained between the <em>Domain Layer</em> and the <em>Business Layer</em>. Also transforms the data to be used more efficiently between layers.</p>
+<p>This layer may implement for each main entity the API controller, the entity related service and other classes to support the application logic.</p>
 </div>
 <div class="paragraph">
-<p>So, if a service needs the help of another service or repository, the implemented Dependency Injection is the solution to accomplish the task.</p>
-</div>
-<div class="paragraph">
-<p>In order to be as flexible as the implementation of <em>Repository Pattern</em> in the <em>Data Layer</em> , each service implementation inherits from EntityService class:</p>
+<p>In order to implement the service logic, the services class must follow the next specification:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-c#" data-lang="c#">    public class Service&lt;TContext&gt; : IService where TContext: DbContext</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>PE: devon4Net API template shows how to implement the TODOs service as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#">    public class TodoService: Service&lt;TodoContext&gt;, ITodoService</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Where <em>Service</em> is the base service class to be inherited and have full access for the <em>Unit of work</em>, <em>TodoContext</em> is the TODOs database context and <em>ITodoService</em> is the interface of the service, which exposes the public extended methods to be implemented.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="architecture_guide.asciidoc_data-layer">Data layer</h6>
+<div class="paragraph">
+<p>The data layer orchestrates the data obtained between the <em>Domain Layer</em> and the <em>Business Layer</em>. Also transforms the data to be used more efficiently between layers.</p>
+</div>
+<div class="paragraph">
+<p>So, if a service needs the help of another service or repository, the implemented Dependency Injection is the solution to accomplish the task.</p>
+</div>
+<div class="paragraph">
+<p>The main aim of this layer is to implement the repository for each entity. The repository&#x2019;s interface is defined in the Domain layer.</p>
+</div>
+<div class="paragraph">
+<p>In order to implement the repository logic, the repository class must follow the next specification:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#">    Repository&lt;T&gt; : IRepository&lt;T&gt; where T : class</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>PE: devon4Net API template shows how to implement the TODOs repository as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#">    public class TodoRepository : Repository&lt;Todos&gt;, ITodoRepository</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Where <em>Repository</em> is the the base repository class to be inherited and have full access for the basic CRUD operations, <em>Todos</em> is the entity defined in the database context. <em>ITodoRepository</em> is the interface of the repository, which exposes the public extended methods to be implemented.</p>
+</div>
 <div class="admonitionblock note">
 <table>
 <tbody><tr>
 <td class="icon">
-<div class="title">Note</div>
+<i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Once more &lt;T&gt; is the mapped class which reference the entity from the database context. This abstraction allows to write services implementation with different database contexts
+Please remember that &lt;T&gt; is the mapped class which reference the entity from the database context. This abstraction allows to write services implementation with different database contexts
 </td>
 </tr>
 </tbody></table>
@@ -667,7 +703,7 @@ Once more &lt;T&gt; is the mapped class which reference the entity from the data
 <div class="sect5">
 <h6 id="architecture_guide.asciidoc_domain-layer">Domain layer</h6>
 <div class="paragraph">
-<p>The data layer provides access to data directly exposed from other systems. The main source use to be a data base system. The provided template makes use of <em>Entity Framework</em> solution from Microsoft in order to achieve this functionality.</p>
+<p>The domain layer provides access to data directly exposed from other systems. The main source is used to be a data base system. The provided template makes use of <em>Entity Framework</em> solution from Microsoft in order to achieve this functionality.</p>
 </div>
 <div class="paragraph">
 <p>To make a good use of this technology, <em>Repository Pattern</em> has been implemented with the help of <em>Unit Of Work</em> pattern. Also, the use of generic types are makes this solution to be the most flexible.</p>
@@ -684,7 +720,7 @@ Once more &lt;T&gt; is the mapped class which reference the entity from the data
 <table>
 <tbody><tr>
 <td class="icon">
-<div class="title">Note</div>
+<i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
 Where &lt;T&gt; is the mapped class which reference the entity from the database.
@@ -695,6 +731,29 @@ Where &lt;T&gt; is the mapped class which reference the entity from the database
 <div class="paragraph">
 <p>The repository and unit of work patterns are create an abstraction layer between the data access layer and the business logic layer of an application.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Domain Layer has no dependencies with other layers. It contains the Entities, datasources and the Repository Interfaces.
+</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="architecture_guide.asciidoc_devon4net-architecture-layer-implementaion">devon4Net architecture layer implementaion</h5>
+<div class="paragraph">
+<p>The next picture shows how the devon4Net API template implements the architectured described in previous points:</p>
+</div>
+<div id="architecture_guide.asciidoc_img-t-architecture" class="imageblock">
+<div class="content">
+<a class="image" href="images/onion_architecture_solution.png"><img src="images/onion_architecture_solution.png" alt="devon4Net api templare architecture implementation" width="400"></a>
+</div>
+<div class="title">Figure 93. devon4Net architecture implementations</div>
 </div>
 <div class="sect5">
 <h6 id="architecture_guide.asciidoc_cross-cutting-concerns">Cross-Cutting concerns</h6>
@@ -703,6 +762,7 @@ Where &lt;T&gt; is the mapped class which reference the entity from the database
 </div>
 <div class="paragraph">
 <p>A common component set of cross cutting components include different types of functionality regarding to authentication, authorization, security, caching, configuration, logging, and communication.</p>
+</div>
 </div>
 </div>
 </div>
@@ -724,7 +784,7 @@ Where &lt;T&gt; is the mapped class which reference the entity from the database
 <div class="content">
 <a class="image" href="images/laryer_arch_detail.png"><img src="images/laryer_arch_detail.png" alt="technical architecture" width="750"></a>
 </div>
-<div class="title">Figure 93. Architecture representation in deep</div>
+<div class="title">Figure 94. Architecture representation in deep</div>
 </div>
 </div>
 <div class="sect3">
@@ -732,22 +792,102 @@ Where &lt;T&gt; is the mapped class which reference the entity from the database
 <div class="sect4">
 <h5 id="architecture_guide.asciidoc_state-of-the-art">State of the art</h5>
 <div class="paragraph">
-<p>The provided bundle contains two .Net templates (Classic .Net Framework 4.5+ and .Net Core Framework).</p>
+<p>The provided bundle contains the devon4Net API template based on .net core. The template allows to create a microservice solution with minimal configuration.</p>
 </div>
 <div class="paragraph">
-<p>Both templates share the same architecture. the current version contains the next functionalities implemented:</p>
+<p>Also, the devon4Net framework can be added to third party templates such as the Amazon API template to use lambdas in serverless envirnments.</p>
 </div>
-<div id="architecture_guide.asciidoc_img-t-architecture" class="imageblock">
-<div class="content">
-<a class="image" href="images/functionality_stack.png"><img src="images/functionality_stack.png" alt="technical architecture" width="820"></a>
+<div class="paragraph">
+<p>Some features are:</p>
 </div>
-<div class="title">Figure 94. Current available functionality</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Global configuration automated. devon4Net can be instantiated on any .net core application template with no effort</p>
+</li>
+<li>
+<p>Support for HTTP2</p>
+</li>
+<li>
+<p>Number of minium libraries needed</p>
+</li>
+<li>
+<p>Modular clean Architecture layer</p>
+</li>
+<li>
+<p>Red button functionality (aka killswitch) to stop attending API request with custom error</p>
+</li>
+<li>
+<p>API error management via middleware</p>
+</li>
+<li>
+<p>Support to only accept request from clients with a specific client certificate on Kestrel server. Special thanks to Bart Roozendaal (Capgemini NL)</p>
+</li>
+<li>
+<p>All components use IOptions pattern to be set up properly</p>
+</li>
+<li>
+<p>Swagger generation compatible con open api v3</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Modules</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>The devon4Net netstandard libraries have been updated to netstandard 2.1</p>
+</li>
+<li>
+<p>JWT:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Secured token encryption (token cannot be decrypted anymore by external parties). You can choose the encryption algorithm depending on your needs</p>
+</li>
+<li>
+<p>Support for secret key or certificate encryption</p>
+</li>
+<li>
+<p>Authorization available in the autogenerated swagger portal</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Circuit breaker</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Added support to bypass certificate validation</p>
+</li>
+<li>
+<p>Support to use a certificate for https communications using Microsoft&#x2019;s httpclient factory</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Unit of Work</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Repository classes unified for increasing performance and reduce the consumed memory</p>
+</li>
+<li>
+<p>Support for different database servers: In memory, Cosmos, MySQL + MariaDB, Firebird, PostgreSQL, Oracle, SQLite, Access, MS Local.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect4">
 <h5 id="architecture_guide.asciidoc_software-stack">Software stack</h5>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 22. Technology Stack of OASP</caption>
+<caption class="title">Table 22. Technology Stack of devon4Net</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -764,12 +904,12 @@ Where &lt;T&gt; is the mapped class which reference the entity from the database
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">runtime</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">language &amp; VM</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Microsoft .Net 4.6 oder .Net Core Version</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">.Net Core Version 3.0</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="master-devon4j.asciidoc_layers.html#guide-dataaccess-layer.asciidoc">persistence</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">OR-mapper</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://msdn.microsoft.com/en-us/data/ee712907.aspx">Entity Framework Core / Entity Framework 6 - Code TBD</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://msdn.microsoft.com/en-us/data/ee712907.aspx">Entity Framework Core</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="master-devon4j.asciidoc_layers.html#guide-service-layer.asciidoc">service</a></p></td>
@@ -805,6 +945,11 @@ Where &lt;T&gt; is the mapped class which reference the entity from the database
 <td class="tableblock halign-left valign-top"><p class="tableblock">unit tests</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">framework</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://xunit.github.io/">xUnit</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Circuit breaker</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">framework, allows retry pattern on http calls</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/App-vNext/Polly">Polly</a></p></td>
 </tr>
 </tbody>
 </table>
@@ -1287,7 +1432,7 @@ Where &lt;T&gt; is the mapped class which reference the entity from the database
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2019-11-11 15:29:59 UTC
+Last updated 2019-11-11 15:58:22 UTC
 </sub></div>
 
 
