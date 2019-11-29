@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Page Class</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/image54.png" alt="image54">
+</div>
+</div>
+<div class="paragraph">
+<p>This example shows how to sort and read data from tables.</p>
+</div>
+<div class="paragraph">
+<p>After click on column header data will be sorted down and after another click sorted up by selected attribute. Watch how both tables content changes on page DOM. Sorting is performed by JavaScript functions.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/image55.png" alt="image55">
+</div>
+</div>
+<div class="sect4">
+<h5 id="example-20-sortable-data-tables.asciidoc_page-class">Page Class</h5>
+<div class="listingblock">
+<div class="content">
+<pre>public class SortableDataTablesPage extends BasePage {
+
+    private static final By selectorTable  = By.cssSelector("table.tablesorter");
+    private static final By selectorHeader = By.cssSelector("th");
+
+    @Override
+    public boolean isLoaded() {
+        getDriver().waitForPageLoaded();
+        return getDriver().getCurrentUrl()
+                .contains(PageSubURLsProjectYEnum.SORTABLE_DATA_TABLES.getValue());
+    }
+
+    @Override
+    public void load() {
+        BFLogger.logDebug("Load 'Data Tables' page.");
+        getDriver().get(GetEnvironmentParam.THE_INTERNET_MAIN_PAGE.getValue() +
+                PageSubURLsProjectYEnum.SORTABLE_DATA_TABLES.getValue());
+        getDriver().waitForPageLoaded();
+    }
+
+    @Override
+    public String pageTitle() {
+        return getActualPageTitle();
+    }
+
+    /**
+     * Sorts data in given column using ascending order.
+     *
+     * @param columnNumber The number of column where data should be sorted
+     * @param tableNumber  The number of table where data should be sorted
+     */
+    public void sortColumnAscending(int columnNumber, int tableNumber) {
+        WebElement header = this.getTableHeaders(columnNumber, tableNumber);
+        String className = header.getAttribute("class");
+        if (className.contains("headerSortUp") || !className.contains("headerSortDown")) {
+            header.click();
+        }
+    }
+
+    /**
+     * Sorts data in given column using descending order.
+     *
+     * @param columnNumber The number of column where data should be sorted
+     * @param tableNumber  The number of table where data should be sorted
+     */
+    public void sortColumnDescending(int columnNumber, int tableNumber) {
+        WebElement header = this.getTableHeaders(columnNumber, tableNumber);
+        String className = header.getAttribute("class");
+        if (!className.contains("headerSortUp")) {
+            header.click();
+            if (!className.contains("headerSortDown")) {
+                header.click();
+            }
+        }
+    }
+
+    /**
+     * Return given column values from chosen table.
+     *
+     * @param columnNumber The number of column where data should be retrieved from
+     * @param tableNumber  The number of table where data should be retrieved from
+     * @return list of values from given column
+     */
+    public List&lt;String&gt; getColumnValues(int columnNumber, int tableNumber) {
+        WebElement table = getTable(tableNumber);
+        return JsoupHelper.findTexts(table, By.cssSelector("tr &gt; td:nth-child(" + (columnNumber + 1)
+                + ")"));
+    }
+
+    /**
+     * Returns column's class name.
+     *
+     * @param columnNumber The number of column to get class number
+     * @param tableNumber  The number of table to get column class name
+     * @return String object representing column's class name
+     */
+    public String readColumnClass(int columnNumber, int tableNumber) {
+        return this.getTableHeaders(columnNumber, tableNumber)
+                .getAttribute("class");
+    }
+
+    private WebElement getTable(int tableNumber) {
+        return new ListElements(selectorTable).getList()
+                .get(tableNumber);
+    }
+
+    private WebElement getTableHeaders(int columnNumber, int tableNumber) {
+        return getTable(tableNumber).findElements(selectorHeader)
+                .get(columnNumber);
+    }
+}</pre>
+</div>
+</div>
+<div class="sect5">
+<h6 id="example-20-sortable-data-tables.asciidoc_finding-values">Finding values</h6>
+<div class="paragraph">
+<p>Using proper selectors save elements such as tables and it&#8217;s columns' headers as Web Element Lists. Then you can get wanted element finding it by index (e. g. table or column number). To get column values to use <code>JsoupHelper</code> and to check if the column is sorted get its class attribute.</p>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="example-20-sortable-data-tables.asciidoc_test-class">Test Class</h5>
+<div class="paragraph">
+<p>Before all tests: Open The Internet Main Page</p>
+</div>
+<div class="paragraph">
+<p>Before each case: Go to Sortable Data Tables Page</p>
+</div>
+<div class="paragraph">
+<p>Case 1:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Choose a random table</p>
+</li>
+<li>
+<p>Sort first column "Last Name" in ascending order</p>
+</li>
+<li>
+<p>Check if column header class contains "headerSortDown"</p>
+</li>
+<li>
+<p>Save column content to the List</p>
+</li>
+<li>
+<p>Create List copy and sort it</p>
+</li>
+<li>
+<p>Compare sorted values and values from the table</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Case 2:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Choose a random table</p>
+</li>
+<li>
+<p>Sort second column "First Name" in descending order</p>
+</li>
+<li>
+<p>Check if column header class contains "headerSortUp"</p>
+</li>
+<li>
+<p>Save column content to the List</p>
+</li>
+<li>
+<p>Create List copy and sort it then reverse it</p>
+</li>
+<li>
+<p>Compare reversed sorted values and values from the table</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>@Category({ TestsSelenium.class, TestsChrome.class, TestsFirefox.class, TestsIE.class })
+public class SortableDataTablesTest extends TheInternetBaseTest {
+
+    private static SortableDataTablesPage sortableDataTablesPage;
+
+    private List&lt;String&gt; actualValues;
+    private List&lt;String&gt; expectedValues;
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        logStep("Open the Url http://the-internet.herokuapp.com/");
+        theInternetPage = new TheInternetPage();
+        theInternetPage.load();
+
+        logStep("Verify if Url http://the-internet.herokuapp.com/ is opened");
+        assertTrue("Unable to load The Internet Page", theInternetPage.isLoaded());
+    }
+
+    @Override
+    public void setUp() {
+        logStep("Click subpage link");
+        sortableDataTablesPage = theInternetPage.clickSortableDataTablesLink();
+
+        logStep("Verify if subpage is opened");
+        assertTrue("Unable to open Sortable Data Tables page", sortableDataTablesPage.isLoaded());
+    }
+
+    @Test
+    public void shouldLastNameColumnBeOrderedAscendingAfterSort() {
+        int columnNumber = 0;
+        int tableNumber = new Random().nextInt(2);
+
+        logStep("Sort 'Last Name' column");
+        sortableDataTablesPage.sortColumnAscending(columnNumber, tableNumber);
+        assertTrue("Unable to set ascending order for 'Last Name' column",
+                sortableDataTablesPage.readColumnClass(columnNumber, tableNumber)
+                        .contains("headerSortDown"));
+
+        logStep("Verify data order for 'Last Name' column");
+        actualValues = sortableDataTablesPage.getColumnValues(columnNumber, tableNumber);
+        expectedValues = new ArrayList&lt;String&gt;(actualValues);
+        Collections.sort(expectedValues);
+        assertEquals("'Last Name' column is not sorted by ascending order",
+                expectedValues, actualValues);
+    }
+
+    @Test
+    public void shouldFirstNameColumnBeOrderedDescendingAfterSort() {
+        int columnNumber = 1;
+        int tableNumber = new Random().nextInt(2);
+
+        logStep("Sort 'First Name' column");
+        sortableDataTablesPage.sortColumnDescending(columnNumber, tableNumber);
+        assertTrue("Unable to set descending order for 'First Name' column",
+                sortableDataTablesPage.readColumnClass(columnNumber, tableNumber)
+                        .contains("headerSortUp"));
+
+        logStep("Verify data order for 'First Name' column");
+        actualValues = sortableDataTablesPage.getColumnValues(columnNumber, tableNumber);
+        expectedValues = new ArrayList&lt;String&gt;(actualValues);
+        Collections.sort(expectedValues);
+        Collections.reverse(expectedValues);
+        assertEquals("'First Name' column is not sorted by descending order",
+                expectedValues, actualValues);
+    }
+}</pre>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started-what-is-devonfw.asciidoc.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started-why-should-i-use-devonfw.asciidoc.html">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started-what-is-devonfw.asciidoc.html#getting-started-what-is-devonfw.asciidoc_devonfw-technology-stack">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/master-general-start.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-devon4j.asciidoc_introduction.html#architecture.asciidoc">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/master-ide.asciidoc_integrated-development-environment.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/general-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2019-11-29 08:54:22 UTC
+</sub></div>
+</div>
+</div>
+</body>
+</html>

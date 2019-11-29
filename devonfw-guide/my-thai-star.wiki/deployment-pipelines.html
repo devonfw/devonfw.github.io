@@ -101,12 +101,6 @@
 <ul class="sectlevel0">
 <li><a href="#deployment-pipelines.asciidoc">Deployment Pipelines</a>
 <ul class="sectlevel1">
-<li><a href="#deployment-pipelines.asciidoc_mythaistar_deploy-together-pipeline">MyThaiStar_DEPLOY-Together Pipeline</a>
-<ul class="sectlevel2">
-<li><a href="#deployment-pipelines.asciidoc_parameters">Parameters</a></li>
-<li><a href="#deployment-pipelines.asciidoc_pipeline-steps">Pipeline steps</a></li>
-</ul>
-</li>
 <li><a href="#deployment-pipelines.asciidoc_mythaistar_server_deploy-pipeline">MyThaiStar_SERVER_DEPLOY Pipeline</a>
 <ul class="sectlevel2">
 <li><a href="#deployment-pipelines.asciidoc_parameters">Parameters</a></li>
@@ -119,12 +113,18 @@
 <li><a href="#deployment-pipelines.asciidoc_pipeline-steps">Pipeline steps</a></li>
 </ul>
 </li>
+<li><a href="#deployment-pipelines.asciidoc_mythaistar_reverse-proxy_deploy-pipeline">MyThaiStar_REVERSE-PROXY_DEPLOY Pipeline</a>
+<ul class="sectlevel2">
+<li><a href="#deployment-pipelines.asciidoc_parameters">Parameters</a></li>
+<li><a href="#deployment-pipelines.asciidoc_pipeline-steps">Pipeline steps</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 <h1 id="deployment-pipelines.asciidoc" class="sect0">Deployment Pipelines</h1>
 <div class="paragraph">
-<p>As PL does not support deployments, we have created separate pipelines for this purpose. Those pipelines are: <strong>MyThaiStar_DEPLOY-Together</strong>, <strong>MyThaiStar_FRONTEND_DEPLOY</strong> and <strong>MyThaiStar_SERVER_DEPLOY</strong>.</p>
+<p>As PL does not support deployments, we have created separate pipelines for this purpose. Those pipelines are: <strong>MyThaiStar_REVERSE-PROXY_DEPLOY</strong>, <strong>MyThaiStar_FRONTEND_DEPLOY</strong> and <strong>MyThaiStar_SERVER_DEPLOY</strong>.</p>
 </div>
 <div class="paragraph">
 <p>The application will be deployed using docker on a remote machine. The architecture is as follows:</p>
@@ -138,102 +138,26 @@
 <p>The parts to be deployed are: an NGINX reverse proxy, the java application and the angular application.</p>
 </div>
 <div class="sect1">
-<h2 id="deployment-pipelines.asciidoc_mythaistar_deploy-together-pipeline">MyThaiStar_DEPLOY-Together Pipeline</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The MyThaiStar_DEPLOY-Together pipeline will deploy all parts of My Thai Star application into a remote server via ssh.</p>
-</div>
-<div class="sect2">
-<h3 id="deployment-pipelines.asciidoc_parameters">Parameters</h3>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>sshAgentCredentials</strong>: The SSH private key for connection to remote server. The public key must be included in the remote server&#8217;s authorized_keys.</p>
-</li>
-<li>
-<p><strong>nexusApiUrl</strong>: The url to the nexus api. <a href="http://nexus3-core:8081/nexus3" class="bare">http://nexus3-core:8081/nexus3</a> is the default url for PL.</p>
-</li>
-<li>
-<p><strong>nexusCredentialsId</strong>: The nexus credentials.</p>
-</li>
-<li>
-<p><strong>repository</strong>: Name of the repository where the artifacts are stored. maven-snapshots is the default value for PL.</p>
-</li>
-<li>
-<p><strong>JAVA_VERSION</strong>: The version of the java project that you want to deploy.</p>
-</li>
-<li>
-<p><strong>ANGULAR_VERSION</strong>: The version of the java project that you want to deploy.</p>
-</li>
-<li>
-<p><strong>EXTERNAL_SERVER_IP</strong>: The IP of the remote server where you will deploy My Thai Star.</p>
-</li>
-<li>
-<p><strong>APPLICATION_DIR</strong>: The folder of the application.</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="deployment-pipelines.asciidoc_pipeline-steps">Pipeline steps</h3>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Copy files to remote server</strong>: Copy all files required for the deployment to the remote server. Those files are all files inside the reverse_proxy folder in the My Thai Star repository.</p>
-</li>
-<li>
-<p><strong>Deploy java application</strong>: Call to <strong>MyThaiStar_SERVER_DEPLOY</strong> pipeline.</p>
-</li>
-<li>
-<p><strong>Deploy angular application</strong>: Call to <strong>MyThaiStar_FRONTEND_DEPLOY</strong> pipeline.</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
 <h2 id="deployment-pipelines.asciidoc_mythaistar_server_deploy-pipeline">MyThaiStar_SERVER_DEPLOY Pipeline</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Deploys on the server the Java part of My Thai Star.</p>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="icon-note" title=""></i>
-</td>
-<td class="content">
-You need to run the MyThaiStar_DEPLOY-Together pipeline at least once before you run this one.
-</td>
-</tr>
-</table>
-</div>
 <div class="sect2">
 <h3 id="deployment-pipelines.asciidoc_parameters">Parameters</h3>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>sshAgentCredentials</strong>: The SSH private key for connection to remote server. The public key must be included in the remote server&#8217;s authorized_keys.</p>
+<p><strong>registryUrl</strong>: The url to the docker registry where the image is stored.</p>
 </li>
 <li>
-<p><strong>nexusApiUrl</strong>: The url to the nexus api. <a href="http://nexus3-core:8081/nexus3" class="bare">http://nexus3-core:8081/nexus3</a> is the default url for PL.</p>
+<p><strong>registryCredentialsId</strong>: Credentials to publish/download images from registry.</p>
 </li>
 <li>
-<p><strong>nexusCredentialsId</strong>: The nexus credentials.</p>
+<p><strong>dockerNetwork</strong>: Network of your My Thai Star application. You can deploy several versions of MTS in the same server by changing the dockerNetwork.</p>
 </li>
 <li>
-<p><strong>repository</strong>: Name of the repository where the artifacts are stored. maven-snapshots is the default value for PL.</p>
-</li>
-<li>
-<p><strong>JAVA_VERSION</strong>: The version of the java project that you want to deploy.</p>
-</li>
-<li>
-<p><strong>EXTERNAL_SERVER_IP</strong>: The IP of the remote server where you will deploy My Thai Star.</p>
-</li>
-<li>
-<p><strong>APPLICATION_DIR</strong>: The folder of the application.</p>
+<p><strong>VERSION</strong>: The version that you can to deploy.</p>
 </li>
 </ul>
 </div>
@@ -243,10 +167,10 @@ You need to run the MyThaiStar_DEPLOY-Together pipeline at least once before you
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Download artifact from Nexus</strong>: Download the artifact from nexus using the nexus3 API. The downloaded artifact will be the last snapshot of the version specified in the parameters.</p>
+<p><strong>Create docker network</strong>: Create the docker network with the name provided as parameter.</p>
 </li>
 <li>
-<p><strong>Deployment</strong>: Deploy the download artifact in the remote server. It will create a new docker image and redeploy the java docker container.</p>
+<p><strong>Deploy new image</strong>: Deploy a new java container. If it already exists, first it delete the previous one.</p>
 </li>
 </ul>
 </div>
@@ -259,42 +183,21 @@ You need to run the MyThaiStar_DEPLOY-Together pipeline at least once before you
 <div class="paragraph">
 <p>Deploys on the server the Angular part of My Thai Star</p>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="icon-note" title=""></i>
-</td>
-<td class="content">
-You need to run the MyThaiStar_DEPLOY-Together pipeline at least once before you run this one.
-</td>
-</tr>
-</table>
-</div>
 <div class="sect2">
 <h3 id="deployment-pipelines.asciidoc_parameters">Parameters</h3>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>sshAgentCredentials</strong>: The SSH private key for connection to remote server. The public key must be included in the remote server&#8217;s authorized_keys.</p>
+<p><strong>registryUrl</strong>: The url to the docker registry where the image is stored.</p>
 </li>
 <li>
-<p><strong>nexusApiUrl</strong>: The url to the nexus api. <a href="http://nexus3-core:8081/nexus3" class="bare">http://nexus3-core:8081/nexus3</a> is the default url for PL.</p>
+<p><strong>registryCredentialsId</strong>: Credentials to publish/download images from registry.</p>
 </li>
 <li>
-<p><strong>nexusCredentialsId</strong>: The nexus credentials.</p>
+<p><strong>dockerNetwork</strong>: Network of your My Thai Star application. You can deploy several versions of MTS in the same server by changing the dockerNetwork.</p>
 </li>
 <li>
-<p><strong>repository</strong>: Name of the repository where the artifacts are stored. maven-snapshots is the default value for PL.</p>
-</li>
-<li>
-<p><strong>ANGULAR_VERSION</strong>: The version of the java project that you want to deploy.</p>
-</li>
-<li>
-<p><strong>EXTERNAL_SERVER_IP</strong>: The IP of the remote server where you will deploy My Thai Star.</p>
-</li>
-<li>
-<p><strong>APPLICATION_DIR</strong>: The folder of the application.</p>
+<p><strong>VERSION</strong>: The version that you can to deploy.</p>
 </li>
 </ul>
 </div>
@@ -304,10 +207,71 @@ You need to run the MyThaiStar_DEPLOY-Together pipeline at least once before you
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Download artifact from Nexus</strong>: Download the artifact from nexus using the nexus3 API. The downloaded artifact will be the last snapshot of the version specified in the parameters.</p>
+<p><strong>Create docker network</strong>: Create the docker network with the name provided as parameter.</p>
 </li>
 <li>
-<p><strong>Deployment</strong>: Deploy the download artifact in the remote server. It will create a new docker image and redeploy the angular docker container.</p>
+<p><strong>Deploy new image</strong>: Deploy a new angular container. If it already exists, first it delete the previous one.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="deployment-pipelines.asciidoc_mythaistar_reverse-proxy_deploy-pipeline">MyThaiStar_REVERSE-PROXY_DEPLOY Pipeline</h2>
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+As reverse proxy connects to the Java and Angular application, both must be deployed before you execute this pipeline.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The MyThaiStar_REVERSE-PROXY_DEPLOY pipeline will deploy the My Thai Star reverse proxy into a remote machine using docker.</p>
+</div>
+<div class="sect2">
+<h3 id="deployment-pipelines.asciidoc_parameters">Parameters</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>registryUrl</strong>: The url to the docker registry where the image is stored.</p>
+</li>
+<li>
+<p><strong>registryCredentialsId</strong>: Credentials to publish/download images from registry.</p>
+</li>
+<li>
+<p><strong>buildReverseProxy</strong>: If yes, it will build and publish a new version of reverse-proxy.</p>
+</li>
+<li>
+<p><strong>port</strong>: Port of the MTS application. You must ensure that those port is available in the deployment machine.</p>
+</li>
+<li>
+<p><strong>dockerNetwork</strong>: Network of your My Thai Star application. You can deploy several versions of MTS in the same server by changing the port and the dockerNetwork.</p>
+</li>
+<li>
+<p><strong>VERSION</strong>: The version that you can to deploy.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="deployment-pipelines.asciidoc_pipeline-steps">Pipeline steps</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Create docker network</strong>: Create the docker network with the name provided as parameter.</p>
+</li>
+<li>
+<p><strong>Create the Docker image</strong>: If buildReverseProxy is enabled, this step will create a new docker image and publish it to the docker registry.</p>
+</li>
+<li>
+<p><strong>Deploy new image</strong>: Deploy a new reverse proxy container. If it already exists, first it delete the previous one.</p>
 </li>
 </ul>
 </div>
@@ -442,7 +406,7 @@ You need to run the MyThaiStar_DEPLOY-Together pipeline at least once before you
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2019-11-13 14:38:17 UTC
+Last updated 2019-11-29 08:54:50 UTC
 </sub></div>
 </div>
 </div>

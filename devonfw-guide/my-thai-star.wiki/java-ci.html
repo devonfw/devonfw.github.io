@@ -138,6 +138,41 @@
 </div>
 </li>
 <li>
+<p><strong>Declarative: Tool Install</strong></p>
+<div class="paragraph">
+<p>The My Thai Star application works with JDK11. In this step, if JDK11 is not installed, we install it and then put the JDK folder into PATH.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="groovy language-groovy">tools {
+  jdk 'OpenJDK11'
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Loading Custom Tools</strong></p>
+<div class="paragraph">
+<p>In this step we load the tools that can not be loaded in the previous step. As My Thai Star is delivered as docker container, in this step we load docker as custom tool.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="groovy language-groovy">tool dockerTool</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Install dependencies</strong></p>
+<div class="paragraph">
+<p>This step will download all project dependencies.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="groovy language-groovy">mvn clean install -Dmaven.test.skip=true</code></pre>
+</div>
+</div>
+</li>
+<li>
 <p><strong>Unit Tests</strong></p>
 <div class="paragraph">
 <p>This step will execute the project unit test with maven.</p>
@@ -145,6 +180,18 @@
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="groovy language-groovy">mvn clean test</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Dependeny Checker</strong></p>
+<div class="paragraph">
+<p>Execute the OWASP Dependency Checker in order to validate the project dependencies. It will generate a report that can be used in SonarQube</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="groovy language-groovy">dependencyCheck additionalArguments: '--project "mtsj" --scan java/mtsj --format XML', odcInstallation: 'dependency-check'
+dependencyCheckPublisher pattern: ''</code></pre>
 </div>
 </div>
 </li>
@@ -177,6 +224,12 @@ if (qg.status != 'OK') {
 </div>
 </div>
 </li>
+<li>
+<p><strong>Create the Docker image</strong></p>
+<div class="paragraph">
+<p>Create the docker image and then publish the image into a docker registry.</p>
+</div>
+</li>
 </ol>
 </div>
 </div>
@@ -204,6 +257,11 @@ if (qg.status != 'OK') {
     globalSettingsId = 'MavenSettings'
     // Maven tool id
     mavenInstallation = 'Maven3'
+
+    // Docker
+    dockerRegistryCredentials = 'nexus-api'
+    dockerRegistryProtocol = 'https://'
+    dockerTool = 'docker-global
 }</code></pre>
 </div>
 </div>
@@ -394,7 +452,7 @@ if (qg.status != 'OK') {
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2019-11-13 14:38:19 UTC
+Last updated 2019-11-29 08:54:52 UTC
 </sub></div>
 </div>
 </div>
