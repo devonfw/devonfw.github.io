@@ -120,8 +120,8 @@
 </li>
 </ol>
 </div>
-<div class="sect4">
-<h5 id="example-03-broken-images-test.asciidoc_page-class">Page Class</h5>
+<div class="sect3">
+<h4 id="example-03-broken-images-test.asciidoc_page-class">Page Class</h4>
 <div class="paragraph">
 <p>In this case create an array of selectors to access images by index number:</p>
 </div>
@@ -178,65 +178,49 @@
                 .getSize();
     }
 
-}
-
- ----
-
-[[example-03-broken-images-test.asciidoc_test-class]]
-===== Test Class
-Create @Test and @BeforeClass methods. Save expected images dimensions in class fields:</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>@Category({ TestsSelenium.class, TestsChrome.class, TestsFirefox.class, TestsIE.class })
-public class BrokenImagesTest extends TheInternetBaseTest {</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>private static BrokenImagePage brokenImagePage;</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>private final int expectedHeight = 90;
-private final int expectedWidth  = 120;</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>@BeforeClass
-public static void setUpBeforeClass() {
-    brokenImagePage = shouldTheInternetPageBeOpened().clickBrokenImageLink();</pre>
-</div>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>    logStep("Verify if Broken Image page is opened");
-    assertTrue("Unable to open Broken Image page", brokenImagePage.isLoaded());
 }</pre>
 </div>
 </div>
-<div class="literalblock">
-<div class="content">
-<pre>@Test
-public void shouldImageSizesBeEqualToExpected() {
-    for (int i = 0; i &lt; 3; i++) {
-        logStep("Verify size of image with index: " + i);
-        assertEquals("Height of image with index: " + i + " is incorrect", expectedHeight,
-               brokenImagePage.getImageHeight(i));
-        assertEquals("Width of image with index: " + i + " is incorrect", expectedWidth,
-               brokenImagePage.getImageWidth(i));
-    }
-}</pre>
 </div>
-</div>
+<div class="sect3">
+<h4 id="example-03-broken-images-test.asciidoc_test-class">Test Class</h4>
 <div class="paragraph">
-<p>}</p>
+<p>Create @Test and @BeforeClass methods. Save expected images dimensions in class fields:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>The test will pass if every image had the correct width and height.</pre>
+<pre>@Category({ TestsSelenium.class, TestsChrome.class, TestsFirefox.class, TestsIE.class })
+public class BrokenImagesTest extends TheInternetBaseTest {
+
+    private static BrokenImagePage brokenImagePage;
+
+    private final int expectedHeight = 90;
+    private final int expectedWidth  = 120;
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        brokenImagePage = shouldTheInternetPageBeOpened().clickBrokenImageLink();
+
+        logStep("Verify if Broken Image page is opened");
+        assertTrue("Unable to open Broken Image page", brokenImagePage.isLoaded());
+    }
+
+    @Test
+    public void shouldImageSizesBeEqualToExpected() {
+        for (int i = 0; i &lt; 3; i++) {
+            logStep("Verify size of image with index: " + i);
+            assertEquals("Height of image with index: " + i + " is incorrect", expectedHeight,
+                   brokenImagePage.getImageHeight(i));
+            assertEquals("Width of image with index: " + i + " is incorrect", expectedWidth,
+                   brokenImagePage.getImageWidth(i));
+        }
+    }
+
+}</pre>
 </div>
+</div>
+<div class="paragraph">
+<p>The test will pass if every image had the correct width and height.</p>
 </div>
 </div>
 </div>
@@ -367,7 +351,7 @@ public void shouldImageSizesBeEqualToExpected() {
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2019-12-02 10:03:54 UTC
+Last updated 2019-12-02 11:53:27 UTC
 </sub></div>
 </div>
 </div>
