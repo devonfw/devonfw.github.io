@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2019-12-09 11:13:56 UTC">
+<meta name="author" content="Updated at 2019-12-09 20:59:13 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -515,7 +515,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2019-12-09 11:14:16 UTC</span><br>
+<span id="author" class="author">Updated at 2019-12-09 20:59:33 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -532,7 +532,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="master-devon4node.asciidoc.html">VI. devon4node</a>
 <ul class="sectlevel1">
-<li><a href="devon4node-architecture.asciidoc.html">28. devon4node Architechture</a>
+<li><a href="devon4node-architecture.asciidoc.html">28. devon4node Architecture</a>
 </li>
 <li><a href="master-devon4node.asciidoc_layers.html"><span class="toc-current">29. Layers</span></a>
 <ul class="sectlevel2">
@@ -574,7 +574,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect2">
 <h3 id="layer-controller.asciidoc">29.1. Controller Layer</h3>
 <div class="paragraph">
-<p>The controller layer is responsible for handling the requests/responses to the client. This layer knows everything about the endpoints exposed, the expected input (and also <a href="master-devon4node.asciidoc_guides.html#guides-validation.asciidoc">validate</a> it), the response schema, the HTTP codes for the reponse and the HTTP errors that every endpoint can send.</p>
+<p>The controller layer is responsible for handling the requests/responses to the client. This layer knows everything about the endpoints exposed, the expected input (and also <a href="master-devon4node.asciidoc_guides.html#guides-validation.asciidoc">validate</a> it), the response schema, the HTTP codes for the response and the HTTP errors that every endpoint can send.</p>
 </div>
 <div class="sect3">
 <h4 id="layer-controller.asciidoc_how-to-implement-the-controller-layer">29.1.1. How to implement the controller layer</h4>
@@ -589,7 +589,7 @@ export class CoffeeController {
 
   @Post(&apos;search&apos;)
   @HttpCode(200)
-  async searchCoffees(@Body() search: CoffeeSearch): Promise&lt;Array&lt;Coffe&gt;&gt; {
+  async searchCoffees(@Body() search: CoffeeSearch): Promise&lt;Array&lt;Coffee&gt;&gt; {
     try {
       return await this.coffeeService.searchCoffees(search);
     } catch (error) {
@@ -635,7 +635,7 @@ export class CoffeeController {
   @Post(&apos;search&apos;)
   @HttpCode(200)
   @UseFilters(CaffeExceptionFilter)
-  async searchCoffees(@Body() search: CoffeeSearch): Promise&lt;Array&lt;Coffe&gt;&gt; {
+  async searchCoffees(@Body() search: CoffeeSearch): Promise&lt;Array&lt;Coffee&gt;&gt; {
     return await this.coffeeService.searchCoffees(search);
   }
 }</code></pre>
@@ -660,8 +660,8 @@ export class CoffeeController {
 export class CoffeeService {
   constructor(private readonly coffeeService: CoffeeService) {}
 
-  async searchCoffees(@InjectRepository(Coffee) coffeRepository: Repository&lt;Coffee&gt;): Promise&lt;Array&lt;Coffe&gt;&gt; {
-    const coffees = this.coffeRepository.find();
+  async searchCoffees(@InjectRepository(Coffee) coffeeRepository: Repository&lt;Coffee&gt;): Promise&lt;Array&lt;Coffee&gt;&gt; {
+    const coffees = this.coffeeRepository.find();
 
     return doSomeBusinessLogic(coffees);
   }
@@ -672,7 +672,7 @@ export class CoffeeService {
 <p>This is the CoffeeService that we inject in the example of <a href="master-devon4node.asciidoc_layers.html#layer-controller.asciidoc">controller layer</a>. As you can see, a service is a regular class with the <code>Injectable</code> decorator. Also, it inject as dependency the data access layer (in this specific case, the Repository&lt;Coffee&gt;).</p>
 </div>
 <div class="paragraph">
-<p>The services, exposes methods in order to transform the input from the controllers by appling some business logic. They can also request data from the data access layer. And that&#x2019;s all.</p>
+<p>The services expose methods in order to transform the input from the controllers by applying some business logic. They can also request data from the data access layer. And that&#x2019;s all.</p>
 </div>
 <!-- toc disabled -->
 </div>
@@ -688,7 +688,7 @@ export class CoffeeService {
 <div class="sect3">
 <h4 id="layer-dataaccess.asciidoc_database">29.3.1. Database</h4>
 <div class="paragraph">
-<p>We strongly recommend link:Although services can be used for this layer, they should not be confused with the service layer. Services in this layer are responsible for data access, while services in the service layer are responsible for business logic. <a href="https://typeorm.io">TypeORM</a> for database management in devon4node applications. TypeORM supports the most commonly used relational databases, link Oracle, MySQL, MariaDB, Postgres, SQLite, MSSQL and others. Also, it supports no-relational databases like MongoDB.</p>
+<p>We strongly recommend link:Although services can be used for this layer, they should not be confused with the service layer. Services in this layer are responsible for data access, while services in the service layer are responsible for business logic. <a href="https://typeorm.io">TypeORM</a> for database management in devon4node applications. TypeORM supports the most commonly used relational databases, link Oracle, MySQL, MariaDB, PostgreSQL, SQLite, MSSQL and others. Also, it supports no-relational databases like MongoDB.</p>
 </div>
 <div class="paragraph">
 <p>TypeORM supports <a href="https://en.wikipedia.org/wiki/Active_record_pattern">Active Record</a> and Repository patterns. We recommend to use the Repository pattern. This pattern allows you to separate the data objects from the methods to manipulate the database.</p>
@@ -704,7 +704,7 @@ export class CoffeeService {
 </div>
 </div>
 <div class="paragraph nav-footer">
-<p>&#x2190;&#xA0;Previous:&#xA0;<a href="devon4node-architecture.asciidoc.html">devon4node Architechture</a>&#xA0;| &#x2191;&#xA0;Up:&#xA0;<a href="master-devon4node.asciidoc.html">devon4node</a>&#xA0;| &#x2302;&#xA0;Home:&#xA0;<a href="master.html">devonfw guide</a>&#xA0;| Next:&#xA0;<a href="master-devon4node.asciidoc_guides.html">Guides</a>&#xA0;&#x2192;</p>
+<p>&#x2190;&#xA0;Previous:&#xA0;<a href="devon4node-architecture.asciidoc.html">devon4node Architecture</a>&#xA0;| &#x2191;&#xA0;Up:&#xA0;<a href="master-devon4node.asciidoc.html">devon4node</a>&#xA0;| &#x2302;&#xA0;Home:&#xA0;<a href="master.html">devonfw guide</a>&#xA0;| Next:&#xA0;<a href="master-devon4node.asciidoc_guides.html">Guides</a>&#xA0;&#x2192;</p>
 </div>
 </div>
 <div id="footer" class="footer">
@@ -826,7 +826,7 @@ export class CoffeeService {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2019-12-09 11:11:07 UTC
+Last updated 2019-12-09 20:56:24 UTC
 </sub></div>
 
 
