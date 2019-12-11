@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>MrChecker under ProductionLine</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#mrchecker.asciidoc">MrChecker under ProductionLine</a>
+<ul class="sectlevel1">
+<li><a href="#mrchecker.asciidoc_introduction">Introduction</a></li>
+<li><a href="#mrchecker.asciidoc_prerequisites">Prerequisites</a></li>
+<li><a href="#mrchecker.asciidoc_how-to-insert-the-template">How to insert the Template</a></li>
+<li><a href="#mrchecker.asciidoc_how-to-run-the-template">How to run the Template</a></li>
+<li><a href="#mrchecker.asciidoc_expected-result">Expected Result</a></li>
+<li><a href="#mrchecker.asciidoc_summary">Summary</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="mrchecker.asciidoc" class="sect0">MrChecker under ProductionLine</h1>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/mrchecker/pl.png" alt="500" width="400">
+</div>
+</div>
+<div class="sect1">
+<h2 id="mrchecker.asciidoc_introduction">Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>MrChecker is end to end automation test framework written in Java. It has been released
+by devonfw but it is not supported by the devonfw core team.<br></p>
+</div>
+<div class="paragraph">
+<p>This framework consist of eight test modules:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Core test module<br></p>
+</li>
+<li>
+<p>Selenium test module<br></p>
+</li>
+<li>
+<p>WebAPI test module<br></p>
+</li>
+<li>
+<p>Security test module<br></p>
+</li>
+<li>
+<p>DataBase test module<br></p>
+</li>
+<li>
+<p>Standalone test module<br></p>
+</li>
+<li>
+<p>DevOps module<br></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="mrchecker.asciidoc_prerequisites">Prerequisites</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To be able to run Jenkins MrChecker job under ProductionLine you need to configure below settings in Jenkins and Gitlab</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Jenkins<br></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Add Jenkins Shared Library using documentation <a href="https://github.com/devonfw/production-line-shared-lib" class="bare">https://github.com/devonfw/production-line-shared-lib</a></p>
+</li>
+<li>
+<p>Install required plugins:<br>
+HTTP Request Plugin<br>
+Allure Jenkins Plugin<br></p>
+</li>
+<li>
+<p>In Jenkins Global Tool Configuration configure Allure Commandline and Maven like<br></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/mrchecker/allure.JPG" alt="500" width="400">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/mrchecker/maven.JPG" alt="500" width="400">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Gitlab<br></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Generate User Private Token<br>
+Go to your Profile in Gitlab<br></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/mrchecker/profile.png" alt="500" width="400">
+</div>
+</div>
+<div class="paragraph">
+<p>Next click on the pen icon<br></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/mrchecker/pen.png" alt="500" width="400">
+</div>
+</div>
+<div class="paragraph">
+<p>On the left menu choose Access Tokens and put token name and check fields like below<br></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/mrchecker/token.JPG" alt="600" width="500">
+</div>
+</div>
+<div class="paragraph">
+<p>Click "Create personal access token", you should receive notification about created token and token string. Copy the token string.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/mrchecker/created_token.JPG" alt="600" width="500">
+</div>
+</div>
+<div class="paragraph">
+<p>The GitLab API user needs to have API access and the rights to create a new group. To set this permission follow the next steps:<br></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Enter the Admin control panel</p>
+</li>
+<li>
+<p>Select 'Users'</p>
+</li>
+<li>
+<p>Select the user(s) in question and click 'Edit'</p>
+</li>
+<li>
+<p>Scroll down to 'Access' and un-tick 'Can Create Group'</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="mrchecker.asciidoc_how-to-insert-the-template">How to insert the Template</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Create new Jenkins Pipeline Job</p>
+</li>
+<li>
+<p>In job configuration check "This project is parametrized", choose "String parameter and provide<br>
+Name: GITLAB_USER_PRIVATE_TOKEN<br>
+Default Value: &lt;GITLAB_TOKEN_STRING_YOU_JUST_CREATED&gt;</p>
+</li>
+<li>
+<p>Add the template<br>
+The guide on how to add a template to your Jenkins can be found in the root directory of the template repository: <a href="https://github.com/devonfw/production-line.git" class="bare">https://github.com/devonfw/production-line.git</a></p>
+</li>
+<li>
+<p>Save job configuration</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="mrchecker.asciidoc_how-to-run-the-template">How to run the Template</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Build the job</p>
+</li>
+<li>
+<p>After job ends with success wait few seconds for repository import to Gitlab</p>
+</li>
+<li>
+<p>As output of the build new Jenkins Pipline job is created with name "MrChecker_Example_Tests" also new repository "Mrchecker" will be created in Gitlab</p>
+</li>
+<li>
+<p>Build "MrChecker_Example_Tests" job</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/mrchecker/pljob.JPG" alt="500" width="400">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="mrchecker.asciidoc_expected-result">Expected Result</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>As output of this job Allure Report will be generated</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/mrchecker/allure_report.JPG" alt="500" width="400">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="mrchecker.asciidoc_summary">Summary</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Using this documentation you should be able to run MrChercker test framework on ProductionLine.<br>
+MrChecker offers two projects to your disposal:<br></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>First project "mrchecker-app-under-test/pipelines/CI/Jenkinsfile_ProductionLine.groovy" has all tests included in the project and is the default project used in "MrChecker_Example_Tests" job.<br></p>
+</li>
+<li>
+<p>Second project "mrchecker-app-under-testboilerplate/pipelines/CI/Jenkinsfile_ProductionLine.groovy" here tests are not included, therefore if you choose to run "MrChecker_Example_Tests" job Allure report will be not generated.<br></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To change the project change script path at the bottom of the "MrChecker_Example_Tests" job.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/mrchecker/pipeline_script.JPG" alt="500" width="400">
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started-what-is-devonfw.asciidoc.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started-why-should-i-use-devonfw.asciidoc.html">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started-what-is-devonfw.asciidoc.html#getting-started-what-is-devonfw.asciidoc_devonfw-technology-stack">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/master-general-start.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-devon4j.asciidoc_introduction.html#architecture.asciidoc">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/master-ide.asciidoc_integrated-development-environment.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/general-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2019-12-11 13:00:29 UTC
+</sub></div>
+</div>
+</div>
+</body>
+</html>
