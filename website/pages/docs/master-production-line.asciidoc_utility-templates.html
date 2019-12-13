@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2019-12-12 16:19:52 UTC">
+<meta name="author" content="Updated at 2019-12-13 09:13:30 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -515,7 +515,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2019-12-12 16:20:10 UTC</span><br>
+<span id="author" class="author">Updated at 2019-12-13 09:13:50 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -543,20 +543,34 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="master-production-line.asciidoc_devonfw-technologies-templates.html">44. devonfw Technologies Templates</a>
 </li>
 <li><a href="master-production-line.asciidoc_utility-templates.html"><span class="toc-current">45. Utility Templates</span></a>
+<ul class="sectlevel2">
+<li><a href="master-production-line.asciidoc_utility-templates.html#initialize-instance.asciidoc">45.1. Initialize Instance Template for Production Line</a>
+</li>
+<li><a href="master-production-line.asciidoc_utility-templates.html#install-sonar-plugin.asciidoc">45.2. Install SonarQube Plugin</a>
+</li>
+<li><a href="master-production-line.asciidoc_utility-templates.html#docker-configuration.asciidoc">45.3. Docker Configuration</a>
+</li>
+<li><a href="master-production-line.asciidoc_utility-templates.html#openshift-configuration.asciidoc">45.4. Docker Configuration</a>
 </li>
 </ul>
 </li>
-<li><a href="install-sonar-plugin.asciidoc.html">X. Install SonarQube Plugin</a>
+<li><a href="master-production-line.asciidoc_mrchecker.html">46. MrChecker</a>
 </li>
-<li><a href="master-cobigen.asciidoc.html">XI. CobiGen&#x2009;&#x2014;&#x2009;Code-based incremental Generator</a>
+<li><a href="master-production-line.asciidoc_samples.html">47. Samples</a>
 </li>
-<li><a href="master-mrchecker.asciidoc.html">XII. devonfw-testing</a>
+<li><a href="master-production-line.asciidoc_troubleshooting.html">48. Troubleshooting</a>
 </li>
-<li><a href="master-my-thai-star.asciidoc.html">XIII. MyThaiStar</a>
+</ul>
 </li>
-<li><a href="CONTRIBUTING.asciidoc.html">XIV. Contributing</a>
+<li><a href="master-cobigen.asciidoc.html">X. CobiGen&#x2009;&#x2014;&#x2009;Code-based incremental Generator</a>
 </li>
-<li><a href="general-release-notes.asciidoc.html">XV. Release Notes</a>
+<li><a href="master-mrchecker.asciidoc.html">XI. devonfw-testing</a>
+</li>
+<li><a href="master-my-thai-star.asciidoc.html">XII. MyThaiStar</a>
+</li>
+<li><a href="CONTRIBUTING.asciidoc.html">XIII. Contributing</a>
+</li>
+<li><a href="general-release-notes.asciidoc.html">XIV. Release Notes</a>
 </li>
 </ul>
 </div>
@@ -564,15 +578,851 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect1">
 <h2 id="master-production-line.asciidoc_utility-templates">45. Utility Templates</h2>
 <div class="sectionbody">
+<!-- toc disabled -->
+<div class="sect2">
+<h3 id="initialize-instance.asciidoc">45.1. Initialize Instance Template for Production Line</h3>
+<div class="sect3">
+<h4 id="initialize-instance.asciidoc_introduction">45.1.1. Introduction</h4>
 <div class="paragraph">
-<p>Unresolved directive in production-line.wiki/master-production-line.asciidoc - include::inialize-instance.asciidoc[leveloffset=2]
-:leveloffset: 2</p>
+<p>Production Line Templates allows you to create/configure certain task. In order to work properly, Production Line Templates needs some previous configurations. You can do it <a href="#initialize-instance-manually.asciidoc">manually</a> or executing the Initialize Instance Template.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="initialize-instance.asciidoc_prerequisites">45.1.2. Prerequisites</h4>
+<div class="paragraph">
+<p>In order to be able to start this template, you need:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <a href="https://github.com/devonfw/production-line-shared-lib">Production Line Shared Lib</a> added in Jenkins</p>
+</li>
+<li>
+<p>The following plugins:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://wiki.jenkins.io/display/JENKINS/Custom+Tools+Plugin">Custom Tools Plugin</a></p>
+</li>
+<li>
+<p><a href="https://wiki.jenkins.io/display/JENKINS/HTTP+Request+Plugin">HTTP Request Plugin</a></p>
+</li>
+<li>
+<p><a href="https://wiki.jenkins.io/display/JENKINS/Job+DSL+Plugin">Job DSL Plugin</a></p>
+</li>
+<li>
+<p><a href="https://wiki.jenkins.io/display/JENKINS/SonarQube+plugin">SonarQube plugin</a></p>
+</li>
+<li>
+<p><a href="https://wiki.jenkins.io/display/JENKINS/Pipeline+Maven+Plugin">Pipeline Maven Plugin</a></p>
+</li>
+<li>
+<p><a href="https://wiki.jenkins.io/display/JENKINS/NodeJS+Plugin">NodeJS Plugin</a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>A service account added in the LAM</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Production Line provides by default the Shared Lib and the plugins, so no actions are required. The only thing that you need to do manually is the creation of the service account.</p>
+</div>
+<div class="paragraph">
+<p>In order to create the service account you need:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open the LAM</p>
+</li>
+<li>
+<p>Press the <code>New User</code> button</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/initialize-instance/create-account.png" alt="create account">
+</div>
+</div>
+</li>
+<li>
+<p>Enter the required parameters</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/initialize-instance/create-account2.png" alt="create account2">
+</div>
+</div>
+</li>
+<li>
+<p>Change to <code>Unix</code> tab and enter the required parameters</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/initialize-instance/create-account3.png" alt="create account3">
+</div>
+</div>
+<div class="paragraph">
+<p>The user name will be used later in order to login. As this user will do some configuration changes, its primary group must be admins.</p>
+</div>
+</li>
+<li>
+<p>Set a password for the user.</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/initialize-instance/create-account4.png" alt="create account4">
+</div>
+</div>
+</li>
+<li>
+<p>Press the <code>Save</code> button</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/initialize-instance/create-account5.png" alt="create account5">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="initialize-instance.asciidoc_template">45.1.3. Template</h4>
+<div class="paragraph">
+<p>In order to execute this template, you need to add it into Jenkins manually. In order to do that, you can follow <a href="master-production-line.asciidoc_devonfw-technologies-templates.html#how-to-add-a-template.asciidoc">this guide</a></p>
+</div>
+<div class="sect4">
+<h5 id="initialize-instance.asciidoc_parameters">Parameters</h5>
+<div class="paragraph">
+<p>The required parameters are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>svcaccount</code>: The service account created as prerequisite. It must be added as a Jenkins credential.</p>
+</li>
+<li>
+<p><code>installDeploymentPlugins</code>: With this parameter you can install extra plugins into Jenkins. Also, you can add extra template utils.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="initialize-instance.asciidoc_execution">Execution</h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Press the Build with Parameters button</p>
+</li>
+<li>
+<p>Insert the parameters.</p>
+</li>
+<li>
+<p>If the service account is not added as credential, please add a new entry.</p>
+</li>
+<li>
+<p>Press the <code>Build</code> button.</p>
+</li>
+<li>
+<p>Wait until the pipeline ends.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+if any plugin is installed, Jenkins will be restarted and the pipeline will fail. You need to execute it again with the same parameters.
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/initialize-instance/initialize-instance.png" alt="initialize instance">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/initialize-instance/initialize-instance2.png" alt="initialize instance2">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="initialize-instance.asciidoc_the-result">The result</h5>
+<div class="ulist">
+<ul>
+<li>
+<p>Install plugins stage</p>
+<div class="paragraph">
+<p>In this stage the following plugins will be installed:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://wiki.jenkins.io/display/JENKINS/SSH+Credentials+Plugin">SSH Credentials Plugin</a></p>
+</li>
+<li>
+<p><a href="https://wiki.jenkins.io/display/JENKINS/Custom+Tools+Plugin">Custom Tools Plugin</a></p>
+</li>
+<li>
+<p><a href="https://wiki.jenkins.io/display/JENKINS/HTTP+Request+Plugin">HTTP Request Plugin</a></p>
+</li>
+<li>
+<p><a href="https://wiki.jenkins.io/display/JENKINS/Job+DSL+Plugin">Job DSL Plugin</a></p>
+</li>
+<li>
+<p><a href="https://wiki.jenkins.io/display/JENKINS/SonarQube+plugin">SonarQube plugin</a></p>
+</li>
+<li>
+<p><a href="https://wiki.jenkins.io/display/JENKINS/Ansible+Plugin">Ansible Plugin</a></p>
+</li>
+<li>
+<p><a href="https://wiki.jenkins.io/display/JENKINS/Pipeline+Maven+Plugin">Pipeline Maven Plugin</a></p>
+</li>
+<li>
+<p><a href="https://wiki.jenkins.io/display/JENKINS/NodeJS+Plugin">NodeJS Plugin</a></p>
+</li>
+<li>
+<p><a href="https://wiki.jenkins.io/display/JENKINS/GitLab+Plugin">GitLab Plugin</a></p>
+</li>
+<li>
+<p><a href="https://wiki.jenkins.io/display/JENKINS/OWASP+Dependency-Check+Plugin">OWASP Dependency-Check Plugin</a></p>
+</li>
+<li>
+<p>If <code>installDeploymentPlugins</code> is <code>Docker</code> or <code>Docker+Openshift</code>, extra plugins will be installed:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://wiki.jenkins.io/display/JENKINS/Docker+Plugin">Docker Plugin</a></p>
+</li>
+<li>
+<p><a href="https://wiki.jenkins.io/display/JENKINS/Docker+build+step+plugin">Docker build step plugin</a></p>
+</li>
+<li>
+<p><a href="https://wiki.jenkins.io/display/JENKINS/Docker+Pipeline+Plugin">Docker Pipeline Plugin</a></p>
+</li>
+<li>
+<p><a href="https://wiki.jenkins.io/display/JENKINS/JClouds+Plugin">JClouds Plugin</a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>If <code>installDeploymentPlugins</code> is <code>Openshift</code> or <code>Docker+Openshift</code>, extra plugins will be installed:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://wiki.jenkins.io/display/JENKINS/OpenShift+Client+Plugin">OpenShift Client Plugin</a></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Configure SonarQube stage</p>
+<div class="paragraph">
+<p>This stage is the responsible of configure the Jenkins-SonarQube integration. It will:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Generate a SonarQube API token for the user <code>Admin</code></p>
+</li>
+<li>
+<p>Register the token in Jenkins as credential with the id <code>sonar-token</code></p>
+</li>
+<li>
+<p>Add the SonarQube server in Jenkins &#x2192; Manage Jenkins &#x2192; Configure System &#x2192; SonarQube servers. The values used are:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Name: <code>SonarQube</code></p>
+</li>
+<li>
+<p>Server URL: <a href="http://sonarqube-core:9000/sonarqube" class="bare">http://sonarqube-core:9000/sonarqube</a> (default Production Line SonarQube URL)</p>
+</li>
+<li>
+<p>Server authentication token: <code>sonar-token</code> (generated in the previous step)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Add a webhook in SonarQube:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Name: <code>jenkins</code></p>
+</li>
+<li>
+<p>URL: <code><a href="http://jenkins-core:8080/jenkins/sonarqube-webhook/" class="bare">http://jenkins-core:8080/jenkins/sonarqube-webhook/</a></code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Install the following SonarQube plugins:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>java</p>
+</li>
+<li>
+<p>javascript</p>
+</li>
+<li>
+<p>typescript</p>
+</li>
+<li>
+<p>csharp</p>
+</li>
+<li>
+<p>web</p>
+</li>
+<li>
+<p>cssfamily</p>
+</li>
+<li>
+<p>jacoco</p>
+</li>
+<li>
+<p>checkstyle</p>
+</li>
+<li>
+<p>cobertura</p>
+</li>
+<li>
+<p>smells</p>
+</li>
+<li>
+<p>findbugs</p>
+</li>
+<li>
+<p>scmgit</p>
+</li>
+<li>
+<p>ansible</p>
+</li>
+<li>
+<p>sonar-dependency-check-plugin</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Restart the SonarQube server in order to enable the plugins installed.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Create UTIL templates stage</p>
+<div class="paragraph">
+<p>Some templates needs that Jenkins has installed some plugins. If the plugins are not installed, the template will fail. In order to prevent this behaviour, we use the <code>initialize-instance</code> to install all plugins required in order templates. Then, we create another templates that will use the plugins installed by <code>initialize-instance</code>. In this stage we create some template utils to configure Jenkins after all required plugins are installed. Those templates are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="master-production-line.asciidoc_utility-templates.html#install-sonar-plugin.asciidoc">Install_SonarQube_Plugin</a></p>
+</li>
+<li>
+<p>If <code>installDeploymentPlugins</code> is <code>Docker</code> or <code>Docker+Openshift</code>: <a href="master-production-line.asciidoc_utility-templates.html#docker-configuration.asciidoc">Docker_Configuration</a></p>
+</li>
+<li>
+<p>If <code>installDeploymentPlugins</code> is <code>Openshift</code> or <code>Docker+Openshift</code>: <a href="master-production-line.asciidoc_utility-templates.html#openshift-configuration.asciidoc">Openshift_Configuration</a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Configure Nexus 3 stage</p>
+<div class="paragraph">
+<p>This stage will configure the Production Line Nexus3</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Enable anonymous access</p>
+</li>
+<li>
+<p>Add a internal user to download/upload docker images</p>
+<div class="ulist">
+<ul>
+<li>
+<p>username: <code>nexus-api</code></p>
+</li>
+<li>
+<p>password: The same as the service account created in LAM</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Create the maven repositories: maven-central, maven-snapshots, maven-release, maven-plugin</p>
+</li>
+<li>
+<p>Create the docker repository</p>
+</li>
+<li>
+<p>Create the npmjs repositories: npmjs, npm-registry, npm</p>
+</li>
+<li>
+<p>Create in Jenkins a new credential with the id <code>nexus-api</code> with the username and password created in nexus3</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Configure Maven File stage</p>
+<div class="paragraph">
+<p>This stage adds the nexus3 credentials creadted in the previous stage to the maven global configuration file with the id <code>pl-nexus</code></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/initialize-instance/maven-config.png" alt="maven config">
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Now, you are able to execute other templates adding them manually or using the Production Line Market Place.</p>
 </div>
 <!-- toc disabled -->
 </div>
 </div>
+</div>
+<div class="sect2">
+<h3 id="install-sonar-plugin.asciidoc">45.2. Install SonarQube Plugin</h3>
+<div class="sect3">
+<h4 id="install-sonar-plugin.asciidoc_introduction">45.2.1. Introduction</h4>
+<div class="paragraph">
+<p>SonarQube can extends its behaviour by adding plugins. Some on them can be installed by using the SonarQube Marketplace, others can be installed by copying the .jar into the SonarQube plugins folder.</p>
+</div>
+<div class="sect4">
+<h5 id="install-sonar-plugin.asciidoc_overview">Overview</h5>
+<div class="paragraph">
+<p>This template will help you to install SonarQube plugins by copying the .jar into the SonarQube plugins folder. As you do not have access to the Production Line volumes, it will help you when you want to install a plugin that is not installed in the SonarQube Marketplace.</p>
+</div>
+<div class="paragraph">
+<p>It will:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Download the .jar file from a provided URL.</p>
+</li>
+<li>
+<p>Copy the .jar file to the plugins folder.</p>
+</li>
+<li>
+<p>Restart the SonarQube server in order to enable the plugin.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+this template only works in a Production Line instance.
+</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="install-sonar-plugin.asciidoc_template">45.2.2. Template</h4>
+<div class="paragraph">
+<p>This template will be automatically created in your jenkins after executing the <code>Initialize_Instance</code> template inside the <code>UTILS</code> folder with the name <code>Install_SonarQube_Plugin</code>.</p>
+</div>
+<div class="paragraph">
+<p>For manual creation see: <a href="master-production-line.asciidoc_devonfw-technologies-templates.html#how-to-add-a-template.asciidoc">How to add a Template</a></p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+This template needs the <a href="https://github.com/devonfw/production-line-shared-lib">devonfw Production Line Shared Lib</a>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="sect4">
+<h5 id="install-sonar-plugin.asciidoc_parameters">Parameters</h5>
+<div class="paragraph">
+<p>The only parameter required is the plugin download URL.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="install-sonar-plugin.asciidoc_execution">Execution</h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Press the Build with Parameters button</p>
+</li>
+<li>
+<p>Insert plugin the download url. Example: <a href="https://github.com/dependency-check/dependency-check-sonar-plugin/releases/download/1.2.6/sonar-dependency-check-plugin-1.2.6.jar" class="bare">https://github.com/dependency-check/dependency-check-sonar-plugin/releases/download/1.2.6/sonar-dependency-check-plugin-1.2.6.jar</a></p>
+</li>
+<li>
+<p>Press the <code>Build</code> button.</p>
+</li>
+<li>
+<p>Wait until the pipeline ends.</p>
+</li>
+</ol>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/install-sonar-plugin/build-install-sonar-plugin.png" alt="build install sonar plugin">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/install-sonar-plugin/build-install-sonar-plugin2.png" alt="build install sonar plugin2">
+</div>
+</div>
+<div class="paragraph">
+<p>After the execution, when the SonarQube is restarted, you can check that your plugin is installed visiting the Marketplace.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/install-sonar-plugin/sonar-plugin.png" alt="sonar plugin">
+</div>
+</div>
+<!-- toc disabled -->
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="docker-configuration.asciidoc">45.3. Docker Configuration</h3>
+<div class="sect3">
+<h4 id="docker-configuration.asciidoc_introduction">45.3.1. Introduction</h4>
+<div class="paragraph">
+<p>Docker is the most popular container technology. It allows you to build your application in an <a href="https://docs.docker.com/v17.09/engine/userguide/storagedriver/imagesandcontainers/#images-and-layers">image</a> and then deploy it into a <a href="https://docs.docker.com/v17.09/engine/userguide/storagedriver/imagesandcontainers/#container-and-layers">container</a>.</p>
+</div>
+<div class="sect4">
+<h5 id="docker-configuration.asciidoc_overview">Overview</h5>
+<div class="paragraph">
+<p>This template allow you to configure Jenkins in order to work with docker.</p>
+</div>
+<div class="paragraph">
+<p>It will:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Add docker client as custom tool.</p>
+</li>
+<li>
+<p>Configure docker to work with an external docker dameon.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="docker-configuration.asciidoc_prerequisites">45.3.2. Prerequisites</h4>
+<div class="paragraph">
+<p>In order to execute this template, you need the following plugins installed in your Jenkins:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://wiki.jenkins.io/display/JENKINS/Docker+Plugin">Docker Plugin</a></p>
+</li>
+<li>
+<p><a href="https://wiki.jenkins.io/display/JENKINS/Docker+build+step+plugin">Docker build step plugin</a></p>
+</li>
+<li>
+<p><a href="https://wiki.jenkins.io/display/JENKINS/Docker+Pipeline+Plugin">Docker Pipeline</a></p>
+</li>
+<li>
+<p><a href="https://wiki.jenkins.io/display/JENKINS/JClouds+Plugin">JClouds Plugin</a></p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock important">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+The initialize instance template will install all plugins if you select &apos;Docker&apos; or &apos;Docker+Openshift&apos; in the <code>installDeploymentPlugins</code> parameter
+</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="docker-configuration.asciidoc_template">45.3.3. Template</h4>
+<div class="paragraph">
+<p>This template will be automatically created in your jenkins after executing the <code>Initialize_Instance</code> template inside the <code>UTILS</code> folder with the name <code>Docker_Configuration</code>.</p>
+</div>
+<div class="paragraph">
+<p>For manual creation see: <a href="master-production-line.asciidoc_devonfw-technologies-templates.html#how-to-add-a-template.asciidoc">How to add a Template</a></p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+This template needs the <a href="https://github.com/devonfw/production-line-shared-lib">devonfw Production Line Shared Lib</a>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="sect4">
+<h5 id="docker-configuration.asciidoc_parameters">Parameters</h5>
+<div class="paragraph">
+<p>The only parameter required is remote docker daemon URL. Example: tcp://127.0.0.1:2367</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+You need to expose the docker daemon manually in your machine. Here you can find <a href="https://success.docker.com/article/how-do-i-enable-the-remote-api-for-dockerd">how to do it</a>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+This configuration requires that the docker daemon has no security. It&#x2019;s prepared for development environments, for production environments please add <a href="https://docs.docker.com/engine/security/https/">security</a> to your docker daemon.
+</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="docker-configuration.asciidoc_execution">Execution</h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Press the Build with Parameters button</p>
+</li>
+<li>
+<p>Insert remote docker daemon URL.</p>
+</li>
+<li>
+<p>Press the <code>Build</code> button.</p>
+</li>
+<li>
+<p>Wait until the pipeline ends.</p>
+</li>
+</ol>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/docker-configuration/docker-configuration.png" alt="docker configuration">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/docker-configuration/docker-configuration2.png" alt="docker configuration2">
+</div>
+</div>
+<div class="paragraph">
+<p>Then, you can see that the docker is configured and the remote docker daemon environment variable is set:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/docker-configuration/docker-env-var.png" alt="docker env var">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/docker-configuration/docker-custom-tool.png" alt="docker custom tool">
+</div>
+</div>
+<div class="paragraph">
+<p>The environment variable is setted globally, if you want to use another remote docker daemon for a specific build, you can override the <code>DOCKER_HOST</code> environment variable in your job.</p>
+</div>
+<div class="paragraph">
+<p>If the <code>DOCKER_HOST</code> is already setted globally, when you execute again this template the value will not be changed. You need to change the value manually at: Jenkins &#x2192; Manage Jenkins &#x2192; Configure System &#x2192; Global properties</p>
+</div>
+<!-- toc disabled -->
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="openshift-configuration.asciidoc">45.4. Docker Configuration</h3>
+<div class="sect3">
+<h4 id="openshift-configuration.asciidoc_introduction">45.4.1. Introduction</h4>
+<div class="paragraph">
+<p>OpenShift is a docker container orchestrator built on top Kubernetes.</p>
+</div>
+<div class="sect4">
+<h5 id="openshift-configuration.asciidoc_overview">Overview</h5>
+<div class="paragraph">
+<p>This template allow you to configure Jenkins in order to work with OpenShift.</p>
+</div>
+<div class="paragraph">
+<p>It will:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Add OpenShift client as custom tool.</p>
+</li>
+<li>
+<p>Configure an OpenShift cluster to work with.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="openshift-configuration.asciidoc_prerequisites">45.4.2. Prerequisites</h4>
+<div class="paragraph">
+<p>In order to execute this template, you need the following plugins installed in your Jenkins:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://wiki.jenkins.io/display/JENKINS/OpenShift+Client+Plugin">OpenShift Client Plugin</a></p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The initialize instance template will install all plugins if you select <code>Openshift</code> or <code>Docker+Openshift</code> in the <code>installDeploymentPlugins</code> parameter
+</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="openshift-configuration.asciidoc_template">45.4.3. Template</h4>
+<div class="paragraph">
+<p>This template will be automatically created in your jenkins after executing the <code>Initialize_Instance</code> template inside the <code>UTILS</code> folder with the name <code>Openshift_Configuration</code>.</p>
+</div>
+<div class="paragraph">
+<p>For manual creation see: <a href="master-production-line.asciidoc_devonfw-technologies-templates.html#how-to-add-a-template.asciidoc">How to add a Template</a></p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+This template needs the <a href="https://github.com/devonfw/production-line-shared-lib">devonfw Production Line Shared Lib</a>
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="sect4">
+<h5 id="openshift-configuration.asciidoc_parameters">Parameters</h5>
+<div class="paragraph">
+<p>The required parameters are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ocName</code>: The name of the OpenShift connection. You can define multiple OpenShift connections by changing the name.</p>
+</li>
+<li>
+<p><code>ocUrl</code>: The OpenShift URL.</p>
+</li>
+<li>
+<p><code>ocProject</code>: The OpenShift Project.</p>
+</li>
+<li>
+<p><code>ocToken</code>: The OpenShift token. In order to have a long-term token, this token should be a service account token.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="openshift-configuration.asciidoc_execution">Execution</h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Press the Build with Parameters button</p>
+</li>
+<li>
+<p>Insert the parameters.</p>
+</li>
+<li>
+<p>If the OpenShift token is not added as credential, please add a new entry.</p>
+</li>
+<li>
+<p>Press the <code>Build</code> button.</p>
+</li>
+<li>
+<p>Wait until the pipeline ends.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+If a cluster already exists with the provided name, it will not modify anything.
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/openshift-configuration/openshift-configuration.png" alt="openshift configuration">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/openshift-configuration/openshift-configuration2.png" alt="openshift configuration2">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/openshift-configuration/openshift-configuration3.png" alt="openshift configuration3">
+</div>
+</div>
+<div class="paragraph">
+<p>You can add more clusters by executing the template again or in Jenkins &#x2192; Manage Jenkins &#x2192; Configure System</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/openshift-configuration/openshift-clusters.png" alt="openshift clusters">
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 <div class="paragraph nav-footer">
-<p>&#x2190;&#xA0;Previous:&#xA0;<a href="master-production-line.asciidoc_devonfw-technologies-templates.html">devonfw Technologies Templates</a>&#xA0;| &#x2191;&#xA0;Up:&#xA0;<a href="master-production-line.asciidoc.html">Production Line Templates</a>&#xA0;| &#x2302;&#xA0;Home:&#xA0;<a href="master.html">devonfw guide</a>&#xA0;| Next:&#xA0;<a href="install-sonar-plugin.asciidoc.html">Install SonarQube Plugin</a>&#xA0;&#x2192;</p>
+<p>&#x2190;&#xA0;Previous:&#xA0;<a href="master-production-line.asciidoc_devonfw-technologies-templates.html">devonfw Technologies Templates</a>&#xA0;| &#x2191;&#xA0;Up:&#xA0;<a href="master-production-line.asciidoc.html">Production Line Templates</a>&#xA0;| &#x2302;&#xA0;Home:&#xA0;<a href="master.html">devonfw guide</a>&#xA0;| Next:&#xA0;<a href="master-production-line.asciidoc_mrchecker.html">MrChecker</a>&#xA0;&#x2192;</p>
 </div>
 </div>
 <div id="footer" class="footer">
@@ -694,7 +1544,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2019-12-12 16:17:06 UTC
+Last updated 2019-12-13 09:10:29 UTC
 </sub></div>
 
 
