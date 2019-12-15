@@ -103,6 +103,7 @@
 <ul class="sectlevel1">
 <li><a href="#software.asciidoc_repository">Repository</a></li>
 <li><a href="#software.asciidoc_shared">Shared</a></li>
+<li><a href="#software.asciidoc_custom">Custom</a></li>
 </ul>
 </li>
 </ul>
@@ -174,6 +175,64 @@ If you have a sensitive project that should not be affected by such side-effects
 </div>
 <div class="paragraph">
 <p>This will disable this feature particularly for that specific sensitive <code>devonfw-ide</code> installation but let you use it for all other ones.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="software.asciidoc_custom">Custom</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In some cases a project might need a (proprietary) tool(s) that is not supported by <code>devonfw-ide</code>. A very simple solution is to get a release of <code>devonfw-ide</code> and add the tool(s) to the software folder and then distribute this modified release to your team. However, this has several drawbacks as you then have a fork of <code>devonfw-ide</code> all will loose your tool(s) when updating to a new release.</p>
+</div>
+<div class="paragraph">
+<p>As a solution for this need, <code>devonfw-ide</code> offers you to configure cutom tools via the <code>DEVON_IDE_CUSTOM_TOOLS</code> <a href="#variables.asciidoc">variable</a>. It can be defined in <a href="#configuration.asciidoc"><code>devon.properties</code></a> of your <a href="#settings.asciidoc">settings</a> git repository as an array of the custom tools you need to add.
+Each entry applies:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>It needs to have the form <code>«tool»:«version»[:all][:«repository-url»]</code></p>
+</li>
+<li>
+<p>The first entry must have the <code>«repository-url»</code> included which is used as default</p>
+</li>
+<li>
+<p>Further entries will inherit this default if omitted</p>
+</li>
+<li>
+<p>This URL is used in the same way as described above for a software <a href="#software.asciidoc_repository">repository</a>.</p>
+</li>
+<li>
+<p>The <code>DEVON_SOFTWARE_REPOSITORY</code> variable is ignored by this feature.</p>
+</li>
+<li>
+<p>The optional infix <code>:all</code> is used to indicate that the tool is platform independent. Otherwise an OS specific infix is appended the the file URL to download for your platform (<code>windows</code>, <code>linux</code>, or <code>mac</code>).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>As an example we define the following in <code>${DEVON_IDE_HOME}/settings/devon.properties</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>DEVON_IDE_CUSTOM_TOOLS=(jboss-eap:7.1.4.GA:all:https://host.tld/projects/my-project firefox:70.0.1)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will download and extract the following to your <code>software</code> folder:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code><a href="https://host.tld/projects/my-project/jboss-eap/7.1.4.GA/jboss-eap-7.1.4.GA.tgz" class="bare">https://host.tld/projects/my-project/jboss-eap/7.1.4.GA/jboss-eap-7.1.4.GA.tgz</a></code></p>
+</li>
+<li>
+<p><code><a href="https://host.tld/projects/my-project/firefox/70.0.1/firefox-70.0.1-windows.tgz" class="bare">https://host.tld/projects/my-project/firefox/70.0.1/firefox-70.0.1-windows.tgz</a></code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Please note that if you are not using windows, the <code>-windows</code> suffix will be <code>-mac</code> or <code>-linux</code>.</p>
 </div>
 </div>
 </div>
@@ -305,7 +364,7 @@ If you have a sensitive project that should not be affected by such side-effects
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2019-12-13 13:44:46 UTC
+Last updated 2019-12-15 17:07:32 UTC
 </sub></div>
 </div>
 </div>
