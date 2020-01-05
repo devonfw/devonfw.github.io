@@ -36,7 +36,7 @@ jobs:
         run: |
           mvn org.apache.maven.plugins:maven-dependency-plugin:3.0.2:copy -Dartifact=de.saumya.mojo:rubygems:0.2.3:war -DoutputDirectory=.
           java -jar rubygems-0.2.3.war &
-          sleep 60
+          sleep 30
           mvn -s ./.m2/settings-local-rubygems-proxy.xml clean package -Doutput.format=html
 
       - name: SplitHtml
@@ -66,7 +66,7 @@ jobs:
       - name: Cleanup
         run: |
           cd target/generated-docs
-          rm -Rf asciidoctor* documentation pom.xml README.html
+          rm -Rf asciidoctor* documentation pom.xml README.html rubygems*
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v2.5.0
