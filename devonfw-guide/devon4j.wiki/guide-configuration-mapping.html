@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Mapping configuration to your code</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-configuration-mapping.asciidoc">Mapping configuration to your code</a>
+<ul class="sectlevel1">
+<li><a href="#guide-configuration-mapping.asciidoc_naming-conventions-for-configuration-properties">Naming conventions for configuration properties</a></li>
+<li><a href="#guide-configuration-mapping.asciidoc_mapping-advanced-configuration">Mapping advanced configuration</a></li>
+<li><a href="#guide-configuration-mapping.asciidoc_generate-configuration-metadata">Generate configuration metadata</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-configuration-mapping.asciidoc" class="sect0">Mapping configuration to your code</h1>
+<div class="paragraph">
+<p>If you are using <code>spring-boot</code> as suggested by <code>devon4j</code> your application can be configured by <code>application.properties</code> file as described in <a href="#guide-configuration.asciidoc">configuration</a>.
+To get a single configuration option into your code for flexibility, you can use</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Value("${my.property.name}")
+private String myConfigurableField;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now, in your <code>application.properties</code> you can add the property:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>my.property.name=my-property-value</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You may even use <code>@Value("${my.property.name:my-default-value}")</code> to make the property optional.</p>
+</div>
+<div class="sect1">
+<h2 id="guide-configuration-mapping.asciidoc_naming-conventions-for-configuration-properties">Naming conventions for configuration properties</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As a best practice your configruation properties should follow these naming conventions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>build the property-name as a path of segments separated by the dot character (<code>.</code>)</p>
+</li>
+<li>
+<p>segments should get more specific from left to right</p>
+</li>
+<li>
+<p>a property-name should either be a leaf value or a tree node (prefix of other property-names) but never both! So never have something like <code>foo.bar=value</code> and <code>foo.bar.child=value2</code>.</p>
+</li>
+<li>
+<p>start with a segment namespace unique to your context or application</p>
+</li>
+<li>
+<p>a good example would be <code>«myapp».billing.service.email.sender</code> for the sender address of billing service emails send by <code>«myapp»</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-configuration-mapping.asciidoc_mapping-advanced-configuration">Mapping advanced configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>However, in many scenarios you will have features that require more than just one property.
+Injecting those via <code>@Value</code> is not leading to good code quality.
+Instead we create a class with the suffix <code>ConfigProperties</code> containing all configuration properties for our aspect that is annotated with <code>@ConfigurationProperties</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@ConfigurationProperties(prefix = "myapp.billing.service")
+public class BillingServiceConfigProperties {
+
+  private final Email email = new Email();
+  private final Smtp smtp = new Smtp();
+
+  public Email getEmail() { return this.email; }
+  public Email getSmtp() { return this.smtp; }
+
+  public static class Email {
+
+    private String sender;
+    private String subject;
+
+    public String getSender() { return this.sender; }
+    public void setSender(String sender) { this.sender = sender; }
+    public String getSubject() { return this.subject; }
+    public void setSubject(String subject) { this.subject = subject; }
+  }
+
+  public static class Smtp {
+
+    private String host;
+    private int port = 25;
+
+    public String getHost() { return this.host; }
+    public void setHost(String host) { this.host = host; }
+    public int getPort() { return this.port; }
+    public void setPort(int port) { this.port = port; }
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Of course this is just an example to demonstrate this feature of <code>spring-boot</code>.
+In order to send emails you would typically use the existing <a href="https://www.baeldung.com/spring-email">spring-email</a> feature.
+But as you can see this allows us to define and access our configuration in a very structured and comfortable way.
+The annotation <code>@ConfigurationProperties(prefix = "myapp.billing.service")</code> will automatically map spring configuration properties starting with <code>myapp.billing.service</code> via the according getters and setters into our <code>BillingServiceConfigProperties</code>.
+We can easily define defaults (e.g. <code>25</code> as default value for <code>myapp.billing.service.smtp.port</code>).
+Also <code>Email</code> or <code>Smtp</code> could be top-level classes to be reused in multiple configurations.
+Of course you would also add helpful <code>JavaDoc</code> comments to the <code>getters</code> and classes to document your configuration options.
+Further to access this configuration, we can use standard <a href="#guide-dependency-injection.asciidoc">dependency-injection</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Inject
+private BillingServiceConfigProperties config;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For very generic cases you may also use <code>Map&lt;String, String&gt;</code> to map any kind of property in an untyped way.
+An example for generic configuration from <code>devon4j</code> can be found in
+<a href="https://github.com/devonfw/devon4j/blob/9b8f9461997bb5d8048a9fec42bec3625652eec3/modules/service/src/main/java/com/devonfw/module/service/common/base/config/ServiceConfigProperties.java">ServiceConfigProperties</a>.</p>
+</div>
+<div class="paragraph">
+<p>For further details about this feature also consult <a href="https://www.baeldung.com/configuration-properties-in-spring-boot">Guide to @ConfigurationProperties in Spring Boot</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-configuration-mapping.asciidoc_generate-configuration-metadata">Generate configuration metadata</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You should further add this <code>dependency</code> to your module containing the <code>*ConfigProperties</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">    &lt;dependency&gt;
+      &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+      &lt;artifactId&gt;spring-boot-configuration-processor&lt;/artifactId&gt;
+      &lt;optional&gt;true&lt;/optional&gt;
+    &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will generate configuration metadata so projects using your code can benefit from autocompletion and getting your JavaDoc as tooltip when editing <code>application.properites</code> what makes this approach very powerful.
+For further details about this please read <a href="https://www.baeldung.com/spring-boot-configuration-metadata">A Guide to Spring Boot Configuration Metadata</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started-what-is-devonfw.asciidoc.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started-why-should-i-use-devonfw.asciidoc.html">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started-what-is-devonfw.asciidoc.html#getting-started-what-is-devonfw.asciidoc_devonfw-technology-stack">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/master-general-start.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-devon4j.asciidoc_introduction.html#architecture.asciidoc">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/master-ide.asciidoc_integrated-development-environment.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/general-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2020-01-05 17:25:32 UTC
+</sub></div>
+</div>
+</div>
+</body>
+</html>
