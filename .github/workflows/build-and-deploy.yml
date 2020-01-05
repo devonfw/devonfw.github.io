@@ -17,29 +17,34 @@ jobs:
       - name: SetupRuby
         uses: actions/setup-ruby@v1
         with:
-          ruby-version: '2.x'
-      
+          ruby-version: "2.x"
+
       - name: Setup Node
         uses: actions/setup-node@v1
-      
+
       - name: InstallAsciidoctorGem
         run: gem install asciidoctor -v 1.5.7.1
 
       - name: RenameHomeFiles
-        run:  |
+        run: |
           cd general-scripts
           npm install
           node renamer.js ../devonfw-guide/ Home .asciidoc
           cd ..
 
+      - name: Start rubygems maven proxy
+        run: |
+          mvn org.apache.maven.plugins:maven-dependency-plugin:2.1:get -DrepoUrl=https://repo1.maven.org/ -Dartifact=de.saumya.mojo:rubygems:0.2.3:war
+          java -jar rubygems-0.2.3.war &
+
       - name: Build
-        run: mvn clean package -Doutput.format=html
-        
+        run: mvn -s ./.m2/settings-local-rubygems-proxy.xml clean package -Doutput.format=html
+
       - name: SplitHtml
         run: |
           asciidoctor -r ./asciidoctor-extensions/multipage-html5-converter.rb -b  multipage_html5 ./target/asciidoc/devonfw-guide/master.asciidoc -a toc=left -D ./target/generated-docs/website/pages/docs
           cp -avr target/generated-docs/images/ target/generated-docs/website/pages/docs/
-          
+
       - name: Postprocessing
         run: |
           cd general-scripts
@@ -50,17 +55,17 @@ jobs:
           node video-to-iframe.js ../target/generated-docs/website/pages/resources/resources.html
           node rereferencer/rereference.js ../../target/asciidoc/devonfw-guide/ ../../target/generated-docs/website/pages/docs/
           cd ..
-       
+
       - name: Reindex
         run: |
           cd target/generated-docs/search-engine
           npm install
           node ./converter.js ../website/pages/docs/ .html
           cp {index.json,docs-json.json} ../website
-          cd ../../..   
+          cd ../../..
 
       - name: Cleanup
-        run: | 
+        run: |
           cd target/generated-docs
           rm -Rf asciidoctor* documentation pom.xml README.html
 
