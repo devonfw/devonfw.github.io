@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Oracle RDBMS</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-oracle.asciidoc">Oracle RDBMS</a>
+<ul class="sectlevel1">
+<li><a href="#guide-oracle.asciidoc_xe">XE</a></li>
+<li><a href="#guide-oracle.asciidoc_driver">Driver</a></li>
+<li><a href="#guide-oracle.asciidoc_pooling">Pooling</a></li>
+<li><a href="#guide-oracle.asciidoc_messaging">Messaging</a></li>
+<li><a href="#guide-oracle.asciidoc_general-notes-on-the-use-of-oracle-products">General Notes on the use of Oracle products</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-oracle.asciidoc" class="sect0">Oracle RDBMS</h1>
+<div class="paragraph">
+<p>This section contains hints for those who use Oracle RDBMS. Besides general hints about the driver there are tips for more tight integration with other Oracle features or products. However, if you work for a project where Oracle RDBMS is settled and not going to be replaced (you are in a vendor lock-in anyway), you might want to use even more from Oracle technology to take advantage from a closer integration.</p>
+</div>
+<div class="sect1">
+<h2 id="guide-oracle.asciidoc_xe">XE</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>For local development you should setup Oracle XE (eXpress Edition).
+You need an oracle account, then you can download it from <a href="https://www.oracle.com/technetwork/database/database-technologies/express-edition/downloads/index.html">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>The most comfortable way to run it as needed is using docker. You can build your own docker image from the downloaded RPM using the <a href="https://github.com/oracle/docker-images/tree/master/OracleDatabase/SingleInstance">instructions and dockerfile from oracle</a>. (In case the build of the docker-image <a href="https://github.com/oracle/docker-images/issues/1133">fails reproducibly</a> and you want to give up with the Dockerfiles from Oracle you can also try this inofficial <a href="https://github.com/fuzziebrain/docker-oracle-xe">docker-oracle-xe</a> solution).</p>
+</div>
+<div class="paragraph">
+<p>To connect to your local XE database you need to use <code>xe</code> as the <code>SID</code> of your main database that can not be changed. The <code>hostname</code> should be <code>localhost</code> and the <code>port</code> is by default <code>1521</code> if you did not remap it with docker to something else. However, starting with XE 18c you need to be aware that oracle introduced a <a href="https://docs.oracle.com/database/121/CNCPT/cdbovrvw.htm">multi-tenant architecture</a>. Hence <code>xe</code> refers to the root <code>CDB</code> while you typically want to connect to the <code>PDB</code> (pluggable database) and XE ships with exactly one of this called <code>xepdb1</code>. To create a schema user as <code>sys</code> in root <code>CDB</code> you should first execute this SQL statement:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>ALTER SESSION SET CONTAINER = XEPDB1;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To connect with <code>SQL Developer</code> as a regular user switch <code>Connection Type</code> from <code>Basic</code> to <code>Advanced</code> and enter the <code>Custom JDBC URL</code> like e.g.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>jdbc:oracle:thin:@//localhost:1521/xepdb1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The same way you can also connect from your devon4j app via JDBC.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-oracle.asciidoc_driver">Driver</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The oracle JDBC driver is not available in maven central. Depending on the Oracle DB version and the Java version, you can use either the 11g/ojdbc6, 12c/ojdbc7, or 12c/ojdbc8 version of the driver. Oracle JDBC drivers usually are backward and forward compatible so you should be able to use the 12c/ojdbc8 driver with an 11g DB etc. As a rule of thumb, use the 12c/ojdbc8 driver unless you must use Java7. All JDBC drivers can be downloaded without registration: <a href="http://www.oracle.com/technetwork/database/enterprise-edition/jdbc-112010-090769.html">11g/ojdbc6</a>, <a href="http://www.oracle.com/technetwork/database/features/jdbc/jdbc-drivers-12c-download-1958347.html">12c/ojdbc7</a>, and <a href="http://www.oracle.com/technetwork/database/features/jdbc/jdbc-ucp-122-3110062.html">12c/ojdbc8</a>. Your project should use a maven repository server such as <a href="http://www.sonatype.org/nexus/">nexus</a> or <a href="https://www.jfrog.com/open-source/">artifactory</a>.
+Your dependency for the oracle driver should look as follows (use artifactId "ojdbc6" or "ojdbc7" for the older drivers):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>&lt;dependency&gt;
+  &lt;groupId&gt;com.oracle&lt;/groupId&gt;
+  &lt;artifactId&gt;ojdbc8&lt;/artifactId&gt;
+  &lt;version&gt;${oracle.driver.version}&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>oracle.driver.version being 11.2.0.4 for 11g/ojdbc6, or 12.1.0.1 for 12c/ojdbc7, or 12.2.0.1 for 12c/ojdbc8 or newer</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-oracle.asciidoc_pooling">Pooling</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order to boost performance JDBC connections should be pooled and reused. If you are using Oracle RDBMS and do not plan to change that you can use the Oracle specific connection pool "Universal Connection Pool (UCP)" that is perfectly integrated with the Oracle driver. According to the documentation, UCP can even be used to <a href="https://docs.oracle.com/database/122/JJUCP/third-party-integration.htm#JJUCP8141">manage third party data sources</a>. The 11g version of UCP can be downloaded without registration <a href="http://www.oracle.com/technetwork/database/enterprise-edition/downloads/ucp-112010-099129.html">here</a>, the 12c version of UCP is available at the same download locations as the 12c JDBC driver (see above). As a rule of thumb, use the version that is the same as the JDBC driver version.
+Again, you have to upload the artefact manually to your maven repository. The dependency should look like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>&lt;dependency&gt;
+  &lt;groupId&gt;com.oracle&lt;/groupId&gt;
+  &lt;artifactId&gt;ucp&lt;/artifactId&gt;
+  &lt;version&gt;${oracle.ucp.version}&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>with oracle.ucp.version being 11.2.0.4 or 12.2.0.1 or newer.</p>
+</div>
+<div class="paragraph">
+<p>Configuration is done via application.properties like this (example):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>#Oracle UCP
+# Datasource for accessing the database
+spring.datasource.url=jdbc:oracle:thin:@192.168.58.2:1521:xe
+spring.jpa.database-platform=org.hibernate.dialect.Oracle12cDialect
+spring.datasource.user=MyUser
+spring.datasource.password=ThisIsMyPassword
+spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
+spring.datasource.schema=MySchema
+
+spring.datasource.type=oracle.ucp.jdbc.PoolDataSourceImpl
+spring.datasource.factory=oracle.ucp.jdbc.PoolDataSourceFactory
+spring.datasource.factory-method=getPoolDataSource
+spring.datasource.connectionFactoryClassName=oracle.jdbc.pool.OracleDataSource
+spring.datasource.validateConnectionOnBorrow=true
+spring.datasource.connectionPoolName=MyPool
+spring.datasource.jmx-enabled=true
+
+# Optional: Set the log level to INTERNAL_ERROR, SEVERE, WARNING, INFO, CONFIG, FINE, TRACE_10, FINER, TRACE_20, TRACE_30, or FINEST
+# logging.level.oracle.ucp=INTERNAL_ERROR
+# Optional: activate tracing
+# logging.level.oracle.ucp.jdbc.oracle.OracleUniversalPooledConnection=TRACE
+
+#Optional: Configures pool size manually
+#spring.datasource.minPoolSize=10
+#spring.datasource.maxPoolSize=40
+#spring.datasource.initialPoolSize=20</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resources: <a href="http://www.oracle.com/technetwork/database/application-development/default-2248812.html">FAQ</a>, <a href="https://docs.oracle.com/database/122/JJUCP/toc.htm">developer&#8217;s guide</a>, <a href="https://docs.oracle.com/database/122/JJUAR/toc.htm">Java API Reference</a>. For an in-depth discussion on how to use JDBC and UCP, see the Oracle documentation <a href="http://www.oracle.com/technetwork/database/application-development/jdbc-ucp-conn-mgmt-strategies-3045654.pdf">Connection Management Strategies for Java Applications using JDBC and UCP</a>.</p>
+</div>
+<div class="paragraph">
+<p>Note: there is a bug in UCP 12.1.0.2 that results in the creation of thousands of java.lang.Timer threads over hours or days of system uptime (see <a href="https://stackoverflow.com/questions/37245827/too-many-ucp-timer-threads">article on stackoverflow</a>). Also, Oracle has a strange bug fixing / patching policy: instead of producing a fixed version 12.1.0.3 or 12.1.0.2.x, Oracle publishes collections of *.class files that must be manually patched into the ucp.jar! Therefore, use the newest versions only.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-oracle.asciidoc_messaging">Messaging</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In case you want to do messaging based on JMS you might consider the <a href="https://docs.oracle.com/cd/E11882_01/server.112/e11013/aq_intro.htm">Oracle JMS</a> also called Oracle Streams Advanced Queuing, or Oracle Advanced Queuing, or OAQ or AQ for short. OAQ is a JMS provider based on the Oracle RDBMS and included in the DB product for no extra fee. OAQ has some features that exceed the JMS standard like a retention time (i.e. a built-in backup mechanism that allows to make messages "unread" within a configurable period of time so that these messages do not have to be resent by the sending application). Also, OAQ messages are stored in relational tables so they can easily be observed by a test driver in a system test scenario.
+Capgemini has used the <a href="https://projects.spring.io/spring-data-jdbc-ext/">Spring Data JDBC Extension</a> in order to process OAQ messages within <strong>the same technical transaction</strong> as the resulting Oracle RDBMS data changes <strong>without</strong> using 2PC and an XA-compliant transaction manager - which is not available out of the box in Tomcat. This is possible only due to the fact that OAQ queues and RDBMS tables actually reside in the same database. However, this is higher magic and should only be tried if high transaction rates must be achieved by avoiding 2PC.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-oracle.asciidoc_general-notes-on-the-use-of-oracle-products">General Notes on the use of Oracle products</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Oracle sells commercial products and receives licence fees for them. This includes access to a support organization. Therefore, at an early stage of your project, prepare for contacting <a href="https://support.oracle.com">oracle support</a> in case of technical problems. You will need the Oracle support ID <strong>of your customer</strong> [i.e. the legal entity who pays the licence fee and runs the RDBMS] and your customer must grant you permission to use it in a service request - it is not legal to use a your own support ID in a customer-related project. Your customer pays for that service anyway, so use it in case of a problem!</p>
+</div>
+<div class="paragraph">
+<p>Software components like the JDBC driver or the UCP may be available without a registration or fee but they are protected by the Oracle Technology Network (OTN) License Agreement. The most important aspect of this licence agreement is the fact that an IT service provider is not allowed to simply download the Oracle software component, bundle it in a software artefact and deliver it to the customer. Instead, the Oracle software component must be (from a legal point of view) provided by the owner of the Oracle DB licence (i.e. your customer). This can be achieved in two ways: Advise your customer to install the Oracle software component in the application server as a library that can be used by your custom built system. Or, in cases where this is not feasible, e.g. in a OpenShift environment where the IT service provider delivers complete Docker images, you must advise your customer to (legally, i.e. documented in a written form) provide the Oracle software component to you, i.e. you don&#8217;t download the software component from the Oracle site but receive it from your customer.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started-what-is-devonfw.asciidoc.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started-why-should-i-use-devonfw.asciidoc.html">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started-what-is-devonfw.asciidoc.html#getting-started-what-is-devonfw.asciidoc_devonfw-technology-stack">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/master-general-start.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-devon4j.asciidoc_introduction.html#architecture.asciidoc">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/master-ide.asciidoc_integrated-development-environment.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/general-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2020-01-10 13:33:08 UTC
+</sub></div>
+</div>
+</div>
+</body>
+</html>
