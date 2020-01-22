@@ -21,7 +21,7 @@
 <!-- ************************************* -->
 
 
-<title>devon4node</title>
+<title>devon4net Template for Production Line</title>
 <!-- devonfw website stylesheet -->
 <link rel="stylesheet" type="text/css" href="/devonfw.css">
 <!-- Lunr -->
@@ -50,7 +50,7 @@
 <!-- ******************************************** -->
 
 </head>
-<body id="master-devon4node.asciidoc" class="article">
+<body class="article">
 <div id="website-navbar" class="website-navbar">
 <button id="menu-button" class="menu-button">
   <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
@@ -96,58 +96,246 @@
 <div id="sidebar" class="wiki-sidebar"></div>
 
 <div id="content" class="mt-4 mt-sm-5">
-<div id="preamble">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#devon4net.asciidoc">devon4net Template for Production Line</a>
+<ul class="sectlevel2">
+<li><a href="#devon4net.asciidoc_overview">Overview</a></li>
+<li><a href="#devon4net.asciidoc_prerequisites">Prerequisites</a></li>
+<li><a href="#devon4net.asciidoc_how-to-insert-the-template">How to insert the Template</a></li>
+<li><a href="#devon4net.asciidoc_how-to-run-the-template">How to run the Template</a></li>
+</ul>
+</li>
+</ul>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4node-pl/pl.png" alt="400" width="300">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4node-pl/devonfw.png" alt="400" width="300">
+</div>
+</div>
+<h1 id="devon4net.asciidoc" class="sect0">devon4net Template for Production Line</h1>
+<div class="sect2">
+<h3 id="devon4net.asciidoc_overview">Overview</h3>
+<div class="paragraph">
+<p>This template will configure your PL instance to have a 'ready to use' devon4net template. It can be used as a starting point for your .NET projects.<br>
+This includes CICD files for a devonfw technology stack with configuration for:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ProductionLine instance</p>
+</li>
+<li>
+<p>docker or openshift deployment</p>
+</li>
+<li>
+<p>pushing artifacts to nexus3</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devon4net.asciidoc_prerequisites">Prerequisites</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><a href="https://www.devonfw.com/">devonfw</a> is a platform which provides solutions to building business applications which combine best-in-class frameworks and libraries as well as industry proven practices and code conventions. devonfw is 100% Open Source (Apache License version 2.0) since the beginning of 2018.</p>
+<p>To be able to run Jenkins Node job under ProductionLine you need to configure below settings in Jenkins and Gitlab</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Jenkins<br></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Execute the <a href="#./initialize-instance.asciidoc">initialize instance template</a></p>
+</li>
+<li>
+<p>If you plan to deploy into OpenShift, you need to execute <a href="#./openshift-configuration.asciidoc">openshift-configuration</a> template also.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Gitlab<br></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Generate User Private Token<br>
+Go to your Profile in Gitlab<br></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4node-pl/profile.png" alt="500" width="400">
+</div>
 </div>
 <div class="paragraph">
-<p>devon4node is the NodeJS stack of devonfw. It allows you to build business applications (backends) using NodeJS technology in standardized way based on established best-practices.</p>
+<p>Next click on the pen icon<br></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4node-pl/pen.png" alt="500" width="400">
+</div>
 </div>
 <div class="paragraph">
-<p>devon4node is based on <a href="https://nestjs.com/">NestJS</a>. Nest (NestJS) is a framework for building efficient, scalable Node.js server-side applications. It uses progressive TypeScript and combines elements of OOP (Object Oriented Programming), FP (Functional Programming), and FRP (Functional Reactive Programming).</p>
+<p>On the left menu choose Access Tokens and put token name and check fields like below<br></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4node-pl/token.JPG" alt="600" width="500">
+</div>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in master-devon4node.asciidoc - include::devon4node-architecture.asciidoc[leveloffset=1]</p>
+<p>Click "Create personal access token", you should receive notification about created token and token string. Copy the token string.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4node-pl/created_token.JPG" alt="600" width="500">
+</div>
+</div>
+<div class="paragraph">
+<p>The GitLab API user needs to have API access and the rights to create a new group. To set this permission follow the next steps:<br></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Enter the Admin control panel</p>
+</li>
+<li>
+<p>Select 'Users'</p>
+</li>
+<li>
+<p>Select the user(s) in question and click 'Edit'</p>
+</li>
+<li>
+<p>Scroll down to 'Access' and un-tick 'Can Create Group'</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="master-devon4node.asciidoc_layers">Layers</h2>
+<h2 id="devon4net.asciidoc_how-to-insert-the-template">How to insert the Template</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Unresolved directive in master-devon4node.asciidoc - include::layer-controller.asciidoc[leveloffset=2]
-Unresolved directive in master-devon4node.asciidoc - include::layer-service.asciidoc[leveloffset=2]
-Unresolved directive in master-devon4node.asciidoc - include::layer-dataaccess.asciidoc[leveloffset=2]</p>
+<p>In order to add the template, you can follow the <a href="#./how-to-add-a-template.asciidoc">guide</a>.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="master-devon4node.asciidoc_guides">Guides</h2>
+<h2 id="devon4net.asciidoc_how-to-run-the-template">How to run the Template</h2>
 <div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Build the job with parameters:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>PROJECT_NAME: The project name.</p>
+</li>
+<li>
+<p>PROJECT_SUFFIX: The project name suffix. As your project can have multiple assets (backend, frontend, middleware&#8230;&#8203;), you can define a suffix in order to identify each one with a different name</p>
+</li>
+<li>
+<p>GROUP_ID: The group id of the project.</p>
+</li>
+<li>
+<p>GITLAB_USER_PRIVATE_TOKEN: Private Token of a Production Line Gitlab User that can be used to create repositories. Created as prerequisite, you only need to add it as credential with GitLab API token <strong>Kind</strong>.</p>
+</li>
+<li>
+<p>GITLAB_CREATE_GROUP_NAME: Name of the GitLab group. The repository will be create inside this group.</p>
+</li>
+<li>
+<p>GITLAB_CREATE_PROJECT_DESCRIPTION: Description of the repository.</p>
+</li>
+<li>
+<p>DEPLOY: Choose the environment where you want to deploy. The deployment could be <strong>none</strong>, <strong>docker</strong> or <strong>openshift</strong>. If <strong>docker</strong> or <strong>openshift</strong> were selected, extra parameters will be required in their dedicated steps:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Configuring DOCKER:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>DOCKER_URL: The remote docker daemon URL</p>
+</li>
+<li>
+<p>DOCKER_CERT: Credentials to access docker daemon. If the daemon is not secure, you can leave this empty.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Configuring Openshift:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>OC_NAME: Openshift cluster name. It was defined in the Openshift Configuration template</p>
+</li>
+<li>
+<p>DOCKER_REGISTRY_CREDENTIALS: Nexus docker registry user credentials. It was created in the initialize instance pipeline. The default username is nexus-api, the default password is the same as your service account.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
 <div class="paragraph">
-<p>Unresolved directive in master-devon4node.asciidoc - include::guides-key-principles.asciidoc[leveloffset=2]
-Unresolved directive in master-devon4node.asciidoc - include::guides-cli.asciidoc[leveloffset=2]
-Unresolved directive in master-devon4node.asciidoc - include::guides-code-generation.asciidoc[leveloffset=2]
-Unresolved directive in master-devon4node.asciidoc - include::guides-coding-conventions.asciidoc[leveloffset=2]
-Unresolved directive in master-devon4node.asciidoc - include::guides-dependency-injection.asciidoc[leveloffset=2]
-Unresolved directive in master-devon4node.asciidoc - include::guides-configuration-module.asciidoc[leveloffset=2]
-Unresolved directive in master-devon4node.asciidoc - include::guides-auth-jwt.asciidoc[leveloffset=2]
-Unresolved directive in master-devon4node.asciidoc - include::guides-swagger.asciidoc[leveloffset=2]
-Unresolved directive in master-devon4node.asciidoc - include::guides-typeorm.asciidoc[leveloffset=2]
-Unresolved directive in master-devon4node.asciidoc - include::guides-serializer.asciidoc[leveloffset=2]
-Unresolved directive in master-devon4node.asciidoc - include::guides-validation.asciidoc[leveloffset=2]
-Unresolved directive in master-devon4node.asciidoc - include::guides-logger.asciidoc[leveloffset=2]
-Unresolved directive in master-devon4node.asciidoc - include::guides-mailer.asciidoc[leveloffset=2]</p>
+<p>After executing this template, you will have:</p>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>A new GitLab repository.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The repository group is the value passed in the GITLAB_CREATE_GROUP_NAME parameter.</p>
+</li>
+<li>
+<p>The repository name is <em>PROJECT_NAME</em>-<em>PROJECT_SUFFIX</em></p>
+</li>
+<li>
+<p>The repository contains a clean devon4net project.</p>
+</li>
+<li>
+<p>The repository contains a Jenkinsfile.</p>
+</li>
+<li>
+<p>The repository has already setted the jenkins webhook.</p>
+</li>
+<li>
+<p>The repository protects the branches master and release/* to only maintainers to push. Develop is the default branch.</p>
+</li>
+</ul>
 </div>
-</div>
-<div class="sect1">
-<h2 id="master-devon4node.asciidoc_devon4node-applications">devon4node applications</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Unresolved directive in master-devon4node.asciidoc - include::samples.asciidoc[leveloffset=2]
-Unresolved directive in master-devon4node.asciidoc - include::samples-step-by-step.asciidoc[leveloffset=2]</p>
+</li>
+<li>
+<p>A new multibranch pipeline in jenkins inside the folder <em>PROJECT_NAME</em> with the name <em>PROJECT_NAME</em>-<em>PROJECT_SUFFIX</em>. As the webhook is already configured, it should be executed on every push to GitLab repository.</p>
+</li>
+<li>
+<p>If you choose docker for deployment, your Jenkinsfile should contain two extra stages in order to build and deploy the docker image. Also, the repository should contain the Dockerfiles to create the docker images.</p>
+</li>
+<li>
+<p>If you choose OpenShift for deployment, three new applications should be created in your OpenShift. Those applications represent three environments of your application: develop, uat and stage. Also, your Jenkinsfile should contain three extra stages in order to build and deploy the docker image and check that the pod is running without errors. Also, the repository should contain the Dockerfiles to create the docker images.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -279,7 +467,7 @@ Unresolved directive in master-devon4node.asciidoc - include::samples-step-by-st
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2020-01-22 07:29:53 UTC
+Last updated 2020-01-22 07:33:01 UTC
 </sub></div>
 </div>
 </div>
