@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>CobiGen Core Development</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#cobigen-core_development.asciidoc">CobiGen Core Development</a>
+<ul class="sectlevel1">
+<li><a href="#cobigen-core_development.asciidoc_extension-mechanism">Extension Mechanism</a></li>
+<li><a href="#cobigen-core_development.asciidoc_plugin-registry">Plugin Registry</a>
+<ul class="sectlevel2">
+<li><a href="#cobigen-core_development.asciidoc_loadplugin">LoadPlugin</a></li>
+</ul>
+</li>
+<li><a href="#cobigen-core_development.asciidoc_cobigen-initialization">CobiGen Initialization</a>
+<ul class="sectlevel2">
+<li><a href="#cobigen-core_development.asciidoc_freemarker-initialization">FreeMarker Initialization</a></li>
+<li><a href="#cobigen-core_development.asciidoc_context-configuration">Context Configuration</a></li>
+</ul>
+</li>
+<li><a href="#cobigen-core_development.asciidoc_perform-generation">Perform Generation</a>
+<ul class="sectlevel2">
+<li><a href="#cobigen-core_development.asciidoc_single-non-container-input">Single Non Container Input</a></li>
+<li><a href="#cobigen-core_development.asciidoc_single-container-input-or-multiple-files-selection">Single Container Input or multiple files selection</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="cobigen-core_development.asciidoc" class="sect0">CobiGen Core Development</h1>
+<div class="paragraph">
+<p>CobiGen uses Apache FreeMarker as engine for generation through FreeMarker templates.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>To know more about development using Apache FreeMarker, please refer to <a href="http://freemarker.org/docs/pgui.html">official documentation</a>.</p>
+</li>
+<li>
+<p>To know more about FreeMarker template development, please refer to the <a href="http://freemarker.org/docs/dgui.html">official template development documentation</a> and the guide of this wiki for each plugin:</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><a href="https://github.com/devonfw/cobigen/wiki/cobigen-javaplugin">Java Plugin</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/cobigen/wiki/cobigen-xmlplugin">Xml Plugin</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/cobigen/wiki/cobigen-propertyplugin">Property Plugin</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/cobigen/wiki/cobigen-textmerger">Text Plugin</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/cobigen/wiki/cobigen-jsonplugin">JSON Plugin</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/cobigen/wiki/cobigen-templates_helpful-links">Helpful Links</a></p>
+</li>
+</ol>
+</div>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The core implementation are divided in three projects:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong><em>cobigen-core-api</em></strong>: Mainly composed by interfaces that will be called from the Eclipse plug-in.</p>
+</li>
+<li>
+<p><strong><em>cobigen-core</em></strong>: The implementation of the interfaces are within.</p>
+</li>
+<li>
+<p><strong><em>cobigen-core-test</em></strong>: As the name suggests, used for test purposes.</p>
+</li>
+</ul>
+</div>
+<div class="sect1">
+<h2 id="cobigen-core_development.asciidoc_extension-mechanism">Extension Mechanism</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <strong>extension</strong> package from the API project contains the interfaces to be implemented if necessary by the sub plugins:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong><em>GeneratorPluginActivator.java</em></strong></p>
+</li>
+<li>
+<p><strong><em>InputReader.java</em></strong></p>
+</li>
+<li>
+<p><strong><em>MatcherInterpreter.java</em></strong></p>
+</li>
+<li>
+<p><strong><em>Merger.java</em></strong></p>
+</li>
+<li>
+<p><strong><em>TriggerInterpreter.java</em></strong></p>
+</li>
+<li>
+<p><strong><em>ModelBuilder.java</em></strong></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The ModelBuilder is an interface for accessing the internal model builder instance. Is implemented by <strong><em>ModelBuilder.java</em></strong> from the <strong>model</strong> package from the implementation project that provides the methods to call the <code>createModel()</code> from the correspondent input reader from the correspondent trigger interpreter to create the object models for a given object.</p>
+</div>
+<div class="paragraph">
+<p>The <strong>to</strong> package have the transfer objects of <code>template</code>, <code>matcher</code>, <code>increment</code> and <code>variable assignment</code> classes that will be used as "communication channel" between the core and sub plug-ins methods</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="cobigen-core_development.asciidoc_plugin-registry">Plugin Registry</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The core must load all the sub plugins to get their Merger, Matcher, TriggerInterpreter and InputReader. That elements must implement their respective interfaces from the core.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><a class="image" href="images/howtos/cobigen-core/core_01.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/cobigen-core/core_01.png" alt="Diagram 1" width="450"></a></span></p>
+</div>
+<div class="paragraph">
+<p>Is important to note that not all the sub plug-ins need to have implemented a Matcher and/or an InputReader (advanced information <a href="https://github.com/devonfw/cobigen/wiki/new_plugin">here</a>)</p>
+</div>
+<div class="sect2">
+<h3 id="cobigen-core_development.asciidoc_loadplugin">LoadPlugin</h3>
+<div class="paragraph">
+<p>The process of loading plugins to the core is done at the <a href="https://github.com/devonfw/cobigen/wiki/eclipse-plugin_development#1-1-activator-java">eclipse-plugin initialization</a>.</p>
+</div>
+<div class="paragraph">
+<p>Each sub plugin has an activator class that extends the <strong><em>GeneratorPluginActivator</em></strong> interface from the <strong>extension</strong> package. That class implements the methods <code>bindMerger()</code> and <code>bindTriggerInterpreter()</code>.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><a class="image" href="images/howtos/cobigen-core/core_02.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/cobigen-core/core_02.png" alt="Diagram 2" width="450"></a></span></p>
+</div>
+<div class="paragraph">
+<p>This is the class passed as argument to the <code>loadPlugin()</code> method of <strong><em>PluginRegister.java</em></strong> of the <strong>pluginmanager</strong> package.</p>
+</div>
+<div class="paragraph">
+<p>This method registers the mergers and the trigger interpreter of the sub plugins to the core.
+The trigger interpreter has the correspondent input reader of the plugin.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p><a href="https://github.com/devonfw/cobigen/wiki/new_plugin#3-adding-inputreader">How to add a new input reader</a></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="cobigen-core_development.asciidoc_cobigen-initialization">CobiGen Initialization</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The CobiGen initialization must initialize the context configuration and the FreeMarker configuration</p>
+</div>
+<div class="sect2">
+<h3 id="cobigen-core_development.asciidoc_freemarker-initialization">FreeMarker Initialization</h3>
+<div class="paragraph">
+<p>When a CobiGen object is instantiated, the constructor initializes the Freemarker configuration creating a configuration instance from the class <strong>freemarker.template.Configuration</strong> and adjust its settings.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">freeMarkerConfig = new Configuration(Configuration.VERSION_2_3_23);
+freeMarkerConfig.setObjectWrapper(new DefaultObjectWrapperBuilder(Configuration.VERSION_2_3_23).build());
+freeMarkerConfig.clearEncodingMap();
+freeMarkerConfig.setDefaultEncoding("UTF-8");
+freeMarkerConfig.setLocalizedLookup(false);
+freeMarkerConfig.setTemplateLoader(new NioFileSystemTemplateLoader(configFolder));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Using the <strong><em>FileSystemUtil</em></strong> from the <strong>util</strong> package the URI of the root folder containing the <code>context.xml</code> and all templates, configurations etc&#8230;&#8203; is converted to a Path object passing it as argument to the <strong><em>ContextConfiguration</em></strong> constructor.
+The <strong><em>ContextConfiguration</em></strong> creates a new ContextConfiguration from the <strong>config</strong> package with the contents initially loaded from the <code>context.xml</code></p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>How the ContextConfiguration works explained deeply <a href="https://github.com/devonfw/cobigen/wiki/Core-Development#4-1-contextconfiguration">here</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The Configuration initialization requires the version of Freemarker to be used and at the ObjectWrapper initialization as well.
+The <strong><em>DefaultObjectWrapperBuilder</em></strong> creates an <strong><em>DefaultObjectWrapper</em></strong> object that maps Java objects to the type-system of FreeMarker Template Language (FTL) with the given <code>incompatibleImprovements</code> specified by the version used as argument.</p>
+</div>
+<div class="paragraph">
+<p>The configuration of Freemarker requires to specify to a <em>TemplateLoader</em>. A <em>TemplateLoader</em> is an interface provided by Freemarker library that the developer should implement to fit the needs. The <em>TemplateLoader</em> implementation at CobiGen is the class <strong><em>NioFileSystemTemplateLoader.java</em></strong> from the <strong>config.nio</strong> package.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><a class="image" href="images/howtos/cobigen-core/core_03.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/cobigen-core/core_03.png" alt="Diagram 5" width="450"></a></span></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="cobigen-core_development.asciidoc_context-configuration">Context Configuration</h3>
+<div class="paragraph">
+<p>The context configuration reads the <code>context.xml</code> file from the template project (default: <strong>CobiGen_Templates</strong>)  passing the path as argument to the constructor. At the constructor, it is created an instance of <strong><em>ContextConfigurationReader.java</em></strong> from the <strong>config.reader</strong> package.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Please, check the <a href="https://github.com/devonfw/cobigen/wiki/cobigen-core_configuration">CobiGen configuration</a> for extended information about the <code>context.xml</code> and <code>templates.xml</code> configuration.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>That reader uses the JAXB, JAXB (Java Architecture for XML Binding) provides a fast and convenient way to bind XML schemas and Java representations, making it easy for Java developers to incorporate XML data and processing functions in Java applications. As part of this process, JAXB provides methods for unmarshalling (reading) XML instance documents into Java content trees.</p>
+</div>
+<div class="sect3">
+<h4 id="cobigen-core_development.asciidoc_jaxb">JAXB</h4>
+<div class="paragraph">
+<p>JAXB auto generates the Java object within the JAXBContext specified at the <code>xmlns</code> attribute of the <code>contextConfiguration</code> field from the <code>context.xml</code> file</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">Unmarshaller unmarshaller = JAXBContext.newInstance(ContextConfiguration.class).createUnmarshaller();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>That auto-generation follows the <code>contextConfiguration.xsd</code> schema. Each Java object follows the template specified with the field <code>&lt;xs:CompleType&gt;</code> from the schema file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;xs:complexType name="trigger"&gt;
+    &lt;xs:sequence&gt;
+         &lt;xs:element name="containerMatcher" type="tns:containerMatcher" minOccurs="0" maxOccurs="unbounded"/&gt;
+         &lt;xs:element name="matcher" type="tns:matcher" minOccurs="0" maxOccurs="unbounded"/&gt;
+    &lt;/xs:sequence&gt;
+    &lt;xs:attribute name="id" use="required" type="xs:NCName"/&gt;
+    &lt;xs:attribute name="type" use="required" type="xs:string"/&gt;
+    &lt;xs:attribute name="templateFolder" use="required" type="xs:string"/&gt;
+    &lt;xs:attribute name="inputCharset" use="optional" type="xs:string" default="UTF-8"/&gt;
+ &lt;/xs:complexType&gt;
+ &lt;xs:complexType name="matcher"&gt;
+    &lt;xs:sequence&gt;
+        &lt;xs:element name="variableAssignment" type="tns:variableAssignment" minOccurs="0" maxOccurs="unbounded"/&gt;
+    &lt;/xs:sequence&gt;
+    &lt;xs:attribute name="type" type="xs:string" use="required"/&gt;
+    &lt;xs:attribute name="value" type="xs:string" use="required"/&gt;
+    &lt;xs:attribute name="accumulationType" type="tns:accumulationType" use="optional" default="OR"/&gt;
+  &lt;/xs:complexType&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="image"><a class="image" href="images/howtos/cobigen-core/cobigen-core_sshot1.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/cobigen-core/cobigen-core_sshot1.png" alt="JAXB" width="450"></a></span></p>
+</div>
+<div class="paragraph">
+<p>The generated Java objects has the elements and attributes specified at the schema:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "trigger", namespace = "http://capgemini.com/devonfw/cobigen/ContextConfiguration", propOrder = {
+    "containerMatcher",
+    "matcher"
+})
+public class Trigger {
+    @XmlElement(namespace = "http://capgemini.com/devonfw/cobigen/ContextConfiguration")
+    protected List&lt;ContainerMatcher&gt; containerMatcher;
+    @XmlElement(namespace = "http://capgemini.com/devonfw/cobigen/ContextConfiguration")
+    protected List&lt;Matcher&gt; matcher;
+    @XmlAttribute(name = "id", required = true)
+    @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
+    @XmlSchemaType(name = "NCName")
+    protected String id;
+    @XmlAttribute(name = "type", required = true)
+    protected String type;
+    @XmlAttribute(name = "templateFolder", required = true)
+    protected String templateFolder;
+    @XmlAttribute(name = "inputCharset")
+    protected String inputCharset;
+    ...
+    ..
+    .
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This process it is done when calling the <code>unmarshal()</code> method.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">Object rootNode = unmarshaller.unmarshal(Files.newInputStream(contextFile));</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>For extended information about JAXB check the <a href="https://docs.oracle.com/javase/tutorial/jaxb/intro/index.html">offical documentation</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="cobigen-core_development.asciidoc_version-validation">Version Validation</h4>
+<div class="paragraph">
+<p>If the version retrieved after the <code>unmarshal</code> process is null, an <strong>InvalidConfigurationException</strong> defined at <strong>exceptions</strong> package will be thrown.</p>
+</div>
+<div class="paragraph">
+<p>If it is not null, will be compared using the <code>validate()</code> method from <strong><em>VersionValidator.java</em></strong> from <strong>config.versioning</strong> package with the project version retrieved by the <strong><em>MavenMetadata.java</em></strong>. The <strong><em>MavenMetadata.java</em></strong> file is provided by the POM while building the <code>JAR</code> file</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;build&gt;
+    &lt;plugins&gt;
+      &lt;!-- Inject Maven Properties in java-templates source folder --&gt;
+      &lt;plugin&gt;
+        &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
+        &lt;artifactId&gt;templating-maven-plugin&lt;/artifactId&gt;
+        &lt;executions&gt;
+          &lt;execution&gt;
+            &lt;id&gt;generate-version-class&lt;/id&gt;
+            &lt;goals&gt;
+              &lt;goal&gt;filter-sources&lt;/goal&gt;
+            &lt;/goals&gt;
+          &lt;/execution&gt;
+        &lt;/executions&gt;
+      &lt;/plugin&gt;
+      ...
+      ..
+      .
+    &lt;/plugins&gt;
+&lt;/build&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>MavenMetadata</strong> gets the current CobiGen version by reading the <code>&lt;version&gt;</code> label inside the <code>&lt;project&gt;</code> label from the POM file</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public class MavenMetadata {
+    /** Maven version */
+    public static final String VERSION = "dev-SNAPSHOT";
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+  &lt;artifactId&gt;cobigen-core&lt;/artifactId&gt;
+  &lt;name&gt;CobiGen&lt;/name&gt;
+  &lt;version&gt;2.2.0-SNAPSHOT&lt;/version&gt;
+  &lt;packaging&gt;jar&lt;/packaging&gt;
+  ...
+  ..
+  .
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The comparison has three possibilities:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Versions are equal &#8594; Valid</p>
+</li>
+<li>
+<p><code>context.xml</code> version is greater than current CobiGen version &#8594; <strong>InvalidConfigurationException</strong></p>
+</li>
+<li>
+<p>Current CobiGen version is greater that <code>context.xml</code> version &#8594; Compatible if there not exists a version step (breaking change) in between, otherwise, throw an error.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Reaching this point, the configuration version and root node has been validated. Unmarshal with schema checks for checking the correctness and give the user more hints to correct his failures.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+ContextConfigurationVersion latestConfigurationVersion = ContextConfigurationVersion.getLatest();
+try (
+    InputStream schemaStream = getClass().getResourceAsStream("/schema/" + latestConfigurationVersion
+                                                              + "/contextConfiguration.xsd");
+    InputStream configInputStream = Files.newInputStream(contextFile)) {
+    Schema schema = schemaFactory.newSchema(new StreamSource(schemaStream));
+    unmarshaller.setSchema(schema);
+    rootNode = unmarshaller.unmarshal(configInputStream);
+    contextNode = (ContextConfiguration) rootNode;
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="cobigen-core_development.asciidoc_load-triggers">Load Triggers, Matchers, containerMatcher, AccumulationTypes and VariableAssigments</h4>
+<div class="paragraph">
+<p>To finish the context configuration initialization, the, trigger, matchers, container matchers, accumulation types and variables assignments are retrieved from the correspondent Java objects generated by JAXB.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public Map&lt;String, Trigger&gt; loadTriggers()
+private List&lt;Matcher&gt; loadMatchers(Trigger trigger)
+private List&lt;ContainerMatcher&gt; loadContainerMatchers(Trigger trigger)
+private List&lt;VariableAssignment&gt; loadVariableAssignments(Matcher matcher)</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="cobigen-core_development.asciidoc_perform-generation">Perform Generation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Depending on the input, the generation process can begin from two different <code>generate()</code> methods called at the <strong>CobiGenWrapper</strong> from the eclipse-plugin:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public void generate(TemplateTo template, boolean forceOverride) throws IOException, TemplateException, MergeException {
+    if (singleNonContainerInput) {
+        Map&lt;String, Object&gt; model = cobiGen.getModelBuilder(inputs.get(0), template.getTriggerId()).createModel();
+        adaptModel(model);
+        cobiGen.generate(inputs.get(0), template, model, forceOverride);
+    } else {
+        for (Object input : inputs) {
+            cobiGen.generate(input, template, forceOverride);
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="cobigen-core_development.asciidoc_single-non-container-input">Single Non Container Input</h3>
+<div class="paragraph">
+<p>If the input is a single non container input, first step is to create the model, then allow customization by the user (<code>adaptModel()</code>) and finally call the <code>generate()</code> method from CobiGen using the input, template, model and the boolean forceOverride.
+The generation process in this case will follow this main steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Check if the input is not null</p>
+</li>
+<li>
+<p>Get the trigger interpreter for the type of the trigger of the template</p>
+</li>
+<li>
+<p>Set the root folder for the templates to use for the generation</p>
+</li>
+<li>
+<p>Get the input reader for the trigger interpreter retrieved</p>
+</li>
+<li>
+<p>Test if the input is a package.<br>
+This only can be possible in the case of java inputs. As the input is a single non container input, this check will fail and the execution will continue.</p>
+</li>
+<li>
+<p>Check if the model parameter is null and if it is, create a new model<br>
+As the model has been created at the <strong>CobiGenWrapper</strong>, there is no need to create it again.</p>
+</li>
+<li>
+<p>Get the destination file.</p>
+</li>
+<li>
+<p>Check if the destination file already exists<br>
+If it exists, but the forceOverride is set to <code>true</code> or the merge strategy of the template is null, the file will be overwritten, not merged. Otherwise, first generate output into a writter object, get the merger and merge the original file with the writter and write the file with the merge result.</p>
+</li>
+<li>
+<p>If the file does not exist, simple write the file.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="cobigen-core_development.asciidoc_single-container-input-or-multiple-files-selection">Single Container Input or multiple files selection</h3>
+<div class="paragraph">
+<p>The other case is, or the input is multiple files selection, the generation process will be performed for each individual file of the selection, but the model will be created at the step 6 of the steps of the Single Non Container Input and not allowing the user customization.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started-what-is-devonfw.asciidoc.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started-why-should-i-use-devonfw.asciidoc.html">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started-what-is-devonfw.asciidoc.html#getting-started-what-is-devonfw.asciidoc_devonfw-technology-stack">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/master-general-start.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-devon4j.asciidoc_introduction.html#architecture.asciidoc">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/master-ide.asciidoc_integrated-development-environment.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/general-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2020-01-25 22:16:42 UTC
+</sub></div>
+</div>
+</div>
+</body>
+</html>

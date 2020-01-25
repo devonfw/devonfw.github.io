@@ -1,0 +1,2507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>License Tracking of Dependencies</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc">License Tracking of Dependencies</a>
+<ul class="sectlevel1">
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_current-releases">Current Releases</a>
+<ul class="sectlevel2">
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-core-v1.0.0">cobigen-core v1.0.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-javaplugin-v1.0.0">cobigen-javaplugin v1.0.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-propertyplugin-v1.0.0">cobigen-propertyplugin v1.0.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-xmlplugin-v1.0.0">cobigen-xmlplugin v1.0.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-textmerger-v1.0.0">cobigen-textmerger v1.0.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-eclipse-v1.0.0">cobigen-eclipse v1.0.0</a></li>
+</ul>
+</li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_changelog">Changelog</a>
+<ul class="sectlevel2">
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-core-v1.1.0">cobigen-core v1.1.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-javaplugin-v1.1.0">cobigen-javaplugin v1.1.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-xmlplugin-v1.0.1">cobigen-xmlplugin v1.0.1</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-eclipse-v1.1.0">cobigen-eclipse v1.1.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-xmlplugin-v2.0.0">cobigen-xmlplugin v2.0.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-javaplugin-v1.2.0">cobigen-javaplugin v1.2.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-eclipse-v1.2.0">cobigen-eclipse v1.2.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-eclipse-v1.2.1">cobigen-eclipse v1.2.1</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-javaplugin-v1.3.0">cobigen-javaplugin v1.3.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-maven-v1.0.0">cobigen-maven v1.0.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-eclipse-v1.3.0">cobigen-eclipse v1.3.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-core-v2.1.0">cobigen-core v2.1.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-javaplugin-v1.3.1">cobigen-javaplugin v1.3.1</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-eclipse-v1.4.0">cobigen-eclipse v1.4.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-maven-v1.1.0">cobigen-maven v1.1.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-core-v2.1.1">cobigen-core v2.1.1</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-eclipse-v1.4.1">cobigen-eclipse v1.4.1</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-javaplugin-v1.4.0">cobigen-javaplugin v1.4.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-jsonplugin-v1.0.0">cobigen-jsonplugin v1.0.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-xmlplugin-v3.0.0">cobigen-xmlplugin v3.0.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-maven-v2.0.0">cobigen-maven v2.0.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-maven-v2.0.1">cobigen-maven v2.0.1</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-eclipse-v2.0.0">cobigen-eclipse v2.0.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-htmlmerger-v1.0.0">cobigen-htmlmerger v1.0.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-jsonplugin-v1.1.0">cobigen-jsonplugin v1.1.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-core-v4.0.0">cobigen-core v4.0.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-javaplugin-v1.5.0">cobigen-javaplugin v1.5.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-tempeng-velocity-plugin-v1.0.0">cobigen-tempeng-velocity-plugin v1.0.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-tsplugin-v1.0.0">cobigen-tsplugin v1.0.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-eclipse-v2.1.0">cobigen-eclipse v2.1.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-maven-v2.1.0">cobigen-maven v2.1.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-tsplugin-v1.1.0">cobigen-tsplugin v1.1.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-tempeng-freemarker-plugin-v1.0.0">cobigen-tempeng-freemarker-plugin v1.0.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-eclipse-v3.0.0">cobigen-eclipse v3.0.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-xmlplugin-v3.1.0">cobigen-xmlplugin v3.1.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-maven-v3.0.0">cobigen-maven v3.0.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-propertyplugin-v1.2.0">cobigen-propertyplugin v1.2.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-textmerger-v1.2.0">cobigen-textmerger v1.2.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-htmlplugin-v1.1.0">cobigen-htmlplugin v1.1.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-jsonplugin-v1.2.0">cobigen-jsonplugin v1.2.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-openapiplugin-v1.0.1">cobigen-openapiplugin v1.0.1</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-openapiplugin-v1.1.0">cobigen-openapiplugin v1.1.0</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-jsonplugin-v1.2.1">cobigen-jsonplugin v1.2.1</a></li>
+<li><a href="#mgmt_dependency-and-license-tracking.asciidoc_cobigen-maven-v3.2.0">cobigen-maven v3.2.0</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="mgmt_dependency-and-license-tracking.asciidoc" class="sect0">License Tracking of Dependencies</h1>
+<div class="sect1">
+<h2 id="mgmt_dependency-and-license-tracking.asciidoc_current-releases">Current Releases</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-core-v1.0.0">cobigen-core v1.0.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SLF4J</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.7.7</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MIT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.slf4j.org/license.html" class="bare">http://www.slf4j.org/license.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Guava</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">17.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache License 2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://code.google.com/p/guava-libraries/" class="bare">http://code.google.com/p/guava-libraries/</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reflections</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.9.9-RC2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">WTFPL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://code.google.com/p/reflections/" class="bare">https://code.google.com/p/reflections/</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FreeMarker</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.3.20</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">BSD-style</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://freemarker.org/docs/app_license.html" class="bare">http://freemarker.org/docs/app_license.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Jaxen</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.1.4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">"Apache-style open source license"</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jaxen.codehaus.org/license.html" class="bare">http://jaxen.codehaus.org/license.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache Commons IO</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache License 2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://commons.apache.org/proper/commons-io/" class="bare">http://commons.apache.org/proper/commons-io/</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache Commons Lang</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache License 2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://commons.apache.org/proper/commons-lang/" class="bare">http://commons.apache.org/proper/commons-lang/</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache Commons JXPath</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache License 2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://commons.apache.org/proper/commons-jxpath/" class="bare">http://commons.apache.org/proper/commons-jxpath/</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JDOM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.1.3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">"Apache-style open source license"</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.jdom.org/docs/faq.html#a0030" class="bare">http://www.jdom.org/docs/faq.html#a0030</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-javaplugin-v1.0.0">cobigen-javaplugin v1.0.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">v1.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SLF4J</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.7.7</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MIT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.slf4j.org/license.html" class="bare">http://www.slf4j.org/license.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">QDox</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.0-M2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache License 2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://qdox.codehaus.org/license.html" class="bare">http://qdox.codehaus.org/license.html</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-propertyplugin-v1.0.0">cobigen-propertyplugin v1.0.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">v1.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SLF4J</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.7.7</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MIT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.slf4j.org/license.html" class="bare">http://www.slf4j.org/license.html</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-xmlplugin-v1.0.0">cobigen-xmlplugin v1.0.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">v1.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SLF4J</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.7.7</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MIT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.slf4j.org/license.html" class="bare">http://www.slf4j.org/license.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">XMLMerge</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LGPL 2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://geonetwork.tv/xmlmerge/License.txt" class="bare">http://geonetwork.tv/xmlmerge/License.txt</a>  <a href="http://el4j.sourceforge.net/license.html" class="bare">http://el4j.sourceforge.net/license.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">atinject</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache License 2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://code.google.com/p/atinject/" class="bare">https://code.google.com/p/atinject/</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-textmerger-v1.0.0">cobigen-textmerger v1.0.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">v1.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SLF4J</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.7.7</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MIT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.slf4j.org/license.html" class="bare">http://www.slf4j.org/license.html</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-eclipse-v1.0.0">cobigen-eclipse v1.0.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">v1.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-javaplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">v1.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-propertyplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">v1.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-xmlplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">v1.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-textmerger</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">v1.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="mgmt_dependency-and-license-tracking.asciidoc_changelog">Changelog</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-core-v1.1.0">cobigen-core v1.1.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JDOM</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-javaplugin-v1.1.0">cobigen-javaplugin v1.1.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">v1.1.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-xmlplugin-v1.0.1">cobigen-xmlplugin v1.0.1</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JDOM</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.1.3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">"Apache-style open source license"</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.jdom.org/docs/faq.html#a0030" class="bare">http://www.jdom.org/docs/faq.html#a0030</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-eclipse-v1.1.0">cobigen-eclipse v1.1.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.1.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-javaplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.1.1</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-xmlplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.0.1</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-xmlplugin-v2.0.0">cobigen-xmlplugin v2.0.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.2.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-javaplugin-v1.2.0">cobigen-javaplugin v1.2.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mmm-util-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5.0.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache License 2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/m-m-m/mmm/wiki/FAQ#will-mmm-ever-change-its-license-in-later-releases" class="bare">https://github.com/m-m-m/mmm/wiki/FAQ#will-mmm-ever-change-its-license-in-later-releases</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.2.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-eclipse-v1.2.0">cobigen-eclipse v1.2.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.2.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-javaplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.2.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-xmlplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-eclipse-v1.2.1">cobigen-eclipse v1.2.1</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-javaplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.2.1</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-javaplugin-v1.3.0">cobigen-javaplugin v1.3.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-maven-v1.0.0">cobigen-maven v1.0.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">maven-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache License 2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://maven.apache.org/ref/3.0/maven-core/" class="bare">http://maven.apache.org/ref/3.0/maven-core/</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">maven-compat</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache License 2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://maven.apache.org/ref/3.0/maven-compat/" class="bare">http://maven.apache.org/ref/3.0/maven-compat/</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">maven-plugin-api</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache License 2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://maven.apache.org/ref/3.0/maven-plugin-api/" class="bare">http://maven.apache.org/ref/3.0/maven-plugin-api/</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-xmlplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.1.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-javaplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.3.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-propertyplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-textmerger</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.0.1</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-eclipse-v1.3.0">cobigen-eclipse v1.3.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">changed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">changed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-xmlplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.1.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">changed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-javaplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.3.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">changed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-textmerger</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.0.1</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-core-v2.1.0">cobigen-core v2.1.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">dozer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5.5.1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache License 2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://dozer.sourceforge.net/license.html" class="bare">http://dozer.sourceforge.net/license.html</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-javaplugin-v1.3.1">cobigen-javaplugin v1.3.1</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">QDox</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.0-M3</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-eclipse-v1.4.0">cobigen-eclipse v1.4.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.1.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-javaplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.3.1</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-maven-v1.1.0">cobigen-maven v1.1.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.1.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-javaplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.3.1</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-core-v2.1.1">cobigen-core v2.1.1</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">freemarker</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.3.23</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache License 2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://freemarker.org/LICENSE.txt" class="bare">http://freemarker.org/LICENSE.txt</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-eclipse-v1.4.1">cobigen-eclipse v1.4.1</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.1.1</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-javaplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.3.2</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ant</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.9.6</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache License 2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://www.apache.org/licenses/LICENSE-2.0.html" class="bare">http://www.apache.org/licenses/LICENSE-2.0.html</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-javaplugin-v1.4.0">cobigen-javaplugin v1.4.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-jsonplugin-v1.0.0">cobigen-jsonplugin v1.0.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mmm-util-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5.0.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache License 2.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">json</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">20160810</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MIT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/stleary/JSON-java" class="bare">https://github.com/stleary/JSON-java</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">gson</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.7</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache License 2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/google/gson" class="bare">https://github.com/google/gson</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-xmlplugin-v3.0.0">cobigen-xmlplugin v3.0.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">XMLMerge</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">module-xml_merge-common</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">javax.inject</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">jdom</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">lexeme</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.0.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache License 2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/maybeec/lexeme" class="bare">https://github.com/maybeec/lexeme</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-maven-v2.0.0">cobigen-maven v2.0.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-javaplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.4.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-xmlplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-propertyplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.1.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-textmerger</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.1.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-jsonplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-maven-v2.0.1">cobigen-maven v2.0.1</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-propertyplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.1.1</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-eclipse-v2.0.0">cobigen-eclipse v2.0.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-javaplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.4.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-xmlplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-propertyplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.1.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-textmerger</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.1.1</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-jsonplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-htmlmerger-v1.0.0">cobigen-htmlmerger v1.0.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JSoup</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.10.2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MIT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://jsoup.org/" class="bare">https://jsoup.org/</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-jsonplugin-v1.1.0">cobigen-jsonplugin v1.1.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mmm-util-core</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-core-v4.0.0">cobigen-core v4.0.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mmm-util-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">7.4.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache Software License 2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/m-m-m/mmm/wiki/License" class="bare">https://github.com/m-m-m/mmm/wiki/License</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FreeMarker</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.3.23</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-javaplugin-v1.5.0">cobigen-javaplugin v1.5.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mmm-util-core</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mmm-util-pojo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">7.4.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache Software License 2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/m-m-m/mmm/wiki/License" class="bare">https://github.com/m-m-m/mmm/wiki/License</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-tempeng-velocity-plugin-v1.0.0">cobigen-tempeng-velocity-plugin v1.0.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">velocity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.7</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache Software License 2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://velocity.apache.org/engine/1.7/license.html" class="bare">http://velocity.apache.org/engine/1.7/license.html</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-tsplugin-v1.0.0">cobigen-tsplugin v1.0.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ts-merger</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.0.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache Public License 2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/devonfw/ts-merger" class="bare">https://github.com/devonfw/ts-merger</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">js-beautifier</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.6.14</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MIT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/beautify-web/js-beautify" class="bare">https://github.com/beautify-web/js-beautify</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">rhino</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.7R4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Mozilla Public License 2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/mozilla/rhino/blob/master/LICENSE.txt" class="bare">https://github.com/mozilla/rhino/blob/master/LICENSE.txt</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-eclipse-v2.1.0">cobigen-eclipse v2.1.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-javaplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.5.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-jsonplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.1.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-tsplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-htmlplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-tempeng-freemarkerplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.0.0-SNAPSHOT</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-maven-v2.1.0">cobigen-maven v2.1.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core-test</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-javaplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.5.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-jsonplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.1.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-tsplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-htmlplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-tempeng-freemarkerplugin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.0.0-SNAPSHOT</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-tsplugin-v1.1.0">cobigen-tsplugin v1.1.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core-api</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">v4.1.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ts-merger</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">beautify</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.6.14</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">rhino</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-tempeng-freemarker-plugin-v1.0.0">cobigen-tempeng-freemarker-plugin v1.0.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core-api</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4.1.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">freemarker</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.3.23</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache Software License 2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://freemarker.org/docs/app_license.html" class="bare">http://freemarker.org/docs/app_license.html</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Jaxen</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.1.4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">"Apache-style open source license"</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://jaxen.codehaus.org/license.html" class="bare">http://jaxen.codehaus.org/license.html</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-eclipse-v3.0.0">cobigen-eclipse v3.0.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4.1.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-javaplugin-model</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.0.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-jsonplugin</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-javaplugin</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-htmlplugin</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-propertyplugin</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-textmerger</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-tsplugin</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-xmlplugin</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-tempeng-freemarkerplugin</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-xmlplugin-v3.1.0">cobigen-xmlplugin v3.1.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core-api</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">v4.1.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-maven-v3.0.0">cobigen-maven v3.0.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4.1.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-jsonplugin</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-javaplugin</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-htmlplugin</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-propertyplugin</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-textmerger</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-tsplugin</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-xmlplugin</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-tempeng-freemarkerplugin</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-propertyplugin-v1.2.0">cobigen-propertyplugin v1.2.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core-api</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">v4.1.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-textmerger-v1.2.0">cobigen-textmerger v1.2.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core-api</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">v4.1.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-htmlplugin-v1.1.0">cobigen-htmlplugin v1.1.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core-api</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">v4.1.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">commons-io</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache License 2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://commons.apache.org/proper/commons-io/" class="bare">https://commons.apache.org/proper/commons-io/</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-jsonplugin-v1.2.0">cobigen-jsonplugin v1.2.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core-api</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">v4.1.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-openapiplugin-v1.0.1">cobigen-openapiplugin v1.0.1</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core-api</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">v4.1.0</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kaizen.openapi-parser</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">v0.0.1.201709142043</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EPL v1.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/RepreZen/KaiZen-OpenApi-Parser">KaiZen Open Api parser</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-openapiplugin-v1.1.0">cobigen-openapiplugin v1.1.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">changed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">kaizen.openapi-parser</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">v0.0.3.201803041924</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EPL v1.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/RepreZen/KaiZen-OpenApi-Parser">KaiZen Open Api parser</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">json-path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.4.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apache License 2.0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/json-path/JsonPath/blob/master/LICENSE" class="bare">https://github.com/json-path/JsonPath/blob/master/LICENSE</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-jsonplugin-v1.2.1">cobigen-jsonplugin v1.2.1</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">removed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">json</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">20160810</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MIT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://github.com/stleary/JSON-java" class="bare">https://github.com/stleary/JSON-java</a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="mgmt_dependency-and-license-tracking.asciidoc_cobigen-maven-v3.2.0">cobigen-maven v3.2.0</h3>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+<col style="width: 20%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Action</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Dependency Name</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Version</strong></th>
+<th class="tableblock halign-left valign-top"><strong>License</strong></th>
+<th class="tableblock halign-left valign-top"><strong>URL</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">updated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4.2.1</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">added</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cobigen-core-api</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4.2.1</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started-what-is-devonfw.asciidoc.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started-why-should-i-use-devonfw.asciidoc.html">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started-what-is-devonfw.asciidoc.html#getting-started-what-is-devonfw.asciidoc_devonfw-technology-stack">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/master-general-start.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-devon4j.asciidoc_introduction.html#architecture.asciidoc">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/master-ide.asciidoc_integrated-development-environment.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/general-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2020-01-25 22:17:07 UTC
+</sub></div>
+</div>
+</div>
+</body>
+</html>

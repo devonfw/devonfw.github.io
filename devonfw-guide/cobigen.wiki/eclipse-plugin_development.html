@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Eclipse Plugin Development</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#eclipse-plugin_development.asciidoc">Eclipse Plugin Development</a>
+<ul class="sectlevel1">
+<li><a href="#eclipse-plugin_development.asciidoc_configuration">Configuration</a>
+<ul class="sectlevel2">
+<li><a href="#eclipse-plugin_development.asciidoc_activator-java">Activator java</a></li>
+<li><a href="#eclipse-plugin_development.asciidoc_plugin-xml">Plugin xml</a></li>
+</ul>
+</li>
+<li><a href="#eclipse-plugin_development.asciidoc_handlers">Handlers</a>
+<ul class="sectlevel2">
+<li><a href="#eclipse-plugin_development.asciidoc_update-templates">Update Templates:</a></li>
+<li><a href="#eclipse-plugin_development.asciidoc_adapt-templates">Adapt Templates</a></li>
+<li><a href="#eclipse-plugin_development.asciidoc_generate-action-handler">Generate Action Handler</a></li>
+<li><a href="#eclipse-plugin_development.asciidoc_health-check-action-handler">Health Check Action Handler</a></li>
+</ul>
+</li>
+<li><a href="#eclipse-plugin_development.asciidoc_wizard-development">Wizard Development</a>
+<ul class="sectlevel2">
+<li><a href="#eclipse-plugin_development.asciidoc_starting-the-wizard">Starting the Wizard</a></li>
+<li><a href="#eclipse-plugin_development.asciidoc_selectfilespage-and-selectattributespage">SelectFilesPage and SelectAttributesPage</a></li>
+</ul>
+</li>
+<li><a href="#eclipse-plugin_development.asciidoc_finish-and-perform-generation">Finish and perform generation</a>
+<ul class="sectlevel2">
+<li><a href="#eclipse-plugin_development.asciidoc_normal-mode">Normal Mode</a></li>
+<li><a href="#eclipse-plugin_development.asciidoc_batch-mode">Batch Mode</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="eclipse-plugin_development.asciidoc" class="sect0">Eclipse Plugin Development</h1>
+<div class="paragraph">
+<p>The Eclipse plugin is where all the other plugins (JavaPlugin, XMLPlugin, PropertyPlugin, TextMerger and the core) are loaded.</p>
+</div>
+<div class="sect1">
+<h2 id="eclipse-plugin_development.asciidoc_configuration">Configuration</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="eclipse-plugin_development.asciidoc_activator-java">Activator java</h3>
+<div class="paragraph">
+<p>Activator class is the start point of the plugin. Activator class is loaded initially and it extends the <strong>AbstractUIPlugin</strong>, which tells the Eclipse Run-time that this Plugin is someway related to the Eclipse Platform UI.
+An ID for the plugin is defined for configuration at <a href="https://github.com/devonfw/cobigen/wiki/Eclipse-Plugin-Development#plugin-xml">Plugin.xml</a> needs.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">/**
+* The plug-in ID
+*/
+public static final String PLUGIN_ID = "com.capgemini.cobigen.eclipseplugin"; //$NON-NLS-1$</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The overrode <code><em>start()</em></code> method starts the plugin and loads all the sub-plugins using the <strong>PluginRegistry</strong> from the core for each plug-in:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">PluginRegistry.loadPlugin(PluginActivator.class);</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>How the <code>loadPlugin</code> works is explained deeply at <a href="https://github.com/devonfw/cobigen/wiki/Core-Development#2-2-loadplugin">core development</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The activator has the listener <strong><em>ConfigurationProjectListener.java</em></strong> from the <strong>workbenchcontrol</strong> package that checks continuously changes on the templates project</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="eclipse-plugin_development.asciidoc_plugin-xml">Plugin xml</h3>
+<div class="paragraph">
+<p>Plugin.xml file is used to initialize plugin. Here are defined the commands and the handler for each command, and also in which views should be shown the plugin menu with the commands.</p>
+</div>
+<div class="paragraph">
+<p>The command configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;extension point="org.eclipse.ui.commands"&gt;
+    &lt;command
+        id="com.capgemini.cobigen.eclipseplugin.generate"
+        name="Generate"&gt;
+    &lt;/command&gt;
+    &lt;command
+        id="com.capgemini.cobigen.eclipseplugin.healthy_check"
+        name="Healthy Check"&gt;
+    &lt;/command&gt;
+&lt;/extension&gt;
+&lt;extension point="org.eclipse.ui.handlers"&gt;
+    &lt;handler
+        class="com.capgemini.cobigen.eclipse.workbenchcontrol.handler.GenerateHandler"
+        commandId="com.capgemini.cobigen.eclipseplugin.generate"&gt;
+    &lt;/handler&gt;
+    &lt;handler
+        class="com.capgemini.cobigen.eclipse.workbenchcontrol.handler.HealthCheckHandler"
+        commandId="com.capgemini.cobigen.eclipseplugin.health_check"&gt;
+    &lt;/handler&gt;
+&lt;/extension&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As can be seen, to define the commands, the <code><strong>PLUGIN_ID</strong></code> defined at the <strong><em>Activator.java</em></strong> is used followed of the name of the command.  Then, a handler from <strong>workbenchcontrol.handler</strong> package is assigned for each command.</p>
+</div>
+<div class="paragraph">
+<p>After that, is defined the views where we want to show the CobiGen menu as Popup menu.
+(e.g. Project Explorer view)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;extension point="org.eclipse.ui.menus"&gt;
+    &lt;menuContribution
+        allPopups="false"
+        locationURI="popup:org.eclipse.ui.navigator.ProjectExplorer#PopupMenu"&gt;
+        &lt;separator
+            name="com.capgemini.cobigen.eclipseplugin.separator3"
+            visible="true"&gt;
+        &lt;/separator&gt;
+        &lt;menu label="CobiGen"&gt;
+            &lt;command
+                commandId="com.capgemini.cobigen.eclipseplugin.generate"
+                label="Generate..."
+                style="push"&gt;
+            &lt;/command&gt;
+            &lt;command
+                commandId="com.capgemini.cobigen.eclipseplugin.health_check"
+                label="Health Check..."
+                style="push"&gt;
+            &lt;/command&gt;
+        &lt;/menu&gt;
+        &lt;separator
+            name="com.capgemini.cobigen.eclipseplugin.separator4"
+            visible="true"&gt;
+        &lt;/separator&gt;
+    &lt;/menuContribution&gt;
+&lt;/extension&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="image"><a class="image" href="images/howtos/eclipse-plugin/eclipse-plugin_sshot1.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/eclipse-plugin/eclipse-plugin_sshot1.png" alt="CobiGen Menu" width="450"></a></span></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="eclipse-plugin_development.asciidoc_handlers">Handlers</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <strong>workbenchcontrol</strong> package provides to the plugin the listener regarding to the templates project, the listener for logging needs and the handler for the two main use cases (Generate and HealthCheck).</p>
+</div>
+<div class="sect2">
+<h3 id="eclipse-plugin_development.asciidoc_update-templates">Update Templates:</h3>
+<div class="paragraph">
+<p>Update Template: Select Entity file and right click, then select cobigen Update Templates after that click on download then download successfully will be come.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="eclipse-plugin_development.asciidoc_adapt-templates">Adapt Templates</h3>
+<div class="paragraph">
+<p>Adapt Template: Select Entity file and right click then select cobigen <em>Adapt Template</em> .If cobigen template jar not available then it download automatically. If Cobigen templates is already then it will override existing template in workspace and click on OK then imported template successfully message will come.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="eclipse-plugin_development.asciidoc_generate-action-handler">Generate Action Handler</h3>
+<div class="paragraph">
+<p>The wizard launching is the responsibility of the generate handler (<strong><em>GenerateHandler.java</em></strong>). In case of Generate action and depending of the input provided for that, the handler will create a JavaGeneratorWrapper or XMlGeneratorWrapper object.
+For JavaGeneratorWrapper, if the input is a package or a selection of multiple entity files, the wizard will be launched in batch mode calling the <strong><em>GenerateBatchWizard.java</em></strong> from the <strong>wizard.generate</strong> package. But if the input is a single entity java class file, it will be launched in normal mode calling the <strong><em>GenerateWizard.java</em></strong> from the same package.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>For both Wrapper objects, the inputs will be converted to valid inputs for Freemarker using the <strong><em>Xml/JavaInputConverter.java</em></strong> from the <strong>generator.xml/java</strong> package.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><span class="image"><a class="image" href="images/howtos/eclipse-plugin/eclipse-plugin_diag1.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/eclipse-plugin/eclipse-plugin_diag1.png" alt="Diagram 1" width="450"></a></span></p>
+</div>
+<div class="paragraph">
+<p>For XmlGeneratorWrapper, the input must be a single valid XML file. As only has a single file as input, the <strong><em>GenerateWizard.java</em></strong> will be called.</p>
+</div>
+<div class="paragraph">
+<p>In summary, this will be the process for the Generate Action before calling the wizard:</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><a class="image" href="images/howtos/eclipse-plugin/eclipse-plugin_diag2.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/eclipse-plugin/eclipse-plugin_diag2.png" alt="diagram 2" width="450"></a></span></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="eclipse-plugin_development.asciidoc_health-check-action-handler">Health Check Action Handler</h3>
+<div class="paragraph">
+<p>At the case of Health Check action, a success/error dialog is shown instead of a wizard itself. The <strong><em>HealtchCheckHandler.java</em></strong> will call the execute method of <strong><em>HealthCheck.java</em></strong> from the <strong>healthcheck</strong> package. That class will test first if the templates project exists at the workspace opening and error dialog if not by throwing and handling the custom exception <strong><em>GeneratorProjectNotExistentException.java</em></strong> from the <strong>common.exceptions</strong> package.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">try {
+    // check configuration project existence
+    //That method will throw GeneratorProjectNotExistentException
+    generatorConfProj = ResourcesPluginUtil.getGeneratorConfigurationProject();
+    ...
+    ..
+    .
+ } catch (GeneratorProjectNotExistentException e) {
+     LOG.warn("Configuration project not found!", e);
+     healthyCheckMessage = firstStep + "NOT FOUND!\n"
+                           + "=&gt; Please import the configuration project into your workspace as stated in the "
+                           + "documentation of CobiGen or in the one of your project.";
+     PlatformUIUtil.openErrorDialog(HEALTH_CHECK_DIALOG_TITLE, healthyCheckMessage, null);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the project exists, HealthCheck will test if the <em>context.xml</em> file is valid. In case of invalid, HealthCheck will throw and handle the <strong>InvalidConfigurationException</strong> from the core and check if it is possible to upgrade the version of the xml file, showing an <em>UPGRADE</em> button at the dialog. If the upgrade is not possible, will show a dialog message telling the user to check the <em>context.xml</em> file for errors.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">try {
+   //The Cobigen constructor will throw the InvalidConfigurationException
+   new CobiGen(generatorConfProj.getLocationURI());
+    ...
+    ..
+    .
+} catch (InvalidConfigurationException e) {
+    healthyCheckMessage = firstStep + "OK.";
+    healthyCheckMessage += secondStep + "INVALID!";
+    if (generatorConfProj != null) {
+        Path configurationProject = Paths.get(generatorConfProj.getLocationURI());
+        ContextConfigurationVersion currentVersion = new ContextConfigurationUpgrader()
+                                                     .resolveLatestCompatibleSchemaVersion(configurationProject);
+        if (currentVersion != null) {
+            // upgrade possible
+            healthyCheckMessage += "\n\nAutomatic upgrade of the context configuration available.\n" + "Detected: "
+                                   + currentVersion + " / Currently Supported: "
+                                   + ContextConfigurationVersion.getLatest();
+            boolean upgraded = openErrorDialogWithContextUpgrade(healthyCheckMessage, configurationProject);
+            if (upgraded) {
+                // re-run Health Check
+                Display.getCurrent().asyncExec(new Runnable() {
+                    @Override
+                    public void run() {
+                        execute();
+                    }
+                });
+            }
+            return;
+        } else {
+            healthyCheckMessage += "\n\nNo automatic upgrade of the context configuration possible. "
+                                   + "Maybe just a mistake in the context configuration?";
+            healthyCheckMessage += "\n\n=&gt; " + e.getLocalizedMessage();
+        }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>At this point, if all is correct, the user can choose to finish the HealtCheck process or run the Advance Health Check running the <strong><em>AdvancedHealthCheck.java</em></strong> to check the the validity of template configurations. That check has three steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Get configuration resources</strong><br>
+Will get the template configuration file from the template folder corresponding to the input of the plugin provided by the triggers defined at the <em>contex.xml</em> file for that input.</p>
+</li>
+<li>
+<p><strong>Determine current state</strong><br>
+Will check if the template configuration file exists, if it is accessible and if the version is up-to-date allowing upgrading if not.</p>
+</li>
+<li>
+<p><strong>Show current status to the user</strong><br>
+Will call the <strong><em>AdvancedHealthCheckDialog.java</em></strong> showing a dialog with the current state of each configuration template, showing an <em>UPGRADE</em> button if the configuration version can be upgraded.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="eclipse-plugin_development.asciidoc_wizard-development">Wizard Development</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="eclipse-plugin_development.asciidoc_starting-the-wizard">Starting the Wizard</h3>
+<div class="paragraph">
+<p>To open a wizard, use the <strong>WizardDialog</strong> class from the <strong>org.eclipse.jface.wizard</strong> package.
+The plugin does that at <strong><em>GenerateHandler.java</em></strong> as previously explained <a href="https://github.com/devonfw/cobigen/wiki/Eclipse-Plugin-Development#3-1-generate-action-handler">here</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">if (((IStructuredSelection) sel).size() &gt; 1 || (((IStructuredSelection) sel).size() == 1)
+     &amp;&amp; ((IStructuredSelection) sel).getFirstElement() instanceof IPackageFragment) {
+     WizardDialog wiz = new WizardDialog(HandlerUtil.getActiveShell(event),
+                        new GenerateBatchWizard(generator));
+     wiz.setPageSize(new Point(800, 500));
+     wiz.open();
+     LOG.info("Generate Wizard (Batchmode) opened.");
+} else if (((IStructuredSelection) sel).size() == 1) {
+     WizardDialog wiz = new WizardDialog(HandlerUtil.getActiveShell(event), new GenerateWizard(generator));
+     wiz.setPageSize(new Point(800, 500));
+     wiz.open();
+     LOG.info("Generate Wizard opened.");
+}
+Adapt Template: Select Entity file and right click then select cobigen  Adapt Template.If cobigen template  jar not available then it download automatically.If Cobigen templates is already then it will oveeride existing template in workspace and click on OK then imported template successfully message will come .If Template not available the it automatically
+[[eclipse-plugin_development.asciidoc_wizard-and-wizardpages]]
+=== Wizard and WizardPages</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The Wizard class from the <strong>org.eclipse.jface.wizard</strong> package provides the functionality to build custom wizards. This class controls the navigation between the different pages and provides the base user interface, for example, an area for error and information messages.</p>
+</div>
+<div class="paragraph">
+<p>A wizard contains one or several pages of the type <strong>WizardPage</strong>. Such a page is added to a Wizard object via the <code><em>addPage()</em></code> method.</p>
+</div>
+<div class="paragraph">
+<p>A <strong>WizardPage</strong> must create a new Composite in its <code><em>createControl()</em></code> method. This new Composite must use the Composite of the method parameter as parent. It also must call the <code><em>setControl()</em></code> method with this new Composite as parameter. If this is omitted, Eclipse will throw an error.</p>
+</div>
+<div class="paragraph">
+<p>On the CobiGen eclipse-plugin project:
+<span class="image"><a class="image" href="images/howtos/eclipse-plugin/eclipse-plugin_diag3.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/eclipse-plugin/eclipse-plugin_diag3.png" alt="Diagram 3" width="450"></a></span></p>
+</div>
+<div class="paragraph">
+<p>The WizardPage class defines the <code>canFlipToNextPage()</code> and <code>setPageComplete()</code> methods to control if the <em>NEXT</em> or the <em>FINISH</em> button in the wizard becomes active.</p>
+</div>
+<div class="paragraph">
+<p>The Wizard class defines the <code>canFinish()</code> method in which you can define if the wizard can be completed. This last method is overrode at <strong><em>AbstractGenerateWizard.java</em></strong>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="eclipse-plugin_development.asciidoc_selectfilespage-and-selectattributespage">SelectFilesPage and SelectAttributesPage</h3>
+<div class="paragraph">
+<p>In case that has been launched in batch mode, the wizard only will have the select increment and files page (initialized and configured at <strong><em>SelectFilePage.java</em></strong> from the package <strong>wizard.common</strong>)</p>
+</div>
+<div class="paragraph">
+<p>In case of normal mode with an entity java class as input, the wizard will have an optional second page provided for <strong><em>SelectAttributesPage.java</em></strong> of the package <strong>wizard.generate.common</strong> for selecting attributes of the entity that will be used for the generation. The page is optional because the user can finish the wizard and perform the generation from the first page.</p>
+</div>
+<div class="paragraph">
+<p>The pages of the CobiGen wizard is composed essentially for container. The containers have a CheckBoxTreeViewer object, a content provider object and a listener (that defines the behavior of the wizard when a check box is checked or unchecked)</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><a class="image" href="images/howtos/eclipse-plugin/eclipse-plugin_diag4.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/eclipse-plugin/eclipse-plugin_diag4.png" alt="Diagram 4" width="450"></a></span></p>
+</div>
+<div class="sect3">
+<h4 id="eclipse-plugin_development.asciidoc_select-files-page">Select Files Page</h4>
+<div class="paragraph">
+<p>The first page (<em>SelectFilesPage</em>) is composed by two containers:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Left container - Increment Selector</strong><br></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Created as a <strong>CustomizedCheckBoxTreeViewer</strong></p>
+</li>
+<li>
+<p>The content provider is a <strong>SelectIncrementContentProvider</strong></p>
+</li>
+<li>
+<p>Setting the input will upgrade the labels to show</p>
+</li>
+<li>
+<p>Set <strong>CheckStateListener</strong> as listener</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">incrementSelector = new CustomizedCheckboxTreeViewer(containerLeft);
+incrementSelector.setContentProvider(new SelectIncrementContentProvider());
+incrementSelector.setInput(cobigenWrapper.getAllIncrements());
+gd = new GridData(GridData.FILL_BOTH);
+gd.grabExcessVerticalSpace = true;
+incrementSelector.getTree().setLayoutData(gd);
+CheckStateListener checkListener = new CheckStateListener(cobigenWrapper, this, batch);
+incrementSelector.addCheckStateListener(checkListener);incrementSelector.expandAll();</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Right Container - Resources to be generated</strong><br></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Created as <strong>SimulatedCheckBoxTreeViewer</strong> if the Customize button is not enabled or as <strong>CustomizedCheckBoxTreeViewer</strong> if it is.</p>
+</li>
+<li>
+<p><strong>SelectFileContentProvider</strong> as content provider.</p>
+</li>
+<li>
+<p><strong>SelectFileLabelProvider</strong> as label provider</p>
+</li>
+<li>
+<p>Generation target project as input</p>
+</li>
+<li>
+<p>Set <strong>CheckStateListener</strong> as listener</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>To know how a content provider works check the official documentation <a href="http://help.eclipse.org/mars/index.jsp?topic=%2Forg.eclipse.platform.doc.isv%2Freference%2Fapi%2Forg%2Feclipse%2Fjface%2Fviewers%2FITreeContentProvider.html">here</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="eclipse-plugin_development.asciidoc_select-attributes-page">Select Attributes Page</h4>
+<div class="paragraph">
+<p>As previously explained, this page is optional, the user can press the Finish button at the previous page. Nevertheless, this page can only be accessed in case of a single entity file as input, never on batch mode.</p>
+</div>
+<div class="paragraph">
+<p>The container is composed by a single <strong>CheckBoxTableViewer</strong> with a <em>SelectAttributesContentProvider</em> as content provider and a <em>SelectAttributesLabelProvider</em> as label provider.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="eclipse-plugin_development.asciidoc_finish-and-perform-generation">Finish and perform generation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When the user press the Finish button, the generation process will begin. For that, a generation job will be created using as argument a list of templates to be generated retrieving them from the user selection of the first page (Select Files Page).
+The generate wizard will use the <strong><em>GenerateSelectionJob.java</em></strong> or the <strong><em>GenerateBatchSelectionJob.java</em></strong> for normal mode or batch mode respectively.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><a class="image" href="images/howtos/eclipse-plugin/eclipse-plugin_diag5.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/eclipse-plugin/eclipse-plugin_diag5.png" alt="Diagram 5" width="450"></a></span></p>
+</div>
+<div class="sect2">
+<h3 id="eclipse-plugin_development.asciidoc_normal-mode">Normal Mode</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Override
+protected void generateContents(ProgressMonitorDialog dialog) {
+    if (cobigenWrapper instanceof JavaGeneratorWrapper) {
+        for (String attr : page2.getUncheckedAttributes()) {
+            ((JavaGeneratorWrapper) cobigenWrapper).removeFieldFromModel(attr);
+        }
+    }
+    //Here are retrieved the templates to use for the generation selected at the first page
+    GenerateSelectionJob job = new GenerateSelectionJob(cobigenWrapper, page1.getTemplatesToBeGenerated());
+    try {
+        dialog.run(true, false, job);
+    } catch (InvocationTargetException e) {
+        LOG.error("An internal error occured while invoking the generation job.", e);
+    } catch (InterruptedException e) {
+        LOG.warn("The working thread doing the generation job has been interrupted.", e);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>dialog.run(true, false, job)</code> method will call the <code>performGeneration()</code> method from <em>GenerateSelectionJob.java</em></p>
+</div>
+<div class="paragraph">
+<p>Calling the <code>generate()</code> method from the <strong>CobiGenWrapper</strong> will call the method with the same name from the core and the generation will begin.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="eclipse-plugin_development.asciidoc_batch-mode">Batch Mode</h3>
+<div class="paragraph">
+<p>At batch mode, the generation job will be instantiaed depending if the selection was a container or a multiple files selection.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Override
+protected void generateContents(ProgressMonitorDialog dialog) {
+    List&lt;TemplateTo&gt; templatesToBeGenerated = page1.getTemplatesToBeGenerated();
+    List&lt;String&gt; templateIds = Lists.newLinkedList();
+    for (TemplateTo template : templatesToBeGenerated) {
+        templateIds.add(template.getId());
+    }
+    GenerateBatchSelectionJob job;
+    if (container == null) {
+        job = new GenerateBatchSelectionJob(cobigenWrapper, cobigenWrapper.getTemplates(templateIds),
+                  inputTypes);
+    } else {
+        job = new GenerateBatchSelectionJob(cobigenWrapper, cobigenWrapper.getTemplates(templateIds),
+                  container);
+    }
+    try {
+        dialog.run(true, false, job);
+    } catch (InvocationTargetException e) {
+        LOG.error("An internal error occured while invoking the generation batch job.", e);
+    } catch (InterruptedException e) {
+        LOG.warn("The working thread doing the generation job has been interrupted.", e);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>dialog.run(true, false, job)</code> method will call the <code>performGeneration()</code> method from <em>GenerateBatchSelectionJob.java</em></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started-what-is-devonfw.asciidoc.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started-why-should-i-use-devonfw.asciidoc.html">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started-what-is-devonfw.asciidoc.html#getting-started-what-is-devonfw.asciidoc_devonfw-technology-stack">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/master-general-start.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-devon4j.asciidoc_introduction.html#architecture.asciidoc">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/master-ide.asciidoc_integrated-development-environment.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/general-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2020-01-25 22:16:55 UTC
+</sub></div>
+</div>
+</div>
+</body>
+</html>

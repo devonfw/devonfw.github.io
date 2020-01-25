@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Release and Deployment Process</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#mgmt__release_and_deployment_process.asciidoc">Release and Deployment Process</a>
+<ul class="sectlevel1">
+<li><a href="#mgmt__release_and_deployment_process.asciidoc_testing-process">Testing process</a>
+<ul class="sectlevel2">
+<li><a href="#mgmt__release_and_deployment_process.asciidoc_update-templates-feature">Update templates feature</a></li>
+<li><a href="#mgmt__release_and_deployment_process.asciidoc_ionic-and-angular">Ionic and Angular</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="mgmt__release_and_deployment_process.asciidoc" class="sect0">Release and Deployment Process</h1>
+<div class="paragraph">
+<p><strong>Updated:</strong> This explains the manual process of releasing. We now have an automatic script that enables a fast and easy release. Please check it <a href="https://github.com/devonfw/cobigen/wiki/howto_Release-creation">here</a></p>
+</div>
+<div class="paragraph">
+<p>Create a new issue with the following markdown contents for each release of any plugin/module containing the following tasks to be performed on release:</p>
+</div>
+<div class="listingblock">
+<div class="title"><strong>Template for release tasks (markdown)</strong></div>
+<div class="content">
+<pre class="highlight"><code class="markdown language-markdown"> **Release tasks:**
+***1. Preparation***
+* [ ] Check running maven build on the development branch `mvn clean install`
+  * especially for eclipse plugin release run `mvn clean install -Pp2-build-mars,p2-build-stable` in cobigen-eclipse folder to run SWTBot UI tests locally. **Be patient, do not touch mouse and keyboard.**
+* [ ] Check if all tests are green and if there are no ignored ones left. As there are ignored ones, please check them if they can be removed or they only should be temporarily ignored. Potentially fix them.
+* [ ] Check/Update documentation according to changelog to be released
+  * [ ] especially update version number of module to be released [here](https://github.com/devonfw/cobigen/wiki/CobiGen)
+  * [ ] Update the wiki submodule and commit the latest version to target the updated release version of the wiki
+    \```
+    cd cobigen-documentation/cobigen.wiki
+    git pull origin master
+    cd ..
+    git add cobigen.wiki
+    git commit -m"#&lt;releaseIssueNo&gt; update docs"
+    git push
+    \```
+  * [ ] Check branch build to not fail in production line https://devon.s2-eu.capgemini.com/
+
+***2. Merging / Review***
+* [ ] **Locally** merge development branch to master branch
+  * [ ] Check for changed maven dependencies and document them. _As dependencies have been changed:_
+    * [ ] check new dependencies with legal (in case of not yet used licenses).
+    * **If there are any issues with the dependencies. Abort, get in contact.**
+    * [ ] document the changes in the [ChangeLog of the dependency tracking](https://github.com/devonfw/cobigen/wiki/mgmt_dependency-and-license-tracking).
+    * [ ] create a new licensing document for the new version (just once for each eclipse/maven release). Find the latest document in [TeamForge](https://coconet.capgemini.com/sf/go/projects.apps2_devon/docman.root.devonfw.licenses.de) and upload a new version next to it. Chapter one is the only to be updated according to changed dependencies and included components.
+  * [ ] Perform final review of merged contents
+    * [ ] Are there any changes in a different module not corresponding to the current development branch? Try to find the cause and potentially discuss with the guy failing.
+    * [ ] Any major issues, which would prevent from merging? Missing files, changes?
+    * if ok - commit (if not yet done) **but do not push** to master branch
+    * if not - abort merge, cleanup working copy, and fix on dev branch
+
+***3. Testing / Consolidation***
+* [ ] Higher component version number to release version
+* [ ] Fix snapshot versions of dependencies of all components to be released to its release versions
+* [ ] Install components locally and/or deploy to experimental update site
+* [ ] Perform a final manual test of all issues resolved in the milestone to be released.
+* [ ] Perform integration tests
+  * especially for cobigen-eclipse if cobigen internal dependencies have been changed
+
+***4. Deployment***
+* [ ] Close eclipse IDE
+* [ ] In case of non-eclipse component (for cobigen-core, just execute first line):
+  \```
+  mvn clean package bundle:bundle -Pp2-bundle -Dmaven.test.skip=true
+  mvn install bundle:bundle -Pp2-bundle p2:site -Dmaven.test.skip=true
+  mvn deploy -Pp2-upload-stable -Dmaven.test.skip=true -Dp2.upload=stable
+  \```
+* [ ] In case of eclipse plug-in release:
+  \```
+  cd cobigen-eclipse
+  mvn clean deploy -Pp2-build-stable,p2-upload-stable,p2-build-mars -Dp2.upload=stable
+  \```
+* [ ] Check the update site `http://de-mucevolve02/files/cobigen/updatesite/stable/` by installing/updating it once to an eclipse distribution.
+* [ ] Assure, that everything is committed and the working copy is clean
+* [ ] Create a tag according to the naming conventions
+* [ ] Push
+* [ ] Close milestone and create new release with binaries on GitHub
+
+***5. Follow-up***
+* [ ] Merge master branch back to corresponding dev_ branch
+* [ ] Create new Milestone (minor version update)
+* [ ] increase version on dev branch to next minor version + SNAPSHOT
+* [ ] Push</code></pre>
+</div>
+</div>
+<div class="sect1">
+<h2 id="mgmt__release_and_deployment_process.asciidoc_testing-process">Testing process</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this section, the testing process of certain CobiGen features will be described. This should be used as a quality assurance document to follow up before releasing these features:</p>
+</div>
+<div class="sect2">
+<h3 id="mgmt__release_and_deployment_process.asciidoc_update-templates-feature">Update templates feature</h3>
+<div class="paragraph">
+<p>Starting from a clean devonfw 3.0.0 distribution, follow the next steps to test the <a href="https://github.com/devonfw/cobigen/projects/9">new feature for updating templates</a>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Open devonfw distribution, right click on a Java entity. Click on <code>CobiGen &#8594; Healtcheck</code>. It should:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Throw message stating that there are no templates. It asks you to download them. If you cancel it, nothing happens. If you accept, it should say "Templates downloaded successfully".</p>
+</li>
+<li>
+<p>After downloading the templates, you should see two <code>OK</code> values on <em>CobiGen_Templates</em> and on <em>context.xml</em>.</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p>If you click on <code>Advanced Health Check</code> everything should be green.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Now, right click again on <code>CobiGen &#8594; Generate</code>. As you have already downloaded the templates, it should directly start loading them, without asking to download them again.</p>
+</li>
+<li>
+<p>Try to generate something. The generated files should be visible after generating.</p>
+</li>
+</ol>
+</div>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="markdown language-markdown">**Quality assurance plan Update Templates feature:**
+
+***1. Preparation***
+* [ ] Follow [this tutorial](https://github.com/devonfw/cobigen/wiki/mgmt__release_and_deployment_process#update-templates-feature) to start the testing phase
+
+***2. Testing scenarios***
+* [ ] A message is thrown informing that there are no templates.
+* [ ] It asks you to download templates.
+* [ ] If you cancel it, nothing happens.
+* [ ] If you accept it, a new window is shown with: Templates downloaded successfully.
+* [ ] You should see two OK values.
+* [ ] If you press on Advanced Health check, everything should be green.
+* [ ] If you try to generate, it directly reads the templates.
+* [ ] You are able to generate and you see the generated files.
+
+
+***3. Deployment***
+
+If every of these test scenarios are checked out, then release process can continue.</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="mgmt__release_and_deployment_process.asciidoc_ionic-and-angular">Ionic and Angular</h3>
+<div class="paragraph">
+<p>To properly test the Ionic and Angular templates we need to follow the next steps:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Copy the <em>jwtsample</em> project from the worskpaces/examples folder and paste it to the workspaces/main folder, then import it into your workspace.</p>
+</li>
+<li>
+<p>Add to the database of the project the following SQL script, so that we can test the retrieval of data.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="SQL language-SQL">CREATE TABLE EMPLOYEE (
+
+  id BIGINT auto_increment ,
+
+  modificationCounter INTEGER NOT NULL,
+
+  employeeid BIGINT auto_increment,
+
+  name VARCHAR(255),
+
+  surname VARCHAR(255),
+
+  email VARCHAR(255),
+
+  PRIMARY KEY (employeeid)
+
+);
+
+INSERT INTO EMPLOYEE (id, modificationCounter, employeeid, name, surname,email) VALUES (1, 1, 1, 'Mister','Boss','mister.boss@capgemini.com');
+
+INSERT INTO EMPLOYEE (id, modificationCounter, employeeid, name, surname,email) VALUES (2, 2, 2, 'Intern','Student', 'intern.student@capgemini.com');</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Create a Hibernate entity to map the data of the previous SQL script.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Column;
+
+
+@Entity
+
+@javax.persistence.Table(name = "EMPLOYEE")
+
+public class EmployeeEntity {
+
+  @Column(name = "EMPLOYEEID")
+
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+  private Long employeeId;
+
+  @Column(name = "NAME")
+
+  private String name;
+
+  @Column(name = "SURNAME")
+
+  private String surname;
+
+  @Column(name = "EMAIL")
+
+  private String email;
+
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Using the EmployeeEntity, generate increments <code>CRUD DAO&#8217;S, CRUD REST services, CRUD SOAP services, CRUD logic (all in one), Entity infrastructure and TO&#8217;s</code>. After generating, follow first the following tutorial related to <a href="howto_ionic-client-generation.html#generation">Ionic Client Generation</a> and afterwards the <a href="howto_angular-client-generation.html#generating">Angular tutorial</a>.</p>
+</li>
+<li>
+<p>The final step before releasing should be creating an issue with the following Markdown template. If every test scenario is completed, then testing phase is over and you can release.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="markdown language-markdown">**Quality assurance plan Ionic and Angular:**
+
+***1. Preparation***
+* [ ] Follow [this tutorial](https://github.com/devonfw/cobigen/wiki/mgmt__release_and_deployment_process#ionic-and-angular) to start the testing phase
+
+***2. Testing scenarios***
+* [ ] You are able to log-in into both Ionic and Angular apps using JWT authentication.
+* [ ] You are able to log-in into Angular using csrf authentication.
+* [ ] You are able to retrieve all the employees in both Ionic and Angular.
+* [ ] You are able to create an employee in both Ionic and Angular.
+* [ ] You are able to find an employee by any of its fields in both Ionic and Angular.
+* [ ] You are able to update an employee by any of its fields in both Ionic and Angular.
+* [ ] You are able to use [swipe functionality](https://ionicframework.com/docs/api/components/item/ItemSliding/) to update or delete an employee in Ionic.
+* [ ] You are able to use the [Ionic refresher](https://ionicframework.com/docs/api/components/refresher/Refresher/).
+
+
+***3. Deployment***
+
+If every of these test scenarios are checked out, then release process can continue.</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started-what-is-devonfw.asciidoc.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started-why-should-i-use-devonfw.asciidoc.html">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started-what-is-devonfw.asciidoc.html#getting-started-what-is-devonfw.asciidoc_devonfw-technology-stack">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/master-general-start.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-devon4j.asciidoc_introduction.html#architecture.asciidoc">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/master-ide.asciidoc_integrated-development-environment.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/general-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2020-01-25 22:17:04 UTC
+</sub></div>
+</div>
+</div>
+</body>
+</html>

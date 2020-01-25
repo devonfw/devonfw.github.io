@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Implementing a new Plug-in</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#howto_create-a-new-plugin.asciidoc">Implementing a new Plug-in</a>
+<ul class="sectlevel1">
+<li><a href="#howto_create-a-new-plugin.asciidoc_plugin-activator">Plugin Activator</a></li>
+<li><a href="#howto_create-a-new-plugin.asciidoc_adding-triggerinterpreter">Adding TriggerInterpreter</a></li>
+<li><a href="#howto_create-a-new-plugin.asciidoc_adding-inputreader">Adding InputReader</a>
+<ul class="sectlevel2">
+<li><a href="#howto_create-a-new-plugin.asciidoc_inputreader-interface">InputReader Interface</a></li>
+<li><a href="#howto_create-a-new-plugin.asciidoc_model-constants">Model Constants</a></li>
+<li><a href="#howto_create-a-new-plugin.asciidoc_registering-the-input-reader">Registering the Input Reader</a></li>
+</ul>
+</li>
+<li><a href="#howto_create-a-new-plugin.asciidoc_adding-matcher">Adding Matcher</a></li>
+<li><a href="#howto_create-a-new-plugin.asciidoc_adding-merger">Adding Merger</a></li>
+<li><a href="#howto_create-a-new-plugin.asciidoc_changes-since-eclipse--maven-3.x">Changes since Eclipse / Maven 3.x</a>
+<ul class="sectlevel2">
+<li><a href="#howto_create-a-new-plugin.asciidoc_deployment">Deployment</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="howto_create-a-new-plugin.asciidoc" class="sect0">Implementing a new Plug-in</h1>
+<div class="paragraph">
+<p>New plug-ins can implement an input reader, a merger, a matcher, a trigger interpreter, and/or a template engine as explained <a href="cobigen-core_development.html#extension-mechanism">here</a>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>It is discouraged to have <code>cobigen-core</code> dependencies at runtime, except for <code>cobigen-core-api</code> which definitely must be present.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect1">
+<h2 id="howto_create-a-new-plugin.asciidoc_plugin-activator">Plugin Activator</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Each plug-in has to have an plug-in activator class implementing the interface <code>GeneratorPluginActivator</code> from the core-api. This class will be used to load the plug-in using the PluginRegistry as explained <a href="cobigen-core_development.html#loadplugin">here</a>. This class implements two methods:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><code>bindMerger()</code> &#8594; returns a mapping of merge strategies and its implementation to be registered.</p>
+</li>
+<li>
+<p><code>bindTriggerInterpreter()</code>&#8594; returns the trigger interpreters to be provided by this plug-in.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Both methods create and register instances of mergers and trigger interpreters to be provided by the new plug-in.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="howto_create-a-new-plugin.asciidoc_adding-triggerinterpreter">Adding TriggerInterpreter</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The trigger interpreter has to implement the TriggerInterpreter interface from the core. The trigger interpreter defines the type for the new plugin and creates new InputReader and new Matcher objects.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="howto_create-a-new-plugin.asciidoc_adding-inputreader">Adding InputReader</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The input reader is responsible of read the input object and parse it into
+ FreeMarker models. The input reader must be implemented for the type of the
+ input file. If there is any existent plugin that has the same file type as input,
+ there will be no need to add a new input reader to the new plug-in.</p>
+</div>
+<div class="sect2">
+<h3 id="howto_create-a-new-plugin.asciidoc_inputreader-interface">InputReader Interface</h3>
+<div class="paragraph">
+<p>The interface needed to add a new input reader is defined at the core. Each new
+sub plug-in must implements this interface if is needed an input reader for it.</p>
+</div>
+<div class="paragraph">
+<p>The interface implements the basic methods that an input reader must have,
+but if additional methods are required, the developer must add a new interface
+that extends the original interface <strong><em>InputReader.java</em></strong> from the core-api
+and implement that on the sub plug-in.</p>
+</div>
+<div class="paragraph">
+<p>The methods to be implemented by the input reader of the new sub plugin are:</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Method</th>
+<th class="tableblock halign-left valign-top">Return Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>isValidInput(Object input)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>boolean</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This function will be called if matching triggers or matching templates should be retrieved for a given input object.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>createModel(Object input)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Map&lt;String, Object&gt;</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This function should create the FreeMarker object model from the given input.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>combinesMultipleInputObjects(Object input)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>boolean</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">States whether the given input object combines multiple input objects to be used for generation.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>getInputObjects(Object input, Charset inputCharset)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>List&lt;Object&gt;</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Will return the set of combined input objects if the given input combines multiple input objects.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>getTemplateMethods(Object input)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Map&lt;String, Object&gt;</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This method returns available template methods from the plugins as Map. If the plugin which corresponds to the input does not provide any template methods an empty Map will be returned.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>getInputObjectsRecursively(Object input, Charset inputCharset)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>List&lt;Object&gt;</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Will return the set of combined input objects if the given input combines multiple input objects.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="howto_create-a-new-plugin.asciidoc_model-constants">Model Constants</h3>
+<div class="paragraph">
+<p>The Input reader will create a model for FreeMarker. A Freemarker model must
+have variables to use them at the <code>.ftl</code> template file. Refer to <a href="cobigen-javaplugin.html#java-input-reader">Java Model</a> to see the FreeMarker model example for java input files.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="howto_create-a-new-plugin.asciidoc_registering-the-input-reader">Registering the Input Reader</h3>
+<div class="paragraph">
+<p>The input reader is an object that can be retrieved using the correspondent get
+ method of the trigger interpreter object. The trigger interpreter object is
+ loaded at the eclipse plug-in using the load plug-in method explained
+ <a href="cobigen-core_development.html#loadplugin">here</a>.
+ That way, when the core needs the input reader, only needs to call that <code>getInputReader</code> method.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="howto_create-a-new-plugin.asciidoc_adding-matcher">Adding Matcher</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The matcher implements the MatcherInterpreter interface from the core-api.
+Should be implemented for providing a new input matcher. Input matcher are
+defined as part of a trigger and provide the ability to restrict specific
+inputs to a set of templates.
+This restriction is implemented with a MatcherType <code>enum</code>.</p>
+</div>
+<div class="paragraph">
+<p>E.g JavaPlugin</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">private enum MatcherType {
+    /** Full Qualified Name Matching */
+    FQN,
+    /** Package Name Matching */
+    PACKAGE,
+    /** Expression interpretation */
+    EXPRESSION
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Furthermore, matchers may provide several variable assignments, which might be
+dependent on any information of the matched input and thus should be resolvable
+by the defined matcher.</p>
+</div>
+<div class="paragraph">
+<p>E.g JavaPlugin</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">private enum VariableType {
+    /** Constant variable assignment */
+    CONSTANT,
+    /** Regular expression group assignment */
+    REGEX
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="howto_create-a-new-plugin.asciidoc_adding-merger">Adding Merger</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The merger is responsible to perform merge action between new output with the
+existent data at the file if it already exists. Must implement the Merger
+interface from the core-api.
+The implementation of the Merge interface must override the following methods:</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Method</th>
+<th class="tableblock halign-left valign-top">Return Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>getType()</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>String</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns the type, this merger should handle.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>merge(File base, String patch, String targetCharset)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>String</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Merges the patch into the base file.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Is important to know that any exception caused by the merger must throw a MergeException from the core-api to the eclipse-plugin handle it.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="howto_create-a-new-plugin.asciidoc_changes-since-eclipse--maven-3.x">Changes since Eclipse / Maven 3.x</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Since version 3.x the Eclipse and Maven plugins of CobiGen utilize the Java <code>ServiceLoader</code> mechanic to find and register plugins at runtime. To enable a new plugin to be discovered by this mechanic the following steps are needed:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>create the file <code>META-INF/services/com.capgemini.cobigen.api.extension.GeneratorPluginActivator</code> containing just the full qualified name of the class implementing the <code>GeneratorPluginActivator</code> interface, if the plugin provides a <code>Merger</code> and/or a <code>TriggerInterpreter</code></p>
+</li>
+<li>
+<p>create the file <code>META-INF/services/com.capgemini.cobigen.api.extension.TextTemplateEngine</code> containing just the full qualified name of the class implementing the <code>TextTemplateEngine</code> interface, if provided by the plugin</p>
+</li>
+<li>
+<p>include <code>META-INF</code> into the target bundle (i.e. the folder <code>META-INF</code> has to be present in the target jar file)</p>
+</li>
+</ul>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Example: Java Plugin</div>
+<div class="paragraph">
+<p>The java plugin provides both a <code>Merger</code> and a <code>TriggerInterpreter</code>. It contains therefore a <code>com.capgemini.cobigen.api.extension.GeneratorPluginActivator</code> file with the following content:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>com.capgemini.cobigen.javaplugin.JavaPluginActivator</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This makes the <code>JavaPluginActivator</code> class discoverable by the <code>ServiceLoader</code> at runtime.</p>
+</div>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>to properly include the plugin into the current system and use existing infrastructure, you need to add the plugin as a module in <code>/cobigen/pom.xml</code> (in case of a <code>Merger</code>/<code>TriggerInterpreter</code> providing plugin) and declare that as the plugin&#8217;s parent in it&#8217;s own <code>pom.xml</code> via</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>&lt;parent&gt;
+    &lt;groupId&gt;com.capgemini&lt;/groupId&gt;
+    &lt;artifactId&gt;cobigen-parent&lt;/artifactId&gt;
+    &lt;version&gt;dev-SNAPSHOT&lt;/version&gt;
+&lt;/parent&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or <code>/cobigen/cobigen-templateengines/pom.xml</code> (in case of a <code>Merger</code>/<code>TriggerInterpreter</code> providing plugin) and declare that as the plugin&#8217;s parent in it&#8217;s own <code>pom.xml</code> via</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;parent&gt;
+    &lt;groupId&gt;com.capgemini&lt;/groupId&gt;
+    &lt;artifactId&gt;cobigen-tempeng-parent&lt;/artifactId&gt;
+    &lt;version&gt;dev-SNAPSHOT&lt;/version&gt;
+&lt;/parent&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the plugin provides both just use the <code>/cobigen/pom.xml</code>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The dependencies of the plugin are included in the bundle</p>
+</li>
+<li>
+<p>To make the plugin available to the Eclipse plugin it must be included into the current <code>compositeContent.xml</code> and <code>compositeArtifacts.xml</code> files. Both files are located in <a href="http://de-mucevolve02/files/cobigen/updatesite"><code>http://de-mucevolve02/files/cobigen/updatesite/{experimental|nightly|stable}</code></a>. To do so, add an <code>&lt;child&gt;</code> entry to the <code>&lt;children&gt;</code> tag in both files and adapt the <code>size</code> attribute to match the new number of references. The <code>location</code> attribute of the new <code>&lt;child&gt;</code> tag needs to be the artifact id of the plugins <code>pom.xml</code>.</p>
+</li>
+</ul>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Example: Java Plugin</div>
+<div class="paragraph">
+<p>In case of the Java plugin, the entry is</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;child location="cobigen-javaplugin"/&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="howto_create-a-new-plugin.asciidoc_deployment">Deployment</h3>
+<div class="sect3">
+<h4 id="howto_create-a-new-plugin.asciidoc_for-the-maven-plugin">For the Maven Plugin</h4>
+<div class="paragraph">
+<p>Execute <code>mvn clean deploy</code> from the plugins project folder. You need to configure write access to the <a href="https://devon.s2-eu.capgemini.com/nexus/">devon nexus</a> (e.g in the CobiGen IDE via the <code>variables-customized</code> script)</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="howto_create-a-new-plugin.asciidoc_for-the-eclipse-plugin">For the Eclipse Plugin</h4>
+<div class="paragraph">
+<p>Depending on the kind of release you want to publish you can chose from the following maven profiles:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>experimental</code> is for, as the name suggests, experimental snapshot builds. In case of new plugins this is a good place to upload first drafts.</p>
+</li>
+<li>
+<p><code>nightly</code> is for periodically CI deployment.</p>
+</li>
+<li>
+<p><code>stable</code> is solely for releases.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>E.g. you want an experimental release you need to follow these steps:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="shell language-shell"># Builds the Manifest and bundles the dependencies
+mvn clean package bundle:bundle -Pp2-bundle
+# Uses the created bundle and builds a p2 update site for it. Do NOT use clean
+mvn install bundle:bundle -Pp2-bundle,p2-build-mars,p2-build-experimental p2:site
+# Uploads the p2 update site to the experimental repository. Do NOT use clean
+mvn deploy -Pp2-build-mars,p2-build-experimental -Dp2.upload=experimental</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You need write access to the <a href="http://de-mucevolve02">iCSD file server</a> configured (e.g in the CobiGen IDE via the <code>variables-customized</code> script).</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started-what-is-devonfw.asciidoc.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started-why-should-i-use-devonfw.asciidoc.html">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started-what-is-devonfw.asciidoc.html#getting-started-what-is-devonfw.asciidoc_devonfw-technology-stack">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/master-general-start.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-devon4j.asciidoc_introduction.html#architecture.asciidoc">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/master-ide.asciidoc_integrated-development-environment.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/general-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2020-01-25 22:16:59 UTC
+</sub></div>
+</div>
+</div>
+</body>
+</html>
