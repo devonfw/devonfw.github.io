@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Devon IDE</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#introduction-the-devon-ide.asciidoc">Devon IDE</a>
+<ul class="sectlevel1">
+<li><a href="#introduction-the-devon-ide.asciidoc_features-and-advantages">Features and Advantages</a></li>
+<li><a href="#introduction-the-devon-ide.asciidoc_multiple-workspaces">Multiple Workspaces</a></li>
+<li><a href="#introduction-the-devon-ide.asciidoc_cobigen">CobiGen</a></li>
+<li><a href="#introduction-the-devon-ide.asciidoc_ide-plugins">IDE Plugins</a>
+<ul class="sectlevel2">
+<li><a href="#introduction-the-devon-ide.asciidoc_checkstyle">CheckStyle</a></li>
+<li><a href="#introduction-the-devon-ide.asciidoc_findbugs">FindBugs</a></li>
+<li><a href="#introduction-the-devon-ide.asciidoc_sonarlint">SonarLint</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="introduction-the-devon-ide.asciidoc" class="sect0">Devon IDE</h1>
+<div class="openblock partintro">
+<div class="content">
+"Devon IDE" is the general name for two distinct variants of a customized Eclipse IDE. The Open Source variant&#8201;&#8212;&#8201;called <em>devonfw-ide</em>&#8201;&#8212;&#8201;is publicly available for everyone. A more extended variant is included in the "Devon Dist", which is only available to Capgemini employees.
+</div>
+</div>
+<div class="sect1">
+<h2 id="introduction-the-devon-ide.asciidoc_features-and-advantages">Features and Advantages</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>devonfw comes with a fully featured IDE in order to simplify the installation, configuration and maintenance of this instrumental part of the development environment. As it is being included in the distribution, the IDE is ready to be used and some specific configuration of certain plugins only takes a few  minutes.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/introduction/devon-ide/integrated-ide.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/introduction/devon-ide/integrated-ide.png" alt="Integrated IDE" width="450"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>As with the remainder of the distribution, the advantage of this approach is that you can have as many instances of the -ide "installed" on your machine for different projects with different tools, tool versions and configurations. No physical installation and no tweaking of your operating system required. "Installations" of the Devon distribution do not interfere with each other nor with other installed software.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="introduction-the-devon-ide.asciidoc_multiple-workspaces">Multiple Workspaces</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>There is inbuilt support for working with different workspaces on different branches. Create and update new workspaces with a few clicks. You can see the workspace name in the title-bar of your IDE so you do not get confused and work on the right branch.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="introduction-the-devon-ide.asciidoc_cobigen">CobiGen</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the Devon distribution we have a code generator to create CRUD code, called <strong>CobiGen</strong>. This is a generic incremental generator for end to end code generation tasks, mostly used in Java projects. Due to a template-based approach, CobiGen generates any set of text-based documents and document fragments.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/introduction/devon-ide/cobigen.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/introduction/devon-ide/cobigen.png" alt="cobigen" width="450"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>CobiGen is distributed in the Devon distribution as an Eclipse plugin, and is available to all Devon developers for Capgemini engagements. Due to the importance of this component and the scope of its functionality, it is fully described <a href="#Getting Started CobiGen">here</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="introduction-the-devon-ide.asciidoc_ide-plugins">IDE Plugins</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Since an application&#8217;s code can greatly vary, and every program can be written in lots of ways without being semantically different, IDE comes with pre-installed and pre-configured plugins that use some kind of a probabilistic approach, usually based on pattern matching, to determine which pieces of code should be reviewed. These hints are a real time-saver, helping you to review incoming changes and prevent bugs from propagating into the released artifacts. Apart from CobiGen mentioned in the previous paragraph, the IDE provides CheckStyle, SonarQube, FindBugs and SOAP-UI. Details of each can be found in subsequent sections.</p>
+</div>
+<div class="sect2">
+<h3 id="introduction-the-devon-ide.asciidoc_checkstyle">CheckStyle</h3>
+<div class="sect3">
+<h4 id="introduction-the-devon-ide.asciidoc_what-is-checkstyle">What is CheckStyle?</h4>
+<div class="paragraph">
+<p><a href="http://eclipse-cs.sourceforge.net/">CheckStyle</a> is a Open Source development tool to help you ensure that your Java code adheres to a set of coding standards. CheckStyle does this by inspecting your Java source code and pointing out items that deviate from a defined set of coding rules.</p>
+</div>
+<div class="paragraph">
+<p>With the CheckStyle IDE Plugin, your code is constantly inspected for coding standard deviations. Within the Eclipse workbench, you are immediately notified with the problems via the Eclipse Problems View and source code annotations similar to compiler errors or warnings.
+This ensures an extremely short feedback loop right at the developers fingertips.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="introduction-the-devon-ide.asciidoc_why-use-checkstyle">Why use CheckStyle?</h4>
+<div class="paragraph">
+<p>If your development team consists of more than one person, then obviously a common ground for coding standards (formatting rules, line lengths etc.) must be agreed upon - even if it is just for practical reasons to avoid superficial, format related merge conflicts.
+CheckStyle Plugin helps you define and easily apply those common rules.</p>
+</div>
+<div class="paragraph">
+<p>The plugin uses a project builder to check your project files with CheckStyle. Assuming the IDE Auto-Build feature is enabled, each modification of a project file will immediately get checked by CheckStyle on file save - giving you immediate feedback about the changes you made. To use a simple analogy, the CheckStyle Plug-in works very much like a compiler but instead of producing .class files, it produces warnings where the code violates CheckStyle rules. The discovered deviations are accessible in the Eclipse Problems View, as code editor annotations and via additional CheckStyle violations views.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="introduction-the-devon-ide.asciidoc_installation-of-checkstyle">Installation of CheckStyle</h4>
+<div class="paragraph">
+<p>After IDE installation, IDE provides default CheckStyle configuration file which has certain check rules specified .
+The set of rules used to check the code is highly configurable. A CheckStyle configuration specifies which check rules are validated against the code and with which severity violations will be reported. Once defined a CheckStyle configuration can be used across multiple projects. The IDE comes with several pre-defined CheckStyle configurations.
+You can create custom configurations using the plugin&#8217;s CheckStyle configuration editor or even use an existing CheckStyle configuration file from an external location.</p>
+</div>
+<div class="paragraph">
+<p>You can see violations in your workspace as shown in below figure.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/introduction/devon-ide/checkstyle.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/introduction/devon-ide/checkstyle.png" alt="checkstyle" width="450"></a>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="introduction-the-devon-ide.asciidoc_usage">Usage</h4>
+<div class="paragraph">
+<p>So, once projects are created, follow steps mentioned below, to activate CheckStyle:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="1">
+<li>
+<p>Open the properties of the project you want to get checked.</p>
+</li>
+</ol>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/introduction/devon-ide/checkstyle2.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/introduction/devon-ide/checkstyle2.png" alt="checkstyle2" width="450"></a>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="2">
+<li>
+<p>Select the CheckStyle section within the properties dialog.</p>
+</li>
+</ol>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/introduction/devon-ide/checkstyle3.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/introduction/devon-ide/checkstyle3.png" alt="checkstyle3" width="450"></a>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="3">
+<li>
+<p>Activate CheckStyle for your project by selecting the CheckStyle active for this project check box and press OK</p>
+</li>
+</ol>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/introduction/devon-ide/checkstyle4.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/introduction/devon-ide/checkstyle4.png" alt="checkstyle4" width="450"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>Now CheckStyle should begin checking your code. This may take a while depending on how many source files your project contains.
+The CheckStyle Plug-in uses background jobs to do its work - so while CheckStyle audits your source files you should be able to continue your work.
+After CheckStyle has finished checking your code please look into your Eclipse Problems View.
+There should be some warnings from CheckStyle. This warnings point to the code locations where your code violates the pre-configured Checks configuration.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/introduction/devon-ide/checkstyle5.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/introduction/devon-ide/checkstyle5.png" alt="checkstyle5" width="450"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>You can navigate to the problems in your code by double-clicking the problem in you problems view.
+On the left hand side of the editor an icon is shown for each line that contains a CheckStyle violation. Hovering with your mouse above this icon will show you the problem message.
+Also note the editor annotations - they are there to make it even easier to see where the problems are.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="introduction-the-devon-ide.asciidoc_findbugs">FindBugs</h3>
+<div class="sect3">
+<h4 id="introduction-the-devon-ide.asciidoc_what-is-findbugs">What is FindBugs?</h4>
+<div class="paragraph">
+<p><a href="http://findbugs.sourceforge.net/">FindBugs</a> is an open source project for a static analysis of the Java bytecode to identify potential software bugs. FindBugs provides early feedback about potential errors in the code.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="introduction-the-devon-ide.asciidoc_why-use-findbugs">Why use FindBugs?</h4>
+<div class="paragraph">
+<p>It scans your code for bugs, breaking down the list of bugs in your code into a ranked list on a 20-point scale. The lower the number, the more hardcore the bug.This helps the developer to access these problems early in the development phase.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="introduction-the-devon-ide.asciidoc_installation-and-usage-of-findbugs">Installation and Usage of FindBugs</h4>
+<div class="paragraph">
+<p>IDE comes preinstalled with FindBugs plugin.</p>
+</div>
+<div class="paragraph">
+<p>You can configure that FindBugs should run automatically for a selected project. For this right-click on a project and select Properties from the popup menu. via the project properties. Select FindBugs → Run automatically  as shown below.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/introduction/devon-ide/FindBugs1.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/introduction/devon-ide/FindBugs1.png" alt="configure FindBugs" width="450"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>To run the error analysis of FindBugs on a project, right-click on it and select the Find Bugs&#8230;&#8203; → Find Bugs menu entry.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/introduction/devon-ide/FindBugs2.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/introduction/devon-ide/FindBugs2.png" alt="error analysis" width="450"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>Plugin provides specialized views to see the reported error messages. Select Window → Show View → Other&#8230;&#8203; to access the views.
+The FindBugs error messages are also displayed in the Problems view or as decorators in the Package Explorer view.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/introduction/devon-ide/FindBugs3.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/introduction/devon-ide/FindBugs3.png" alt="ShowView bug Explorer" width="450"></a>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/introduction/devon-ide/FindBugs4.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/introduction/devon-ide/FindBugs4.png" alt="bug Explorer" width="450"></a>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="introduction-the-devon-ide.asciidoc_sonarlint">SonarLint</h3>
+<div class="sect3">
+<h4 id="introduction-the-devon-ide.asciidoc_what-is-sonarlint">What is SonarLint?</h4>
+<div class="paragraph">
+<p><a href="http://www.sonarlint.org/">SonarLint</a> is an open platform to manage code quality.
+It provides on-the-fly feedback to developers on new bugs and quality issues injected into their code..</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="introduction-the-devon-ide.asciidoc_why-use-sonarlint">Why use SonarLint?</h4>
+<div class="paragraph">
+<p>It covers seven aspects of code quality like junits, coding rules,comments,complexity,duplications, architecture and design and potential bugs.
+SonarLint has got a very efficient way of navigating, a balance between high-level view, dashboard and defect hunting tools. This enables to quickly uncover projects and / or components that are in analysis to establish action plans.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="introduction-the-devon-ide.asciidoc_installation-and-usage-of-sonarlint">Installation and Usage of SonarLint</h4>
+<div class="paragraph">
+<p>IDE comes preinstalled with SonarLint.
+To configure it , please follow below steps:</p>
+</div>
+<div class="paragraph">
+<p>First of all, you need to start sonar service. For that, go to software folder which is extracted from Devon-dist zip, choose sonarqube&#8594;bin&#8594;&lt;choose appropriate folder according to your OS&gt;-&#8594;and execute startSonar bat file.</p>
+</div>
+<div class="paragraph">
+<p>If your project is not already under analysis, you&#8217;ll need to declare it through the SonarQube web interface as described <a href="http://docs.sonarqube.org/display/SONAR/Project+Existence">here</a>.
+Once your project exists in SonarQube, you&#8217;re ready to get started with SonarQube in Eclipse.</p>
+</div>
+<div class="paragraph">
+<p>SonarLint in Eclipse is pre-configured to access a local SonarQube server listening on <a href="http://localhost:9000/" class="bare">http://localhost:9000/</a>.
+You can edit this server, delete it or add new ones.By default, user and password is "admin".If sonar service is started properly, test connection will give you successful result.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/introduction/devon-ide/Sonar_add_server.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/introduction/devon-ide/Sonar_add_server.png" alt="Sonar_add_server" width="450"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>For getting a project analysed on sonar, refer this <a href="http://docs.sonarqube.org/display/SONAR/Analyzing+Source+Code" class="bare">http://docs.sonarqube.org/display/SONAR/Analyzing+Source+Code</a> [link].</p>
+</div>
+<div class="paragraph">
+<p>Linking a project to one analysed on sonar server.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/introduction/devon-ide/associate-sonarqube.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/introduction/devon-ide/associate-sonarqube.png" alt="associate-sonarqube" width="450"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>In the SonarQube project text field, start typing the name of the project and select it in the list box:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/introduction/devon-ide/link-with-project.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/introduction/devon-ide/link-with-project.png" alt="link-with-project" width="450"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>Click on Finish. Your project is now associated to one analyzed on your SonarQube server.</p>
+</div>
+<div class="paragraph">
+<p><strong>Changing Binding</strong></p>
+</div>
+<div class="paragraph">
+<p>At any time, it is possible to change the project association.</p>
+</div>
+<div class="paragraph">
+<p>To do so, right-click on the project in the Project Explorer, and then SonarQube &gt; Change Project Association.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/introduction/devon-ide/change-link-with-project.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/introduction/devon-ide/change-link-with-project.png" alt="change-link-with-project" width="450"></a>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Unbinding a Project</strong></p>
+</div>
+<div class="paragraph">
+<p>To do so, right-click on the project in the Project Explorer, and then SonarQube &gt; Remove SonarQube Nature.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/introduction/devon-ide/unlink-with-project.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/introduction/devon-ide/unlink-with-project.png" alt="unlink-with-project" width="450"></a>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Advanced Configuration</strong></p>
+</div>
+<div class="paragraph">
+<p>Additional settings (such as markers for new issues) are available through Window &gt; Preferences &gt; SonarLint</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/introduction/devon-ide/eclipse-settings.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/introduction/devon-ide/eclipse-settings.png" alt="eclipse-settings" width="450"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>To look for sonarqube analysed issue, go to Window&#8594;Show View&#8594; Others&#8594;SonarLint&#8594;SonarLint Issues.
+Now you can see issues in soanrqube issues tab as shown</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/introduction/devon-ide/sonarQube-issues-view.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/introduction/devon-ide/sonarQube-issues-view.png" alt="sonarQube-issues-view" width="450"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>Or you can go to link <a href="http://localhost:9000" class="bare">http://localhost:9000</a> and login with admin as id and admin as password and goto Dashboard.you can see all the statistics of analysis of the configured projects on sonar server.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started-what-is-devonfw.asciidoc.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started-why-should-i-use-devonfw.asciidoc.html">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started-what-is-devonfw.asciidoc.html#getting-started-what-is-devonfw.asciidoc_devonfw-technology-stack">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/master-general-start.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-devon4j.asciidoc_introduction.html#architecture.asciidoc">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/master-ide.asciidoc_integrated-development-environment.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/general-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="#/index.html">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2020-01-30 11:11:56 UTC
+</sub></div>
+</div>
+</div>
+</body>
+</html>
