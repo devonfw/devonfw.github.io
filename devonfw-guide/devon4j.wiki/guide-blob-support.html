@@ -101,195 +101,22 @@
 <ul class="sectlevel0">
 <li><a href="#guide-blob-support.asciidoc">BLOB support</a>
 <ul class="sectlevel1">
-<li><a href="#guide-blob-support.asciidoc_introduction">Introduction</a></li>
-<li><a href="#guide-blob-support.asciidoc_implementing-blob-support-an-example">Implementing BLOB support: an example</a>
-<ul class="sectlevel2">
-<li><a href="#guide-blob-support.asciidoc_logic-layer">Logic Layer</a></li>
-<li><a href="#guide-blob-support.asciidoc_service-layer">Service Layer</a></li>
-</ul>
-</li>
 <li><a href="#guide-blob-support.asciidoc_further-reading">Further Reading</a></li>
 </ul>
 </li>
 </ul>
 <h1 id="guide-blob-support.asciidoc" class="sect0">BLOB support</h1>
-<div class="sect1">
-<h2 id="guide-blob-support.asciidoc_introduction">Introduction</h2>
-<div class="sectionbody">
 <div class="paragraph">
-<p>BLOB stands for <strong>B</strong>inary <strong>L</strong>arge <strong>Ob</strong>ject. A BLOB may be an image, an office document, ZIP archive or any other multimedia object. devon4j supports BLOB via its BinaryObject data type. The devonfw Maven archetype generates the following Java files for dealing with BLOBs:</p>
-</div>
-<table class="tableblock frame-all grid-all" style="width: 100%;">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>general.common.api.BinaryObject</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Interface for a BinaryObject</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>general.dataaccess.api.BinaryObjectEntity</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Instance of BinaryObject entity, contains the actual BLOB</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>general.dataaccess.api.dao.BinaryObjectDao.java</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">DAO for BinaryObject entity</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>general.dataaccess.base.dao.BinaryObjectDaoImpl</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Implementation of the BinaryObjectDao</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>general.logic.api.to.BinaryObjectEto</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ETO for BinaryObject</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>general.logic.base.UcManageBinaryObject</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Use case for managing BinaryObject. This use case contains methods for finding, getting, deleting and saving a BLOB.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>general.logic.impl.UCManageBinaryObjectImpl</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Implementation of the UcManageBinaryObject</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect1">
-<h2 id="guide-blob-support.asciidoc_implementing-blob-support-an-example">Implementing BLOB support: an example</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>In the sample application the business component Offermanagement uses BLOBs for product pictures.
-Feel free to use the following approach as starting point for BLOB support in your application.</p>
-</div>
-<div class="sect2">
-<h3 id="guide-blob-support.asciidoc_logic-layer">Logic Layer</h3>
-<div class="paragraph">
-<p>Use the methods declared in <code>general.logic.base.UcManageBinaryObject</code> in the implementation of your business component.
-Let&#8217;s take a look at an example from the sample application.</p>
-</div>
-<div class="paragraph">
-<p>The method</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="java language-java">OffermanagementImpl.updateProductPicture(Long productId, Blob blob, BinaryObjectEto binaryObjectEto)</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>saves a new picture for a given product.</p>
-</div>
-<div class="paragraph">
-<p>This is done by calling an appropriate method, declared in the BinaryObject use case.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="java language-java">@Override
-@RolesAllowed(PermissionConstants.SAVE_PRODUCT_PICTURE)
-public void updateProductPicture(Long productId, Blob blob, BinaryObjectEto binaryObjectEto) {
-
-    ...
-      binaryObjectEto = getUcManageBinaryObject().saveBinaryObject(blob, binaryObjectEto);
-    ...
- }</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="guide-blob-support.asciidoc_service-layer">Service Layer</h3>
-<div class="paragraph">
-<p>Following the devonfw conventions, you must implement a REST service for each business component. There you define, how BLOBs are uploaded/downloaded. According to that, the REST service for the business component Offermanagement is implemented in a class named OffermanagementRestServiceImpl.</p>
-</div>
-<div class="paragraph">
-<p>The coding examples below are taken from the afore mentioned class.</p>
-</div>
-<div class="paragraph">
-<p>The sample application uses the content-type "multipart/mixed" to transfer pictures plus additional header data.</p>
-</div>
-<div class="paragraph">
-<p><strong>Upload</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="java language-java">@Consumes("multipart/mixed")
-@POST
-@Path("/product/{id}/picture")
-  public void updateProductPicture(@PathParam("id") long productId,
-      @Multipart(value = "binaryObjectEto", type = MediaType.APPLICATION_JSON) BinaryObjectEto binaryObjectEto,
-      @Multipart(value = "blob", type = MediaType.APPLICATION_OCTET_STREAM) InputStream picture)
-      throws SerialException, SQLException, IOException {
-
-    Blob blob = new SerialBlob(IOUtils.readBytesFromStream(picture));
-    this.offerManagement.updateProductPicture(productId, blob, binaryObjectEto);
-
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>A new Blob object is being created by reading the data (<code>IOUtils.readBytesFromStream(picture)</code>).</p>
-</div>
-<div class="paragraph">
-<p><strong>Download</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="java language-java">@Produces("multipart/mixed")
-@GET
-@Path("/product/{id}/picture")
-public MultipartBody getProductPicture(@PathParam("id") long productId) throws SQLException, IOException {
-
-    Blob blob = this.offerManagement.findProductPictureBlob(productId);
-    byte[] data = IOUtils.readBytesFromStream(blob.getBinaryStream());
-
-    List&lt;Attachment&gt; atts = new LinkedList&lt;&gt;();
-    atts.add(new Attachment("binaryObjectEto", MediaType.APPLICATION_JSON, this.offerManagement
-        .findProductPicture(productId)));
-    atts.add(new Attachment("blob", MediaType.APPLICATION_OCTET_STREAM, new ByteArrayInputStream(data)));
-    return new MultipartBody(atts, true);
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>As you may have noticed, the data is loaded into the heap before it is added as an Attachement to the MultiPart body.</p>
-</div>
-<table class="tableblock frame-all grid-all" style="width: 100%;">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Caution!</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Using a byte array will cause problems, when dealing with large BLOBs.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p><strong>Why is the sample application using a byte array then?</strong></p>
-</div>
-<div class="paragraph">
-<p>As of now, there is no universal solid way of streaming a BLOB directly from a database to the client without reading the BLOB’s content to memory, when streaming over a RESTful service based on JDBC and JAX RS.
-Following this approach means:  whenever a file is uploaded or downloaded as BLOB it is loaded completely to memory before it is written to the database.</p>
-</div>
-</div>
-</div>
+<p>BLOB stands for <strong>B</strong>inary <strong>L</strong>arge <strong>Ob</strong>ject. A BLOB may be an image, an office document, ZIP archive or any other multimedia object.
+Often these BLOBs are large. if this is the case you need to take care, that you do not copy all the blob data into you application heap, e.g. when providing them via a REST service.
+This could easily lead to performance problems or out of memory errors.
+As solution for that problem is "streaming" those BLOBs directly from the database to the client. To demonstrate how this can be accomblished, devonfw provides a <a href="https://github.com/devonfw-sample/devon4j-blob-streaming">example</a>.</p>
 </div>
 <div class="sect1">
 <h2 id="guide-blob-support.asciidoc_further-reading">Further Reading</h2>
 <div class="sectionbody">
 <div class="ulist">
 <ul>
-<li>
-<p><a href="http://www.w3.org/Protocols/rfc1341/7_2_Multipart.html">The multipart content type</a></p>
-</li>
-<li>
-<p><a href="http://cxf.apache.org/docs/jax-rs-multiparts.html">JAX-RS : Support for Multiparts</a></p>
-</li>
-<li>
-<p><a href="guide-logic-layer.html#component-implementation">Component Implementation</a></p>
-</li>
 <li>
 <p><a href="guide-jpa.html#blob">BLOBs and the Data Access Layer</a></p>
 </li>
@@ -428,7 +255,7 @@ Following this approach means:  whenever a file is uploaded or downloaded as BLO
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2020-02-11 12:38:27 UTC
+Last updated 2020-02-11 14:52:48 UTC
 </sub></div>
 </div>
 </div>
