@@ -105,8 +105,6 @@
 <ul class="sectlevel2">
 <li><a href="#guide-configuration.asciidoc_spring-boot-application">Spring Boot Application</a></li>
 <li><a href="#guide-configuration.asciidoc_standard-beans-configuration">Standard beans configuration</a></li>
-<li><a href="#guide-configuration.asciidoc_xml-based-beans-configuration">XML-based beans configuration</a></li>
-<li><a href="#guide-configuration.asciidoc_batch-configuration">Batch configuration</a></li>
 <li><a href="#guide-configuration.asciidoc_beanmapper-configuration">BeanMapper Configuration</a></li>
 <li><a href="#guide-configuration.asciidoc_security-configuration">Security configuration</a></li>
 <li><a href="#guide-configuration.asciidoc_websocket-configuration">WebSocket configuration</a></li>
@@ -211,37 +209,17 @@ public class SpringBootApp {
 <div class="paragraph">
 <p>For technical configuration you will typically write additional spring config classes annotated with <code>@Configuration</code> that provide bean implementations via methods annotated with <code>@Bean</code>. See <a href="http://docs.spring.io/spring-javaconfig/docs/1.0.0.M4/reference/html/ch02s02.html">spring @Bean documentation</a> for further details. Like in XML you can also use <code>@Import</code> to make a <code>@Configuration</code> class include other configurations.</p>
 </div>
-</div>
-<div class="sect2">
-<h3 id="guide-configuration.asciidoc_xml-based-beans-configuration">XML-based beans configuration</h3>
 <div class="paragraph">
-<p>It is still possible and allowed to provide (bean-) configurations using XML, though not recommended. These configuration files are no more bundled via a main xml config file but loaded individually from their respective owners, e.g. for unit-tests:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="java language-java">@SpringApplicationConfiguration(classes = { SpringBootApp.class }, locations = { "classpath:/config/app/batch/beans-productimport.xml" })
-public class ProductImportJobTest extends AbstractSpringBatchIntegrationTest {
-...</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Configuration XML-files reside in an adequately named subfolder of:</p>
+<p>More specific configuration files (as required) reside in an adequately named subfolder of:</p>
 </div>
 <div class="paragraph">
 <p><code>src/main/resources/app</code></p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="guide-configuration.asciidoc_batch-configuration">Batch configuration</h3>
-<div class="paragraph">
-<p>In the directory <code>src/main/resources/config/app/batch</code> we place the configuration for the batch jobs. Each file within this directory represents one batch job. See <a href="#guide-batch-layer.asciidoc">batch-layer</a> for further details.</p>
-</div>
-</div>
-<div class="sect2">
 <h3 id="guide-configuration.asciidoc_beanmapper-configuration">BeanMapper Configuration</h3>
 <div class="paragraph">
-<p>In the directory <code>src/main/resources/config/app/common</code> we place the configuration for the bean-mapping.
-See <a href="guide-beanmapping.html#bean-mapper-configuration">bean-mapper configuration</a> for further details.</p>
+<p>In case you are still using dozer, you will find further details in <a href="guide-beanmapping.html#bean-mapper-configuration">bean-mapper configuration</a>.</p>
 </div>
 </div>
 <div class="sect2">
@@ -364,10 +342,10 @@ The following properties files are used in every devonfw application:</p>
 <div class="sect2">
 <h3 id="guide-configuration.asciidoc_business-configuration">Business Configuration</h3>
 <div class="paragraph">
-<p>The business configuration contains all business configuration values of the application, which can be edited by administrators through the GUI. The business configuration values are stored in the database in key/value pairs.</p>
+<p>Often applications do not need business configuration. In case they do it should typically be editable by administrators via the GUI. The business configuration values should therefore be stored in the database in key/value pairs.</p>
 </div>
 <div class="paragraph">
-<p>The database table <code>business_configuration</code> has the following columns:</p>
+<p>Therefore we suggest to create a dedicated table with (at least) the following columns:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -389,7 +367,7 @@ The following properties files are used in every devonfw application:</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>According to the entries in this table, the administrative GUI shows a generic form to change business configuration. The hierarchy of the properties determines the place in the GUI, so the GUI bundles properties from the same hierarchy level and name. Boolean values are shown as checkboxes, integer and string values as text fields. The properties are read and saved in a typed form, an error is raised if you try to save a string in an integer property for example.</p>
+<p>According to the entries in this table, an administrative GUI may show a generic form to modify business configuration. Boolean values should be shown as checkboxes, integer and string values as text fields. The values should be validated according to their type so an error is raised if you try to save a string in an integer property for example.</p>
 </div>
 <div class="paragraph">
 <p>We recommend the following base layout for the hierarchical business configuration:</p>
@@ -607,7 +585,7 @@ Now you are able to put encrypted passwords into your <code>application.properti
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2020-02-11 14:52:51 UTC
+Last updated 2020-02-14 08:47:35 UTC
 </sub></div>
 </div>
 </div>
