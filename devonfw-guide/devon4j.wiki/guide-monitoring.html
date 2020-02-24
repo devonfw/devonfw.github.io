@@ -101,63 +101,315 @@
 <ul class="sectlevel0">
 <li><a href="#guide-monitoring.asciidoc">Monitoring</a>
 <ul class="sectlevel1">
-<li><a href="#guide-monitoring.asciidoc_jmx">JMX</a>
+<li><a href="#guide-monitoring.asciidoc_how-to-provide-monitoring-information">How to provide monitoring information</a>
 <ul class="sectlevel2">
-<li><a href="#guide-monitoring.asciidoc_mbeans">MBeans</a></li>
-<li><a href="#guide-monitoring.asciidoc_using-jmx">Using JMX</a></li>
-<li><a href="#guide-monitoring.asciidoc_integration-with-nagios">Integration with Nagios</a></li>
+<li><a href="#guide-monitoring.asciidoc_java-management-extensions-jmx">Java Management Extensions (JMX)</a></li>
+<li><a href="#guide-monitoring.asciidoc_rest-apis">REST APIs</a></li>
+<li><a href="#guide-monitoring.asciidoc_logging">Logging</a></li>
 </ul>
 </li>
-<li><a href="#guide-monitoring.asciidoc_gc-logging">GC-Logging</a></li>
-<li><a href="#guide-monitoring.asciidoc_loadbalancing">Loadbalancing</a></li>
+<li><a href="#guide-monitoring.asciidoc_which-monitoring-informaton-to-provide">Which monitoring informaton to provide?</a>
+<ul class="sectlevel2">
+<li><a href="#guide-monitoring.asciidoc_general-information">General information</a></li>
+<li><a href="#guide-monitoring.asciidoc_metrics">Metrics</a></li>
+<li><a href="#guide-monitoring.asciidoc_health-watchdog">Health (Watchdog)</a></li>
+</ul>
+</li>
+<li><a href="#guide-monitoring.asciidoc_implementation-with-spring-boot-actuator">Implementation with Spring Boot Actuator</a>
+<ul class="sectlevel2">
+<li><a href="#guide-monitoring.asciidoc_devonfw-additions">Devonfw additions</a></li>
+</ul>
+</li>
+<li><a href="#guide-monitoring.asciidoc_integration-of-monitoring-information">Integration of monitoring information</a>
+<ul class="sectlevel2">
+<li><a href="#guide-monitoring.asciidoc_loadbalancers">Loadbalancers</a></li>
+<li><a href="#guide-monitoring.asciidoc_docker">Docker</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 <h1 id="guide-monitoring.asciidoc" class="sect0">Monitoring</h1>
 <div class="paragraph">
-<p>TODO</p>
+<p>Monitoring is a very comprehensive topic. For <code>devon4j</code> we focus on selected core topics which are most important when developing production-ready applications.
+On a high level view we strongly suggest to separate the application to be monitored from the <code>monitoring system</code> itself.
+The monitoring system covers aspects like</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Collect monitoring information</p>
+</li>
+<li>
+<p>Aggregate, process and visualizate data, e.g. in dashboards</p>
+</li>
+<li>
+<p>Provide alarms</p>
+</li>
+<li>
+<p>&#8230;&#8203;</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In distributed systems it is crucial that a monitoring system provides a central overview over all applications in your application landscape. So it is not feasible to provide a monitoring system as part of your application. Your application is responsible for providing information to the monitoring system.</p>
 </div>
 <div class="sect1">
-<h2 id="guide-monitoring.asciidoc_jmx">JMX</h2>
+<h2 id="guide-monitoring.asciidoc_how-to-provide-monitoring-information">How to provide monitoring information</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="guide-monitoring.asciidoc_java-management-extensions-jmx">Java Management Extensions (JMX)</h3>
 <div class="paragraph">
-<p>We use JMX to provide monitoring information via MBeans.</p>
+<p>JMX is the official java monitoring solution. It is part of the JDK. Your application may provide monitoring information or receive monitoring related commands via <code>MBeans</code>. There is a huge amount of information about JMX available. A good starting point might be <a href="https://en.wikipedia.org/wiki/Java_Management_Extensions:">JMX on wikipedia</a>.
+Traditionally JMX uses RMI for communication. In many environments HTTP(S) is preferred, so be careful on deciding if JMX is the right solution.
+Alternativly your application could provide a monitoring API via REST.</p>
+</div>
 </div>
 <div class="sect2">
-<h3 id="guide-monitoring.asciidoc_mbeans">MBeans</h3>
+<h3 id="guide-monitoring.asciidoc_rest-apis">REST APIs</h3>
+<div class="paragraph">
+<p>Since REST APIs are very popular it is quite natural to provide monitoring information via REST. If your application already uses REST and there is no JMX/RMI based monitoring solution in place, it is often a better approach to provide monitoring APIs via REST than introducing a new protocol with JMX.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-monitoring.asciidoc_logging">Logging</h3>
+<div class="paragraph">
+<p>Some aspects of monitoring are covered by "logging". A typical case might be the requirement to "monitor" the application REST APIs. For that it is perfectly fine to log the perfomance of all (or some) request and ship this information to a logging system like <a href="#www.graylog.org">Graylog</a>. So please carefully read the <a href="#guide-logging.asciidoc">logging guide</a>. To allow efficient processing of those logs you should use JSON based logs.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-monitoring.asciidoc_which-monitoring-informaton-to-provide">Which monitoring informaton to provide?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>It is not possible to provide a final list of which monitoring information is exactly required for your application. But we give you a general advice what type of information your application should provide at a minimum.</p>
+</div>
+<div class="sect2">
+<h3 id="guide-monitoring.asciidoc_general-information">General information</h3>
+<div class="paragraph">
+<p>It is often useful if your application provides basic information about itself. This should cover</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The name of the application</p>
+</li>
+<li>
+<p>The version (or buildno., or commit-id, &#8230;&#8203;) of the application</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>This is espicially useful in complex environments, e.g. to very that deployments went correctly.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-monitoring.asciidoc_metrics">Metrics</h3>
+<div class="paragraph">
+<p>Metric means providing key figures about your applications like</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>performance key figures</p>
+<div class="ulist">
+<ul>
+<li>
+<p>request duration</p>
+</li>
+<li>
+<p>queue lengths</p>
+</li>
+<li>
+<p>duration of database queries</p>
+</li>
+<li>
+<p>..</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>business related information</p>
+<div class="ulist">
+<ul>
+<li>
+<p>number of successful / unsuccesful requests</p>
+</li>
+<li>
+<p>size of result sets</p>
+</li>
+<li>
+<p>worth of shopping baskets</p>
+</li>
+<li>
+<p>..</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Technical key figures</p>
+<div class="ulist">
+<ul>
+<li>
+<p>JVM heap usage</p>
+</li>
+<li>
+<p>cache sizes</p>
+</li>
+<li>
+<p>(database) pool usage</p>
+</li>
+<li>
+<p>&#8230;&#8203;</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>&#8230;&#8203;</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Remember that processing of this data should be done mainly in the monitoring system. You might have noticed that there are different types of metrics: those that represent current values (like JVM heap usage, queue length, &#8230;&#8203;), others base on (timed) events like (duration of requests). Handling of different types of metrics might be different.
+For handling events you may:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Write log statements for each (or a sample of) event. These logs must then be shipped to your monitoring systems.</p>
+</li>
+<li>
+<p>Send data for the event via an API of your monitoring system</p>
+</li>
+<li>
+<p>Provide a REST API (or JMX MBeans) with pre-aggregated key figures, which is periodically polled by your monitoring system. This solution is a bit inferior since the aggregation is part of your application and might not fit to the desired visualization in your monitoring systems.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For actual values you may:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Write them perodically to your log. These logs must then be shipped to your monitoring systems.</p>
+</li>
+<li>
+<p>Send them peridocally via an API of your monitoring systems</p>
+</li>
+<li>
+<p>Provide a REST API (or JMX MBeans) which is periodically polled by your monitoring system.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-monitoring.asciidoc_health-watchdog">Health (Watchdog)</h3>
+<div class="paragraph">
+<p>For monitoring a complex application landscape it is crucial to have an exact overview if all applications are up and running. So your application should offer an API for the monitoring system which allows to easily check if the application is alive. Often this alive information is polled by the monitoring system with a kind of watchdog.
+The health check should include checks if the application is working "correctly". For that we suggest to check if all required neighbour systems and infrastructure components are usable:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Check if your database can be queried (with a dummy query)</p>
+</li>
+<li>
+<p>Check if you can reach your messaging system</p>
+</li>
+<li>
+<p>Check if you can reach all your neighbour system, e.g. by querying their info-endpoint</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You should be very careful to not cascade those requests, e.g. your system should only test their direct neighbours. This test should not lead to additional tests in these systems.</p>
+</div>
+<div class="paragraph">
+<p>The healthcheck should return a simple OK/NOK result for use in dashboards, but addtionally include detailed results for each check.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-monitoring.asciidoc_implementation-with-spring-boot-actuator">Implementation with Spring Boot Actuator</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To implement a monitoring API for your systems we suggest to use <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-features.html">Spring Boot Actuator</a>. Actuator offers APIs which provide monitoring information including metrics via HTTP and JMX. It also contains a framework to implement <a href="#guide-monitoring.asciidoc_health">health checks</a>.
+Please consult the original documentation for information about how to use it.
+Basically to use it, add the following dependency to the <code>pom.xml</code> of your application core:</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="java language-java">TODO MBean example</code></pre>
+<pre class="highlight"><code class="xml language-xml">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-actuator&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
 </div>
 </div>
-</div>
-<div class="sect2">
-<h3 id="guide-monitoring.asciidoc_using-jmx">Using JMX</h3>
 <div class="paragraph">
-<p>TODO: explain jvisualvm and VisualVM-MBeans Plugin
-give some hints and links on heap analysis and samplers</p>
+<p>There will be several <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/production-ready-features.html#production-ready-endpoints">endpoints</a> with monitoring information available out-of-the-box.
+We <strong>strongly</strong> advice to check carefully which information is required in your context, normally this is <code>ìnfo</code>, <code>health</code> and <code>metrics</code>. Be careful not to expose any security related information via this mechanismen (e.g. by exposing those endpoints externally).</p>
 </div>
+<div class="paragraph">
+<p>To make the info-endpoint useful you need to provide information to actuactor. A good way to achive this is by using the provided <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/howto.html#howto-automatic-expansion">maven module</a>.</p>
 </div>
-<div class="sect2">
-<h3 id="guide-monitoring.asciidoc_integration-with-nagios">Integration with Nagios</h3>
+<div class="paragraph">
+<p>For first steps it might be useful to deactive security for the actuator endpoints (this is <strong>just for testing</strong>, <strong>never release it!</strong>). This can be accomblished by implementing the following class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Configuration
+@EnableWebSecurity
+@Profile(SpringProfileConstants.NOT_JUNIT)
+public class WebSecurityConfig extends BaseWebSecurityConfig {
 
+  @Override
+  public void configure(WebSecurity web) throws Exception {
+
+    super.configure(web);
+    web.ignoring().requestMatchers(EndpointRequest.toAnyEndpoint());
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-monitoring.asciidoc_devonfw-additions">Devonfw additions</h3>
+<div class="paragraph">
+<p>Devonfw includes the following additions for Spring boot actuator:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="xref:TODO.asciidoc">Kafka Health Check</a> in devon4j-kafka (WIP)</p>
+</li>
+</ul>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="guide-monitoring.asciidoc_gc-logging">GC-Logging</h2>
+<h2 id="guide-monitoring.asciidoc_integration-of-monitoring-information">Integration of monitoring information</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="guide-monitoring.asciidoc_loadbalancers">Loadbalancers</h3>
 <div class="paragraph">
-<p>TODO: Explain JVM options, minimum overhead, always turn on, link to gcvisualizer
-Explain G1 collector that scales for large heaps</p>
+<p>To loadbalance HTTP requests the loadbalancers needs to know which instances of the desired application are available and functioning. Often loadbalancers support reacting on the HTTP status code of an HTTP request to the service. The loadbalancer will periodically poll the service to find out if is available or not.
+To configure this you may use the healthcheck of the service to find out if the instance is functioning correctly or not.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="guide-monitoring.asciidoc_loadbalancing">Loadbalancing</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="guide-monitoring.asciidoc_docker">Docker</h3>
 <div class="paragraph">
-<p>TODO explain status URL and integration with LB</p>
+<p>Docker supports a <a href="https://docs.docker.com/engine/reference/builder/#healthcheck">healtcheck</a>. You may use a simple local <code>curl</code> to your application here to find out if the service is healthy or not. But be careful often unhealthy containers are automatically restarted. If you use the <a href="#guide-monitoring.asciidoc_health">health information</a> of your application this may lead to undesired effects. Since the health checks relies on querying all neighbour systems and infrastucure components, applications often become unhealthy because a 3rd system has problems. Restarting the application itself will not heal the problem and be inexpedient. So generally it is better you query the info endpoint of your application to just check if the service itself is up and running.</p>
+</div>
 </div>
 </div>
 </div>
@@ -289,7 +541,7 @@ Explain G1 collector that scales for large heaps</p>
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2020-02-24 11:44:04 UTC
+Last updated 2020-02-24 17:38:48 UTC
 </sub></div>
 </div>
 </div>
