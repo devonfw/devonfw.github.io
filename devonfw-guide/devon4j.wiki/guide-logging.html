@@ -117,7 +117,11 @@
 </li>
 <li><a href="#guide-logging.asciidoc_security">Security</a></li>
 <li><a href="#guide-logging.asciidoc_correlation-id">Correlation ID</a></li>
-<li><a href="#guide-logging.asciidoc_monitoring">Monitoring</a></li>
+<li><a href="#guide-logging.asciidoc_monitoring">Monitoring</a>
+<ul class="sectlevel2">
+<li><a href="#guide-logging.asciidoc_adding-custom-values-to-json-log">Adding custom values to JSON log</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -380,6 +384,41 @@ error_log_mywebserver01_myapp_2013-09-16_0900.log</p>
 <p>In highly distributed systems (from clustering up to microservices) it might get tedious to search for problems and details in log files. Therefore, we recommend to setup a central log and analysis server for your application landscape. Then you feed the logs from all your applications (using <a href="http://logstash.net/">logstash</a>) into that central server that adds them to a search index to allow fast searches (using <a href="http://www.elasticsearch.org/">elasticsearch</a>). This should be completed with a UI that allows dashboards and reports based on data aggregated from all the logs.
 This is addressed by <a href="https://www.elastic.co/webinars/introduction-elk-stack">ELK</a> or <a href="https://www.graylog.org/">Graylog</a>.</p>
 </div>
+<div class="sect2">
+<h3 id="guide-logging.asciidoc_adding-custom-values-to-json-log">Adding custom values to JSON log</h3>
+<div class="paragraph">
+<p>When you use a external system for gathering distrubited logs, we strongly suggest that you use a JSON based log format (e.g. by using the provided <code>logback.xml</code>, see above).
+In that case it might be useful to log customs field to the produced JSON. This is fully supported by slf4j together with logstash. The <em>trick</em> is to use the class <code>net.logstash.logback.argument.StructuredArguments</code> for adding the arguments to you log message, e.g.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">import static net.logstash.logback.argument.StructuredArguments.v;
+
+...
+
+  public void processMessage(MyMessage msg) {
+    LOG.info("Processing message with {}", v("msgId", msg.getId());
+  ...
+  }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will produce something like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="javascript language-javascript">{ "timestamp":"2018-11-06T18:36:37.638+00:00",
+  "@version":"1",
+  "message":"Processing message with msgId=MSG-999-000",
+  "msgId":"MSG-999-000",
+  "logger_name":"com.myapplication...Processor",
+  "thread_name":"http-nio-8081-exec-6",
+  "level":"INFO",
+  "level_value":20000,
+  "appname":"basic",}</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -510,7 +549,7 @@ This is addressed by <a href="https://www.elastic.co/webinars/introduction-elk-s
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2020-02-20 13:18:53 UTC
+Last updated 2020-02-24 11:44:04 UTC
 </sub></div>
 </div>
 </div>
