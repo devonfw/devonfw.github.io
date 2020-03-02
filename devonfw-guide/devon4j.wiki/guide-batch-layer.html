@@ -121,6 +121,7 @@
 <li><a href="#guide-batch-layer.asciidoc_cli-tool">CLI-Tool</a></li>
 </ul>
 </li>
+<li><a href="#guide-batch-layer.asciidoc_authentication">Authentication</a></li>
 <li><a href="#guide-batch-layer.asciidoc_tipps--tricks">Tipps &amp; tricks</a>
 <ul class="sectlevel2">
 <li><a href="#guide-batch-layer.asciidoc_identifying-job-parameters">Identifying job parameters</a></li>
@@ -234,7 +235,7 @@ Additionally the batch module has dependencies to the required spring batch jars
           &lt;/excludes&gt;
         &lt;/configuration&gt;
       &lt;/plugin&gt;
-      &lt;!-- Create bootified jar for batch execution via commmand line.
+      &lt;!-- Create bootified jar for batch execution via command line.
            Your applications spring boot app is used as main-class.
        --&gt;
       &lt;plugin&gt;
@@ -300,7 +301,7 @@ There is nothing special about implementing batches in devonfw. You will find an
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt;params&gt;</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) additonal parameters which are passed to your job</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(Optional) additional parameters which are passed to your job</p></td>
 </tr>
 </tbody>
 </table>
@@ -362,10 +363,10 @@ For that you need some logic to start at the desired offset. There different way
 <div class="sect2">
 <h3 id="guide-batch-layer.asciidoc_using-spring-batch-executioncontext-for-restarts">Using spring batch ExecutionContext for restarts</h3>
 <div class="paragraph">
-<p>By implementing the <code>ÌteamStream</code> interface in your <code>ItemReader</code> or <code>ItemWriter</code> you may store information about the batch progress in the <code>ExecutionContext</code>. You will find an example for that in the CountJob in My Thai Star.</p>
+<p>By implementing the <code>ItemStream</code> interface in your <code>ItemReader</code> or <code>ItemWriter</code> you may store information about the batch progress in the <code>ExecutionContext</code>. You will find an example for that in the CountJob in My Thai Star.</p>
 </div>
 <div class="paragraph">
-<p>Addtional hint: It is important that bean definition method of your <code>ItemReader</code>/<code>ItemWriter</code> return types implementing <code>ItemStream</code>(and not just <code>ItemReader</code> or <code>ItemWriter</code> alone). For that the <code>ItemStreamReder</code> and <code>ItemStreamWriter</code> interfaces are provided.</p>
+<p>Additional hint: It is important that bean definition method of your <code>ItemReader</code>/<code>ItemWriter</code> return types implementing <code>ItemStream</code>(and not just <code>ItemReader</code> or <code>ItemWriter</code> alone). For that the <code>ItemStreamReader</code> and <code>ItemStreamWriter</code> interfaces are provided.</p>
 </div>
 </div>
 </div>
@@ -403,7 +404,7 @@ public class SpringBootApp {
 <p>Spring batch uses several database tables to store the status of batch executions.
 Each execution may have <a href="https://docs.spring.io/spring-batch/docs/current/reference/html/index-single.html#jobexecution">different status</a>.
 You may use this mechanism to <a href="https://docs.spring.io/spring-batch/docs/current/reference/html/index-single.html#stoppingAJob">gracefully stop batches</a>.
-Additonally in some edge cases (batch process crashed) the execution status may be in an undesired state.
+Additionally in some edge cases (batch process crashed) the execution status may be in an undesired state.
 E.g. the state will be running, despite the process crashed sometime ago.
 For that cases you have to change the status of the execution in the database.</p>
 </div>
@@ -430,8 +431,78 @@ The tool is implemented in the devonfw module <code>devon4j-batch-tool</code>. I
 </dl>
 </div>
 <div class="paragraph">
-<p>As you can the each invocation includes the jdbc connection string to your database.
+<p>As you can the each invocation includes the JDBC connection string to your database.
 This means that you have to make sure that the corresponding DB driver is in the classpath (the prepared jar only contains H2).</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-batch-layer.asciidoc_authentication">Authentication</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Most business application incorporate authentication and authorization.
+Your spring boot application will implement some kind of security, e.g. integrated login with username+password or in many cases authentication via an existing IAM.
+For security reasons your batch should also implement an authentication mechanism and obey the authorization implemented in your application (e.g. via @RolesAllowed).</p>
+</div>
+<div class="paragraph">
+<p>Since there are many different authentication mechanism we cannot provide an out-of-the-box solution in devonfw, but we describe a pattern how this can be implemented in devonfw batches.</p>
+</div>
+<div class="paragraph">
+<p>We suggest to implement the authentication in a Spring Batch tasklet, which runs as the first step in your batch. This tasklet will do all of the work which is required to authenticate the batch. A simple example which authenticates the batch "locally" via username and password could be implemented like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Named
+public class SimpleAuthenticationTasklet implements Tasklet {
+
+  @Override
+  public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+
+    String username = chunkContext.getStepContext().getStepExecution().getJobParameters().getString("username");
+    String password = chunkContext.getStepContext().getStepExecution().getJobParameters().getString("password");
+    Authentication authentication = new UsernamePasswordAuthenticationToken(username, password);
+
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+    return RepeatStatus.FINISHED;
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The username and password have to be supplied via two cli parameters <code>-username</code> and <code>-password</code>. This implementation creates an "authenticated" <code>Authentication</code> and sets in the Spring Security context. This is just for demonstration normally you should not provide passwords via command line. The actual authentication will be done automatically via Spring Security as in your "normal" application.
+If you have a more complex authentication mechanism in your application e.g. via OpenID connect just call this in the tasklet. Naturally you may read authentication parameters (e.g. secrets) from the command line or more securely from a configuration file.</p>
+</div>
+<div class="paragraph">
+<p>In your Job Configuration set this tasklet as the first step:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Configuration
+@EnableBatchProcessing
+public class BookingsExportBatchConfig {
+  @Inject
+  private JobBuilderFactory jobBuilderFactory;
+
+  @Inject
+  private StepBuilderFactory stepBuilderFactory;
+
+  @Bean
+  public Job myBatchJob() {
+    return this.jobBuilderFactory.get("myJob").start(myAuthenticationStep()).next(...).build();
+  }
+
+  @Bean
+  public Step myAuthenticationStep() {
+    return this.stepBuilderFactory.get("myAuthenticationStep").tasklet(myAuthenticatonTasklet()).build();
+  }
+
+  @Bean
+  public Tasklet myAuthenticatonTasklet() {
+    return new SimpleAuthenticationTasklet();
+  }
+...</code></pre>
 </div>
 </div>
 </div>
@@ -442,7 +513,7 @@ This means that you have to make sure that the corresponding DB driver is in the
 <div class="sect2">
 <h3 id="guide-batch-layer.asciidoc_identifying-job-parameters">Identifying job parameters</h3>
 <div class="paragraph">
-<p>String uses a jobs parameters to identify <a href="https://docs.spring.io/spring-batch/docs/current/reference/html/domain.html#jobexecution">job executions</a>. Parameters starting with "-" are not considered for identifying a job execution.</p>
+<p>Spring uses a jobs parameters to identify <a href="https://docs.spring.io/spring-batch/docs/current/reference/html/domain.html#jobexecution">job executions</a>. Parameters starting with "-" are not considered for identifying a job execution.</p>
 </div>
 </div>
 </div>
@@ -575,7 +646,7 @@ This means that you have to make sure that the corresponding DB driver is in the
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2020-02-25 10:13:03 UTC
+Last updated 2020-03-02 17:38:44 UTC
 </sub></div>
 </div>
 </div>
