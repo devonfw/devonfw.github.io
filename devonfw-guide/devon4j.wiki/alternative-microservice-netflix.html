@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Microservices based on Netflix-Tools</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#alternative-microservice-netflix.asciidoc_microservices-based-on-netflix-tools">Microservices based on Netflix-Tools</a>
+<ul class="sectlevel3">
+<li><a href="#alternative-microservice-netflix.asciidoc_service-discovery---eureka">Service Discovery - Eureka</a></li>
+<li><a href="#alternative-microservice-netflix.asciidoc_circuit-breaker---hystrix">Circuit Breaker - Hystrix</a></li>
+<li><a href="#alternative-microservice-netflix.asciidoc_client-side-load-balancer---ribbon">Client Side Load Balancer - Ribbon</a></li>
+<li><a href="#alternative-microservice-netflix.asciidoc_rest-client---feign">REST Client - Feign</a></li>
+<li><a href="#alternative-microservice-netflix.asciidoc_router-and-filter---zuul">Router and Filter - Zuul</a></li>
+<li><a href="#alternative-microservice-netflix.asciidoc_how-to-create-microservices-in-devonfw">How to create microservices in devonfw?</a></li>
+<li><a href="#alternative-microservice-netflix.asciidoc_devonfw-archetypes">devonfw archetypes</a></li>
+<li><a href="#alternative-microservice-netflix.asciidoc_create-new-microservices-infrastructure-application">Create New Microservices infrastructure application</a></li>
+<li><a href="#alternative-microservice-netflix.asciidoc_create-new-microservices-application">Create New Microservices Application</a></li>
+<li><a href="#alternative-microservice-netflix.asciidoc_how-to-use-microservices-in-devonfw">How to use microservices in devonfw</a></li>
+<li><a href="#alternative-microservice-netflix.asciidoc_how-to-modify-the-userdetails-information">How to modify the UserDetails information</a></li>
+<li><a href="#alternative-microservice-netflix.asciidoc_how-to-start-with-a-microservice">How to start with a microservice</a></li>
+<li><a href="#alternative-microservice-netflix.asciidoc_calls-between-microservices">Calls between microservices</a></li>
+</ul>
+</li>
+</ul>
+<div class="sect1">
+<h2 id="alternative-microservice-netflix.asciidoc_microservices-based-on-netflix-tools">Microservices based on Netflix-Tools</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Devonfw microservices approach is based on <a href="http://cloud.spring.io/spring-cloud-netflix/">Spring Cloud Netflix</a>, that provides all the main components for microservices integrated within Spring Boot context.</p>
+</div>
+<div class="paragraph">
+<p>In the following schema we can see an overview of the structure of components in a Devon application based on the <em>Spring Cloud Netflix</em> solution for microservices.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/microservices/microservices_01.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/microservices/microservices_01.png" alt="microservices 01" width="450"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s explain each component</p>
+</div>
+<div class="sect3">
+<h4 id="alternative-microservice-netflix.asciidoc_service-discovery---eureka">Service Discovery - Eureka</h4>
+<div class="paragraph">
+<p><a href="http://cloud.spring.io/spring-cloud-static/spring-cloud-netflix/1.3.0.M1/#service_discovery_eureka_clients">Eureka</a> is a server to register and locate the microservices. The main function for <em>Eureka</em> is to register the different instances of the microservices, its location, its state and other metadata.</p>
+</div>
+<div class="paragraph">
+<p>It works in a simple way, during the start of each microservice, this communicates with the <em>Eureka</em> server to notify its availability and to send the metadata. The microservice will continue to notify its status to the Eureka server every 30 seconds (default time on Eureka server properties). This value can be changed in the configuration of the component.</p>
+</div>
+<div class="paragraph">
+<p>If after 3 periods, Eureka does not receive notification of any of the microservices, it will be considered as unavailable and will eliminate its registration.</p>
+</div>
+<div class="paragraph">
+<p>In addition, it serves as a catalog to locate a specific microservice when routing a request to it.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="alternative-microservice-netflix.asciidoc_circuit-breaker---hystrix">Circuit Breaker - Hystrix</h4>
+<div class="paragraph">
+<p><a href="http://cloud.spring.io/spring-cloud-static/spring-cloud-netflix/1.3.0.M1/#circuit_breaker_hystrix_clients">Hystrix</a> is a library that implements the <a href="https://martinfowler.com/bliki/CircuitBreaker.html">Circuit Breaker</a> pattern. Its main functionality is to improve the reliability of the system, isolating the entry points of the microservices, preventing the cascading failure from the lower levels of the application all the way up to the user.</p>
+</div>
+<div class="paragraph">
+<p>In addition to that, it allows developers to provide a fallback in case of error. <em>Hystrix</em> manages the requests to a service, and in case that the microservice doesn&#8217;t response, allows to implement an alternative to the request.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="alternative-microservice-netflix.asciidoc_client-side-load-balancer---ribbon">Client Side Load Balancer - Ribbon</h4>
+<div class="paragraph">
+<p><a href="http://cloud.spring.io/spring-cloud-static/spring-cloud-netflix/1.3.0.M1/#spring-cloud-ribbon">Ribbon</a> is a library designed as client side load balancer. Its main feature is to integrate with <em>Eureka</em> to discover the instances of the microservices and their metadata. In that way the <em>Ribbon</em> is able to calculate which of the available instances of a microservice is the most appropriate for the client, when facing a request.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="alternative-microservice-netflix.asciidoc_rest-client---feign">REST Client - Feign</h4>
+<div class="paragraph">
+<p><a href="http://cloud.spring.io/spring-cloud-static/spring-cloud-netflix/1.3.0.M1/#spring-cloud-feign">Feign</a> is a REST client to make calls to other microservices. The strength of Feign is that it integrates seamlessly with <em>Ribbon</em> and <em>Hystrix</em>, and its implementation is through annotations, which greatly facilitates this task to the developer.</p>
+</div>
+<div class="paragraph">
+<p>Using annotations, Spring-cloud generates, automatically, a fully configured REST client.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="alternative-microservice-netflix.asciidoc_router-and-filter---zuul">Router and Filter - Zuul</h4>
+<div class="paragraph">
+<p><a href="http://cloud.spring.io/spring-cloud-static/spring-cloud-netflix/1.3.0.M1/#router_and_filter_zuul">Zuul</a> is the entry point of the apps based on Spring-cloud microservices. It allows dynamic routing, load balancing, monitoring and securing of requests. By default <em>Zuul</em> uses <em>Ribbon</em> to locate, through Eureka, the instances of the microservice that it wants to invoke and sends the requests within a <em>Hystrix Command</em>, taking advantage of its functionality.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="alternative-microservice-netflix.asciidoc_how-to-create-microservices-in-devonfw">How to create microservices in devonfw?</h3>
+<div class="paragraph">
+<p>Follow the instructions in the link below to set up devonfw distribution</p>
+</div>
+<div class="paragraph">
+<p><a href="#Download and Setup">Getting started Download and Setup devonfw distribution</a></p>
+</div>
+<div class="paragraph">
+<p>Next, install devonfw modules and dependencies</p>
+</div>
+<div class="sect3">
+<h4 id="alternative-microservice-netflix.asciidoc_step-1-open-the-console">Step 1: Open the console</h4>
+<div class="paragraph">
+<p>Open the devonfw console by executing the batch file <em>console.bat</em> from the devonfw distribution. It is a pre-configured console which automatically uses the software and configuration provided by the devonfw distribution.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="alternative-microservice-netflix.asciidoc_step-2-change-the-directory">Step 2: Change the directory</h4>
+<div class="paragraph">
+<p>Run the following command in the console to change directory to devonfw module</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">cd workspaces\examples\devonfw</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="alternative-microservice-netflix.asciidoc_step-3-install">Step 3: Install</h4>
+<div class="paragraph">
+<p>To install modules and dependencies, you need to execute the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">mvn --projects bom,modules/microservices/microservices,modules/microservices/microservice-archetype,modules/microservices/microservice-infra-archetype  --also-make install</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+In case installation fails, try running the command again as it is often due to hitch in the network.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Now, you can use the Microservices archetype given below to create Microservices.</p>
+</div>
+<div class="paragraph">
+<p>In order to generate microservices in a devonfw project we can choose between two approaches:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>generate a new devon4j application and implement one by one all the needed components (based on Spring Cloud).</p>
+</li>
+<li>
+<p>generate a new devon4j application through the custom microservice archetype included in the devonfw distributions.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>That second approach, using the devonfw microservices archetype, will generate automatically all the basic structure and components to start developing the microservices based application.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="alternative-microservice-netflix.asciidoc_devonfw-archetypes">devonfw archetypes</h3>
+<div class="paragraph">
+<p>To simplify starting with projects based on microservices, devonfw includes two archetypes to generate pre-configured projects that include all the basic components of the <em>Spring Cloud</em> implementation.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>archetypes-microservices-infra</strong>: generates a project with the needed infrastructure services to manage microservices. Includes the <em>Eureka</em> service, <em>Zuul</em> service and the authentication service.</p>
+</li>
+<li>
+<p><strong>archetypes-microservices</strong>: generates a simple project pre-configured to work as a microservice.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="alternative-microservice-netflix.asciidoc_create-new-microservices-infrastructure-application">Create New Microservices infrastructure application</h3>
+<div class="paragraph">
+<p>To generate a new microservices infrastructure application through the devonfw archetype you only need to open a devonfw console (<em>console.bat</em> script) and follow the same steps described in <a href="#Creating your First Application">getting started creating new devonfw devon4j application</a>. But, instead of using the <em>standard</em> archetype, we must provide the special infrastructure archetype <code>archetype-microservice-infra</code>. Remember to provide your own values for <em>DgroupId</em>, <em>DartifactId</em>, <em>Dversion</em> and <em>Dpackage</em> parameters, Also provide the -DarchetypeVersion with latest value:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">mvn -DarchetypeVersion=2.4.0 -DarchetypeGroupId=com.devonfw.microservices -DarchetypeArtifactId=microservices-infra-archetype archetype:generate -DgroupId=com.capgemini -DartifactId=sampleinfra -Dversion=0.1-SNAPSHOT -Dpackage=com.capgemini.sampleinfra</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once the <em>Maven</em> command has finished an application with the following modules should be created:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/microservices/microservices_02.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/microservices/microservices_02.png" alt="microservices 02" width="150"></a>
+</div>
+</div>
+<div class="sect3">
+<h4 id="alternative-microservice-netflix.asciidoc_service-eureka-module">service-eureka module</h4>
+<div class="paragraph">
+<p>This module contains the needed classes and configuration to start a <em>Eureka</em> server.</p>
+</div>
+<div class="paragraph">
+<p>This service runs by default on port <em>8761</em> although ti can be changed in the <code>application.properties</code> file of the project.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="alternative-microservice-netflix.asciidoc_service-zuul-module">service-zuul module</h4>
+<div class="paragraph">
+<p>This module contains all the needed classes and configuration to start a <em>Zuul</em> server, that will be in charge of the routing and filter of the requests.</p>
+</div>
+<div class="paragraph">
+<p>This service by default runs on port <em>8081</em> but, as we already mentioned, it can be changed through the file <code>application.properties</code> of the project.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="alternative-microservice-netflix.asciidoc_service-auth-module">service-auth module</h4>
+<div class="paragraph">
+<p>This module runs an authentication and authorization mock microservice that allows to generate a security token to make calls to the rest of microservices. This module is only providing a basic structure, the security measures must be implemented fitting the requirements of each project (authentication through DB, SSO, LDAP, OAuth,&#8230;&#8203;)</p>
+</div>
+<div class="paragraph">
+<p>This service runs by default on port <em>9999</em>, although, as in previous services, it can be edited in the <code>application.properties</code> file.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="alternative-microservice-netflix.asciidoc_create-new-microservices-application">Create New Microservices Application</h3>
+<div class="paragraph">
+<p>To generate a new microservice project through the devonfw archetype, as in previous archetype example, you can follow the instructions explained in <a href="#Creating your First Application">getting started creating new devonfw devon4j application</a>. But, instead of using the <em>standard</em> archetype, we must provide the special microservices archetype <code>archetype-microservices</code>. Open a devonfw console (<em>console.bat</em> script) and launch a <em>Maven</em> command like the following (provide your own values for <em>DgroupId</em>, <em>DartifactId</em>, <em>Dversion</em> and <em>Dpackage</em> parameters, also provide the -DarchetypeVersion with latest value):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">mvn -DarchetypeVersion=2.4.0 -DarchetypeGroupId=com.devonfw.microservices -DarchetypeArtifactId=microservices-archetype archetype:generate -DgroupId=com.capgemini -DartifactId=sampleapp1 -Dversion=0.1-SNAPSHOT -Dpackage=com.capgemini.sampleapp1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>That command generates a simple application containing the source code for the microservice. By default, the <code>pom.xml</code> includes the <code>devon-microservices</code> module, that contains the security configuration, jwt interceptors, <em>Hystrix</em>, <em>Ribbon</em> and <em>FeignClient</em> configuration and some properties common to all microservices.</p>
+</div>
+<div class="paragraph">
+<p>The created microservice runs by default on port <em>9001</em> and has the <code>context-path</code> with the same name than the project. This parameters can be changed through the 'application.properties' file of the project.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="alternative-microservice-netflix.asciidoc_how-to-use-microservices-in-devonfw">How to use microservices in devonfw</h3>
+<div class="paragraph">
+<p>In the following sections we are going to provide some patterns to manage microservices in devonfw using the archetype, alongside the options that each of the available modules offer.</p>
+</div>
+<div class="sect3">
+<h4 id="alternative-microservice-netflix.asciidoc_eureka-service">Eureka service</h4>
+<div class="paragraph">
+<p>We are going to review the general options for the <em>Eureka</em> service. If you are interested in getting more details you can visit the official site for <a href="http://cloud.spring.io/spring-cloud-static/spring-cloud-netflix/1.3.0.M1/#service_discovery_eureka_clients">Spring Cloud Eureka clients</a>.</p>
+</div>
+<div class="paragraph">
+<p>To create an <em>Eureka</em> server you only need to create a new <em>Spring Boot</em> application and add the <code>@EnableEurekaServer</code> to the main class.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The provided archetype <code>archetype-microservices-infra</code> already provides that annotated class.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Configuration
+@EnableEurekaServer
+@EnableAutoConfiguration
+@SpringBootApplication
+public class EurekaBootApp {
+
+  public static void main(String[] args) {
+
+    new SpringApplicationBuilder(EurekaBootApp.class).web(true).run(args);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The basic properties that must be configured for <em>Eureka</em> server are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>port: in which port the service will run. The default port is the <em>8761</em> and you have to keep in mind that the connection to this port is specially critical as all the microservices must be able to connect to this <code>host:port</code>. Remember that <em>Eureka</em> generates and manages the microservices catalog, so it`s crucial to allow the microservices to register in this component.</p>
+</li>
+<li>
+<p>url: which <em>URL</em> manages as area.</p>
+</li>
+</ul>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>eureka.instance.hostname=localhost
+eureka.instance.port=8761
+
+server.port=${eureka.instance.port}
+
+eureka.client.serviceUrl.defaultZone=http://${eureka.instance.hostname}:${eureka.instance.port}/eureka/</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The way to connect a microservice to <em>Eureka</em> server is really simple. You only will need to specify the <code>host:port</code> where the server is located and annotate the <em>Spring Boot</em> class with <code>@EnableMicroservices</code> annotation.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Instead of using that <code>@EnableMicroservices</code> annotation, you can use the equivalent <em>Spring</em> annotations <code>@EnableDiscoveryClient</code> or <code>@EnableEurekaClient</code>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Configuration
+@EnableMicroservices
+@SpringBootApplication
+public class MicroserviceBootApp {
+  public static void main(String[] args) {
+
+    SpringApplication.run(MicroserviceBootApp.class, args);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>eureka.instance.hostname=localhost
+eureka.instance.port=8761
+
+eureka.client.serviceUrl.defaultZone=http://${eureka.instance.hostname}:${eureka.instance.port}/eureka/</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With this the application will register automatically in <em>Eureka</em> and will be validated each 30 seconds. This value can be changed editing the property <code>eureka.instance.leaseRenewalIntervalInSeconds</code> in <code>application.properties</code> file. It must be taken into account that each <em>Eureka</em> client will maintain a cache of <em>Eureka</em> records to avoid calling the service every time it is necessary to access another microservice. This cache is reloaded every 30 seconds, this value can also be edited through property <code>eureka.client.registryFetchIntervalSeconds</code> in <code>application.properties</code> file.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="alternative-microservice-netflix.asciidoc_zuul-service">Zuul service</h4>
+<div class="paragraph">
+<p>We are going to show an overview to the options of the <em>Zuul</em> service, if you want to know more details about this particular service visit the official site of <a href="http://cloud.spring.io/spring-cloud-static/spring-cloud-netflix/1.3.0.M1/#router_and_filter_zuul">Spring Cloud</a>.</p>
+</div>
+<div class="paragraph">
+<p><em>Zuul</em> is the component in charge for router and filtering the requests to the microservices system. It works as a gateway that, through a rule engine, redirects the requests to the suitable microservice. In addition, it can be used as a security filter as it can implement PRE-Filters and POST-Filters.</p>
+</div>
+<div class="paragraph">
+<p>To create a basic <em>Zuul</em> server you only need to create a new Spring Boot application and add the <code>@EnableZuulProxy</code> annotation.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@EnableAutoConfiguration
+@EnableEurekaClient
+@EnableZuulProxy
+@SpringBootApplication
+public class ZuulBootApp {
+  public static void main(String[] args) {
+
+    SpringApplication.run(ZuulBootApp.class, args);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To allow <em>Zuul</em> to redirect the requests we need to connect <em>Zuul</em> with the previously created <em>Eureka</em> service, to allow him to register and access to the catalog of microservices created by <em>Eureka</em>.</p>
+</div>
+<div class="paragraph">
+<p>Also, if we are going to use the <em>Zuul</em> service from a web browser, we must configure the <em>CORS</em> filter to allow connections from any source. This is really easy to implement by adding the following Java <em>Bean</em> to our <em>ZuulBootApp</em> class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Bean
+public CorsFilter corsFilter() {
+    final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    final CorsConfiguration config = new CorsConfiguration();
+    config.setAllowCredentials(true);
+    config.addAllowedOrigin("*");
+    config.addAllowedHeader("*");
+    config.addAllowedMethod("OPTIONS");
+    config.addAllowedMethod("HEAD");
+    config.addAllowedMethod("GET");
+    config.addAllowedMethod("PUT");
+    config.addAllowedMethod("POST");
+    config.addAllowedMethod("DELETE");
+    config.addAllowedMethod("PATCH");
+    source.registerCorsConfiguration("/**", config);
+    return new CorsFilter(source);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To configure the <em>Zuul</em> service we need to define a series of properties that we will describe below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>server.port=8081
+spring.application.name=zuulserver
+
+eureka.instance.hostname=localhost
+eureka.instance.port=8761
+eureka.client.serviceUrl.defaultZone=http://${eureka.instance.hostname}:${eureka.instance.port}/eureka/
+
+
+microservices.context-path=/demo
+
+zuul.routes.security.path=${microservices.context-path}/services/rest/security/**
+zuul.routes.security.serviceId=AUTH
+zuul.routes.security.stripPrefix=false
+
+zuul.routes.login.path=${microservices.context-path}/services/rest/login
+zuul.routes.login.serviceId=AUTH
+zuul.routes.login.stripPrefix=false
+
+
+zuul.ignoredServices='*'
+zuul.sensitive-headers=
+
+ribbon.eureka.enabled=true
+hystrix.command.default.execution.timeout.enabled=false</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>server.port</code>: Is the port where the <em>Zuul</em> service is listening.</p>
+</li>
+<li>
+<p><code>spring.application.name</code>: The name of the service the will be sent to <em>Eureka</em>.</p>
+</li>
+<li>
+<p><code>eureka.*</code>: The properties for the register of the <em>Eureka</em> client.</p>
+</li>
+<li>
+<p><code>zuul.routes.XXXXX</code>: The configuration of a concrete route.</p>
+</li>
+<li>
+<p><code>zuul.routes.XXXXX.path</code>: The path used for a redirection.</p>
+</li>
+<li>
+<p><code>zuul.routes.XXXXX.serviceId</code>: ID of the service where the request will be redirected. It must match the property <code>spring.application.name</code> in the microservice.</p>
+</li>
+<li>
+<p><code>zuul.routes.XXXXX.stripPrefix</code>: by default set to <code>false</code>. With this property we configure if the part of the route that has matched the request must be <em>cutted out</em>. i.e., if the path is <em>/sample/services/rest/foomanagement/∗∗</em> and the property is set to <code>true</code> it will redirect to the microservice but it will only send the path <em>**</em>, the root <code>/sample/services/rest/foomanagement/</code> will be removed.</p>
+</li>
+<li>
+<p><code>zuul.ignoredServices</code>: Configures which services without result in the routes, must be ignored.</p>
+</li>
+<li>
+<p><code>zuul.sensitive-headers</code>: Configures which headers must be ignored. This property must be set to <em>empty</em>, otherwise <em>Zuul</em> will ignore security authorization headers and the json web token will not work.</p>
+</li>
+<li>
+<p><code>ribbon.eureka.enabled</code>: Configures if the <em>Ribbon</em> should be used to route the requests.</p>
+</li>
+<li>
+<p><code>hystrix.command.default.execution.timeout.enabled</code>: Enables or disables the timeout parameter to consider a microservices as unavailable. By default the value for this property is 1 second. Any request that takes more than this will be consider failed. By default in the archetype this property is disabled.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Having an <em>Eureka</em> client activated, the <em>Zuul</em> service will refresh its content every 30 seconds, so a just registered service may still have not been cached in <em>Zuul</em>. On the contrary, if a service is unavailable, 3 cycles of 30 seconds must pass before <em>Eureka</em> sets its register as <em>dead</em>, and other 30 seconds for <em>Zuul</em> to refresh its cache.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="alternative-microservice-netflix.asciidoc_security">Security, Authentication and authorization</h4>
+<div class="paragraph">
+<p>The most commonly used authentication in micro-service environments is authentication based on <a href="https://jwt.io/">json web tokens</a>, since the server does not need to store any type of user information (stateless) and therefore favors the scalability of the microservices.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-important" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The <code>service-auth</code> module is useful only if the authentication and authorization needs to be done by a remote service (<em>e.g.</em> to have a common auth. service to be used by several microservices).</p>
+</div>
+<div class="paragraph">
+<p>Otherwise, the autentication and authorization can happen in the main application, that will perform the authentication and will generate the JWT.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="sect4">
+<h5 id="alternative-microservice-netflix.asciidoc_security-in-the-monolith-application">Security in the monolith application</h5>
+<div class="paragraph">
+<p>In this case, the main microservice or application will perform the authentication and generate the JWT, without using <code>service-auth</code>.</p>
+</div>
+<div class="paragraph">
+<p>It works as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The user is authenticated in our application, either through a user / password access, or through a third provider.</p>
+</li>
+<li>
+<p>This authentication request is launched against the Zuul server which will redirect it to an instance of the microservice.</p>
+</li>
+<li>
+<p>The microservice will check the user, retrieve their roles and metadata and generate two tokens: one with user access information and another needed to refresh the access token. This information will be returned to the client.</p>
+</li>
+<li>
+<p>The client is now able to call the microservice, adding the <em>authorization token</em> to the header of the request.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/microservices/microservices_07.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/microservices/microservices_07.png" alt="microservices 07" width="450"></a>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="alternative-microservice-netflix.asciidoc_security-in-external-service-service-auth">Security in external service (<code>service-auth</code>)</h5>
+<div class="paragraph">
+<p>It works as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The user is authenticated in our application, either through a user / password access, or through a third provider.</p>
+</li>
+<li>
+<p>This authentication request is launched against the Zuul server which will redirect it to an instance of the <em>Auth</em> microservice.</p>
+</li>
+<li>
+<p>The <em>Auth</em> microservice will check the user, retrieve their roles and metadata and generate two tokens: one with user access information and another needed to refresh the access token. This information will be returned to the client.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/microservices/microservices_03.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/microservices/microservices_03.png" alt="microservices 03" width="450"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>service-auth</code> service is already prepared to listen to the <code>/login</code> path and generate the two mentioned tokens. To do so we can use the <code>JsonWebTokenUtility</code> class that is implemented in devonfw</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">      UserDetailsJsonWebTokenAbstract clientTo = new UserDetailsJsonWebTokenTo();
+      clientTo.setId(1L);
+      clientTo.setUsername("demo");
+      clientTo.setRoles(new ArrayList&lt;&gt;(Arrays.asList("DEMO")));
+      clientTo.setExpirationDate(buildExpirationDate(this.expirationTime * 60 * 1000L));
+
+      return new ResponseEntity&lt;&gt;(new JwtHeaderTo(this.jsonWebTokenUtility.createJsonWebTokenAccess(clientTo),
+          this.jsonWebTokenUtility.createJsonWebTokenRefresh(clientTo),
+          this.expirationTime * 60 * 1000L), HttpStatus.OK);</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>In our example you can make a POST request to:</p>
+</div>
+<div class="paragraph">
+<p><a href="http://localhost:8081/service-auth/services/rest/login" class="bare">http://localhost:8081/service-auth/services/rest/login</a><br>
+&#160;&#160;&#160;&#160; HEADER&#160;&#160;&#160;&#160;  Content-Type : application/json<br>
+&#160;&#160;&#160;&#160; BODY &#160;&#160;&#160;&#160;&#160;&#160;   { "j_username" : "xxx", "j_password" : "xxx"}</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This will generate a response like the following</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+  "accessToken": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkZW1vIiwiZmlyc3ROYW1lIjoiZGVtbyIsImxhc3ROYW1lIjoiZGVtbyIsImV4cCI6MTQ4Nzg3NTAyMSwicm9sZXMiOlsiREVNTyJdfQ.aEdJWEpyvRlO8nF_rpSMSM7NXjRIyeJF425HRt8imCTsq4iGiWbmi1FFZ6pydMwKjd-Uw1-ZGf2WF58qjWc4xg",
+  "refreshToken": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkZW1vIiwiZmlyc3ROYW1lIjoiZGVtbyIsImxhc3ROYW1lIjoiZGVtbyIsImV4cCI6MTQ4Nzg3NTAyMSwicm9sZXMiOlsiUkVGUkVTSF9KV1QiXX0.YtK8Bh07O-h1GTsyTK36YHxkGniyiTlxnazZXi8tT-RtUxxW8We8cdiYJn6tw0RoFkOyr1F5EzvkGyU0HNoLyw",
+  "expirationTime": 900000,
+  "accessHeaderName": "Authorization",
+  "refreshHeaderName": "Authorization-Refresh"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The client now should store, in the header defined in <code>accessHeaderName</code>, the token included as <code>accessToken</code>.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-important" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>When using <code>service-auth</code> (or any other external authorization service), we <strong>must secure</strong> not only
+the communication between the Client and Zuul, but also between Zuul and the <code>service-auth</code>.</p>
+</div>
+<div class="paragraph">
+<p>There is very sensitive information being sent (<em>username</em> and <em>password</em>) between the different services that
+anyone could read if the channel is not properly secured.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>When configuring the <code>service-auth</code> module is very important to have into account the following aspects:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <em>expiration date</em> of the token can be configured in the properties file with the property <code>jwt.expirationTime</code> (will appear in minutes).</p>
+</li>
+<li>
+<p>The key for the token generation can be configured also in the properties file using the property <code>jwt.encodedKey</code> which will have a <em>Base64</em> encoded value.</p>
+</li>
+<li>
+<p>The roles inserted in the token should be the list of the access roles of the user. Doing this we avoid that each microservice has to look for the roles that belong to a profile.</p>
+</li>
+<li>
+<p>If you want to use a specific UserDetails for the project, with new fields, you must extend the behavior as explained in <a href="#alternative-microservice-netflix.asciidoc_how-to-modify-the-userdetails-information">here</a>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>From now on, the client will be able to make calls to the microservices, sending the <em>access token</em> in the header of the request.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/microservices/microservices_04.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/microservices/microservices_04.png" alt="microservices 04" width="450"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>Once the request reaches the microservice, the app must validate the token and register the user in the security context. These operations will be automatic as long as the microservice has enabled the security inherited from the <code>JsonWebTokenSecurityConfig</code> class. This is done using the following code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Configuration
+@EnableWebSecurity
+public class WebSecurityConfig extends JsonWebTokenSecurityConfig {
+
+  @Override
+  public JsonWebTokenUtility getJsonWebTokenUtility() {
+
+    return new JsonWebTokenUtility();
+  }
+
+  @Override
+  protected void setupAuthorization(HttpSecurity http) throws Exception {
+
+    http.authorizeRequests()
+        // authenticate all other requests
+        .anyRequest().authenticated();
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In addition, devonfw has already implemented the needed interceptors and filters to resend the security header each time that a microservice calls other microservice of the ecosystem.</p>
+</div>
+<div class="paragraph">
+<p>When validating the token, it is also checked its expiration date, so it is highly recommended that the client refresh from time to time the token, in order to update its expiration date. This is done by launching a request to <code>/refresh_jwt</code> within the <code>service-auth</code> module and sending both the <em>access token</em> and the <em>refresh token</em> in the header.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/microservices/microservices_05.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/microservices/microservices_05.png" alt="microservices 05" width="450"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>If for any reason an attempt is made to access a business operation without having a valid token, or without sufficient <em>role</em> level permission to execute that operation, the microservice response will be <strong>Forbidden</strong>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/microservices/microservices_06.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/microservices/microservices_06.png" alt="microservices 06" width="450"></a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="alternative-microservice-netflix.asciidoc_how-to-modify-the-userdetails-information">How to modify the UserDetails information</h3>
+<div class="paragraph">
+<p>In order to modify the <em>UserDetails</em> information we will need to accomplish two steps: modify the authentication service to generate the authentication token with the custom attributes embedded, and modify the pre-authentication filter of the microservices to convert the token into an <em>Object</em> with the custom attributes available.</p>
+</div>
+<div class="sect3">
+<h4 id="alternative-microservice-netflix.asciidoc_modify-the-authentication-service-to-generate-a-new-token">Modify the authentication service to generate a new token</h4>
+<div class="paragraph">
+<p>We must modify the <code>service-auth</code> that is in charge of logging the user and generate the security token.</p>
+</div>
+<div class="paragraph">
+<p>The first thing to do is to create a <em>UserDetails</em> class that contains the required attributes and custom attributes. In the code sample we will call this class <em>UserDetailsJsonWebTokenCustomTo</em>, and must either implement the generic <em>UserDetailsJsonWebTokenAbstract</em> interface or extend it from the current <em>UserDetailsJsonWebTokenTo</em> class, since the services are prepared to work with it. In the example, we will add two new attributes <code>firstName</code> and <code>lastName</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public class UserDetailsJsonWebTokenCustomTo extends UserDetailsJsonWebTokenTo {
+
+  private String firstName;
+  private String lastName;
+
+  public String getFirstName() {
+    return this.firstName;
+  }
+
+  public String getLastName() {
+    return this.lastName;
+  }
+
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In case that the <code>UserDetailsJsonWebTokenAbstract</code> interface is implemented, in addition to the new attributes the rest of the interface must be implemented.</p>
+</div>
+<div class="paragraph">
+<p>The next step would be to override the component that performs the conversions <em>Token→UserDetails</em> and <em>UserDetails→Token</em>. This component is the <code>JsonWebTokenUtility</code>, so you should create a new class that extends from this, in the example we will call it <code>JsonWebTokenUtilityCustom</code>. In this new class, you must overwrite the only two methods that are allowed to perform the conversions, to add <em>writing</em> and <em>reading</em> operations for the new custom attributes.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public class JsonWebTokenUtilityCustom extends JsonWebTokenUtility {
+
+  @Override
+  protected UserDetailsJsonWebTokenAbstract addCustomPropertiesClaimsToUserDetails(Claims claims) {
+
+    UserDetailsJsonWebTokenCustomTo userDetails = new UserDetailsJsonWebTokenCustomTo();
+
+    userDetails.setFirstName(claims.get("firstName", String.class));
+    userDetails.setLastName(claims.get("lastName", String.class));
+
+    return userDetails;
+  }
+
+  @Override
+  protected void addCustomPropertiesUserDetailsToJwt(UserDetailsJsonWebTokenAbstract authTokenDetailsDTO, JwtBuilder jBuilder) {
+
+    UserDetailsJsonWebTokenCustomTo userDetails = (UserDetailsJsonWebTokenCustomTo) authTokenDetailsDTO;
+
+    jBuilder.claim("firtName", userDetails.getFirstName());
+    jBuilder.claim("lastName", userDetails.getLastName());
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now you should enable that new converter to replace the default one. In the <code>WebSecurityConfig</code> class you must change the related <code>@Bean</code> to start using this new class</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Configuration
+@EnableWebSecurity
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+...
+
+  @Bean
+  public JsonWebTokenUtility getJsonWebTokenUtility() {
+    return new JsonWebTokenUtilityCustom();
+  }
+
+...
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally, in the login process the new attributes should be filled in when creating the user. In our example in the class <code>SecuritymanagementRestServiceImpl</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">      UserDetailsJsonWebTokenCustomTo clientTo = new UserDetailsJsonWebTokenCustomTo();
+      clientTo.setId(1L);
+      clientTo.setUsername("demo");
+      clientTo.setRoles(new ArrayList&lt;&gt;(Arrays.asList("DEMO")));
+      clientTo.setExpirationDate(buildExpirationDate(this.expirationTime * 60 * 1000L));
+
+      clientTo.setFirstName("firstName");
+      clientTo.setLastName("lastName");
+
+
+      return new ResponseEntity&lt;&gt;(new JwtHeaderTo(this.jsonWebTokenUtility.createJsonWebTokenAccess(clientTo),
+          this.jsonWebTokenUtility.createJsonWebTokenRefresh(clientTo), //
+          this.expirationTime * 60 * 1000L), HttpStatus.OK);</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="alternative-microservice-netflix.asciidoc_modify-the-pre-authentication-filter-to-read-the-new-token">Modify the pre-authentication filter to read the new token</h4>
+<div class="paragraph">
+<p>Once a token with custom attributes has been obtained, the steps to read it and put it in the security context are very simple. The changes shown in this point should be reproduced in those microservices where you want to use the new custom attributes. The steps to follow are those:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Create a <code>UserDetailsJsonWebTokenCustomTo</code> class that contains the new attributes, as was done in the previous section. The ideal would be to reuse the same class.</p>
+</li>
+<li>
+<p>Create a <code>JsonWebTokenUtilityCustom</code> class that extends the implementation of the token generator, just as it was done in the previous section. Again, the ideal would be to reuse the same class.</p>
+</li>
+<li>
+<p>Configure the creation of this new <code>@Bean</code> in the <code>WebSecurityConfig</code> class just like in the previous section.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>With these three steps you can use the new security object with the custom attributes. One way to use it could be as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">   UserDetailsJsonWebToken principal = (UserDetailsJsonWebToken) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+   UserDetailsJsonWebTokenCustomTo userDetails = (UserDetailsJsonWebTokenCustomTo) principal.getUserDetailsJsonWebTokenAbstract();
+
+   userDetails.getFirstName();</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="alternative-microservice-netflix.asciidoc_how-to-start-with-a-microservice">How to start with a microservice</h3>
+<div class="paragraph">
+<p>Once the microservice has been created through its archetype, you need to have a series of points in mind to configure it correctly:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The microservice must have the <code>microservices</code> starter in its <code>pom.xml</code> configuration to be able to use the interceptors and the generic configuration.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;dependency&gt;
+      &lt;groupId&gt;com.devonfw.starter&lt;/groupId&gt;
+      &lt;artifactId&gt;devonfw-microservices-starter&lt;/artifactId&gt;
+      &lt;version&gt;${devonfw.version}&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>It should be annotated in its initial class with <code>@EnableMicroservices</code>, this will activate the annotations for <em>Eureka</em> client, <em>CircuitBreaker</em> and the client Feign. All of this is configured in the properties file.</p>
+</li>
+<li>
+<p>This is a <em>bootified</em> application so in the <code>pom.xml</code> file you will have to define which one is the boot class.</p>
+</li>
+<li>
+<p>You must consider the boot configuration: <em>port</em> and <em>context-path</em>. In development, each microservice must have a different port, to avoid colliding with other microservices, while the <em>context-path</em> is recommended to be the same, to simplify the <em>Zuul</em> configurations and calls between microservices.</p>
+</li>
+<li>
+<p>You can use <code>@RolesAllowed</code> annotations in the services methods to secure them, as long as the Web security inherited from <code>JsonWebTokenSecurityConfig</code> has been enabled, since it is the responsible for putting the <em>UserDetails</em> generated from the token into the security context.</p>
+</li>
+<li>
+<p>All microservices must share the security key to encrypt and decrypt the token. And, specially, it should be the same as the <code>service-auth</code>, which will be responsible for generating the initial token.</p>
+</li>
+<li>
+<p>In the <em>Zuul</em> module, the routes must be well configured to be able to route certain URLs to the new created microservices. So, if we have added a <em>sampleapp1</em> with <code>server.context-path=/sampleapp1</code> we will need to map that service in the <em>Zuul&#8217;s</em> <code>application.properties</code> file adding</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>zuul.routes.sampleapp1.path=/sampleapp1/services/rest/**
+zuul.routes.sampleapp1.serviceId=sampleapp1
+zuul.routes.sampleapp1.stripPrefix=false</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The rest will be treated as if it were a normal Web application, which exposes some services through a REST API.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="alternative-microservice-netflix.asciidoc_calls-between-microservices">Calls between microservices</h3>
+<div class="paragraph">
+<p>In order to invoke a microservice manually, you would need to implement the following steps:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Obtain the instances of the microservice you want to invoke.</p>
+</li>
+<li>
+<p>Choose which of all instances is the most optimal for the client.</p>
+</li>
+<li>
+<p>Retrieve the security token from the source request.</p>
+</li>
+<li>
+<p>Create a REST client that invokes the instance by passing the generated security token.</p>
+</li>
+<li>
+<p>Intercept the response in case it causes an error, to avoid a cascade propagation.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Thanks to the combination of <em>Feign</em>, <em>Hystrix</em>, <em>Ribbon</em>, <em>Eureka</em> and <em>devonfw</em> it is possible to make a call to another microservice in a declarative, very simple and almost automatic way.</p>
+</div>
+<div class="paragraph">
+<p>You only need to create an interface with the methods that need to be invoked. This interface must be annotated with <code>@FeignClient</code> and each of the methods created must have a path and a method in the <code>@RequestMapping</code> annotation. An example interface might be as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@FeignClient(value = "foo")
+public interface FooClient {
+
+  @RequestMapping(method = RequestMethod.GET, value = "/${server.context-path}/services/rest/foomanagement/v1/foo")
+  FooMessageTo foo();
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It is important to highlight the following aspects:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>@FeignClient</code> annotation comes along with the name of the microservice to be invoked. The correct and optimal would be to use the name of the microservice, but it is also possible to launch the request to the <em>Zuul</em> server. In the latter case it would be the server itself that would perform the load balancing and self-discovery of the most appropriate microservice, but have in mind that, doing this, the proxy server is also unnecessarily overloaded with unnecessary requests.</p>
+</li>
+<li>
+<p>The <code>@RequestMapping</code> annotation must have the same method and path as expected on target, otherwise the request will be thrown and no response will be found.</p>
+</li>
+<li>
+<p>The input and output parameters will be mapped to <em>json</em>, so they may not be exactly the same classes in both destination and source. It will depend on how you want to send and retrieve the information.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Once the interface is created and annotated, in order to use the calls, it would be enough to inject the component into the object from which we want to use it and invoke any of its methods. <em>Spring Cloud</em> will automatically generate the required bean.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">...
+
+  @Inject
+  FooClient fooClient;
+
+  public FooMessageTo ivokeFooClient() {
+    return this.fooClient.foo();
+  }
+
+...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With these two annotations, almost all the functionality is covered automatically: search in <em>Eureka</em>, choice of the best instance through <em>Ribbon</em>, registration of the token and creation of the REST client. Only would be necessary to control the response in case of failure. The idea is to allow, in case of failure or fall of the invoked microservice, from the origin of the invocation is executed an alternative plan. This is as simple as activating the <code>fallback</code> in the <code>@FeignClient</code> annotation and assigning a class that will be invoked in case the REST client response fails.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@FeignClient(value = "foo", fallback = FooClientHystrixFallback.class)
+public interface FooClient {
+
+  @RequestMapping(method = RequestMethod.GET, value = "/${server.context-path}/services/rest/foomanagement/v1/foo")
+  FooMessageTo foo();
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally, you will need to create a class annotated with <code>@Component</code> that implements the interface of the <em>Feign</em> client. Within this implementation you can add the desired functionality in case the invocation to the REST client fails.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Component
+public class FooClientHystrixFallback implements FooClient {
+
+  @Override
+  public FooMessageTo foo() {
+    return new FooMessageTo("Fail Message");
+  }
+
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html#introduction-why-should-i-use-devonfw.asciidoc">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devon4j.asciidoc_architecture.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-ide-support.asciidoc.html#LICENSE.asciidoc">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2020-03-13 12:36:14 UTC
+</sub></div>
+</div>
+</div>
+</body>
+</html>

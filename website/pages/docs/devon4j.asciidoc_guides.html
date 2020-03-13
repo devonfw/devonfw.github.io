@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2020-03-10 23:50:42 UTC">
+<meta name="author" content="Updated at 2020-03-13 12:42:09 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -515,7 +515,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2020-03-10 23:51:13 UTC</span><br>
+<span id="author" class="author">Updated at 2020-03-13 12:42:43 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -587,6 +587,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="devon4j.asciidoc_guides.html#guide-blob-support.asciidoc">11.26. BLOB support</a>
 </li>
 <li><a href="devon4j.asciidoc_guides.html#guide-jdk.asciidoc">11.27. Java Development Kit</a>
+</li>
+<li><a href="devon4j.asciidoc_guides.html#guide-microservice.asciidoc">11.28. Microservices in devonfw</a>
 </li>
 </ul>
 </li>
@@ -6809,6 +6811,61 @@ For maven the new solution is <a href="https://spotbugs.github.io/spotbugs-maven
 </li>
 </ul>
 </div>
+<div style="page-break-after: always;"></div>
+<!-- toc disabled -->
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-microservice.asciidoc">11.28. Microservices in devonfw</h3>
+<div class="paragraph">
+<p>The Microservices architecture is an approach for application development based on a series of <em>small</em> services grouped under a business domain. Each individual service runs autonomously and communicating with each other through their APIs. That independence between the different services allows to manage (upgrade, fix, deploy, etc.) each one without affecting the rest of the system&#x2019;s services. In addition to that the microservices architecture allows to scale specific services when facing an increment of the requests, so the applications based on microservices are more flexible and stable, and can be adapted quickly to demand changes.</p>
+</div>
+<div class="paragraph">
+<p>However, this new approach, developing apps based on microservices, presents some downsides.</p>
+</div>
+<div class="paragraph">
+<p>Let&#x2019;s see the main challenges when working with microservices:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Having the applications divided in different services we will need a component (router) to redirect each request to the related microservice. These redirection rules must implement filters to guarantee a proper functionality.</p>
+</li>
+<li>
+<p>In order to manage correctly the routing process, the application will also need a catalog with all the microservices and its details: IPs and ports of each of the deployed instances of each microservice, the state of each instance and some other related information. This catalog is called <em>Service Discovery</em>.</p>
+</li>
+<li>
+<p>With all the information of the <em>Service Discovery</em> the application will need to calculate and select between all the available instances of a microservice which is the suitable one. This will be figured out by the library <em>Client Side Load Balancer</em>.</p>
+</li>
+<li>
+<p>The different microservices will be likely interconnected with each other, that means that in case of failure of one of the microservices involved in a process, the application must implement a mechanism to avoid the error propagation through the rest of the services and provide an alternative as a process result. To solve this, the pattern <em>Circuit Breaker</em> can be implemented in the calls between microservices.</p>
+</li>
+<li>
+<p>As we have mentioned, the microservices will exchange calls and information with each other so our applications will need to provide a secured context to avoid not allowed operations or intrusions. In addition, since microservices must be able to operate in an isolated way, it is not recommended to maintain a session. To meet this need without using Spring sessions, a token-based authentication is used that exchanges information using the <a href="https://jwt.io/">json web token (JWT)</a> protocol.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In addition to all of this we will find other issues related to this particular architecture that we will address fitting the requirements of each project.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Distributed data bases: each instance of a microservice should have only one data base.</p>
+</li>
+<li>
+<p>Centralized logs: each instance of a microservice creates a log and a trace that should be centralized to allow an easier way to read all that information.</p>
+</li>
+<li>
+<p>Centralized configuration: each microservice has its own configuration, so our applications should group all those configurations in only one place to ease the configuration management.</p>
+</li>
+<li>
+<p>Automatized deployments: as we are managing several components (microservices, catalogs, balancers, etc.) the deployment should be automatized to avoid errors and ease this process.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To address the above, devonfw microservices has an alternative approach <a href="#alternative-microservice-netflix.asciidoc">Microservices based on Netflix-Tools</a>.</p>
 </div>
 </div>
 </div>
@@ -6936,7 +6993,7 @@ For maven the new solution is <a href="https://spotbugs.github.io/spotbugs-maven
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2020-03-10 23:48:41 UTC
+Last updated 2020-03-13 12:39:58 UTC
 </sub></div>
 
 
