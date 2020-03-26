@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2020-03-26 08:51:34 UTC">
+<meta name="author" content="Updated at 2020-03-26 19:25:52 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -515,7 +515,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2020-03-26 08:52:01 UTC</span><br>
+<span id="author" class="author">Updated at 2020-03-26 19:26:21 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -629,26 +629,32 @@ You need an oracle account, then you can download it from <a href="https://www.o
 </div>
 </div>
 <div class="paragraph">
-<p>The same way you can also connect from your devon4j app via JDBC.</p>
+<p>The same way you can also connect from your devon4j app via JDBC.
+To locally connect as sysdba without password use the following command (<code>connect / as sysdba</code> is not working anymore):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>sqlplus sys/Oracle18@localhost/XE as sysdba</code></pre>
+</div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="guide-oracle.asciidoc_driver">27.2. Driver</h3>
 <div class="paragraph">
-<p>The oracle JDBC driver is not available in maven central. Depending on the Oracle DB version and the Java version, you can use either the 11g/ojdbc6, 12c/ojdbc7, or 12c/ojdbc8 version of the driver. Oracle JDBC drivers usually are backward and forward compatible so you should be able to use the 12c/ojdbc8 driver with an 11g DB etc. As a rule of thumb, use the 12c/ojdbc8 driver unless you must use Java7. All JDBC drivers can be downloaded without registration: <a href="http://www.oracle.com/technetwork/database/enterprise-edition/jdbc-112010-090769.html">11g/ojdbc6</a>, <a href="http://www.oracle.com/technetwork/database/features/jdbc/jdbc-drivers-12c-download-1958347.html">12c/ojdbc7</a>, and <a href="http://www.oracle.com/technetwork/database/features/jdbc/jdbc-ucp-122-3110062.html">12c/ojdbc8</a>. Your project should use a maven repository server such as <a href="http://www.sonatype.org/nexus/">nexus</a> or <a href="https://www.jfrog.com/open-source/">artifactory</a>.
+<p>The oracle JDBC driver is not available in maven central. Depending on the Oracle DB version and the Java version, you can use either the 11g/ojdbc6, 12c/ojdbc7, or 12c/ojdbc8 version of the driver. Oracle JDBC drivers usually are backward and forward compatible so you should be able to use the 12c/ojdbc8 driver with an 11g DB etc. As a rule of thumb, use the 12c/ojdbc8 driver unless you must use Java7. All JDBC drivers can be downloaded: <a href="http://www.oracle.com/technetwork/database/enterprise-edition/jdbc-112010-090769.html">11g/ojdbc6</a>, <a href="http://www.oracle.com/technetwork/database/features/jdbc/jdbc-drivers-12c-download-1958347.html">12c/ojdbc7</a>, and <a href="http://www.oracle.com/technetwork/database/features/jdbc/jdbc-ucp-122-3110062.html">12c/ojdbc8</a>. Your project should use a maven repository server such as <a href="http://www.sonatype.org/nexus/">nexus</a> or <a href="https://www.jfrog.com/open-source/">artifactory</a>. You can even integrate the <a href="https://blogs.oracle.com/dev2dev/get-oracle-jdbc-drivers-and-ucp-from-oracle-maven-repository-without-ides">oracle maven repository</a> as proxy-repo in nexus.
 Your dependency for the oracle driver should look as follows (use artifactId &quot;ojdbc6&quot; or &quot;ojdbc7&quot; for the older drivers):</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>&lt;dependency&gt;
-  &lt;groupId&gt;com.oracle&lt;/groupId&gt;
+  &lt;groupId&gt;com.oracle.jdbdc&lt;/groupId&gt;
   &lt;artifactId&gt;ojdbc8&lt;/artifactId&gt;
   &lt;version&gt;${oracle.driver.version}&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>oracle.driver.version being 11.2.0.4 for 11g/ojdbc6, or 12.1.0.1 for 12c/ojdbc7, or 12.2.0.1 for 12c/ojdbc8 or newer</p>
+<p>The property <code>oracle.driver.version</code> should be <code>19.3.0.0</code> for oracle 19, <code>11.2.0.4</code> for oracle 11g, etc.</p>
 </div>
 </div>
 <div class="sect2">
@@ -660,14 +666,14 @@ Again, you have to upload the artefact manually to your maven repository. The de
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>&lt;dependency&gt;
-  &lt;groupId&gt;com.oracle&lt;/groupId&gt;
+  &lt;groupId&gt;com.oracle.jdbc&lt;/groupId&gt;
   &lt;artifactId&gt;ucp&lt;/artifactId&gt;
   &lt;version&gt;${oracle.ucp.version}&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>with oracle.ucp.version being 11.2.0.4 or 12.2.0.1 or newer.</p>
+<p>with property <code>oracle.ucp.version</code> analogue to <code>oracle.driver.version</code>.</p>
 </div>
 <div class="paragraph">
 <p>Configuration is done via application.properties like this (example):</p>
@@ -851,7 +857,7 @@ Capgemini has used the <a href="https://projects.spring.io/spring-data-jdbc-ext/
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2020-03-26 08:49:45 UTC
+Last updated 2020-03-26 19:23:40 UTC
 </sub></div>
 
 
