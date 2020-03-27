@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2020-03-26 23:50:07 UTC">
+<meta name="author" content="Updated at 2020-03-27 11:03:49 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -515,7 +515,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2020-03-26 23:50:40 UTC</span><br>
+<span id="author" class="author">Updated at 2020-03-27 11:04:15 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -998,7 +998,7 @@ export class MyComponent {
 @NgModule({
   declarations: [
     DishFormComponent,
-    DishviewComponent
+    DishViewComponent
   ],
   imports: [
     CoreModule,  // Module containing Angular Materials
@@ -1006,7 +1006,7 @@ export class MyComponent {
   ],
   entryComponents: [
     DishFormComponent,
-    DishviewComponent
+    DishViewComponent
   ],
   providers: [DishShareService]
 })
@@ -1029,7 +1029,7 @@ export class AppModule {
     const el = createCustomElement(DishFormComponent, {injector: this.injector});
     customElements.define(&apos;dish-form&apos;, el);
 
-    const elView = createCustomElement(DishviewComponent, {injector: this.injector});
+    const elView = createCustomElement(DishViewComponent, {injector: this.injector});
     customElements.define(&apos;dish-view&apos;, elView);
   }
 }
@@ -1100,8 +1100,6 @@ export class DishFormComponent implements OnInit {
   }
 
   onSubmit(dishForm: NgForm): void {
-    console.log(&apos;SUBMIT&apos;);
-    console.log(dishForm.value);
     this.dishShareService.createDish(dishForm.value.name, dishForm.value.description);
     this.submitDishEvent.emit(&apos;dishSubmited&apos;);
   }
@@ -2695,7 +2693,7 @@ export class AppModule {
 <p>To explain how to build PWAs using angular, a basic application is going to be built. This app will be able to ask for resources and save in the cache in order to work even offline.</p>
 </div>
 <div class="sect4">
-<h5 id="guide-angular-pwa.asciidoc_step-1-create-a-new-project">Step 1: Create a new project</h5>
+<h5 id="guide-angular-pwa.asciidoc_step-1-create-a-new-project-and-install-angular-pwa-package">Step 1: Create a new project and install Angular PWA package</h5>
 <div class="paragraph">
 <p>This step can be completed with one simple command: <code>ng new &lt;name&gt;</code>, where &lt;names&gt; is the name for the app. In this case, the app is going to be named <strong>basic-ng-pwa</strong>.</p>
 </div>
@@ -2855,19 +2853,45 @@ export class AppModule {
 <div class="sect4">
 <h5 id="guide-angular-pwa.asciidoc_step-5-make-it-progressive.">Step 5: Make it Progressive.</h5>
 <div class="paragraph">
-<p>Turining an angular app into a PWA is pretty easy, just one module has to be added. To do so, run: <code>ng add @angular/pwa</code>. This command also adds two important files, explained below.</p>
+<p>Install Angular PWA package with <code>ng add @angular/pwa --project &lt;name&gt;</code>. As before substitute <code>name</code> with <strong>basic-ng-pwa</strong>.</p>
 </div>
 <div class="paragraph">
-<p>&#xA0;<br>
-&#xA0;<br></p>
+<p>The above command completes the following actions:</p>
 </div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Adds the @angular/service-worker package to your project.</p>
+</li>
+<li>
+<p>Enables service worker build support in the CLI.</p>
+</li>
+<li>
+<p>Imports and registers the service worker in the app module.</p>
+</li>
+<li>
+<p>Updates the <code>index.html</code> file:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>manifest.json</p>
+<p>Includes a link to add the <code>manifest.json</code> file.</p>
+</li>
+<li>
+<p>Adds meta tags for theme-color.</p>
+</li>
+<li>
+<p>Installs icon files to support the installed Progressive Web App (PWA).</p>
+</li>
+<li>
+<p>Creates the service worker configuration file called <code>ngsw-config.json</code>, which specifies the caching behaviors and other settings.</p>
 </li>
 </ul>
 </div>
+</li>
+</ol>
+</div>
+<div class="sect5">
+<h6 id="guide-angular-pwa.asciidoc_manifest.json">manifest.json</h6>
 <div class="paragraph">
 <p>manifest.json is a file that allows to control how the app is displayed in places where native apps are displayed.</p>
 </div>
@@ -2901,17 +2925,9 @@ export class AppModule {
 <div class="paragraph">
 <p>Additional information can be found <a href="https://developers.google.com/web/fundamentals/web-app-manifest/">here</a>.</p>
 </div>
-<div class="paragraph">
-<p>&#xA0;<br>
-&#xA0;<br></p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>ngsw-config.json</p>
-</li>
-</ul>
-</div>
+<div class="sect5">
+<h6 id="guide-angular-pwa.asciidoc_ngsw-config.json">ngsw-config.json</h6>
 <div class="paragraph">
 <p>nsgw-config.json specifies which files and data URLs have to be cached and updated by the Angular service worker.</p>
 </div>
@@ -3013,6 +3029,7 @@ export class AppModule {
 </div>
 <div class="paragraph">
 <p>Additional information can be found <a href="https://angular.io/guide/service-worker-config">here</a>.</p>
+</div>
 </div>
 </div>
 <div class="sect4">
@@ -3867,7 +3884,9 @@ import { Observable } from &apos;rxjs/Observable&apos;;
 
 import { FlightTo } from &apos;./flight-to&apos;;
 
-@Injectable()
+@Injectable({
+ providedIn: &apos;root&apos;,
+})
 export class FlightsAdapter {
 
   constructor(
@@ -3898,7 +3917,9 @@ import { map } from &apos;rxjs/operators&apos;;
 import { FlightTo } from &apos;./flight-to&apos;;
 import { Flight } from &apos;../../../model/flight&apos;;
 
-@Injectable()
+@Injectable({
+ providedIn: &apos;root&apos;,
+})
 export class FlightsAdapter {
 
   constructor(
@@ -3927,7 +3948,141 @@ export class FlightsAdapter {
 </div>
 <div class="sect3">
 <h4 id="guide-consuming-rest-services.asciidoc_token-management">16.9.2. Token management</h4>
+<div class="paragraph">
+<p>In most cases the access to backend API is secured using well konwn mechanisms as <strong>CSRF</strong>, <strong>JWT</strong> or both. In these cases the frontend application must manage the tokens that are generated when the user authenticates. More concretely it must store them to include them in every request automatically. Obviously, when user logs out these tokens must be removed from localStorage, memory, etc.</p>
+</div>
+<div class="sect4">
+<h5 id="guide-consuming-rest-services.asciidoc_store-security-token">Store security token</h5>
+<div class="paragraph">
+<p>In order to make this guide simple we are going to store the token in memory. Therefore, if we consider that we already have a login mechanism implemented we would like to store the token using a <code>auth.service.ts</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">import { Injectable } from &apos;@angular/core&apos;;
+import { Router } from &apos;@angular/router&apos;;
+
+@Injectable({
+  providedIn: &apos;root&apos;,
+})
+export class AuthService {
+  private loggedIn = false;
+  private token: string;
+
+  constructor(public router: Router) {}
+
+  public isLogged(): boolean {
+    return this.loggedIn || false;
+  }
+
+  public setLogged(login: boolean): void {
+    this.loggedIn = login;
+  }
+
+  public getToken(): string {
+    return this.token;
+  }
+
+  public setToken(token: string): void {
+    this.token = token;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Using the previous service we will be able to store the token obtained in the login request using the method <code>setToken(token)</code>. Please consider that, if you want a more sofisticated approach using localStorage API, you will need to modify this service accordingly.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guide-consuming-rest-services.asciidoc_include-token-in-every-request">Include token in every request</h5>
+<div class="paragraph">
+<p>Now that the token is available in the application it is necessary to include it in every request to a protected API endpoint. Instead of modifying all the http requests in our application, Angular provides a class to intercept every request (and every response if we need to) called <code>HttpInterceptor</code>. Let&#x2019;s create a service called <code>http-interceptor.service.ts</code> to implement the <code>intercept</code> method of this class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">import {
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest,
+} from &apos;@angular/common/http&apos;;
+import { Injectable } from &apos;@angular/core&apos;;
+import { Observable } from &apos;rxjs&apos;;
+import { environment } from &apos;../../../environments/environment&apos;;
+import { AuthService } from &apos;./auth.service&apos;;
+
+@Injectable()
+export class HttpRequestInterceptorService implements HttpInterceptor {
+
+  constructor(private auth: AuthService) {}
+
+  intercept(
+    req: HttpRequest&lt;any&gt;,
+    next: HttpHandler,
+  ): Observable&lt;HttpEvent&lt;any&gt;&gt; {
+    // Get the auth header from the service.
+    const authHeader: string = this.auth.getToken();
+    if (authHeader) {
+      let authReq: HttpRequest&lt;any&gt;;
+
+      // CSRF
+      if (environment.security === &apos;csrf&apos;) {
+        authReq = req.clone({
+          withCredentials: true,
+          setHeaders: { &apos;x-csrf-token&apos;: authHeader },
+        });
+      }
+
+      // JWT
+      if (environment.security === &apos;jwt&apos;) {
+        authReq = req.clone({
+          setHeaders: { Authorization: authHeader },
+        });
+      }
+
+      return next.handle(authReq);
+    } else {
+      return next.handle(req);
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As you may notice, this service is making use of an environment field <code>environment.security</code> to determine if we are using JWT o CSRF in order to inject the token accordingly. In your application you can combine both if necessary.</p>
+</div>
+<div class="paragraph">
+<p>The <code>authHeader</code> used is obtained using the injected service <code>AuthService</code> already presented above.</p>
+</div>
+<div class="paragraph">
+<p>In order to activate the interceptor we need to provide it in our <code>app.module.ts</code> or <code>core.module.ts</code> depending on the application structure. Let&#x2019;s assume that we are using the latter and the interceptor file is inside a <code>security</code> folder:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">...
+import { HttpRequestInterceptorService } from &apos;./security/http-request-interceptor.service&apos;;
+...
+
+@NgModule({
+  imports: [...],
+  exports: [...],
+  declarations: [],
+  providers: [
+    ...
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpRequestInterceptorService,
+      multi: true,
+    },
+  ],
+})
+export class CoreModule {}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Angular automatically will now modify every request and include in the header the token if it is convenient.</p>
+</div>
 <!-- toc disabled -->
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -4294,100 +4449,72 @@ The <em>shared</em> module only contains components!</p>
 <div class="sect3">
 <h4 id="guide-internationalization.asciidoc_devon4ng-i18n-approach">16.12.1. devon4ng i18n approach</h4>
 <div class="paragraph">
-<p>The official approach could be a bit complicated, therefore the recommended one is to use the recommended library <strong>NGX Translate</strong> from <a href="http://www.ngx-translate.com/" class="bare">http://www.ngx-translate.com/</a>.</p>
+<p>The official approach could be a bit complicated, therefore the recommended one is to use the recommended library <strong>Transloco</strong> from <a href="https://netbasal.gitbook.io/transloco/" class="bare">https://netbasal.gitbook.io/transloco/</a>.</p>
 </div>
 <div class="sect4">
-<h5 id="guide-internationalization.asciidoc_install-ngx-translate">Install NGX Translate</h5>
+<h5 id="guide-internationalization.asciidoc_install-and-configure-transloco">Install and configure Transloco</h5>
 <div class="paragraph">
-<p>In order to include this library in your devon4ng <strong>Angular &gt;= 4.3</strong> project you will need to execute in a terminal:</p>
+<p>In order to include this library in your devon4ng <strong>Angular &gt;= 7.2</strong> project you will need to execute in a terminal:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">$ npm install @ngx-translate/core @ngx-translate/http-loader --save
-# or if you use yarn
-$ yarn add @ngx-translate/core @ngx-translate/http-loader</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ ng add @ngneat/transloco</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>As part of the installation process you&#x2019;ll be presented with questions; Once you answer them, everything you need will automatically be created for you.</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>@ngx-translate/core</strong> is the core library to provide i18n capabilities.</p>
+<p>First, Transloco creates boilerplate files for the requested translations.</p>
 </li>
 <li>
-<p><strong>@ngx-translate/http-loader</strong> is a loader for ngx-translate that loads translations using http.</p>
+<p>Next, it will create a new file, <code>transloco-root.module.ts</code> which exposes an Angular&#x2019;s <code>module</code> with a default configuration, and inject it into the <code>AppModule</code>.</p>
 </li>
 </ul>
 </div>
-</div>
-<div class="sect4">
-<h5 id="guide-internationalization.asciidoc_configure-ngx-translate">Configure NGX Translate</h5>
-<div class="paragraph">
-<p>Depending on the volume of the devon4ng application we will include the NGX Translate library in the <code>app.module.ts</code> or in the <code>core.module.ts</code> transversal to the application.</p>
-</div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-typescript" data-lang="typescript">import { BrowserModule } from &apos;@angular/platform-browser&apos;;
-import { NgModule } from &apos;@angular/core&apos;;
-import { HttpClientModule, HttpClient } from &apos;@angular/common/http&apos;;
-import { TranslateModule, TranslateLoader } from &apos;@ngx-translate/core&apos;;
-import { TranslateHttpLoader } from &apos;@ngx-translate/http-loader&apos;;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Next, an exported function for factories has to be created:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-typescript" data-lang="typescript">// AoT requires an exported function for factories
-export function HttpLoaderFactory(http: HttpClient) {
-    return new TranslateHttpLoader(http);
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">import { HttpClient } from &apos;@angular/common/http&apos;;
+import {
+  TRANSLOCO_LOADER,
+  Translation,
+  TranslocoLoader,
+  TRANSLOCO_CONFIG,
+  translocoConfig,
+  TranslocoModule
+} from &apos;@ngneat/transloco&apos;;
+import { Injectable, NgModule } from &apos;@angular/core&apos;;
+import { environment } from &apos;../environments/environment&apos;;
+
+@Injectable({ providedIn: &apos;root&apos; })
+export class TranslocoHttpLoader implements TranslocoLoader {
+  constructor(private http: HttpClient) {}
+
+  getTranslation(lang: string) {
+    return this.http.get&lt;Translation&gt;(`/assets/i18n/${lang}.json`);
+  }
 }
 
 @NgModule({
-    imports: [
-        BrowserModule,
-        HttpClientModule,
-        TranslateModule.forRoot({
-            loader: {
-                provide: TranslateLoader,
-                useFactory: HttpLoaderFactory,
-                deps: [HttpClient]
-            }
-        })
-    ],
-    bootstrap: [AppComponent]
+  exports: [ TranslocoModule ],
+  providers: [
+    {
+      provide: TRANSLOCO_CONFIG,
+      useValue: translocoConfig({
+        availableLangs: [&apos;en&apos;, &apos;es&apos;],
+        defaultLang: &apos;en&apos;,
+        // Remove this option if your application doesn&apos;t support changing language in runtime.
+        reRenderOnLangChange: true,
+        prodMode: environment.production,
+      })
+    },
+    { provide: TRANSLOCO_LOADER, useClass: TranslocoHttpLoader }
+  ]
 })
-export class AppModule { } // or CoreModule</code></pre>
+export class TranslocoRootModule {}</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>The <code>TranslateHttpLoader</code> also has two optional parameters:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>prefix: string = &quot;/assets/i18n/&quot;</p>
-</li>
-<li>
-<p>suffix: string = &quot;.json&quot;</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>By using those default parameters, it will load the translations files for the lang &quot;en&quot; from: <code>/assets/i18n/en.json</code>. In general, any translation file will loaded from the <code>/assets/i18n/</code> folder.</p>
-</div>
-<div class="paragraph">
-<p>Those parameters can be changed in the <code>HttpLoaderFactory</code> method just defined. For example if you want to load the &quot;en&quot; translations from <code>/public/lang-files/en-lang.json</code> you would use:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-typescript" data-lang="typescript">export function HttpLoaderFactory(http: HttpClient) {
-    return new TranslateHttpLoader(http, &quot;/public/lang-files/&quot;, &quot;-lang.json&quot;);
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>For now this loader only support the json format.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -4396,7 +4523,7 @@ export class AppModule { } // or CoreModule</code></pre>
 <div class="title">Note</div>
 </td>
 <td class="content">
-If you&#x2019;re still on Angular &lt; 4.3, please use <code>Http</code> from <code>@angular/http</code> with <code>http-loader@0.1.0</code>.
+As you might have noticed it also set an <code>HttpLoader</code> into the module&#x2019;s providers. The <code>HttpLoader</code> is a class that implements the <code>TranslocoLoader</code> interface. It&#x2019;s responsible for instructing Transloco how to load the translation files. It uses Angular HTTP client to fetch the files, based on the given path.
 </td>
 </tr>
 </tbody></table>
@@ -4405,11 +4532,11 @@ If you&#x2019;re still on Angular &lt; 4.3, please use <code>Http</code> from <c
 <div class="sect4">
 <h5 id="guide-internationalization.asciidoc_usage">Usage</h5>
 <div class="paragraph">
-<p>In order to translate any label in any HTML template you will need to use the <code>translate</code> pipe available:</p>
+<p>In order to translate any label in any HTML template you will need to use the <code>transloco</code> pipe available:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-html" data-lang="html">{{ &apos;HELLO&apos; | translate }}</code></pre>
+<pre class="highlight"><code class="language-html" data-lang="html">{{ &apos;HELLO&apos; | transloco }}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4417,44 +4544,29 @@ If you&#x2019;re still on Angular &lt; 4.3, please use <code>Http</code> from <c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-html" data-lang="html">{{ &apos;HELLO&apos; | translate:param }}</code></pre>
+<pre class="highlight"><code class="language-html" data-lang="html">{{ &apos;HELLO&apos; | translate: { value: dynamic } }}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>So, <code>param</code> has to be defined in the class. The default language used is defined as follows:</p>
+<p>It is possible to use with <code>inputs</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-typescript" data-lang="typescript">// imports
-
-@Component({
-    selector: &apos;app&apos;,
-    template: `
-        &lt;div&gt;{{ &apos;HELLO&apos; | translate }}&lt;/div&gt;            // Without param
-        &lt;div&gt;{{ &apos;HELLO&apos; | translate:param }}&lt;/div&gt;      // With param
-    `
-})
-export class AppComponent {
-    // This param will be used in the translation
-    param = { value: &apos;world&apos; };
-
-    constructor(translate: TranslateService) {
-        // this language will be used as a fallback when a translation isn&apos;t found in the current language
-        translate.setDefaultLang(&apos;en&apos;);
-
-        // the lang to use, if the lang isn&apos;t available, it will use the current loader to get them
-        translate.use(&apos;en&apos;);
-    }
-}</code></pre>
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;span [attr.alt]=&quot;&apos;hello&apos; | transloco&quot;&gt;Attribute&lt;/span&gt;
+&lt;span [title]=&quot;&apos;hello&apos; | transloco&quot;&gt;Property&lt;/span&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>In order to change the language used you will need to create a button or selector that calls the <code>this.translate.use(language: string)</code> method from <code>TranslateService</code>. For example:</p>
+<p>In order to change the language used you will need to create a button or selector that calls the <code>this.translocoService.use(language: string)</code> method from <code>TranslocoService</code>. For example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-typescript" data-lang="typescript">toggleLanguage(option) {
-    this.translate.use(option);
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">export class AppComponent {
+  constructor(private translocoService: TranslocoService) {}
+
+  changeLanguage(lang) {
+      this.translocoService.setActiveLang(lang);
+  }
 }</code></pre>
 </div>
 </div>
@@ -4479,7 +4591,7 @@ export class AppComponent {
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>TranslateParser</code> understands nested JSON objects. This means that you can have a translation that looks like this:</p>
+<p>Transloco understands nested JSON objects. This means that you can have a translation that looks like this:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -4497,16 +4609,40 @@ export class AppComponent {
 <div class="sect4">
 <h5 id="guide-internationalization.asciidoc_using-the-service">Using the service, pipe or directive</h5>
 <div class="sect5">
-<h6 id="guide-internationalization.asciidoc_service">Service</h6>
+<h6 id="guide-internationalization.asciidoc_structural-directive">Structural Directive</h6>
 <div class="paragraph">
-<p>If you need to access translations in any component or service you can do it injecting the <code>Translateservice</code> into them:</p>
+<p>Using a structural directive is the <strong>recommended</strong> approach. It&#x2019;s DRY and efficient, as it creates <strong>one</strong> subscription per template:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-typescript" data-lang="typescript">translate.get(&apos;HELLO&apos;, {value: &apos;world&apos;}).subscribe((res: string) =&gt; {
-    console.log(res);
-    //=&gt; &apos;hello world&apos;
-});</code></pre>
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">&lt;ng-container *transloco=&quot;let t&quot;&gt;
+  &lt;p&gt;{{ t(&apos;title&apos;) }}&lt;/p&gt;
+
+  &lt;comp [title]=&quot;t(&apos;title&apos;)&quot;&gt;&lt;/comp&gt;
+&lt;/ng-container&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that the <code>t</code> function is <strong>memoized</strong>. It means that given the same <code>key</code> it will return the result directly from the cache.</p>
+</div>
+<div class="paragraph">
+<p>We can pass a <code>params</code> object as the second parameter:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">&lt;ng-container *transloco=&quot;let t&quot;&gt;
+  &lt;p&gt;{{ t(&apos;name&apos;, { name: &apos;Transloco&apos; }) }}&lt;/p&gt;
+&lt;/ng-container&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We can instruct the directive to use a different language in our template:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">&lt;ng-container *transloco=&quot;let t; lang: &apos;es&apos;&quot;&gt;
+  &lt;p&gt;{{ t(&apos;title&apos;) }}&lt;/p&gt;
+&lt;/ng-container&gt;</code></pre>
 </div>
 </div>
 </div>
@@ -4520,7 +4656,7 @@ export class AppComponent {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-typescript" data-lang="typescript">&lt;div&gt;{{ &apos;HELLO&apos; | translate:param }}&lt;/div&gt;</code></pre>
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">&lt;div&gt;{{ &apos;HELLO&apos; | transloco:param }}&lt;/div&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4533,21 +4669,31 @@ export class AppComponent {
 </div>
 </div>
 <div class="sect5">
-<h6 id="guide-internationalization.asciidoc_directives">Directives</h6>
+<h6 id="guide-internationalization.asciidoc_attribute-directive">Attribute Directive</h6>
 <div class="paragraph">
-<p>Finally, it can also be used with directives:</p>
+<p>The last option available with <code>transloco</code> is the attribute directive:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-typescript" data-lang="typescript">&lt;div [translate]=&quot;&apos;HELLO&apos;&quot; [translateParams]=&quot;{value: &apos;world&apos;}&quot;&gt;&lt;/div&gt;</code></pre>
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">&lt;div transloco=&quot;HELLO&quot; [translocoParams]=&quot;{ value: &apos;world&apos; }&quot;&gt;&lt;/div&gt;</code></pre>
 </div>
 </div>
+</div>
+<div class="sect5">
+<h6 id="guide-internationalization.asciidoc_service">Service</h6>
 <div class="paragraph">
-<p>or, using the content of your element as a key</p>
+<p>If you need to access translations in any component or service you can do it injecting the <code>TranslocoService</code> into them:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-typescript" data-lang="typescript">&lt;div translate [translateParams]=&quot;{value: &apos;world&apos;}&quot;&gt;HELLO&lt;/div&gt;</code></pre>
+<pre class="highlight"><code class="language-typescript" data-lang="typescript">// Sync translation
+translocoService.translate(&apos;HELLO&apos;, {value: &apos;world&apos;});
+
+// Async translation
+translocoService.selectTranslate(&apos;HELLO&apos;, { value: &apos;world&apos; }).subscribe(res =&gt; {
+    console.log(res);
+    //=&gt; &apos;hello world&apos;
+});</code></pre>
 </div>
 </div>
 <div class="admonitionblock important">
@@ -4563,7 +4709,7 @@ You can find a complete example at <a href="https://github.com/devonfw/devon4ng-
 </tbody></table>
 </div>
 <div class="paragraph">
-<p>Please, visit <a href="https://github.com/ngx-translate/core" class="bare">https://github.com/ngx-translate/core</a> for more info.</p>
+<p>Please, visit <a href="https://netbasal.gitbook.io/transloco" class="bare">https://netbasal.gitbook.io/transloco</a> for more info.</p>
 </div>
 <!-- toc disabled -->
 </div>
@@ -5468,6 +5614,69 @@ The repository must be in a clean state before executing a <code>ng update</code
 <pre class="highlight"><code class="language-bash" data-lang="bash">$ ng update @angular/cli @angular/core</code></pre>
 </div>
 </div>
+<div class="sect4">
+<h5 id="guide-upgrade-devon4ng.asciidoc_upgrade-from-angular-8-to-angular-9">Upgrade from Angular 8 to Angular 9</h5>
+<div class="paragraph">
+<p>The process will be the same, but first we need to make sure that our devon4ng application is in the lates version of Angular 8, so the <code>ng update</code> command can perform the upgrade not only in the dependencies but also making code changes to reflect the new features and fixes.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>First, upgrade to latest Angular 8 version:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ ng update @angular/cli@8 @angular/core@8</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Optionally the flag <code>-C</code> can be added to previous command to make a commit automatically. This is also valid for the next steps.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Then, upgrade to Angular 9:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ ng update @angular/cli @angular/core</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>In case you use Angular Material:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ ng update @angular/material</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If the application depends on third party libraries, the new tool <code>ngcc</code> can be run to make them compatible with the new <strong>Ivy compiler</strong>. In this case it is recommended to include a <code>postinstall</code> script in the <code>package.json</code>:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+  &quot;scripts&quot;: {
+    &quot;postinstall&quot;: &quot;ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points&quot;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>More information at <a href="https://angular.io/guide/updating-to-version-9" class="bare">https://angular.io/guide/updating-to-version-9</a> and <a href="https://angular.io/guide/ivy" class="bare">https://angular.io/guide/ivy</a>.</p>
+</div>
 <div class="paragraph">
 <p><strong>Important use cases:</strong></p>
 </div>
@@ -5488,6 +5697,7 @@ The repository must be in a clean state before executing a <code>ng update</code
 </div>
 </li>
 </ul>
+</div>
 </div>
 <div class="sect4">
 <h5 id="guide-upgrade-devon4ng.asciidoc_ionicangular-applications">Ionic/Angular applications</h5>
@@ -5517,6 +5727,12 @@ The repository must be in a clean state before executing a <code>ng update</code
 <div class="content">
 <pre class="highlight"><code class="language-bash" data-lang="bash">$ ng update @ngx-translate/core @ngx-translate/http-loader</code></pre>
 </div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guide-upgrade-devon4ng.asciidoc_angular-update-guide-online-tool">Angular Update Guide online tool</h5>
+<div class="paragraph">
+<p>It is recommended to use the Angular Update Guide tool at <a href="https://update.angular.io/" class="bare">https://update.angular.io/</a> that will provide the necessary steps to upgrade any Angular application depending on multiple criteria.</p>
 </div>
 <!-- toc disabled -->
 </div>
@@ -5931,7 +6147,7 @@ The following code will build the application for the environment staging.</p>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2020-03-26 23:47:56 UTC
+Last updated 2020-03-27 11:01:41 UTC
 </sub></div>
 
 

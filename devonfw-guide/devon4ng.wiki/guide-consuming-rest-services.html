@@ -102,7 +102,12 @@
 <li><a href="#guide-consuming-rest-services.asciidoc">Consuming REST services</a>
 <ul class="sectlevel1">
 <li><a href="#guide-consuming-rest-services.asciidoc_defining-adapters">Defining Adapters</a></li>
-<li><a href="#guide-consuming-rest-services.asciidoc_token-management">Token management</a></li>
+<li><a href="#guide-consuming-rest-services.asciidoc_token-management">Token management</a>
+<ul class="sectlevel2">
+<li><a href="#guide-consuming-rest-services.asciidoc_store-security-token">Store security token</a></li>
+<li><a href="#guide-consuming-rest-services.asciidoc_include-token-in-every-request">Include token in every request</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -140,7 +145,9 @@ import { Observable } from 'rxjs/Observable';
 
 import { FlightTo } from './flight-to';
 
-@Injectable()
+@Injectable({
+ providedIn: 'root',
+})
 export class FlightsAdapter {
 
   constructor(
@@ -171,7 +178,9 @@ import { map } from 'rxjs/operators';
 import { FlightTo } from './flight-to';
 import { Flight } from '../../../model/flight';
 
-@Injectable()
+@Injectable({
+ providedIn: 'root',
+})
 export class FlightsAdapter {
 
   constructor(
@@ -202,7 +211,140 @@ export class FlightsAdapter {
 <div class="sect1">
 <h2 id="guide-consuming-rest-services.asciidoc_token-management">Token management</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>In most cases the access to backend API is secured using well konwn mechanisms as <strong>CSRF</strong>, <strong>JWT</strong> or both. In these cases the frontend application must manage the tokens that are generated when the user authenticates. More concretely it must store them to include them in every request automatically. Obviously, when user logs out these tokens must be removed from localStorage, memory, etc.</p>
+</div>
+<div class="sect2">
+<h3 id="guide-consuming-rest-services.asciidoc_store-security-token">Store security token</h3>
+<div class="paragraph">
+<p>In order to make this guide simple we are going to store the token in memory. Therefore, if we consider that we already have a login mechanism implemented we would like to store the token using a <code>auth.service.ts</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
+@Injectable({
+  providedIn: 'root',
+})
+export class AuthService {
+  private loggedIn = false;
+  private token: string;
+
+  constructor(public router: Router) {}
+
+  public isLogged(): boolean {
+    return this.loggedIn || false;
+  }
+
+  public setLogged(login: boolean): void {
+    this.loggedIn = login;
+  }
+
+  public getToken(): string {
+    return this.token;
+  }
+
+  public setToken(token: string): void {
+    this.token = token;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Using the previous service we will be able to store the token obtained in the login request using the method <code>setToken(token)</code>. Please consider that, if you want a more sofisticated approach using localStorage API, you will need to modify this service accordingly.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-consuming-rest-services.asciidoc_include-token-in-every-request">Include token in every request</h3>
+<div class="paragraph">
+<p>Now that the token is available in the application it is necessary to include it in every request to a protected API endpoint. Instead of modifying all the http requests in our application, Angular provides a class to intercept every request (and every response if we need to) called <code>HttpInterceptor</code>. Let&#8217;s create a service called <code>http-interceptor.service.ts</code> to implement the <code>intercept</code> method of this class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">import {
+  HttpEvent,
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest,
+} from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
+import { AuthService } from './auth.service';
+
+@Injectable()
+export class HttpRequestInterceptorService implements HttpInterceptor {
+
+  constructor(private auth: AuthService) {}
+
+  intercept(
+    req: HttpRequest&lt;any&gt;,
+    next: HttpHandler,
+  ): Observable&lt;HttpEvent&lt;any&gt;&gt; {
+    // Get the auth header from the service.
+    const authHeader: string = this.auth.getToken();
+    if (authHeader) {
+      let authReq: HttpRequest&lt;any&gt;;
+
+      // CSRF
+      if (environment.security === 'csrf') {
+        authReq = req.clone({
+          withCredentials: true,
+          setHeaders: { 'x-csrf-token': authHeader },
+        });
+      }
+
+      // JWT
+      if (environment.security === 'jwt') {
+        authReq = req.clone({
+          setHeaders: { Authorization: authHeader },
+        });
+      }
+
+      return next.handle(authReq);
+    } else {
+      return next.handle(req);
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As you may notice, this service is making use of an environment field <code>environment.security</code> to determine if we are using JWT o CSRF in order to inject the token accordingly. In your application you can combine both if necessary.</p>
+</div>
+<div class="paragraph">
+<p>The <code>authHeader</code> used is obtained using the injected service <code>AuthService</code> already presented above.</p>
+</div>
+<div class="paragraph">
+<p>In order to activate the interceptor we need to provide it in our <code>app.module.ts</code> or <code>core.module.ts</code> depending on the application structure. Let&#8217;s assume that we are using the latter and the interceptor file is inside a <code>security</code> folder:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">...
+import { HttpRequestInterceptorService } from './security/http-request-interceptor.service';
+...
+
+@NgModule({
+  imports: [...],
+  exports: [...],
+  declarations: [],
+  providers: [
+    ...
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpRequestInterceptorService,
+      multi: true,
+    },
+  ],
+})
+export class CoreModule {}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Angular automatically will now modify every request and include in the header the token if it is convenient.</p>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -333,7 +475,7 @@ export class FlightsAdapter {
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2020-03-26 23:45:43 UTC
+Last updated 2020-03-27 10:59:34 UTC
 </sub></div>
 </div>
 </div>

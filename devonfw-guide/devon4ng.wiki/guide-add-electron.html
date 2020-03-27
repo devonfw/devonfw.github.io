@@ -172,13 +172,13 @@ Please remember if the project has a <code>package-lock.json</code> or <code>yar
 <div class="content">
 <pre class="highlight"><code class="json language-json">"devDependencies": {
 ...
-    "electron": "^4.0.2",
-    "electron-builder": "^20.38.5",
-    "electron-reload": "^1.4.0",
-    "npm-run-all": "^4.1.5",
-    "npx": "^10.2.0",
-    "wait-on": "^3.2.0",
-    "webdriver-manager": "^12.1.1"
+    "@angular-builders/custom-webpack": "9.0.0",
+    "electron": "8.0.1",
+    "electron-builder": "22.3.2",
+    "electron-reload": "1.5.0",
+    "npm-run-all": "4.1.5",
+    "wait-on": "4.0.0",
+    "webdriver-manager": "12.1.7",
 ...
 },</code></pre>
 </div>
@@ -188,7 +188,7 @@ Please remember if the project has a <code>package-lock.json</code> or <code>yar
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="bash language-bash">$ npm install -D electron electron-builder electron-reload npm-run-all npx wait-on webdriver-manager</code></pre>
+<pre class="highlight"><code class="bash language-bash">$ npm install -D electron electron-builder electron-reload npm-run-all wait-on webdriver-manager</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -196,7 +196,7 @@ Please remember if the project has a <code>package-lock.json</code> or <code>yar
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="bash language-bash">$ yarn add -D electron electron-builder electron-reload npm-run-all npx wait-on webdriver-manager</code></pre>
+<pre class="highlight"><code class="bash language-bash">$ yarn add -D electron electron-builder electron-reload npm-run-all wait-on webdriver-manager</code></pre>
 </div>
 </div>
 </div>
@@ -215,33 +215,39 @@ Please remember if the project has a <code>package-lock.json</code> or <code>yar
   "directories": {
     "output": "release/"
   },
-  "files": [
-    "**/*",
-    "!**/*.ts",
-    "!*.code-workspace",
-    "!LICENSE.md",
-    "!package.json",
-    "!package-lock.json",
-    "!src/",
-    "!e2e/",
-    "!hooks/",
-    "!angular.json",
-    "!_config.yml",
-    "!karma.conf.js",
-    "!tsconfig.json",
-    "!tslint.json"
-  ],
+    "files": [
+        "**/*",
+        "!**/*.ts",
+        "!*.code-workspace",
+        "!LICENSE.md",
+        "!package.json",
+        "!package-lock.json",
+        "!src/",
+        "!e2e/",
+        "!hooks/",
+        "!angular.json",
+        "!_config.yml",
+        "!karma.conf.js",
+        "!tsconfig.json",
+        "!tslint.json"
+    ],
   "win": {
-    "icon": "dist/assets/icons",
-    "target": ["portable"]
+    "icon": "dist",
+    "target": [
+      "portable"
+    ]
   },
   "mac": {
-    "icon": "dist/assets/icons",
-    "target": ["dmg"]
+    "icon": "dist",
+    "target": [
+      "dmg"
+    ]
   },
   "linux": {
-    "icon": "dist/assets/icons",
-    "target": ["AppImage"]
+    "icon": "dist",
+    "target": [
+      "AppImage"
+    ]
   }
 }</code></pre>
 </div>
@@ -302,23 +308,11 @@ Please remember if the project has a <code>package-lock.json</code> or <code>yar
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "target": "es5",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "lib": [
-      "es2017",
-      "es2016",
-      "es2015",
-      "dom"
-    ]
+    "types": ["node"],
+    "lib": ["es2017", "es2016", "es2015", "dom"]
   },
-  "include": [
-    "main.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts"
-  ]
+  "include": ["main.ts"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
 }</code></pre>
 </div>
 </div>
@@ -327,7 +321,7 @@ Please remember if the project has a <code>package-lock.json</code> or <code>yar
 <div class="sect2">
 <h3 id="guide-add-electron.asciidoc_modify-angular.json">Modify angular.json</h3>
 <div class="paragraph">
-<p><code>angular.json</code> has to to be modified so the project is build inside <em>/dist</em> without an intermediate folder.</p>
+<p><code>angular.json</code> has to to be modified so the project is built inside <em>/dist</em> without an intermediate folder and include the reference to the custom Webpack configuration.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -336,8 +330,16 @@ Please remember if the project has a <code>package-lock.json</code> or <code>yar
   "architect": {
     ....
     "build": {
-      outputPath": "dist",
-      ....
+      "options": {
+        ....
+        "outputPath": "dist",
+        ....
+        "customWebpackConfig": {
+          "path": "./angular.webpack.js"
+        }
+      }
+    }
+  ....
 }</code></pre>
 </div>
 </div>
@@ -353,7 +355,7 @@ Please remember if the project has a <code>package-lock.json</code> or <code>yar
 <pre class="highlight"><code class="TypeScript language-TypeScript">import { Directive } from '@angular/core';
 
 @Directive({
-  selector: '[webview]',
+  selector: 'webview',
 })
 export class WebviewDirective {}</code></pre>
 </div>
@@ -362,7 +364,7 @@ export class WebviewDirective {}</code></pre>
 <div class="sect2">
 <h3 id="guide-add-electron.asciidoc_add-access-electron-apis">Add access Electron APIs</h3>
 <div class="paragraph">
-<p>To call Electron APIs from the Renderer process, install ngx-electron module.</p>
+<p>To call Electron APIs from the Renderer process, install <strong>ngx-electron</strong> package or create <strong>your own ElectronService</strong>.</p>
 </div>
 <div class="paragraph">
 <p>With <code>npm</code>:</p>
@@ -381,7 +383,10 @@ export class WebviewDirective {}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>This package contains a module named <strong>NgxElectronModule</strong> which exposes Electron APIs through a service called <strong>ElectronService</strong></p>
+<p>This package contains a module named <strong>NgxElectronModule</strong> which exposes Electron APIs through a service called <strong>ElectronService</strong>.</p>
+</div>
+<div class="paragraph">
+<p>If you decide to implement your own ElectronService, please refer to <a href="https://github.com/devonfw/devon4ng/blob/develop/samples/ElectronTest/src/app/core/service/electron/electron.service.ts">this file</a> in the ElectronTest sample.</p>
 </div>
 <div class="sect3">
 <h4 id="guide-add-electron.asciidoc_update-app.module.ts-and-app-routing.module.ts">Update <code>app.module.ts</code> and <code>app-routing.module.ts</code></h4>
@@ -477,65 +482,63 @@ A list of all accesible APIs can be found at <a href="https://github.com/Thorste
 import * as path from 'path';
 import * as url from 'url';
 
-let win: any;
-let serve: any;
-const args: any = process.argv.slice(1);
-serve = args.some((val) =&gt; val === '--serve');
+let win: BrowserWindow = null;
+const args = process.argv.slice(1),
+  serve = args.some(val =&gt; val === '--serve');
 
- function createWindow(): void {
-  const electronScreen: any = screen;
-  const size: any = electronScreen.getPrimaryDisplay().workAreaSize;
+function createWindow(): BrowserWindow {
+  const electronScreen = screen;
+  const size = electronScreen.getPrimaryDisplay().workAreaSize;
 
-   // Create the browser window.
+  // Create the browser window.
   win = new BrowserWindow({
     x: 0,
     y: 0,
     width: size.width,
     height: size.height,
-
-    // Needed if you are using service workers
     webPreferences: {
       nodeIntegration: true,
-      nodeIntegrationInWorker: true,
+      allowRunningInsecureContent: serve ? true : false
     }
   });
 
-   if (serve) {
-    // tslint:disable-next-line:no-require-imports
+  if (serve) {
     require('electron-reload')(__dirname, {
-      electron: require(`${__dirname}/node_modules/electron`),
+      electron: require(`${__dirname}/node_modules/electron`)
     });
     win.loadURL('http://localhost:4200');
   } else {
     win.loadURL(
       url.format({
         pathname: path.join(__dirname, 'dist/index.html'),
-        protocol: 'file',
-        slashes: true,
-      }),
+        protocol: 'file:',
+        slashes: true
+      })
     );
   }
 
-   // Uncoment the following line if you want to open the DevTools by default
-  // win.webContents.openDevTools();
+  if (serve) {
+    win.webContents.openDevTools();
+  }
 
-   // Emitted when the window is closed.
+  // Emitted when the window is closed.
   win.on('closed', () =&gt; {
     // Dereference the window object, usually you would store window
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
-    // tslint:disable-next-line:no-null-keyword
     win = null;
   });
+
+  return win;
 }
 
- try {
+try {
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.
   // Some APIs can only be used after this event occurs.
   app.on('ready', createWindow);
 
-   // Quit when all windows are closed.
+  // Quit when all windows are closed.
   app.on('window-all-closed', () =&gt; {
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
@@ -544,7 +547,7 @@ serve = args.some((val) =&gt; val === '--serve');
     }
   });
 
-   app.on('activate', () =&gt; {
+  app.on('activate', () =&gt; {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (win === null) {
@@ -574,57 +577,30 @@ serve = args.some((val) =&gt; val === '--serve');
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>scripts</code> section in the <code>package.json</code> can be improved to avoid running too verbose commands. As a very complete example we can take a look to the My Thai Star&#8217;s <code>scripts</code> section and copy the lines useful in your project.</p>
+<p>The <code>scripts</code> section in the <code>package.json</code> can be improved to avoid running too verbose commands. <code>ElectronTest</code> in samples folder contains the following section:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="json language-json">  "scripts": {
-    "postinstall": "npx electron-builder install-app-deps",
-    ".": "sh .angular-gui/.runner.sh",
+    "postinstall": "electron-builder install-app-deps",
     "ng": "ng",
-    "start": "ng serve --proxy-config proxy.conf.json -o",
-    "start:electron": "npm-run-all -p serve electron:serve",
-    "compodoc": "compodoc -p src/tsconfig.app.json -s",
-    "test": "ng test --browsers Chrome",
-    "test:ci": "ng test --browsers ChromeHeadless --watch=false",
-    "test:firefox": "ng test --browsers Firefox",
-    "test:ci:firefox": "ng test --browsers FirefoxHeadless --watch=false",
-    "test:firefox-dev": "ng test --browsers FirefoxDeveloper",
-    "test:ci:firefox-dev": "ng test --browsers FirefoxDeveloperHeadless --watch=false",
-    "test:electron": "ng test",
-    "lint": "ng lint",
-    "e2e": "ng e2e",
-    "ngsw-config": "npx ngsw-config dist ngsw-config.json",
-    "ngsw-copy": "cp node_modules/@angular/service-worker/ngsw-worker.js dist/",
-    "serve": "ng serve",
-    "serve:open": "npm run start",
-    "serve:pwa": "npm run build:pwa &amp;&amp; http-server dist -p 8080",
-    "serve:prod": "ng serve --open --prod",
-    "serve:prodcompose": "ng serve --open --configuration=prodcompose",
-    "serve:node": "ng serve --open --configuration=node",
-    "build": "ng build",
-    "build:pwa": "ng build --configuration=pwa --prod --build-optimizer &amp;&amp; npm run ngsw-config &amp;&amp; npm run ngsw-copy",
-    "build:prod": "ng build --prod --build-optimizer",
-    "build:prodcompose": "ng build --configuration=prodcompose ",
-    "build:electron": "npm run electron:serve-tsc &amp;&amp; ng build --base-href ./",
-    "build:electron:dev": "npm run build:electron -- -c dev",
-    "build:electron:prod": "npm run build:electron -- -c production",
-    "electron:start": "npm-run-all -p serve electron:serve",
+    "start": "npm-run-all -p electron:serve ng:serve",
+    "build": "npm run electron:serve-tsc &amp;&amp; ng build",
+    "build:dev": "npm run build -- -c dev",
+    "build:prod": "npm run build -- -c production",
+    "ng:serve": "ng serve",
+    "ng:serve:web": "ng serve -c web -o",
     "electron:serve-tsc": "tsc -p tsconfig-serve.json",
     "electron:serve": "wait-on http-get://localhost:4200/ &amp;&amp; npm run electron:serve-tsc &amp;&amp; electron . --serve",
-    "electron:local": "npm run build:electron:prod &amp;&amp; electron .",
-    "electron:linux": "npm run build:electron:prod &amp;&amp; npx electron-builder build --linux",
-    "electron:windows": "npm run build:electron:prod &amp;&amp; npx electron-builder build --windows",
-    "electron:mac": "npm run build:electron:prod &amp;&amp; npx electron-builder build --mac"
+    "electron:local": "npm run build:prod &amp;&amp; electron .",
+    "electron:linux": "npm run build:prod &amp;&amp; electron-builder build --linux",
+    "electron:windows": "npm run build:prod &amp;&amp; electron-builder build --windows",
+    "electron:mac": "npm run build:prod &amp;&amp; electron-builder build --mac",
+    "test": "ng test",
+    "e2e": "npm run build:prod &amp;&amp; cross-env TS_NODE_PROJECT='e2e/tsconfig.e2e.json' mocha --timeout 300000 --require ts-node/register e2e/**/*.e2e.ts",
+    "version": "conventional-changelog -i CHANGELOG.md -s -r 0 &amp;&amp; git add CHANGELOG.md",
+    "lint": "ng lint"
   },</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Here the important thing to look out for is that the base href when building electron can be changed as needed. In our case:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="json language-json">    "build:electron": "npm run postinstall:electron &amp;&amp; npm run electron:serve-tsc &amp;&amp; ng build --base-href \"\" ",</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -644,16 +620,9 @@ Some of these lines are intended to be shortcuts used in other scripts. Do not h
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="bash language-bash">$ npm run electron:start                # Serve Angular app and run it inside electron
+<pre class="highlight"><code class="bash language-bash">$ npm run electron:serve                # Serve Angular app and run it inside electron
 $ npm run electron:local                # Serve Angular app for production and run it inside electron
 $ npm run electron:windows              # Build Angular app for production and package it for Windows OS</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="bash language-bash">$ yarn run electron:start                # Serve Angular app and run it inside electron
-$ yarn run electron:local                # Serve Angular app for production and run it inside electron
-$ yarn run electron:windows              # Build Angular app for production and package it for Windows OS</code></pre>
 </div>
 </div>
 </div>
@@ -787,7 +756,7 @@ $ yarn run electron:windows              # Build Angular app for production and 
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2020-03-26 23:45:25 UTC
+Last updated 2020-03-27 10:59:16 UTC
 </sub></div>
 </div>
 </div>

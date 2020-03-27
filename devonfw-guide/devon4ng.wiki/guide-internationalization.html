@@ -103,8 +103,7 @@
 <ul class="sectlevel1">
 <li><a href="#guide-internationalization.asciidoc_devon4ng-i18n-approach">devon4ng i18n approach</a>
 <ul class="sectlevel2">
-<li><a href="#guide-internationalization.asciidoc_install-ngx-translate">Install NGX Translate</a></li>
-<li><a href="#guide-internationalization.asciidoc_configure-ngx-translate">Configure NGX Translate</a></li>
+<li><a href="#guide-internationalization.asciidoc_install-and-configure-transloco">Install and configure Transloco</a></li>
 <li><a href="#guide-internationalization.asciidoc_usage">Usage</a></li>
 <li><a href="#guide-internationalization.asciidoc_using-the-service">Using the service, pipe or directive</a></li>
 </ul>
@@ -123,100 +122,72 @@
 <h2 id="guide-internationalization.asciidoc_devon4ng-i18n-approach">devon4ng i18n approach</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The official approach could be a bit complicated, therefore the recommended one is to use the recommended library <strong>NGX Translate</strong> from <a href="http://www.ngx-translate.com/" class="bare">http://www.ngx-translate.com/</a>.</p>
+<p>The official approach could be a bit complicated, therefore the recommended one is to use the recommended library <strong>Transloco</strong> from <a href="https://netbasal.gitbook.io/transloco/" class="bare">https://netbasal.gitbook.io/transloco/</a>.</p>
 </div>
 <div class="sect2">
-<h3 id="guide-internationalization.asciidoc_install-ngx-translate">Install NGX Translate</h3>
+<h3 id="guide-internationalization.asciidoc_install-and-configure-transloco">Install and configure Transloco</h3>
 <div class="paragraph">
-<p>In order to include this library in your devon4ng <strong>Angular &gt;= 4.3</strong> project you will need to execute in a terminal:</p>
+<p>In order to include this library in your devon4ng <strong>Angular &gt;= 7.2</strong> project you will need to execute in a terminal:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="bash language-bash">$ npm install @ngx-translate/core @ngx-translate/http-loader --save
-# or if you use yarn
-$ yarn add @ngx-translate/core @ngx-translate/http-loader</code></pre>
+<pre class="highlight"><code class="bash language-bash">$ ng add @ngneat/transloco</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>As part of the installation process you&#8217;ll be presented with questions; Once you answer them, everything you need will automatically be created for you.</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>@ngx-translate/core</strong> is the core library to provide i18n capabilities.</p>
+<p>First, Transloco creates boilerplate files for the requested translations.</p>
 </li>
 <li>
-<p><strong>@ngx-translate/http-loader</strong> is a loader for ngx-translate that loads translations using http.</p>
+<p>Next, it will create a new file, <code>transloco-root.module.ts</code> which exposes an Angular&#8217;s <code>module</code> with a default configuration, and inject it into the <code>AppModule</code>.</p>
 </li>
 </ul>
 </div>
-</div>
-<div class="sect2">
-<h3 id="guide-internationalization.asciidoc_configure-ngx-translate">Configure NGX Translate</h3>
-<div class="paragraph">
-<p>Depending on the volume of the devon4ng application we will include the NGX Translate library in the <code>app.module.ts</code> or in the <code>core.module.ts</code> transversal to the application.</p>
-</div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="typescript language-typescript">import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Next, an exported function for factories has to be created:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="typescript language-typescript">// AoT requires an exported function for factories
-export function HttpLoaderFactory(http: HttpClient) {
-    return new TranslateHttpLoader(http);
+<pre class="highlight"><code class="typescript language-typescript">import { HttpClient } from '@angular/common/http';
+import {
+  TRANSLOCO_LOADER,
+  Translation,
+  TranslocoLoader,
+  TRANSLOCO_CONFIG,
+  translocoConfig,
+  TranslocoModule
+} from '@ngneat/transloco';
+import { Injectable, NgModule } from '@angular/core';
+import { environment } from '../environments/environment';
+
+@Injectable({ providedIn: 'root' })
+export class TranslocoHttpLoader implements TranslocoLoader {
+  constructor(private http: HttpClient) {}
+
+  getTranslation(lang: string) {
+    return this.http.get&lt;Translation&gt;(`/assets/i18n/${lang}.json`);
+  }
 }
 
 @NgModule({
-    imports: [
-        BrowserModule,
-        HttpClientModule,
-        TranslateModule.forRoot({
-            loader: {
-                provide: TranslateLoader,
-                useFactory: HttpLoaderFactory,
-                deps: [HttpClient]
-            }
-        })
-    ],
-    bootstrap: [AppComponent]
+  exports: [ TranslocoModule ],
+  providers: [
+    {
+      provide: TRANSLOCO_CONFIG,
+      useValue: translocoConfig({
+        availableLangs: ['en', 'es'],
+        defaultLang: 'en',
+        // Remove this option if your application doesn't support changing language in runtime.
+        reRenderOnLangChange: true,
+        prodMode: environment.production,
+      })
+    },
+    { provide: TRANSLOCO_LOADER, useClass: TranslocoHttpLoader }
+  ]
 })
-export class AppModule { } // or CoreModule</code></pre>
+export class TranslocoRootModule {}</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>The <code>TranslateHttpLoader</code> also has two optional parameters:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>prefix: string = "/assets/i18n/"</p>
-</li>
-<li>
-<p>suffix: string = ".json"</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>By using those default parameters, it will load the translations files for the lang "en" from: <code>/assets/i18n/en.json</code>. In general, any translation file will loaded from the <code>/assets/i18n/</code> folder.</p>
-</div>
-<div class="paragraph">
-<p>Those parameters can be changed in the <code>HttpLoaderFactory</code> method just defined. For example if you want to load the "en" translations from <code>/public/lang-files/en-lang.json</code> you would use:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="typescript language-typescript">export function HttpLoaderFactory(http: HttpClient) {
-    return new TranslateHttpLoader(http, "/public/lang-files/", "-lang.json");
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>For now this loader only support the json format.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -225,7 +196,7 @@ export class AppModule { } // or CoreModule</code></pre>
 <i class="icon-note" title=""></i>
 </td>
 <td class="content">
-If you&#8217;re still on Angular &lt; 4.3, please use <code>Http</code> from <code>@angular/http</code> with <code>http-loader@0.1.0</code>.
+As you might have noticed it also set an <code>HttpLoader</code> into the module&#8217;s providers. The <code>HttpLoader</code> is a class that implements the <code>TranslocoLoader</code> interface. It&#8217;s responsible for instructing Transloco how to load the translation files. It uses Angular HTTP client to fetch the files, based on the given path.
 </td>
 </tr>
 </table>
@@ -234,11 +205,11 @@ If you&#8217;re still on Angular &lt; 4.3, please use <code>Http</code> from <co
 <div class="sect2">
 <h3 id="guide-internationalization.asciidoc_usage">Usage</h3>
 <div class="paragraph">
-<p>In order to translate any label in any HTML template you will need to use the <code>translate</code> pipe available:</p>
+<p>In order to translate any label in any HTML template you will need to use the <code>transloco</code> pipe available:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="html language-html">{{ 'HELLO' | translate }}</code></pre>
+<pre class="highlight"><code class="html language-html">{{ 'HELLO' | transloco }}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -246,44 +217,29 @@ If you&#8217;re still on Angular &lt; 4.3, please use <code>Http</code> from <co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="html language-html">{{ 'HELLO' | translate:param }}</code></pre>
+<pre class="highlight"><code class="html language-html">{{ 'HELLO' | translate: { value: dynamic } }}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>So, <code>param</code> has to be defined in the class. The default language used is defined as follows:</p>
+<p>It is possible to use with <code>inputs</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="typescript language-typescript">// imports
-
-@Component({
-    selector: 'app',
-    template: `
-        &lt;div&gt;{{ 'HELLO' | translate }}&lt;/div&gt;            // Without param
-        &lt;div&gt;{{ 'HELLO' | translate:param }}&lt;/div&gt;      // With param
-    `
-})
-export class AppComponent {
-    // This param will be used in the translation
-    param = { value: 'world' };
-
-    constructor(translate: TranslateService) {
-        // this language will be used as a fallback when a translation isn't found in the current language
-        translate.setDefaultLang('en');
-
-        // the lang to use, if the lang isn't available, it will use the current loader to get them
-        translate.use('en');
-    }
-}</code></pre>
+<pre class="highlight"><code class="html language-html">&lt;span [attr.alt]="'hello' | transloco"&gt;Attribute&lt;/span&gt;
+&lt;span [title]="'hello' | transloco"&gt;Property&lt;/span&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>In order to change the language used you will need to create a button or selector that calls the <code>this.translate.use(language: string)</code> method from <code>TranslateService</code>. For example:</p>
+<p>In order to change the language used you will need to create a button or selector that calls the <code>this.translocoService.use(language: string)</code> method from <code>TranslocoService</code>. For example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="typescript language-typescript">toggleLanguage(option) {
-    this.translate.use(option);
+<pre class="highlight"><code class="typescript language-typescript">export class AppComponent {
+  constructor(private translocoService: TranslocoService) {}
+
+  changeLanguage(lang) {
+      this.translocoService.setActiveLang(lang);
+  }
 }</code></pre>
 </div>
 </div>
@@ -308,7 +264,7 @@ export class AppComponent {
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>TranslateParser</code> understands nested JSON objects. This means that you can have a translation that looks like this:</p>
+<p>Transloco understands nested JSON objects. This means that you can have a translation that looks like this:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -326,16 +282,40 @@ export class AppComponent {
 <div class="sect2">
 <h3 id="guide-internationalization.asciidoc_using-the-service">Using the service, pipe or directive</h3>
 <div class="sect3">
-<h4 id="guide-internationalization.asciidoc_service">Service</h4>
+<h4 id="guide-internationalization.asciidoc_structural-directive">Structural Directive</h4>
 <div class="paragraph">
-<p>If you need to access translations in any component or service you can do it injecting the <code>Translateservice</code> into them:</p>
+<p>Using a structural directive is the <strong>recommended</strong> approach. It&#8217;s DRY and efficient, as it creates <strong>one</strong> subscription per template:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="typescript language-typescript">translate.get('HELLO', {value: 'world'}).subscribe((res: string) =&gt; {
-    console.log(res);
-    //=&gt; 'hello world'
-});</code></pre>
+<pre class="highlight"><code class="typescript language-typescript">&lt;ng-container *transloco="let t"&gt;
+  &lt;p&gt;{{ t('title') }}&lt;/p&gt;
+
+  &lt;comp [title]="t('title')"&gt;&lt;/comp&gt;
+&lt;/ng-container&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that the <code>t</code> function is <strong>memoized</strong>. It means that given the same <code>key</code> it will return the result directly from the cache.</p>
+</div>
+<div class="paragraph">
+<p>We can pass a <code>params</code> object as the second parameter:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">&lt;ng-container *transloco="let t"&gt;
+  &lt;p&gt;{{ t('name', { name: 'Transloco' }) }}&lt;/p&gt;
+&lt;/ng-container&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We can instruct the directive to use a different language in our template:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">&lt;ng-container *transloco="let t; lang: 'es'"&gt;
+  &lt;p&gt;{{ t('title') }}&lt;/p&gt;
+&lt;/ng-container&gt;</code></pre>
 </div>
 </div>
 </div>
@@ -349,7 +329,7 @@ export class AppComponent {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="typescript language-typescript">&lt;div&gt;{{ 'HELLO' | translate:param }}&lt;/div&gt;</code></pre>
+<pre class="highlight"><code class="typescript language-typescript">&lt;div&gt;{{ 'HELLO' | transloco:param }}&lt;/div&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -362,21 +342,31 @@ export class AppComponent {
 </div>
 </div>
 <div class="sect3">
-<h4 id="guide-internationalization.asciidoc_directives">Directives</h4>
+<h4 id="guide-internationalization.asciidoc_attribute-directive">Attribute Directive</h4>
 <div class="paragraph">
-<p>Finally, it can also be used with directives:</p>
+<p>The last option available with <code>transloco</code> is the attribute directive:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="typescript language-typescript">&lt;div [translate]="'HELLO'" [translateParams]="{value: 'world'}"&gt;&lt;/div&gt;</code></pre>
+<pre class="highlight"><code class="typescript language-typescript">&lt;div transloco="HELLO" [translocoParams]="{ value: 'world' }"&gt;&lt;/div&gt;</code></pre>
 </div>
 </div>
+</div>
+<div class="sect3">
+<h4 id="guide-internationalization.asciidoc_service">Service</h4>
 <div class="paragraph">
-<p>or, using the content of your element as a key</p>
+<p>If you need to access translations in any component or service you can do it injecting the <code>TranslocoService</code> into them:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="typescript language-typescript">&lt;div translate [translateParams]="{value: 'world'}"&gt;HELLO&lt;/div&gt;</code></pre>
+<pre class="highlight"><code class="typescript language-typescript">// Sync translation
+translocoService.translate('HELLO', {value: 'world'});
+
+// Async translation
+translocoService.selectTranslate('HELLO', { value: 'world' }).subscribe(res =&gt; {
+    console.log(res);
+    //=&gt; 'hello world'
+});</code></pre>
 </div>
 </div>
 <div class="admonitionblock important">
@@ -392,7 +382,7 @@ You can find a complete example at <a href="https://github.com/devonfw/devon4ng-
 </table>
 </div>
 <div class="paragraph">
-<p>Please, visit <a href="https://github.com/ngx-translate/core" class="bare">https://github.com/ngx-translate/core</a> for more info.</p>
+<p>Please, visit <a href="https://netbasal.gitbook.io/transloco" class="bare">https://netbasal.gitbook.io/transloco</a> for more info.</p>
 </div>
 </div>
 </div>
@@ -526,7 +516,7 @@ You can find a complete example at <a href="https://github.com/devonfw/devon4ng-
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2020-03-26 23:45:47 UTC
+Last updated 2020-03-27 10:59:38 UTC
 </sub></div>
 </div>
 </div>
