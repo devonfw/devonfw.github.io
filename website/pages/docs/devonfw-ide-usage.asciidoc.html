@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2020-03-27 13:39:35 UTC">
+<meta name="author" content="Updated at 2020-03-27 22:45:52 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -515,7 +515,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2020-03-27 13:40:07 UTC</span><br>
+<span id="author" class="author">Updated at 2020-03-27 22:46:20 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -849,9 +849,9 @@ Please note that we are trying to minimize any potential side-effect from <code>
 <td class="tableblock halign-left valign-top"><p class="tableblock">JVM options for Eclipse</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ECLIPSE_PLUGINS</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">deprecated: <code>ECLIPSE_PLUGINS</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>-</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Array with &quot;feature groups&quot; and &quot;update site URLs&quot; to customize required <a href="eclipse.html#plugins">eclipse plugins</a>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Array with &quot;feature groups&quot; and &quot;update site URLs&quot; to customize required <a href="eclipse.html#plugins">eclipse plugins</a>. Deprecated - see <a href="eclipse.html#plugins">Eclipse plugins</a>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>&#xAB;TOOL&#xBB;_VERSION</code></p></td>
@@ -1049,46 +1049,48 @@ To launch Eclipse for your current workspace and devonfw-ide installation simply
 <div class="sect4">
 <h5 id="eclipse.asciidoc_plugins">plugins</h5>
 <div class="paragraph">
-<p>During the <a href="devonfw-ide-introduction.asciidoc.html#setup.asciidoc">setup</a> <code>devon eclipse setup</code> will be called what automatically installs Eclipse. The project <a href="devonfw-ide-usage.asciidoc.html#configuration.asciidoc">configuration</a> typically defines the plugins that will be installed via <code>ECLIPSE_PLUGINS</code> <a href="devonfw-ide-usage.asciidoc.html#variables.asciidoc">variable</a>. Otherwise defaults from this <code>eclipse</code> <a href="cli.html#commandlets">commandlet</a> will apply.
-However, for specific needs you may even install additional plugins. In general you should try to stick with the configuration pre-defined by your project. But some plugins may be considered as personal flavor and are typically not predefined by the project config. This e.g. applies for devstyle that allows a real dark mode for eclipse and tunes the theming and layout of Eclipse in general. To avoid that projects ship with
-too many plugins that may waste resources but are not used by every developer you have the freedom to install some additional plugins. Be aware that this comes at your own risk and sometimes plugins can conflict and break your IDE. The following list of plugins is guaranteed to be supported by this commandlet:</p>
+<p>To be productive with Eclipse you need plugins. Of course <code>devonfw-ide</code> can automate this for your:
+In your <a href="devonfw-ide-usage.asciidoc.html#settings.asciidoc">settings</a> git repository create a folder <a href="https://github.com/devonfw/ide-settings/tree/master/eclipse/plugins">eclipse/plugins</a> (click this link to see more examples and see which plugins come by default).
+Here you can create a properties file for each plugin. This is an example <a href="https://github.com/devonfw/ide-settings/blob/master/eclipse/plugins/tmterminal.properties">tmterminal.properties</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>plugin_url=http://download.eclipse.org/tm/terminal/marketplace
+plugin_id=org.eclipse.tm.terminal.feature.feature.group,org.eclipse.tm.terminal.view.feature.feature.group,org.eclipse.tm.terminal.control.feature.feature.group,org.eclipse.tm.terminal.connector.ssh.feature.feature.group,org.eclipse.tm.terminal.connector.telnet.feature.feature.group
+plugin_active=true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The variables are defined as following:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://github.com/devonfw/cobigen/releases">cobigen</a> (incremental code-generator)</p>
+<p><code>plugin_url</code> defines the URL of the Eclipse update site of the plugin</p>
 </li>
 <li>
-<p><a href="http://andrei.gmxhome.de/eclipse/">anyedit</a> (for easy compare with clipboard, etc.)</p>
+<p><code>plugin_id</code> defines the feature group ID(s) to install. To install multiple features/plugins provide a coma-separated list of IDs. If you want to customize <code>devonfw-ide</code> with new plugins you can first install them manually and then go to <code>About Eclipse &gt; Installation Details</code> then you can filter for your newly installed plugin and find the values in the <code>Id</code> column. Copy &amp; paste them from here to make up your own custom config.</p>
 </li>
 <li>
-<p><a href="http://eclipse-cs.sf.net/update/">checkstyle</a> (for checkstyle support)</p>
-</li>
-<li>
-<p><a href="https://spotbugs.github.io/eclipse/">spotbugs</a> (successor of findbugs)</p>
-</li>
-<li>
-<p><a href="http://basti1302.github.com/startexplorer/update/">startexplorer</a> (for support to open current item in file manager of your OS)</p>
-</li>
-<li>
-<p><a href="http://marketplace.eclipse.org/content/tm-terminal">terminal</a> (open terminal/shell inside Eclipse as view)</p>
-</li>
-<li>
-<p><a href="http://download.eclipse.org/egit/github/updates/">github</a> (for devonfw projects that want to access github issues in Eclipse)</p>
-</li>
-<li>
-<p><a href="http://www.soapui.org/eclipse/update/site.xml">soapui</a> (for service testing)</p>
-</li>
-<li>
-<p><a href="http://regex-util.sourceforge.net/update/">regexutil</a> (to test regular expressions)</p>
-</li>
-<li>
-<p><a href="https://m-m-m.github.io/eclipse-templatevariables/latest">templatevariables</a> (for advanced JDT templates)</p>
+<p><code>plugin_active</code> is an optional parameter. If it is <code>true</code> (default) the plugin will be installed automatically during the project <a href="devonfw-ide-introduction.asciidoc.html#setup.asciidoc">setup</a> for all developers in your team. Otherwise developers can still install the plugin manually via <code>devon eclipse add-plugin &#xAB;plugin-name&#xBB;</code> from the config file <code>settings/eclipse/plugins/&#xAB;plugin-name&#xBB;.properties</code>. See the <code>settings/eclipse/plugins</code> folder for possible values of &#xAB;plugin-name&#xBB;.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>The link-titles are the IDs accepted by <code>devon eclipse add-plugin &#xAB;id&#xBB;</code>. Otherwise the full featureID has to be specified together with the URL of the update site. However this is intended for project specific configuration. Here is an example how a project can configure the plugins in its <code>devon.properties</code> inside the <a href="devonfw-ide-usage.asciidoc.html#settings.asciidoc">settings</a>:</p>
+<p>In general you should try to stick with the configuration pre-defined by your project. But some plugins may be considered as personal flavor and are typically not predefined by the project config. This e.g. applies for devstyle that allows a real dark mode for eclipse and tunes the theming and layout of Eclipse in general. Such plugins should be shipped with your <a href="devonfw-ide-usage.asciidoc.html#settings.asciidoc">settings</a> as described above with <code>plugin_active=false</code> allowing you to easily install it manually.</p>
+</div>
+<div class="paragraph">
+<p>As maintainer of the <a href="devonfw-ide-usage.asciidoc.html#settings.asciidoc">settings</a> for your project you should avoid to ship too many plugins that may waste resources but are not used by every developer. By configuring additional plugins with <code>plugin_active=false</code> you can give your developers the freedom to install some additional plugins easily.</p>
+</div>
+<div class="sect5">
+<h6 id="eclipse.asciidoc_legacy-plugin-config">legacy plugin config</h6>
+<div class="paragraph">
+<p>For downward compatibility we still support the deprecated legacy configuration if the folder <code>settings/eclipse/plugins</code> does not exist:
+The project <a href="devonfw-ide-usage.asciidoc.html#configuration.asciidoc">configuration</a> typically defines the plugins that will be installed via <code>ECLIPSE_PLUGINS</code> <a href="devonfw-ide-usage.asciidoc.html#variables.asciidoc">variable</a>. Otherwise defaults from this <code>eclipse</code> <a href="cli.html#commandlets">commandlet</a> will apply.
+Be aware that this comes at your own risk and sometimes plugins can conflict and break your IDE.</p>
+</div>
+<div class="paragraph">
+<p>Here is an example how a project can configure the plugins in its <code>devon.properties</code> inside the <a href="devonfw-ide-usage.asciidoc.html#settings.asciidoc">settings</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1107,6 +1109,7 @@ too many plugins that may waste resources but are not used by every developer yo
 <p>Of course you may also mix plugin IDs with fully qualified plugins.</p>
 </div>
 <!-- toc disabled -->
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -2404,7 +2407,7 @@ However this is just an example. Some people like to create separate workspaces 
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2020-03-27 13:37:08 UTC
+Last updated 2020-03-27 22:44:11 UTC
 </sub></div>
 
 
