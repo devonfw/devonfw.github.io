@@ -154,20 +154,21 @@ To locally connect as sysdba without password use the following command (<code>c
 <h2 id="guide-oracle.asciidoc_driver">Driver</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The oracle JDBC driver is not available in maven central. Depending on the Oracle DB version and the Java version, you can use either the 11g/ojdbc6, 12c/ojdbc7, or 12c/ojdbc8 version of the driver. Oracle JDBC drivers usually are backward and forward compatible so you should be able to use the 12c/ojdbc8 driver with an 11g DB etc. As a rule of thumb, use the 12c/ojdbc8 driver unless you must use Java7. All JDBC drivers can be downloaded: <a href="http://www.oracle.com/technetwork/database/enterprise-edition/jdbc-112010-090769.html">11g/ojdbc6</a>, <a href="http://www.oracle.com/technetwork/database/features/jdbc/jdbc-drivers-12c-download-1958347.html">12c/ojdbc7</a>, and <a href="http://www.oracle.com/technetwork/database/features/jdbc/jdbc-ucp-122-3110062.html">12c/ojdbc8</a>. Your project should use a maven repository server such as <a href="http://www.sonatype.org/nexus/">nexus</a> or <a href="https://www.jfrog.com/open-source/">artifactory</a>. You can even integrate the <a href="https://blogs.oracle.com/dev2dev/get-oracle-jdbc-drivers-and-ucp-from-oracle-maven-repository-without-ides">oracle maven repository</a> as proxy-repo in nexus.
-Your dependency for the oracle driver should look as follows (use artifactId "ojdbc6" or "ojdbc7" for the older drivers):</p>
+<p>The oracle JDBC driver is <a href="https://blogs.oracle.com/developers/oracle-database-client-libraries-for-java-now-on-maven-central">available in maven central</a>.
+Oracle JDBC drivers usually are backward and forward compatible so you should be able to use an older driver with a newer Oracle DB, etc.
+Your dependency for the oracle driver should look as follows:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>&lt;dependency&gt;
-  &lt;groupId&gt;com.oracle.jdbdc&lt;/groupId&gt;
-  &lt;artifactId&gt;ojdbc8&lt;/artifactId&gt;
+  &lt;groupId&gt;com.oracle.database.jdbc&lt;/groupId&gt;
+  &lt;artifactId&gt;ojdbc10&lt;/artifactId&gt;
   &lt;version&gt;${oracle.driver.version}&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The property <code>oracle.driver.version</code> should be <code>19.3.0.0</code> for oracle 19, <code>11.2.0.4</code> for oracle 11g, etc.</p>
+<p>For the most recent Oracle DB 19 the property <code>oracle.driver.version</code> should be <code>19.3.0.0</code>. The number in the <code>artifactId</code> correlates to the minimum Java Version so for Java8 <code>artifactId</code> should be <code>ojdbc8</code> instead (with <code>oracle.driver.version</code> as <code>19.3.0.0</code> or <code>12.2.0.1</code>). It is fine to use <code>ojdbc10</code> with Java11.</p>
 </div>
 </div>
 </div>
@@ -379,7 +380,7 @@ Capgemini has used the <a href="https://projects.spring.io/spring-data-jdbc-ext/
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2020-03-27 12:28:29 UTC
+Last updated 2020-03-27 13:36:08 UTC
 </sub></div>
 </div>
 </div>
