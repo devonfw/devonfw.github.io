@@ -21,7 +21,7 @@
 <!-- ************************************* -->
 
 
-<title>Advanced Tooling</title>
+<title>Yarn 2</title>
 <!-- devonfw website stylesheet -->
 <link rel="stylesheet" type="text/css" href="/devonfw.css">
 <!-- Lunr -->
@@ -99,27 +99,162 @@
 <div class="toc2">
 <div class="title">Table of Contents</div>
 <ul class="sectlevel0">
-<li><a href="#advanced-tooling.asciidoc">Advanced Tooling</a></li>
+<li><a href="#guide-yarn-2-support.asciidoc">Yarn 2</a>
+<ul class="sectlevel1">
+<li><a href="#guide-yarn-2-support.asciidoc_global-install">Global Install</a></li>
+<li><a href="#guide-yarn-2-support.asciidoc_per-project-install">Per-project install</a></li>
+<li><a href="#guide-yarn-2-support.asciidoc_which-files-should-be-gitignored">Which files should be gitignored?</a></li>
 </ul>
-<h1 id="advanced-tooling.asciidoc" class="sect0">Advanced Tooling</h1>
+</li>
+</ul>
+<h1 id="guide-yarn-2-support.asciidoc" class="sect0">Yarn 2</h1>
 <div class="paragraph">
-<p>We have various great hints to offer for advanced tooling:</p>
+<p>Yarn v2 is a very different software from the v1. The following list contains the main new features:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#advanced-tooling-generic.asciidoc">generic, cross-plattform</a></p>
+<p><a href="https://yarnpkg.com/features/constraints">Constraints</a></p>
 </li>
 <li>
-<p><a href="#advanced-tooling-windows.asciidoc">Windows</a></p>
+<p><a href="https://yarnpkg.com/features/offline-cache">Offline Cache</a></p>
 </li>
 <li>
-<p><a href="#advanced-tooling-mac.asciidoc">MacOS</a></p>
+<p><a href="https://yarnpkg.com/features/pnp">Plug&#8217;n&#8217;Play</a></p>
 </li>
 <li>
-<p><a href="#advanced-tooling-linux.asciidoc">Linux</a></p>
+<p><a href="https://yarnpkg.com/features/plugins">Plugins</a></p>
+</li>
+<li>
+<p><a href="https://yarnpkg.com/features/protocols">Protocols</a></p>
+</li>
+<li>
+<p><a href="https://yarnpkg.com/features/release-workflow">Release Workflow</a></p>
+</li>
+<li>
+<p><a href="https://yarnpkg.com/features/workspaces">Workspaces</a></p>
+</li>
+<li>
+<p><a href="https://yarnpkg.com/features/zero-installs">Zero-Installs</a></p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>Please, read them carefully to decide if your current project is suitable to use Yarn 2 as package manager.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-important" title=""></i>
+</td>
+<td class="content">
+Some features are still experimental, so please do not use them in production enviroments.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>More info at <a href="https://yarnpkg.com/" class="bare">https://yarnpkg.com/</a></p>
+</div>
+<div class="sect1">
+<h2 id="guide-yarn-2-support.asciidoc_global-install">Global Install</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Installing Yarn 2.x globally is discouraged as Yarn team is moving to a per-project install strategy. We advise you to keep Yarn 1.x (Classic) as your global binary by installing it via the instructions you can find <a href="https://classic.yarnpkg.com/en/docs/install">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>Once you&#8217;ve followed the instructions (running yarn --version from your home directory should yield something like 1.22.0), go to the next section to see how to enable Yarn 2 on your project.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-yarn-2-support.asciidoc_per-project-install">Per-project install</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Follow these instructions to update your current devon4ng project to Yarn 2:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Follow the global install instructions.</p>
+</li>
+<li>
+<p>Move into your project folder:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">cd ~/path/to/project</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Run the following command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">yarn policies set-version berry # below v1.22
+yarn set version berry          # on v1.22+</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Since Angular CLI still is not fully supported with the new <a href="https://yarnpkg.com/advanced/architecture">Yarn architecture</a> as it is not compatible eith PnP it is necessary to include the <a href="https://github.com/yarnpkg/berry/tree/master/packages/plugin-node-modules"><code>node-modules</code></a> plugin adding the following line in the <code>.yarnrc.yml</code> file:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="yml language-yml">nodeLinker: node-modules</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Commit the <code>.yarn</code> and <code>.yarnrc.yml</code> changes</p>
+</li>
+<li>
+<p>Run again <code>yarn install</code>.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+For more advanced migration topics please refer to <a href="https://yarnpkg.com/advanced/migration" class="bare">https://yarnpkg.com/advanced/migration</a>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-yarn-2-support.asciidoc_which-files-should-be-gitignored">Which files should be gitignored?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you&#8217;re using Zero-Installs:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="gitignore language-gitignore">.yarn/*
+!.yarn/cache
+!.yarn/releases
+!.yarn/plugins</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you&#8217;re not using Zero-Installs:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="gitignore language-gitignore">.yarn/*
+!.yarn/releases
+!.yarn/plugins
+.pnp.*</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>More details at <a href="https://yarnpkg.com/advanced/qa#details" class="bare">https://yarnpkg.com/advanced/qa#details</a></p>
+</div>
+</div>
 </div>
 </div>
 <div id="footer" class="footer">
@@ -249,7 +384,7 @@
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2020-04-03 10:26:32 UTC
+Last updated 2020-04-03 10:25:00 UTC
 </sub></div>
 </div>
 </div>

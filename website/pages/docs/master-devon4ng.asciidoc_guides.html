@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2020-04-02 15:48:19 UTC">
+<meta name="author" content="Updated at 2020-04-03 10:28:51 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -515,7 +515,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2020-04-02 15:48:50 UTC</span><br>
+<span id="author" class="author">Updated at 2020-04-03 10:29:23 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -537,6 +537,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="master-devon4ng.asciidoc_guides.html#guide-package-managers.asciidoc">15.1. Package Managers</a>
 </li>
 <li><a href="master-devon4ng.asciidoc_guides.html#guide-npm-yarn-workflow.asciidoc">15.2. Package Managers Workflow</a>
+</li>
+<li><a href="master-devon4ng.asciidoc_guides.html#guide-yarn-2-support.asciidoc">15.3. Yarn 2</a>
 </li>
 </ul>
 </li>
@@ -1491,7 +1493,153 @@ dependencies. This assures you to be working with the same dependencies your tea
 <div class="paragraph">
 <p>AD Center recommends the use of yarn.</p>
 </div>
+<!-- toc disabled -->
 </div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-yarn-2-support.asciidoc">15.3. Yarn 2</h3>
+<div class="paragraph">
+<p>Yarn v2 is a very different software from the v1. The following list contains the main new features:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://yarnpkg.com/features/constraints">Constraints</a></p>
+</li>
+<li>
+<p><a href="https://yarnpkg.com/features/offline-cache">Offline Cache</a></p>
+</li>
+<li>
+<p><a href="https://yarnpkg.com/features/pnp">Plug&#x2019;n&#x2019;Play</a></p>
+</li>
+<li>
+<p><a href="https://yarnpkg.com/features/plugins">Plugins</a></p>
+</li>
+<li>
+<p><a href="https://yarnpkg.com/features/protocols">Protocols</a></p>
+</li>
+<li>
+<p><a href="https://yarnpkg.com/features/release-workflow">Release Workflow</a></p>
+</li>
+<li>
+<p><a href="https://yarnpkg.com/features/workspaces">Workspaces</a></p>
+</li>
+<li>
+<p><a href="https://yarnpkg.com/features/zero-installs">Zero-Installs</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Please, read them carefully to decide if your current project is suitable to use Yarn 2 as package manager.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+Some features are still experimental, so please do not use them in production enviroments.
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>More info at <a href="https://yarnpkg.com/" class="bare">https://yarnpkg.com/</a></p>
+</div>
+<div class="sect3">
+<h4 id="guide-yarn-2-support.asciidoc_global-install">15.3.1. Global Install</h4>
+<div class="paragraph">
+<p>Installing Yarn 2.x globally is discouraged as Yarn team is moving to a per-project install strategy. We advise you to keep Yarn 1.x (Classic) as your global binary by installing it via the instructions you can find <a href="https://classic.yarnpkg.com/en/docs/install">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>Once you&#x2019;ve followed the instructions (running yarn --version from your home directory should yield something like 1.22.0), go to the next section to see how to enable Yarn 2 on your project.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-yarn-2-support.asciidoc_per-project-install">15.3.2. Per-project install</h4>
+<div class="paragraph">
+<p>Follow these instructions to update your current devon4ng project to Yarn 2:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Follow the global install instructions.</p>
+</li>
+<li>
+<p>Move into your project folder:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">cd ~/path/to/project</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Run the following command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">yarn policies set-version berry # below v1.22
+yarn set version berry          # on v1.22+</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Since Angular CLI still is not fully supported with the new <a href="https://yarnpkg.com/advanced/architecture">Yarn architecture</a> as it is not compatible eith PnP it is necessary to include the <a href="https://github.com/yarnpkg/berry/tree/master/packages/plugin-node-modules"><code>node-modules</code></a> plugin adding the following line in the <code>.yarnrc.yml</code> file:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yml" data-lang="yml">nodeLinker: node-modules</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Commit the <code>.yarn</code> and <code>.yarnrc.yml</code> changes</p>
+</li>
+<li>
+<p>Run again <code>yarn install</code>.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+For more advanced migration topics please refer to <a href="https://yarnpkg.com/advanced/migration" class="bare">https://yarnpkg.com/advanced/migration</a>
+</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-yarn-2-support.asciidoc_which-files-should-be-gitignored">15.3.3. Which files should be gitignored?</h4>
+<div class="paragraph">
+<p>If you&#x2019;re using Zero-Installs:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gitignore" data-lang="gitignore">.yarn/*
+!.yarn/cache
+!.yarn/releases
+!.yarn/plugins</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you&#x2019;re not using Zero-Installs:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gitignore" data-lang="gitignore">.yarn/*
+!.yarn/releases
+!.yarn/plugins
+.pnp.*</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>More details at <a href="https://yarnpkg.com/advanced/qa#details" class="bare">https://yarnpkg.com/advanced/qa#details</a></p>
 </div>
 </div>
 </div>
@@ -1620,7 +1768,7 @@ dependencies. This assures you to be working with the same dependencies your tea
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2020-04-02 15:46:24 UTC
+Last updated 2020-04-03 10:26:43 UTC
 </sub></div>
 
 
