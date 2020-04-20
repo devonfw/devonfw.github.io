@@ -99,7 +99,11 @@
 <div class="toc2">
 <div class="title">Table of Contents</div>
 <ul class="sectlevel0">
-<li><a href="#release.asciidoc">release</a></li>
+<li><a href="#release.asciidoc">release</a>
+<ul class="sectlevel1">
+<li><a href="#release.asciidoc_build-tools">Build-Tools</a></li>
+</ul>
+</li>
 </ul>
 <h1 id="release.asciidoc" class="sect0">release</h1>
 <div class="paragraph">
@@ -138,6 +142,49 @@
 <p>push your changes</p>
 </li>
 </ul>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<caption class="title">Table 1. Usage of <code>devon java</code></caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Argument(s)</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Meaning</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&#8230;&#8203;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">any optional argument will directly be passed to the actual command to build the deployment</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect1">
+<h2 id="release.asciidoc_build-tools">Build-Tools</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This <code>release</code> commandlet utilizes the <a href="#build.asciidoc">build</a> commandlet to support mutliple build-tools such as <a href="#mvn.asciidoc">maven</a>, <a href="#gradle.asciidoc">gradle</a>, or <a href="#npm.asciidoc">npm</a>. Each of those commandlets should respect the <a href="#variables.asciidoc">variable</a> <code>«TOOL»_RELEASE_OPTS</code> to customize the parameters for the release build.</p>
+</div>
+<div class="paragraph">
+<p>So e.g. if a <code>pom.xml</code> is detected, maven will be used. In this example the variable <code>MVN_RELEASE_OPTS</code> is used that defaults to <code>clean deploy -Dchangelist= -Pdeploy</code>.
+If you provide a specific argument this will be passed additionally.
+So if you invoke the command <code>devon release -P myProfile</code>, the above step <code>invoke deployment on build-system</code> would technically call this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mvn clean deploy -Dchangelist= -Pdeploy -P myProfile</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Please also note that it is very tricky to determine and modify the version of a project in a fully generic way.
+Even though we try our best to support different scenarios, we can not ensure this is working for edge-cases.
+Therefore, we strongly encourage to follow best practices such as <a href="https://maven.apache.org/maven-ci-friendly.html">ci-friendly maven</a>.
+Furhter, sticking to the defaults and follow the devonfw standard to name the profile for custom goals in deployment simply <code>deploy</code> is recommended.</p>
+</div>
+</div>
 </div>
 </div>
 <div id="footer" class="footer">
@@ -267,7 +314,7 @@
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2020-04-19 11:29:11 UTC
+Last updated 2020-04-20 17:17:44 UTC
 </sub></div>
 </div>
 </div>
