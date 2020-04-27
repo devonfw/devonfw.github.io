@@ -138,8 +138,8 @@
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="xml language-xml">&lt;dependency&gt;
-	&lt;groupId&gt;com.devonfw.java.starters&lt;/groupId&gt;
-	&lt;artifactId&gt;devon4j-starter-security-jwt&lt;/artifactId&gt;
+  &lt;groupId&gt;com.devonfw.java.starters&lt;/groupId&gt;
+  &lt;artifactId&gt;devon4j-starter-security-jwt&lt;/artifactId&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
@@ -183,6 +183,24 @@ security.authentication.jwt.creation.not-before-delay=1m</code></pre>
 With the starter and auto-configuration we want to make it as easy as possible for you
 In case you would like to build a server app that e.g. wants to issue JWTs but does not allow authentication via JWT itself, you can use <code>devon4j-security-jwt</code> instead of the starter and do the spring config yourself (pick and choose from <code>JwtAutoConfiguration</code>).</p>
 </div>
+<div class="paragraph">
+<p>To do this, you need to add the following changes in your <code>BaseWebSecurityConfig</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">  @Bean
+  public JwtAuthenticationFilter getJwtAuthenticationFilter() {
+    return new JwtAuthenticationFilter();
+  }
+
+  @Override
+  public void configure(HttpSecurity http) throws Exception {
+    // ...
+    // add this line to the end of this existing method
+    http.addFilterBefore(getJwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+  }</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -194,7 +212,7 @@ In case you would like to build a server app that e.g. wants to issue JWTs but d
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="java language-java">  @Bean
-  public JwtLoginFilter getJwtLoginFilter() throws RuntimeException {
+  public JwtLoginFilter getJwtLoginFilter() throws Exception {
 
     JwtLoginFilter jwtLoginFilter = new JwtLoginFilter("/login");
     jwtLoginFilter.setAuthenticationManager(authenticationManager());
@@ -340,7 +358,7 @@ In case you would like to build a server app that e.g. wants to issue JWTs but d
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2020-04-24 15:21:33 UTC
+Last updated 2020-04-27 13:28:07 UTC
 </sub></div>
 </div>
 </div>
