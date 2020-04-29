@@ -103,11 +103,11 @@
 <ul class="sectlevel1">
 <li><a href="#guide-kafka.asciidoc_how-to-use">How to use?</a></li>
 <li><a href="#guide-kafka.asciidoc_-property-parameters">Property Parameters</a></li>
-<li><a href="#guide-kafka.asciidoc_naming-convention-for-topics.">Naming convention for topics.</a></li>
+<li><a href="#guide-kafka.asciidoc_naming-convention-for-topics">Naming convention for topics</a></li>
 <li><a href="#guide-kafka.asciidoc_send-messages">Send Messages</a></li>
 <li><a href="#guide-kafka.asciidoc_receive-messages">Receive Messages</a></li>
 <li><a href="#guide-kafka.asciidoc_retry">Retry</a>
-<ul class="sectlevel4">
+<ul class="sectlevel2">
 <li><a href="#guide-kafka.asciidoc_handling-retry-in-devon4j-kafka">Handling retry in devon4j-kafka</a></li>
 <li><a href="#guide-kafka.asciidoc_retry-configuration-and-naming-convention-of-redelivery-topics.">Retry configuration and naming convention of redelivery topics.</a></li>
 <li><a href="#guide-kafka.asciidoc_retry-topics">Retry topics</a></li>
@@ -115,7 +115,7 @@
 </ul>
 </li>
 <li><a href="#guide-kafka.asciidoc_tracer">Tracer</a>
-<ul class="sectlevel4">
+<ul class="sectlevel2">
 <li><a href="#guide-kafka.asciidoc_how-devon4j-kafka-handles-tracer-">How devon4j-kafka handles tracer ?</a></li>
 </ul>
 </li>
@@ -247,7 +247,7 @@ messaging.kafka.listener.container.concurrency=&lt;Number of listener threads fo
 </div>
 </div>
 <div class="sect1">
-<h2 id="guide-kafka.asciidoc_naming-convention-for-topics.">Naming convention for topics.</h2>
+<h2 id="guide-kafka.asciidoc_naming-convention-for-topics">Naming convention for topics</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>For better managing of several Kafka topics in your application portfolio we devon strongly advice to introduce a naming scheme for your topics. The schema may depend on the actual usage pattern of kafka. For context where kafka is used
@@ -372,8 +372,8 @@ The container factory mentioned in the <code>@KafkaListener</code> is provided i
 <p>The retry pattern in devon4j-kafka is invoked when a particular exception(described by user in application.properties file) is thrown while processing the consumed message and it is configured in application.properties file. Then general idea is to separate messages which could not be processed into dedicated retry-topics to allow fine control on how processing of the messages is retried and to not block newly arriving messages.
 Let us see more about handling retry in the below topics.</p>
 </div>
-<div class="sect4">
-<h5 id="guide-kafka.asciidoc_handling-retry-in-devon4j-kafka">Handling retry in devon4j-kafka</h5>
+<div class="sect2">
+<h3 id="guide-kafka.asciidoc_handling-retry-in-devon4j-kafka">Handling retry in devon4j-kafka</h3>
 <div class="paragraph">
 <p>The retry pattern is included in the starter dependency of "starter-kafka-receiver".</p>
 </div>
@@ -420,8 +420,8 @@ public class DeleteEmployeeMessageProcessor&lt;K, V&gt; implements MessageProces
    compaction which is explained below.</p>
 </div>
 </div>
-<div class="sect4">
-<h5 id="guide-kafka.asciidoc_retry-configuration-and-naming-convention-of-redelivery-topics.">Retry configuration and naming convention of redelivery topics.</h5>
+<div class="sect2">
+<h3 id="guide-kafka.asciidoc_retry-configuration-and-naming-convention-of-redelivery-topics.">Retry configuration and naming convention of redelivery topics.</h3>
 <div class="paragraph">
 <p>The following properties should be added in the <code>application.properties</code> or <code>application.yml</code> file.</p>
 </div>
@@ -459,8 +459,8 @@ messaging.retry.default.retry-policy.retryableExceptionsTraverseCauses=true</cod
 <p>If there is no topic found in the consumed record the default retry topic will be added which is <code>default-message-retry</code>.</p>
 </div>
 </div>
-<div class="sect4">
-<h5 id="guide-kafka.asciidoc_retry-topics">Retry topics</h5>
+<div class="sect2">
+<h3 id="guide-kafka.asciidoc_retry-topics">Retry topics</h3>
 <div class="paragraph">
 <p>Devon4j-kafka uses a separate retry topic for each topic where retries occur. By default this topic is named <code>&lt;topic name&gt;-retry</code>. You may change this behavior by providing your own implementation for <code>DefaultKafkaRecordSupport</code> which is an default implementation from devon4j-kafka for <code>KafkaRecordSupport</code>.</p>
 </div>
@@ -468,8 +468,8 @@ messaging.retry.default.retry-policy.retryableExceptionsTraverseCauses=true</cod
 <p>Devon4-kafka enqueues a new message for each retry attempt. It is very important to configure your retry tropics with <a href="https://kafka.apache.org/documentation/#compaction">log compaction</a> enabled. More or less simplified, if log compaction is enabled Kafka keeps only one message per message key. Since each retry message has the same key, in fact only one message per retry attempt is stored. After the last retry attempt the message payload is removed from the message so, you do not keep unnecessary data in your topics.</p>
 </div>
 </div>
-<div class="sect4">
-<h5 id="guide-kafka.asciidoc_handling-retry-finally-failed">Handling retry finally failed</h5>
+<div class="sect2">
+<h3 id="guide-kafka.asciidoc_handling-retry-finally-failed">Handling retry finally failed</h3>
 <div class="paragraph">
 <p>Per default when the retry fails with final attempt  we just log the message and delete the payload of ProducerRecord which comes to proceed the retry pattern.</p>
 </div>
@@ -495,8 +495,8 @@ However, devon uses its own correlation-id(UUID) to track the process. But devon
 <p>There are 2 important properties which will be automatically logged which is trace-id and spain-id.
 The trace-id is same for all the asynchronous process and span-id is unique for each asynchronous process.</p>
 </div>
-<div class="sect4">
-<h5 id="guide-kafka.asciidoc_how-devon4j-kafka-handles-tracer-">How devon4j-kafka handles tracer ?</h5>
+<div class="sect2">
+<h3 id="guide-kafka.asciidoc_how-devon4j-kafka-handles-tracer-">How devon4j-kafka handles tracer ?</h3>
 <div class="paragraph">
 <p>We inject the trace-id and span-id in to the ProducerRecord headers which comes to publish into the kafka broker.
 Its injected in the headers with the key <code>traceId</code> for trace-id and <code>spanId</code> for span-id.
@@ -710,7 +710,7 @@ All features of devon4j-kafka, like retry handling could also be used.</p>
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2020-04-28 11:10:26 UTC
+Last updated 2020-04-29 07:19:24 UTC
 </sub></div>
 </div>
 </div>
