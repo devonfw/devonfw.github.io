@@ -109,8 +109,7 @@
 </li>
 <li><a href="#nkaas.asciidoc_setting-up-harbor">Setting up Harbor</a></li>
 <li><a href="#nkaas.asciidoc_setting-up-jenkins">Setting up Jenkins</a></li>
-<li><a href="#nkaas.asciidoc_building-the-mythaistar-images">Building the MyThaiStar images</a></li>
-<li><a href="#nkaas.asciidoc_deploying-mythaistar-on-kubernetes">Deploying MyThaiStar on Kubernetes</a></li>
+<li><a href="#nkaas.asciidoc_deploying-mts">Deploying MTS</a></li>
 </ul>
 </li>
 </ul>
@@ -168,7 +167,7 @@
 Create a new Pipeline on <a href="http://jenkins.demo.xpaas.io">Jenkins</a> and configure its definition to be a "Pipeline script from SCM". The SCM used is "Git" and the repository URL is the MyThaiStar repository <a href="https://github.com/devonfw/my-thai-star.git" class="bare">https://github.com/devonfw/my-thai-star.git</a> or your fork of it.</p>
 </div>
 <div class="paragraph">
-<p>The Branch Specifier should point to <code>\*/develop</code>, the Script Path is <code>jenkins/nKaaS/Jenkinsfile</code> as that&#8217;s where the Jenkinsfile is located at the MyThaiStar repository.
+<p>The Branch Specifier should point to <code>*/develop</code>, the Script Path is <code>jenkins/nKaaS/Jenkinsfile</code> as that&#8217;s where the Jenkinsfile is located at the MyThaiStar repository.
 Checking the "Lightweight checkout" could speed up the Pipeline.</p>
 </div>
 <div class="paragraph">
@@ -186,46 +185,32 @@ Afterwards, instead of the official MyThaiStar repository, specify your Bitbucke
 </div>
 </div>
 <div class="sect1">
-<h2 id="nkaas.asciidoc_building-the-mythaistar-images">Building the MyThaiStar images</h2>
+<h2 id="nkaas.asciidoc_deploying-mts">Deploying MTS</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>After configuring the Jenkins Pipeline it can be started with the "Build now" button. The pipeline will checkout the MyThaiStar repository, build an image for the Angular frontend, an image  for the Java backend and push both onto the Harbor registry. If every step was executed successfully, you should be able to see the images on Harbor.</p>
+<p>After setting up the Jenkins Pipeline, you can simply run it by clicking on the "Build" button. This will trigger the pipeline, Jenkins will:</p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="nkaas.asciidoc_deploying-mythaistar-on-kubernetes">Deploying MyThaiStar on Kubernetes</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Currently, the deployment is done manually and not yet included in the Jenkins pipeline. <code>kubectl</code> will be used for this step.
-First, change directory to your local clone of your MyThaiStar project.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>cd YOUR-MTS-REPO/nKaaS</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>There are three Kubernetes resource files that have to be deployed onto your Kubernetes namespace:
-- angular-app.yaml: This file includes a Deployment and a Service for the Angular frontend
-- java-app.yaml: This file includes a Deployment and a Service for the Java backend
-- ingress.yaml: This file includes two Ingress services, one for Angular, one for Java</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Check out the MTS project</p>
+</li>
+<li>
+<p>Build the docker images</p>
+</li>
+<li>
+<p>Push the docker images to the Harbor registry</p>
+</li>
+<li>
+<p>Deploy the MTS application onto Kubernetes</p>
+</li>
+</ol>
 </div>
 <div class="paragraph">
-<p>The Ingress ressource specifies the <strong>host</strong> on which your MyThaiStar application will be accessible. Open <code>ingress.yaml</code> in your preferred editor and change <strong>both</strong> <code>host</code> values to your preferred hostname in the pattern <code>YOUR-HOSTNAME.demo.xpaas.io</code>.</p>
+<p>Finally, the applications should be available at <a href="http://my-thai-star.demo.xpaas.io" class="bare">http://my-thai-star.demo.xpaas.io</a>.</p>
 </div>
 <div class="paragraph">
-<p>These files can be applied onto Kubernetes with the following commands:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>kubectl apply -f angular-app.yaml
-kubectl apply -f java-app.yaml
-kubectl apply -f ingress.yaml</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Finally, after waiting a few moments, you should be able to access your MyThaiStar application within your browser by navigating to your previously specified <code>host</code>.</p>
+<p>The first part, <code>my-thai-star</code>, ist specified in the MTS <a href="https://github.com/devonfw/my-thai-star/blob/develop/jenkins/nKaaS/ingress.yaml">ingress</a> configuration at <code>host</code>. The second part, <code>demo.xpaas.io</code>, is the host of the nKaaS you&#8217;re working on.</p>
 </div>
 </div>
 </div>
@@ -357,7 +342,7 @@ kubectl apply -f ingress.yaml</code></pre>
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2020-05-18 16:58:58 UTC
+Last updated 2020-05-20 12:54:19 UTC
 </sub></div>
 </div>
 </div>
