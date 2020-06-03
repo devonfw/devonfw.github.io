@@ -121,6 +121,11 @@
 </li>
 <li><a href="#guide-kafka.asciidoc_logging">Logging</a></li>
 <li><a href="#guide-kafka.asciidoc_kafka-health-check-using-spring-acutator">Kafka Health check using Spring acutator</a></li>
+<li><a href="#guide-kafka.asciidoc_authentication">Authentication</a>
+<ul class="sectlevel2">
+<li><a href="#guide-kafka.asciidoc_json-web-token-jwt">JSON Web Token (JWT)</a></li>
+</ul>
+</li>
 <li><a href="#guide-kafka.asciidoc_using-kafka-for-internal-parallel-processing">Using Kafka for internal parallel processing</a></li>
 </ul>
 </li>
@@ -566,6 +571,45 @@ messaging.kafka.health.topicsToCheck=employeeapp-employee-v1-delete,employeeapp-
 </div>
 </div>
 <div class="sect1">
+<h2 id="guide-kafka.asciidoc_authentication">Authentication</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="guide-kafka.asciidoc_json-web-token-jwt">JSON Web Token (JWT)</h3>
+<div class="paragraph">
+<p>devon4j-kafka supports authentication via JSON Web Tokens (JWT) out-of-the-box.
+To use it add a dependency to the devon4j-starter-security-jwt:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.devonfw.java.starters&lt;/groupId&gt;
+  &lt;artifactId&gt;devon4j-starter-security-jwt&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The authentication via JWT needs some configuration, e.g. a keystore to verify the token signature. This is explained in the <a href="#guide-jwt.asciidoc">JWT  documentation</a>.</p>
+</div>
+<div class="paragraph">
+<p>To secure a message listener with jwt add the <code>@JwtAuthentication</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">  @JwtAuthentication
+  @KafkaListener(topics = "employeeapp-employee-v1-delete", groupId = "${messaging.kafka.consumer.groupId}")
+  public void consumer(ConsumerRecord&lt;K, V&gt; consumerRecord, Acknowledgment acknowledgment) {
+...
+    }
+  }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With this annotation in-place each message will be checked for a valid JWT in a message header with the name <code>Authorization</code>. If a valid annotation is found the spring security context will be initialized with the user roles and "normal" authorization e.g. with <code>@RolesAllowed</code> may be used. This is also demonstrated in the kafka sample application.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="guide-kafka.asciidoc_using-kafka-for-internal-parallel-processing">Using Kafka for internal parallel processing</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -715,7 +759,7 @@ All features of devon4j-kafka, like retry handling could also be used.</p>
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2020-05-27 12:47:03 UTC
+Last updated 2020-06-03 08:06:50 UTC
 </sub></div>
 </div>
 </div>
