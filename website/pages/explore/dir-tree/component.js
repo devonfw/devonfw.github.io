@@ -72,9 +72,12 @@ class DirTree extends HTMLDivElement {
     function detailsTemplate(fileInfo) {
       let details = `
         <div class="col-12 col-sm-8">
-          <a href="${fileInfo.url}" class="d-flex align-items-center td-hover-none">
-            <h4 class="font-weight-bold mb-0 details-title">${fileInfo.title}</h4><div class="custom-bullet forward-arrow ml-3"></div>
-          </a>
+          <div class="d-flex align-items-center td-hover-none">
+            <a href="${fileInfo.url}"  class="d-flex td-hover-none">
+              <h4 class="font-weight-bold mb-0 details-title">${fileInfo.title}</h4>
+            </a>
+            <a href="${fileInfo.editUrl}" class="d-flex td-hover-none edit-link" target="_blank" title="This will open the corresponding asciidoc file in the github editor and create a PullRequest for your changes when you save them. The changes will be reviewed before they are published on the website.">&#x270E</a>
+          </div>
           <p class="mt-4 pt-1 details-content">${fileInfo.text}</p>
         </div>
         <div class="col-12 col-sm-4 details-references">
@@ -138,6 +141,8 @@ class DirTree extends HTMLDivElement {
         const title = dir.find('h2').text();
         const text = getText(dir);
         const url = `${path.dir}/${path.file}`;
+        let asciidocFilename = path.file.replace(".html",".asciidoc");
+        const editUrl = `https://github.com/devonfw/devonfw.github.io/edit/develop/website/pages/explore/dir-content/${asciidocFilename}`;
         const commonLinks = addTarget(aux.find('.common-links a'));
         const devon4jLinks = addTarget(aux.find('.devon4j-links a'));
         const devon4netLinks = addTarget(aux.find('.devon4j-links a'));
@@ -152,7 +157,7 @@ class DirTree extends HTMLDivElement {
           devon4ngLinks.length != 0 ||
           devon4nodeLinks.length != 0 ||
           videosLinks.length != 0 ) {
-          const fileInfo = { title, text, url };
+          const fileInfo = { title, text, url, editUrl};
           const details = detailsTemplate(fileInfo);
           $('.dir-component .dir-tree-detail').html(details);
           setHtmlOrHide('details-links', commonLinks);
@@ -184,7 +189,7 @@ class DirTree extends HTMLDivElement {
     function showDirInfo(aux2, el, lvl, parentFile) {
       return () => {
         const dir = aux2.find('.directory');
-        const links = aux2.find('.links-to-files');
+        const links = aux2.find('.links-to-files a');
         const title = dir.find('h2').text();
         const text = getText(dir);
         let listItem = getLiDir(title, el, lvl + 1, parentFile);
