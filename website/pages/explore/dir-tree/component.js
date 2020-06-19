@@ -78,12 +78,36 @@ class DirTree extends HTMLDivElement {
           <p class="mt-4 pt-1 details-content">${fileInfo.text}</p>
         </div>
         <div class="col-12 col-sm-4 details-references">
-          <h4>Links</h4>
-          <p class="details-links custom-col">
-          </p>
-          <h4 class="mt-4">Videos</h4>
-          <p class="details-videos custom-col">
-          </p>
+          <div id="details-links">
+            <h4>Links</h4>
+            <p class="details-links custom-col">
+            </p>
+          </div>
+          <div id="details-links-devon4j">
+            <h4>Links devon4j</h4>
+            <p class="details-links-devon4j custom-col">
+            </p>
+          </div>
+          <div id="details-links-devon4net">
+            <h4>Links devon4net</h4>
+            <p class="details-links-devon4net custom-col">
+            </p>
+          </div>
+          <div id="details-links-devon4ng">
+            <h4>Links devon4ng</h4>
+            <p class="details-links-devon4ng custom-col">
+            </p>
+          </div>
+          <div id="details-links-devon4node">
+            <h4>Links devon4node</h4>
+            <p class="details-links-devon4node custom-col">
+            </p>
+          </div>
+          <div id="details-videos">
+            <h4 class="mt-4">Videos</h4>
+            <p class="details-videos custom-col">
+            </p>
+          </div>
         </div>
       `;
 
@@ -114,15 +138,47 @@ class DirTree extends HTMLDivElement {
         const title = dir.find('h2').text();
         const text = getText(dir);
         const url = `${path.dir}/${path.file}`;
-        const commonLinks = aux.find('.common-links a');
+        const commonLinks = addTarget(aux.find('.common-links a'));
+        const devon4jLinks = addTarget(aux.find('.devon4j-links a'));
+        const devon4netLinks = addTarget(aux.find('.devon4j-links a'));
+        const devon4ngLinks = addTarget(aux.find('.devon4j-links a'));
+        const devon4nodeLinks = addTarget(aux.find('.devon4j-links a'));
         const videosLinks = aux.find('.videos-links a');
-
-        const fileInfo = { title, text, url };
-        const details = detailsTemplate(fileInfo);
-        $('.dir-component .dir-tree-detail').html(details);
-        $('.dir-component .details-links').html(commonLinks);
-        $('.dir-component .details-videos').html(videosLinks);
+        
+        if(text != "" || 
+          commonLinks.length != 0 || 
+          devon4jLinks.length != 0 ||
+          devon4netLinks.length != 0 ||
+          devon4ngLinks.length != 0 ||
+          devon4nodeLinks.length != 0 ||
+          videosLinks.length != 0 ) {
+          const fileInfo = { title, text, url };
+          const details = detailsTemplate(fileInfo);
+          $('.dir-component .dir-tree-detail').html(details);
+          setHtmlOrHide('details-links', commonLinks);
+          setHtmlOrHide('details-links-devon4j', devon4jLinks);
+          setHtmlOrHide('details-links-devon4net', devon4netLinks);
+          setHtmlOrHide('details-links-devon4ng', devon4ngLinks);
+          setHtmlOrHide('details-links-devon4node', devon4nodeLinks);
+          setHtmlOrHide('details-videos', videosLinks);
+        }
+        else {
+          $('.dir-component .dir-tree-detail').html('');
+        }
       });
+    }
+
+    function setHtmlOrHide(name, value) {
+      if(value.length > 0){
+        $('.dir-component .' + name).html(value);
+      }
+      else {
+        $('.dir-component #' + name).hide();
+      }
+    }
+
+    function addTarget(links){
+      return links.each((_,e) => e.target = '_blank');
     }
 
     function showDirInfo(aux2, el, lvl, parentFile) {
@@ -144,7 +200,7 @@ class DirTree extends HTMLDivElement {
 
     function getText(dir) {
       return dir
-        .find('p')
+        .find('.sectionbody > .paragraph p')
         .map((_, el) => $(el).text() + '<br/>')
         .get()
         .join('');
@@ -181,6 +237,10 @@ class DirTree extends HTMLDivElement {
             lvlDest,
           );
         }
+        showFileDetails({
+          dir: './dir-content',
+          file: $(el).attr('href'),
+        });
       }
 
       const dir = $(dirTemplate(text)).click(clickHandler);
