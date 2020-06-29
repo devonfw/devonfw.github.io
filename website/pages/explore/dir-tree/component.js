@@ -145,9 +145,9 @@ class DirTree extends HTMLDivElement {
         const editUrl = `https://github.com/devonfw/devonfw.github.io/edit/develop/website/pages/explore/dir-content/${asciidocFilename}`;
         const commonLinks = addTarget(aux.find('.common-links a'));
         const devon4jLinks = addTarget(aux.find('.devon4j-links a'));
-        const devon4netLinks = addTarget(aux.find('.devon4j-links a'));
-        const devon4ngLinks = addTarget(aux.find('.devon4j-links a'));
-        const devon4nodeLinks = addTarget(aux.find('.devon4j-links a'));
+        const devon4netLinks = addTarget(aux.find('.devon4net-links a'));
+        const devon4ngLinks = addTarget(aux.find('.devon4ng-links a'));
+        const devon4nodeLinks = addTarget(aux.find('.devon4node-links a'));
         const videosLinks = aux.find('.videos-links a');
         
         if(text != "" || 
