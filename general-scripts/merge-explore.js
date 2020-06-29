@@ -16,16 +16,16 @@ function moveBodyContents(file, fileWithHeader, dir, dirOut, fileOut) {
 	} else {
 		
 		// Get JS
-		let scriptCode = $('body').children('script[type="module"]').contents();
+		let scriptCode = $('body').children('script[type="module"]');
 
 		// Add content
 		$header('div#content').append($('body').children(':not(script[type="module"])'))
 		
 		// add modification flag
-		$header('body').append('<div id="modified-by-merge-search-results"></div>')
+		$header('body').append('<div id="modified-by-merge-explore"></div>')
 		
 		// add JS
-		$header('script[type="module"]').append(scriptCode)
+		$header('script[type="module"]').first().after(scriptCode)
 		
 		// get <head> content
 		$header('head').append($('head'))
@@ -36,11 +36,5 @@ function moveBodyContents(file, fileWithHeader, dir, dirOut, fileOut) {
 }
 
 if (process.argv.length > 6) {
-  file = 'search-results.html'; // argv2
-  fileWithHeader = './master/master.html'; // argv3
-  dir = './'; // argv4
-  dirOut = './docs-processed/' // argv5
-  fileOut = './explore.html'; //argv6
-  
   moveBodyContents(process.argv[2], process.argv[3], process.argv[4], process.argv[5], process.argv[6]);
 }
