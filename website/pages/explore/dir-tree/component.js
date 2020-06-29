@@ -72,18 +72,45 @@ class DirTree extends HTMLDivElement {
     function detailsTemplate(fileInfo) {
       let details = `
         <div class="col-12 col-sm-8">
-          <a href="${fileInfo.url}" class="d-flex align-items-center td-hover-none">
-            <h4 class="font-weight-bold mb-0 details-title">${fileInfo.title}</h4><div class="custom-bullet forward-arrow ml-3"></div>
-          </a>
+          <div class="d-flex align-items-center td-hover-none">
+            <a href="${fileInfo.url}"  class="d-flex td-hover-none">
+              <h4 class="font-weight-bold mb-0 details-title">${fileInfo.title}</h4>
+            </a>
+            <a href="${fileInfo.editUrl}" class="d-flex td-hover-none edit-link" target="_blank" title="This will open the corresponding asciidoc file in the github editor and create a PullRequest for your changes when you save them. The changes will be reviewed before they are published on the website.">&#x270E</a>
+          </div>
           <p class="mt-4 pt-1 details-content">${fileInfo.text}</p>
         </div>
         <div class="col-12 col-sm-4 details-references">
-          <h4>Links</h4>
-          <p class="details-links custom-col">
-          </p>
-          <h4 class="mt-4">Videos</h4>
-          <p class="details-videos custom-col">
-          </p>
+          <div id="details-links">
+            <h4>Links</h4>
+            <p class="details-links custom-col">
+            </p>
+          </div>
+          <div id="details-links-devon4j">
+            <h4>Links devon4j</h4>
+            <p class="details-links-devon4j custom-col">
+            </p>
+          </div>
+          <div id="details-links-devon4net">
+            <h4>Links devon4net</h4>
+            <p class="details-links-devon4net custom-col">
+            </p>
+          </div>
+          <div id="details-links-devon4ng">
+            <h4>Links devon4ng</h4>
+            <p class="details-links-devon4ng custom-col">
+            </p>
+          </div>
+          <div id="details-links-devon4node">
+            <h4>Links devon4node</h4>
+            <p class="details-links-devon4node custom-col">
+            </p>
+          </div>
+          <div id="details-videos">
+            <h4 class="mt-4">Videos</h4>
+            <p class="details-videos custom-col">
+            </p>
+          </div>
         </div>
       `;
 
@@ -114,21 +141,55 @@ class DirTree extends HTMLDivElement {
         const title = dir.find('h2').text();
         const text = getText(dir);
         const url = `${path.dir}/${path.file}`;
-        const commonLinks = aux.find('.common-links a');
+        let asciidocFilename = path.file.replace(".html",".asciidoc");
+        const editUrl = `https://github.com/devonfw/devonfw.github.io/edit/develop/website/pages/explore/dir-content/${asciidocFilename}`;
+        const commonLinks = addTarget(aux.find('.common-links a'));
+        const devon4jLinks = addTarget(aux.find('.devon4j-links a'));
+        const devon4netLinks = addTarget(aux.find('.devon4net-links a'));
+        const devon4ngLinks = addTarget(aux.find('.devon4ng-links a'));
+        const devon4nodeLinks = addTarget(aux.find('.devon4node-links a'));
         const videosLinks = aux.find('.videos-links a');
-
-        const fileInfo = { title, text, url };
-        const details = detailsTemplate(fileInfo);
-        $('.dir-component .dir-tree-detail').html(details);
-        $('.dir-component .details-links').html(commonLinks);
-        $('.dir-component .details-videos').html(videosLinks);
+        
+        if(text != "" || 
+          commonLinks.length != 0 || 
+          devon4jLinks.length != 0 ||
+          devon4netLinks.length != 0 ||
+          devon4ngLinks.length != 0 ||
+          devon4nodeLinks.length != 0 ||
+          videosLinks.length != 0 ) {
+          const fileInfo = { title, text, url, editUrl};
+          const details = detailsTemplate(fileInfo);
+          $('.dir-component .dir-tree-detail').html(details);
+          setHtmlOrHide('details-links', commonLinks);
+          setHtmlOrHide('details-links-devon4j', devon4jLinks);
+          setHtmlOrHide('details-links-devon4net', devon4netLinks);
+          setHtmlOrHide('details-links-devon4ng', devon4ngLinks);
+          setHtmlOrHide('details-links-devon4node', devon4nodeLinks);
+          setHtmlOrHide('details-videos', videosLinks);
+        }
+        else {
+          $('.dir-component .dir-tree-detail').html('');
+        }
       });
+    }
+
+    function setHtmlOrHide(name, value) {
+      if(value.length > 0){
+        $('.dir-component .' + name).html(value);
+      }
+      else {
+        $('.dir-component #' + name).hide();
+      }
+    }
+
+    function addTarget(links){
+      return links.each((_,e) => e.target = '_blank');
     }
 
     function showDirInfo(aux2, el, lvl, parentFile) {
       return () => {
         const dir = aux2.find('.directory');
-        const links = aux2.find('.links-to-files');
+        const links = aux2.find('.links-to-files a');
         const title = dir.find('h2').text();
         const text = getText(dir);
         let listItem = getLiDir(title, el, lvl + 1, parentFile);
@@ -144,7 +205,7 @@ class DirTree extends HTMLDivElement {
 
     function getText(dir) {
       return dir
-        .find('p')
+        .find('.sectionbody > .paragraph p')
         .map((_, el) => $(el).text() + '<br/>')
         .get()
         .join('');
@@ -181,6 +242,10 @@ class DirTree extends HTMLDivElement {
             lvlDest,
           );
         }
+        showFileDetails({
+          dir: './dir-content',
+          file: $(el).attr('href'),
+        });
       }
 
       const dir = $(dirTemplate(text)).click(clickHandler);
