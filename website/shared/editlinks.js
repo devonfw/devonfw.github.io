@@ -1,9 +1,31 @@
 const editLinksModule = (function(window) {
   // Function definitions
 
+  function executeRules(rules) {
+    let result;
+    rules.some(rule => {
+        let matches = rule.re.exec(window.location.pathname);
+        if(matches){
+            if(rule.index !== undefined){
+                result = matches[rule.index];
+            } else {
+                result = rule.value;
+            }
+            return true;
+        }
+        return false;
+    });
+
+    return result;
+  }
+
   function getRepoName() {
 
     let rules = [
+        {
+            re: /website\/pages\/welcome\/welcome\.html/,
+            value: 'devonfw.github.io'
+        },
         {
             re: /guide-([^\/]+?)\.asciidoc/,
             value: 'devonfw-guide'
@@ -36,27 +58,17 @@ const editLinksModule = (function(window) {
             re: /(master-)?([^\/]+?)\.asciidoc/,
             index: 2
         }
-    ]
-    let repoName;
-    rules.some(rule => {
-        let matches = rule.re.exec(window.location.pathname);
-        if(matches){
-            if(rule.index !== undefined){
-                repoName = matches[rule.index];
-            } else {
-                repoName = rule.value;
-            }
-            return true;
-        }
-        return false;
-    });
-
-    return repoName; 
+    ];
+    return executeRules(rules); 
   }
 
   function getFolderName() {
 
     let rules = [
+        {
+            re: /website\/pages\/welcome\/welcome\.html/,
+            value: 'website/pages/welcome'
+        },
         {
             re: /guide-([^\/]+?)\.asciidoc/,
             value: 'general/db'
@@ -77,27 +89,17 @@ const editLinksModule = (function(window) {
             re: /(master-)?([^\/]+?)\.asciidoc/,
             value: 'documentation'
         }
-    ]
-    let folderName;
-    rules.some(rule => {
-        let matches = rule.re.exec(window.location.pathname);
-        if(matches){
-            if(rule.index !== undefined){
-                folderName = matches[rule.index];
-            } else {
-                folderName = rule.value;
-            }
-            return true;
-        }
-        return false;
-    });
-
-    return folderName; 
+    ];
+    return executeRules(rules); 
   }
 
   function getBranchName() {
 
     let rules = [
+        {
+            re: /website\/pages\/welcome\/welcome\.html/,
+            value: 'develop'
+        },
         {
             re: /guide-([^\/]+?)\.asciidoc/,
             value: 'master'
@@ -126,25 +128,11 @@ const editLinksModule = (function(window) {
             re: /(master-)?([^\/]+?)\.asciidoc/,
             value: 'develop'
         }
-    ]
-    let branchName;
-    rules.some(rule => {
-        let matches = rule.re.exec(window.location.pathname);
-        if(matches){
-            if(rule.index !== undefined){
-                branchName = matches[rule.index];
-            } else {
-                branchName = rule.value;
-            }
-            return true;
-        }
-        return false;
-    });
-
-    return branchName; 
+    ];
+    return executeRules(rules);
   }
 
-  function addEditLinks() {    
+  function addEditLinks(alwaysVisible = true) {    
     let title = 'This will open the corresponding asciidoc file in the github editor and create a PullRequest for your changes when you save them. The changes will be reviewed before they are published on the website.';
 
     let repoName = getRepoName(); 
@@ -158,14 +146,19 @@ const editLinksModule = (function(window) {
             let id = headline.prop('id');
             let re = /^.+?\.asciidoc/;
             let matches = re.exec(id);
-            let filename = matches[0];
-            let url = urlPrefix + filename;
-            var link = $('<a title="' + title + '" target="_blank" style="padding-left: 0.375em;" class="edit-link" href="' + url + '">&#x270E</a>');
-            var anchorLink = headline.find("a");
-            if(anchorLink.length){
-                anchorLink.before(link);
-            } else {
-                headline.append(link);
+            if(matches.length > 0) {
+                let filename = matches[0];
+                let url = urlPrefix + filename;
+                let link = $('<a title="' + title + '" target="_blank" style="padding-left: 0.375em;" class="edit-link" href="' + url + '">&#x270E</a>');
+                if(!alwaysVisible){
+                    $("<style type='text/css'> .edit-link {   opacity: 0; }  *:hover > .edit-link, .edit-link:focus  {   opacity: 1; } </style>").appendTo("head");
+                }
+                let anchorLink = headline.find("a");
+                if(anchorLink.length){
+                    anchorLink.before(link);
+                } else {
+                    headline.append(link);
+                }
             }
         });
     }
