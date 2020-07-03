@@ -179,7 +179,11 @@ unless nofooter %>
     <script type="module">
       import { EditLinksModule } from '/website/shared/editlinks.js';
 
-      EditLinksModule.addEditLinks();
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
     </script>
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
@@ -204,7 +208,9 @@ end %><%= (docinfo_content = (docinfo :footer)).empty? ? nil : %(
 </div><%
 end %>
 <script>
-  anchors.options.visible = 'always';
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
   anchors.add();
 </script>
 </body>
