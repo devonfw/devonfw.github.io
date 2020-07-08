@@ -13,34 +13,34 @@ This process is recomended for greater changes and for adding/deleting nodes in 
 
 1. Clone the repository to your local workspace: 
 
-⋅⋅⋅`git clone https://github.com/devonfw/devonfw.github.io`
+   `git clone https://github.com/devonfw/devonfw.github.io`
 
 2. Open the repository locally
 3. GOTO `devonfw.github.io\website\pages\explore\dir-content`
 4. Find the node you want to change. 
 
-⋅⋅⋅In the folder dir-content the node will be listed as an asciidoc file.
+   In the folder dir-content the node will be listed as an asciidoc file.
 
 5. Open the desired file.
 6. Change the description of the node.
 
-⋅⋅⋅ This can be done by adapting the text in the section `[.directory]`
+   This can be done by adapting the text in the section `[.directory]`
 
 7. Add/delete internal links regarding other nodes 
 
-⋅⋅⋅ We accieve this by adding/deleting the links in the [.links-to-files] section. This can be done as follows: <<example.html#, Example-description>>. Note that the `html` file extension is required!
+   We accieve this by adding/deleting the links in the [.links-to-files] section. This can be done as follows: <<example.html#, Example-description>>. Note that the `html` file extension is required!
 
 8. Add/delete internal links (from the devonfw website) 
 
-⋅⋅⋅ Add/delete the links to/from the section your link is related to ([.common-links], [.devon4j-links], [.devon4net-links], [.devon4ng-links] or [.devon4node-links]). 
+   Add/delete the links to/from the section your link is related to ([.common-links], [.devon4j-links], [.devon4net-links], [.devon4ng-links] or [.devon4node-links]). 
 
-⋅⋅⋅This can be done as follows: <</website/pages/docs/example-page.asciidoc.html#, Example-description>>.
+   This can be done as follows: <</website/pages/docs/example-page.asciidoc.html#, Example-description>>.
 
 9. Add/delete external links
 
-⋅⋅⋅ Add/delelte external links to/from the section your link is related to. 
+   Add/delelte external links to/from the section your link is related to. 
 
-⋅⋅⋅This can be done by simply copying and pasting them into the desired section.
+   This can be done by simply copying and pasting them into the desired section.
 
 10. Send a Pull request with the modified files
 
@@ -54,7 +54,7 @@ Nodes can be added in the following manner:
 2. Delete the content of the file.
 3. Now add the titles of the nodes you want to add. 
 
-⋅⋅⋅Note that there should only be one title per line. 
+   Note that there should only be one title per line. 
 
 4. Run Powershell as Administrator
 5. In Powershell goto the path `devonfw.github.io\website\pages\explore\dir-content`.
@@ -69,7 +69,7 @@ For each node you generated you will have to do the following:
 2. In all of these nodes add `<<new_node.html#, NewNodeDescription>>` in the [.links-to-files] section.
 3. Make sure that there is exactely one blank line before and after each link. 
 
-⋅⋅⋅You may also compare your node to other nodes, if you are not sure.
+   You may also compare your node to other nodes, if you are not sure.
 
 4. Now modify the new node by adding the desired pointers to other nodes. This is done in the same manner.
 5. Add a description to your node in the `[.directory]` section.
