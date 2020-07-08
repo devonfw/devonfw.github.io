@@ -12,7 +12,7 @@ This process is recomended for greater changes and for adding/deleting nodes in 
 ### 1. Modification of existing files
 
 1. Clone the repository to your local workspace: 
-⋅⋅⋅`git clone https://github.com/devonfw/devonfw.github.io`
+...`git clone https://github.com/devonfw/devonfw.github.io`
 2. Open the repository locally
 3. GOTO `devonfw.github.io\website\pages\explore\dir-content`
 4. Find the node you want to change. 
