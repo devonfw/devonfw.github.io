@@ -261,7 +261,8 @@ class DirTree extends HTMLDivElement {
         $(this).addClass('bg-ligthgray');
         $(this)
           .siblings()
-          .removeClass('bg-ligthgray');
+          .removeClass('bg-ligthgray')
+          .removeClass('folder-open bg-ligthgray');
       }
 
       const file = $(fileTemplate(fileInfo.title)).click(clickHandler);
