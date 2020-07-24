@@ -121,7 +121,7 @@ class DirTree extends HTMLDivElement {
       let aux = $("<div id='aux'></div>");
 
       aux.load(`${path.dir}/${path.file} #content`, function() {
-        aux.find('.links-to-files a').each(function(_, el) {
+        aux.find('.links-to-files > .sectionbody > .paragraph a').each(function(_, el) {
           let href = $(el).attr('href');
           let aux2 = $("<div id='aux2'></div>");
 
@@ -189,7 +189,7 @@ class DirTree extends HTMLDivElement {
     function showDirInfo(aux2, el, lvl, parentFile) {
       return () => {
         const dir = aux2.find('.directory');
-        const links = aux2.find('.links-to-files a');
+        const links = aux2.find('.links-to-files > .sectionbody > .paragraph a');
         const title = dir.find('h2').text();
         const text = getText(dir);
         let listItem = getLiDir(title, el, lvl + 1, parentFile);
