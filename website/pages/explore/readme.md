@@ -95,3 +95,8 @@ Now you are ready to send a pull request.
 5. Select a branch-name for the modification
 6. Click on `Propose changes`
 
+
+## Wiki
+
+[devonfw Wiki](https://github.com/devonfw/devonfw.github.io)
+
