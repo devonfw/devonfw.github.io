@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2020-07-31 04:41:56 UTC">
+<meta name="author" content="Updated at 2020-08-03 10:20:39 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -517,7 +517,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2020-07-31 04:42:22 UTC</span><br>
+<span id="author" class="author">Updated at 2020-08-03 10:21:06 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -551,6 +551,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="master-devon4ng.asciidoc_cookbook.html#guide-add-electron.asciidoc">20.2. Angular Electron</a>
 </li>
 <li><a href="master-devon4ng.asciidoc_cookbook.html#guide-angular-mock-service.asciidoc">20.3. Angular Mock Service</a>
+</li>
+<li><a href="master-devon4ng.asciidoc_cookbook.html#guide-cypress.asciidoc">20.4. Testing e2e with Cypress</a>
 </li>
 </ul>
 </li>
@@ -1347,6 +1349,583 @@ $ npm run electron:windows              # Build Angular app for production and p
 <div class="paragraph">
 <p>Check out the <a href="https://github.com/devonfw/devon4ng/tree/develop/samples/AngularMockService">Angular Mock Service</a> sample from the samples folder and easily get started with fast data roundtrips between your mock data and your components.</p>
 </div>
+<!-- toc disabled -->
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-cypress.asciidoc">20.4. Testing e2e with Cypress</h3>
+<div class="paragraph">
+<p>This guide will cover the basics of e2e testing using Cypress.</p>
+</div>
+<div class="paragraph">
+<p>Cypress is a framework &#x201C;all in one&#x201D; that provides the necessary libraries to write specific e2e tests, without the need of Selenium.</p>
+</div>
+<div class="paragraph">
+<p>Why Cypress?</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Uses javascript</p>
+</li>
+<li>
+<p>It works directly with the browser so the compatibility with the frontend framework the project uses (in this case Angular) is not a problem.</p>
+</li>
+<li>
+<p>Easy cross browser testing</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="guide-cypress.asciidoc_setup">20.4.1. Setup</h4>
+<div class="paragraph">
+<p><strong>Install</strong>
+First of all we need to install it, we can use <code>npm install</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ npm install -D cypress</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or we can install it with <code>yarn</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ yarn add -D cypress</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We need to run Cypress in order to get the folder tree downloaded, then create a <code>tsconfig.json</code> file inside <code>cypress folder</code> to add the typescript configuration.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ . /node_modules/.bin/cypress open</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Listing 90. tsconfig.json</div>
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+  &quot;compilerOptions&quot;: {
+    &quot;strict&quot;: true,
+    &quot;baseUrl&quot;: &quot;../node_modules&quot;,
+    &quot;target&quot;: &quot;es5&quot;,
+    &quot;lib&quot;: [&quot;es5&quot;, &quot;dom&quot;],
+    &quot;types&quot;: [&quot;cypress&quot;]
+  },
+  &quot;include&quot;: [
+    &quot;**/*.ts&quot;
+  ]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>BaseUrl</strong></p>
+</div>
+<div class="paragraph">
+<p>Let&#x2019;s setup the base url so when we run the tests cypress will &quot;navegate&quot; to the right place, go to <code>cypress.json</code> on the root of the project.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 91. cypress.json</div>
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+  &quot;baseUrl&quot;: &quot;http://localhost:4200&quot;
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-cypress.asciidoc_files--structure">20.4.2. Files / Structure</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-TypeScript" data-lang="TypeScript">/cypress
+  tsconfig.json
+  /fixtures
+    - example.json
+  /integration
+    - button.spec.ts
+    - test.spec.ts
+    /examples
+  /plugins
+    - index.js
+  /support
+    - commands.js
+    - index.js</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>tsconfig.json</code> for typescript configuration.</p>
+</div>
+<div class="paragraph">
+<p><code>fixtures</code> to store our mock data or files (img, mp3&#x2026;&#x200B;) to use on our tests.</p>
+</div>
+<div class="paragraph">
+<p><code>integration</code> is where our tests go, by default it comes with an examples folder with tests samples.</p>
+</div>
+<div class="paragraph">
+<p><code>plugins</code> is where the configuration files of the plugins go.</p>
+</div>
+<div class="paragraph">
+<p><code>support</code> to add custom commands.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-cypress.asciidoc_tests">20.4.3. Tests</h4>
+<div class="paragraph">
+<p>The structure is the same than Mocha.</p>
+</div>
+<div class="paragraph">
+<p>First, we create a file, for example <code>form.spec.ts</code>, inside we define a context to group all our tests referred to the same subject.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 92. form.spec.ts</div>
+<div class="content">
+<pre class="highlight"><code class="language-TypeScript" data-lang="TypeScript">context(&apos;Button page&apos;, () =&gt; {
+  beforeEach(() =&gt; {
+    cy.visit(&apos;/&apos;);
+  });
+  it(&apos;should have button&apos;,()=&gt;{
+    cy.get(&apos;button&apos;).should(&apos;exist&apos;);
+  });
+  it(&apos;should contain PRESS&apos;,()=&gt;{
+    cy.contains(&apos;button&apos;, &apos;PRESS&apos;);
+  });
+});</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<div class="title">beforeEach</div>
+<p>Visit &apos;/&apos; before every test.</p>
+</div>
+<div class="paragraph">
+<div class="title">it</div>
+<p>Inside we write the test.</p>
+</div>
+<div class="paragraph">
+<p>The result:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/cypress/contextImg.jpg" alt="contextImg">
+</div>
+</div>
+<div class="paragraph">
+<p>For more info check <a href="#docs.cypress.io/guides/core-concepts/writing-and-organizing-tests.html_Folder-Structure">Cypress documentation</a></p>
+</div>
+<div class="paragraph">
+<p>On <a href="https://github.com/cypress-io/cypress-example-kitchensink">kitchensink</a>
+you can find an official cypress demo with all the comands being used.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-cypress.asciidoc_fixtures">20.4.4. Fixtures</h4>
+<div class="paragraph">
+<p>We use fixtures to mock data, it can be a json, an img, video&#x2026;&#x200B;</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+  &quot;name&quot;: &quot;Dummy name&quot;,
+  &quot;phone&quot;: 999 99 99 99,
+  &quot;body&quot;: &quot;Mock data&quot;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can store multiple mocks on the same fixture file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+  &quot;create&quot;:{&quot;name&quot;: &quot;e2etestBox&quot;},
+  &quot;boxFruit&quot;:{
+    &quot;uuid&quot;:&quot;3376339576e33dfb9145362426a33333&quot;,
+    &quot;name&quot;:&quot;e2etestBox&quot;,
+    &quot;visibility&quot;:true,
+    &quot;items&quot;:[
+      {&quot;name&quot;:&quot;apple&quot;,&quot;units&quot;:3},
+      {&quot;name&quot;:&quot;kiwi&quot;,&quot;units&quot;:2},
+    ]
+  },
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To access data we don&#x2019;t need to import any file, we just call cy.fixture(filename) inside the <code>**.spec.ts</code>. We can name it as we want.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-TypeScript" data-lang="TypeScript">cy.fixture(&apos;box.json&apos;).as(&apos;fruitBox&apos;)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>cy.fixture(&apos;box.json&apos;)</code> we get access to <code>box.json</code>
+<code>.as(fruitBox)</code> is used to create an alias (fruitBox) to the fixture.</p>
+</div>
+<div class="paragraph">
+<p>For more info check <a href="https://docs.cypress.io/api/commands/fixture.html#Syntax">Fixtures documentation</a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-cypress.asciidoc_request--route">20.4.5. Request / Route</h4>
+<div class="paragraph">
+<p>With cypress you can test your application with real data or with mocks.</p>
+</div>
+<div class="paragraph">
+<p>Not using mocks guarantees that your tests are real e2e test but makes them vulnerable to external issues.
+When you mock data you don&#x2019;t know exactly if the data and the structure received from the backend is correct because you are forcing a mock on the response, but you can avoid external issues, run test faster and have better control on the structure and status.</p>
+</div>
+<div class="paragraph">
+<p>To get more information go to <a href="https://docs.cypress.io/guides/guides/network-requests.html#Testing-Strategies">Testing Strategies</a></p>
+</div>
+<div class="sect4">
+<h5 id="guide-cypress.asciidoc_route">Route</h5>
+<div class="paragraph">
+<p>Cypress can intercept a XHR request and interact with it.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-TypeScript" data-lang="TypeScript">cy.server();
+cy.route(
+  &apos;GET&apos;,
+  &apos;/apiUrl/list&apos;,
+  [{&quot;name&quot;:&quot;apple&quot;, &quot;units&quot;:3},{&quot;name&quot;:&quot;kiwi&quot;, &quot;units&quot;:2}]
+)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>cy.server(options)</code> start a server to interact with the responses.</p>
+</div>
+<div class="ulist">
+<div class="title"><code>cy.route(options)</code> intercepts a XMLHttpRequests</div>
+<ul>
+<li>
+<p>method <code>GET</code></p>
+</li>
+<li>
+<p>url <code>/apiUrl/list&apos;</code></p>
+</li>
+<li>
+<p>response <code>[{&quot;name&quot;:&quot;apple&quot;, &quot;units&quot;:3},{&quot;name&quot;:&quot;kiwi&quot;, &quot;units&quot;:2}]</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Waits</strong></p>
+</div>
+<div class="paragraph">
+<p>Every cypress action has a default await time to avoid asynchronous issues, but this time can be short for some particular actions like api calls, for those cases we can use <code>cy.wait()</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-TypeScript" data-lang="TypeScript">cy.server();
+cy.route(&apos;/apiUrl/list&apos;).as(&apos;list&apos;);
+cy.visit(&apos;/boxList&apos;);
+cy.wait(&apos;@list&apos;);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can find more information about <code>cy.wait()</code> <a href="https://docs.cypress.io/guides/guides/network-requests.html#Waiting">here</a></p>
+</div>
+<div class="paragraph">
+<p>To mock data with fixtures:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-TypeScript" data-lang="TypeScript">cy.fixture(&apos;box&apos;)
+  .then(({boxFruit}) =&gt; {
+    cy.route(
+      &apos;GET&apos;,
+      &apos;/apiUrl/list&apos;,
+      boxFruit
+    ).as(&apos;boxFruit&apos;);
+    cy.get(&apos;#button&apos;).click();
+    cy.wait(&apos;@journalsList&apos;);
+    cy.get(&apos;#list&apos;).contains(&apos;apple&apos;);
+  })</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We get boxFruit data from the box fixture and then we mock the api call with it so now the response of the call is boxFruit object.
+When the button is clicked, it waits to recive the response of the call and then checks if the list contains one of the elements of the fruitBox.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guide-cypress.asciidoc_request">Request</h5>
+<div class="paragraph">
+<p>Make a HTTP request.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-TypeScript" data-lang="TypeScript">cy.server();
+cy.request(&apos;http://localhost:4200/&apos;)
+  .its(&apos;body&apos;)
+  .should(&apos;include&apos;, &apos;&lt;h1&gt;Welcome to Devon4ngAngularElementsTest!&lt;/h1&gt;&apos;);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If we have <code>&apos;http://localhost:4200&apos;</code> as baseUrl on <code>cypress.json</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-TypeScript" data-lang="TypeScript">cy.server();
+cy.request(&apos;/&apos;)
+  .its(&apos;body&apos;)
+  .should(&apos;include&apos;, &apos;&lt;h1&gt;Welcome to Devon4ngAngularElementsTest!&lt;/h1&gt;&apos;);
+// Goes to http://localhost:4200/</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We can add other options, like we can send the body of a form.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-TypeScript" data-lang="TypeScript">cy.server();
+cy.request({
+  method: &apos;POST&apos;,
+  url: &apos;/send&apos;,
+  form: true,
+  body: {
+    name: &apos;name task&apos;,
+    description: &apos;description of the task&apos;
+  }
+});</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-cypress.asciidoc_custom-comands">20.4.6. Custom comands</h4>
+<div class="paragraph">
+<p>If you see yourself writing the same test more than once (login is a common one), you can create a custom command to make things faster.</p>
+</div>
+<div class="paragraph">
+<p><code>Cypress.Commands.add(&apos;name&apos;, ()&#x21D2;{})</code> to create the test.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 93. commands.ts</div>
+<div class="content">
+<pre class="highlight"><code class="language-TypeScript" data-lang="TypeScript">Cypress.Commands.add(&apos;checkPlaceholder&apos;, (name) =&gt; {
+  cy.get(`[name=${name}]`)
+    .click()
+    .then(()=&gt;{
+      cy.get(`[name=${name}]`).should(&apos;have&apos;,&apos;class&apos;,&apos;mat-focused&apos;);
+    })
+})</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<div class="title">index.ts</div>
+<p>To use the commands we need to import the files on support/index.ts</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 94. index.ts</div>
+<div class="content">
+<pre class="highlight"><code class="language-TypeScript" data-lang="TypeScript">import &apos;./commands&apos;
+import &apos;./file1&apos;
+import &apos;./folder/file2&apos;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>index.ts is where all our custom commands files unite so Cypress knows where to find them.</p>
+</div>
+<div class="paragraph">
+<p>And as we are using typescript we need to define a <code>namespace</code>, <code>interface</code> and define our function.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>index.d.ts</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>declare namespace Cypress {
+  interface Chainable&lt;Subject&gt; {
+    checkPlaceholder(name:string):Chainable&lt;void&gt;
+  }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Check <a href="https://docs.cypress.io/guides/tooling/typescript-support.html#Types-for-custom-commands">typescript custom commands</a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-cypress.asciidoc_reporter">20.4.7. Reporter</h4>
+<div class="paragraph">
+<p>The tests results appear on the terminal, but to have a more friendly view we can add a reporter.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/cypress/reporter.jpg" alt="reporter">
+</div>
+</div>
+<div class="sect4">
+<h5 id="guide-cypress.asciidoc_mochawesome">Mochawesome</h5>
+<div class="paragraph">
+<p>In this case we are going to use Mochawesome, initialy its a Mocha reporter but as Cypress uses Mocha it works the same.</p>
+</div>
+<div class="paragraph">
+<p><strong>Install</strong></p>
+</div>
+<div class="paragraph">
+<p>npm</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">npm install --save-dev mochawesome</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>yarn</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">yarn add -D mochawesome</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To run the reporter:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">cypress run --reporter mochawesome</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Mochawesome saves by default the generated files on <em>./mochawesome-report/</em> but we can add options to change this behabour.</p>
+</div>
+<div class="paragraph">
+<p>Options can be passed to the reporter in two ways</p>
+</div>
+<div class="paragraph">
+<p>Using a flag</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">cypress run --reporter mochawesome --reporter-options reportDir=report</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or on <em>cypress.json</em></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+  &quot;baseUrl&quot;: &quot;http://localhost:4200&quot;,
+  &quot;reporter&quot;: &quot;mochawesome&quot;,
+  &quot;reporterOptions&quot;: {
+    &quot;overwrite&quot;: false,
+    &quot;html&quot;: false,
+    &quot;json&quot;: true,
+    &quot;reportDir&quot;: &quot;cypress/report&quot;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>Overwrite:false</code> to not overwrite every **:spec.ts test report, we want them to create a merged version later.</p>
+</div>
+<div class="paragraph">
+<p><code>reportDir</code> to set a custom directory.</p>
+</div>
+<div class="paragraph">
+<p><code>html:false</code> because we don&#x2019;t need it.</p>
+</div>
+<div class="paragraph">
+<p><code>json:true</code> to save them on json.</p>
+</div>
+<div class="paragraph">
+<p>Mochawesome only creates the html file of the last .spec.ts file that the tests run, that&#x2019;s why we don&#x2019;t generate html reports directly, in order to stack them all on the same final html we need to merge the reports.</p>
+</div>
+<div class="paragraph">
+<p>Check the <a href="https://www.npmjs.com/package/mochawesome-report-generator">mochawesome documentation</a></p>
+</div>
+<div class="paragraph">
+<p><strong>mochawesome-merge</strong></p>
+</div>
+<div class="paragraph">
+<p>Mochawesome-merge is a library that helps us to merge the different json.</p>
+</div>
+<div class="paragraph">
+<p>npm</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">npm install --save-dev mochawesome-merge
+npm install --save-dev mochawesome-report-generator</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>yarn</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">yarn add -D mochawesome-merge
+yarn add -D mochawesome-report-generator</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To merge the files we execute this command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">mochawesome-merge cypress/report/*.json &gt; cypress/reportFinal.json</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>reportFinal.json</code> is the result of this merge, whit that we hace the data of all the spec files in one json.</p>
+</div>
+<div class="paragraph">
+<p>We can also automate the test, merge and convertion to html using a script.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-TypeScript" data-lang="TypeScript">const cypress = require(&apos;cypress&apos;);
+const fse = require(&apos;fs-extra&apos;);
+const { merge } = require(&apos;mochawesome-merge&apos;);
+const generator = require(&apos;mochawesome-report-generator&apos;);
+const runTests= async ()=&gt;{
+  await fse.remove(&apos;mochawesome-report&apos;);
+  await fse.remove(&apos;cypress/report&apos;);
+  const {totalFailed} = await cypress.run();
+  const reporterOptions = {
+    files: [&quot;cypress/report/*.json&quot;]
+  };
+  await generateReport(reporterOptions);
+  if(totalFailed !== 0){
+    process.exit(2);
+  };
+};
+const generateReport = (options)=&gt; {
+  return merge(options).then((jsonReport)=&gt;{
+    generator.create(jsonReport).then(()=&gt;{
+      process.exit();
+    });
+  });
+};
+runTests();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>fse.remove()</code> to remove older reports data.</p>
+</div>
+<div class="paragraph">
+<p><code>cypress.run()</code> to run the tests.</p>
+</div>
+<div class="paragraph">
+<p><code>merge(options)</code> we merge the jsons output from running the tests.</p>
+</div>
+<div class="paragraph">
+<p><code>generator.create(jsonReport)</code> then we generate the html view of the report.</p>
+</div>
+<div class="paragraph">
+<p>Check the <a href="https://www.npmjs.com/package/mochawesome-merge">mochawesome-merge documentation</a></p>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1483,7 +2062,7 @@ $ npm run electron:windows              # Build Angular app for production and p
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2020-07-31 04:39:50 UTC
+Last updated 2020-08-03 10:18:36 UTC
 </sub></div>
 
 
