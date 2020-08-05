@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2020-08-05 08:41:29 UTC">
+<meta name="author" content="Updated at 2020-08-05 09:52:13 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -517,7 +517,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2020-08-05 08:41:54 UTC</span><br>
+<span id="author" class="author">Updated at 2020-08-05 09:52:40 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -579,8 +579,384 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect2">
 <h3 id="master-mrchecker.asciidoc_migration-guide">78.1. Migration guide</h3>
 <div class="sect3">
-<h4 id="Migration-guide.asciidoc">78.1.1. TODO</h4>
-
+<h4 id="Migration-guide.asciidoc">78.1.1. JUnit4 to JUnit5 migration guide</h4>
+<div class="paragraph">
+<p><strong>mrchecker-core-module version 5.6.2.1</strong> features the upgrade of JUnit4 to JUnit5. Consequently, the Junit4 features are now obsolete and current test projects require migration
+in order to use the letset revision of MrChecker. This site provides guidance on the migration.</p>
+</div>
+<div class="paragraph">
+<p>References:
+Junit5 User Guide - <a href="https://junit.org/junit5/docs/current/user-guide/#overview" class="bare">https://junit.org/junit5/docs/current/user-guide/#overview</a></p>
+</div>
+<div class="sect4">
+<h5 id="migration-guide.asciidoc_pom">POM</h5>
+<div class="paragraph">
+<p>The project POM file needs to be adjusted in the first place. An exemplary POM file for download can be found here.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="migration-guide.asciidoc_test-annotations">Test Annotations</h5>
+<div class="paragraph">
+<p>JUnit5 redefines annotations defining a test flow. The annotations need to be adjusted as per the following table.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration1.png" alt="migration1">
+</div>
+</div>
+<div class="paragraph">
+<p>[[migration-guide.asciidoc_@rule,-@classrule,-testrule-and-testmethod]]
+== @Rule, @ClassRule, TestRule and TestMethod</p>
+</div>
+<div class="paragraph">
+<p>Junit4 <code>@Rule</code> and <code>@ClassRule</code> annoations as well as <code>TestRule</code> and <code>TestMethod</code> interfaces have been replaced
+with the Junit5 extension mechanism (<a href="https://junit.org/junit5/docs/current/user-guide/#extensions" class="bare">https://junit.org/junit5/docs/current/user-guide/#extensions</a>).
+During the migration to Junit5 all mentioned type instances need to be rewritten according to the Junit5 User Guide.
+The extension mechanism is far more flexible than the Junit4 functionality based on rules.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+As per Junit5 API spec: <code>ExpectedExceptionSupport,&#xA0;ExternalResourceSupport,&#xA0;VerifierSupport</code> provide native support of the correspoinding Junit4 rules.
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>Extension registration example:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration2.png" alt="migration2">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration_arrow_down.png" alt="migration arrow down">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration3.png" alt="migration3">
+</div>
+</div>
+<div class="paragraph">
+<p>TestRule (TestWatcher and ExternalResource) to Extension (TestWatcher and AfterAllCallback) example:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration4.png" alt="migration4">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration_arrow_down.png" alt="migration arrow down">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration5.png" alt="migration5">
+</div>
+</div>
+<div class="paragraph">
+<p>==Page, BasePageAutoRegistration and PageFactory classes</p>
+</div>
+<div class="paragraph">
+<p><code>Page</code> class is a new MrChecker class. It was introduced to provide common implemenation for its subpages in specific MrChecker modules.
+In order to receive test lifecycle notifications concrete <code>Page`s need to be registered by calling `addToTestExecutionObserver()</code> method.
+To facilitate this process <code>PageFactory</code> class was designed and it&#x2019;s usage is a recommended way of creating <code>Page</code> objects for tests.
+Although in MrChecker based on Junit4 the registration process was done in a specific <code>BasePage</code> constructor, it&#x2019;s been considered error prone and reimplemented.
+Also to reduce migration cost <code>BasePageAutoRegistration</code> classes are available in MrChceker modules. They use the old way of registration.
+Given that three ways of migration are possible.</p>
+</div>
+<div class="paragraph">
+<p>Migration with PageFactory class example <strong>(RECOMMENDED)</strong>:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration6.png" alt="migration6">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration_arrow_down.png" alt="migration arrow down">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration7.png" alt="migration7">
+</div>
+</div>
+<div class="paragraph">
+<p>Migration with calling <code>addToTestExecutionObserver()</code> method example:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration6.png" alt="migration6">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration_arrow_down.png" alt="migration arrow down">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration8.png" alt="migration8">
+</div>
+</div>
+<div class="paragraph">
+<p>Migration with <code>BasePageAutoRegistration</code> class example:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration9.png" alt="migration9">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration_arrow_down.png" alt="migration arrow down">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration10.png" alt="migration10">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="migration-guide.asciidoc_test-suites">Test suites</h5>
+<div class="paragraph">
+<p>Test suite migration example:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration11.png" alt="migration11">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration_arrow_down.png" alt="migration arrow down">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration12.png" alt="migration12">
+</div>
+</div>
+<div class="paragraph">
+<p>Running tests from Maven:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration13.png" alt="migration13">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration_arrow_down.png" alt="migration arrow down">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration14.png" alt="migration14">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="migration-guide.asciidoc_concurrency">Concurrency</h5>
+<div class="paragraph">
+<p>Junit5 provides native thread count and parallel execution control in contrast to Junit4 where it was controlled by Maven Surefire plugin.
+To enable concurrent test execution <code>junit-platform.properties</code> file needs to placed in the test/resources directory of a project.</p>
+</div>
+<div class="paragraph">
+<p>An exemplary file contents:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration15.png" alt="migration15">
+</div>
+</div>
+<div class="paragraph">
+<p>A ready-to-use file can be found here.</p>
+</div>
+<div class="paragraph">
+<p>MrChecker supports only concurrent test class execution.
+<code>@ResourceLock</code> can be used to synchronize between classes if needed:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration16.png" alt="migration16">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="migration-guide.asciidoc_cucumber">Cucumber</h5>
+<div class="paragraph">
+<p>If Cucumber is used in a project it is neccessary to change a hook class.
+An exemplary hook source file for download cab be found here.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="migration-guide.asciidoc_data-driven-tests">Data driven tests</h5>
+<div class="paragraph">
+<p>Junit5 implements new approach to data driven tests by various data resolution mechanisms.</p>
+</div>
+<div class="paragraph">
+<p>An example of method source parameters migration version one:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration17.png" alt="migration17">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration_arrow_down.png" alt="migration arrow down">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration18.png" alt="migration18">
+</div>
+</div>
+<div class="paragraph">
+<p>An example of method source parameters migration version two:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration17.png" alt="migration17">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration_arrow_down.png" alt="migration arrow down">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration19.png" alt="migration19">
+</div>
+</div>
+<div class="paragraph">
+<p>An example of method source in another class parameters migration:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration20.png" alt="migration20">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration_arrow_down.png" alt="migration arrow down">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration21.png" alt="migration21">
+</div>
+</div>
+<div class="paragraph">
+<p>Providing parameters directly in annotations has no analogy in Junit5 and needs to be replaced with e.g. method source:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration22.png" alt="migration22">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration_arrow_down.png" alt="migration arrow down">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration23.png" alt="migration23">
+</div>
+</div>
+<div class="paragraph">
+<p>An example of csv parameters source with no header line migration:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration24.png" alt="migration24">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration_arrow_down.png" alt="migration arrow down">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration25.png" alt="migration25">
+</div>
+</div>
+<div class="paragraph">
+<p>An example of csv parameters source with the header line migration:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration26.png" alt="migration26">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration_arrow_down.png" alt="migration arrow down">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration27.png" alt="migration27">
+</div>
+</div>
+<div class="paragraph">
+<p>An example of csv parameters source with object mapping migration step1:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration28.png" alt="migration28">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration_arrow_down.png" alt="migration arrow down">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration29.png" alt="migration29">
+</div>
+</div>
+<div class="paragraph">
+<p>An example of csv parameters source with object mapping migration step 2:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration30.png" alt="migration30">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration_arrow_down.png" alt="migration arrow down">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/migration31.png" alt="migration31">
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="migration-guide.asciidoc_setup-and-teardown">setUp() and tearDown()</h5>
+<div class="paragraph">
+<p><code>BaseTest.setUp()</code> and <code>BaseTest.tearDown()</code> methods are now not abstract and need no implementation in subclasses. <code>@Override</code> when a custom implemenatation is needed.</p>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -717,7 +1093,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2020-08-05 08:39:16 UTC
+Last updated 2020-08-05 09:49:56 UTC
 </sub></div>
 
 
