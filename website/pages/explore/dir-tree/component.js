@@ -7,10 +7,10 @@ class DirTree extends HTMLDivElement {
 
   constructor(mobile = false) {
     super();
-    this.createComp(mobile);
+    this.createComp(mobile, window.location.hash.split('/').slice(1));
   }
 
-  createComp(mobile) {
+  createComp(mobile, initialHash) {
     this.innerHTML = baseTemplate(mobile);
 
     getDirs(
@@ -25,8 +25,8 @@ class DirTree extends HTMLDivElement {
       let template = `
         <div class="dir-component">
             <div class="dir-tree font-weight-bold row ${
-              mobile ? 'mobile' : ''
-            }">
+        mobile ? 'mobile' : ''
+        }">
                 <div class="dir-column col-12 col-4 px-0">
                 <ul class="list-unstyled ml-0 cb-folder-closed column-1"></ul>
                 </div>
@@ -120,8 +120,8 @@ class DirTree extends HTMLDivElement {
     function getDirs(path, lvl) {
       let aux = $("<div id='aux'></div>");
 
-      aux.load(`${path.dir}/${path.file} #content`, function() {
-        aux.find('.links-to-files > .sectionbody > .paragraph a').each(function(_, el) {
+      aux.load(`${path.dir}/${path.file} #content`, function () {
+        aux.find('.links-to-files > .sectionbody > .paragraph a').each(function (_, el) {
           let href = $(el).attr('href');
           let aux2 = $("<div id='aux2'></div>");
 
@@ -136,12 +136,12 @@ class DirTree extends HTMLDivElement {
     function showFileDetails(path) {
       let aux = $("<div id='aux'></div>");
 
-      aux.load(`${path.dir}/${path.file} #content`, function() {
+      aux.load(`${path.dir}/${path.file} #content`, function () {
         const dir = aux.find('.directory');
         const title = dir.find('h2').text();
         const text = getText(dir);
         const url = `${path.dir}/${path.file}`;
-        let asciidocFilename = path.file.replace(".html",".asciidoc");
+        let asciidocFilename = path.file.replace(".html", ".asciidoc");
         const editUrl = `https://github.com/devonfw/devonfw.github.io/edit/develop/website/pages/explore/dir-content/${asciidocFilename}`;
         const commonLinks = addTarget(aux.find('.common-links a'));
         const devon4jLinks = addTarget(aux.find('.devon4j-links a'));
@@ -149,15 +149,15 @@ class DirTree extends HTMLDivElement {
         const devon4ngLinks = addTarget(aux.find('.devon4ng-links a'));
         const devon4nodeLinks = addTarget(aux.find('.devon4node-links a'));
         const videosLinks = aux.find('.videos-links a');
-        
-        if(text != "" || 
-          commonLinks.length != 0 || 
+
+        if (text != "" ||
+          commonLinks.length != 0 ||
           devon4jLinks.length != 0 ||
           devon4netLinks.length != 0 ||
           devon4ngLinks.length != 0 ||
           devon4nodeLinks.length != 0 ||
-          videosLinks.length != 0 ) {
-          const fileInfo = { title, text, url, editUrl};
+          videosLinks.length != 0) {
+          const fileInfo = { title, text, url, editUrl };
           const details = detailsTemplate(fileInfo);
           $('.dir-component .dir-tree-detail').html(details);
           setHtmlOrHide('details-links', commonLinks);
@@ -174,7 +174,7 @@ class DirTree extends HTMLDivElement {
     }
 
     function setHtmlOrHide(name, value) {
-      if(value.length > 0){
+      if (value.length > 0) {
         $('.dir-component .' + name).html(value);
       }
       else {
@@ -182,8 +182,8 @@ class DirTree extends HTMLDivElement {
       }
     }
 
-    function addTarget(links){
-      return links.each((_,e) => e.target = '_blank');
+    function addTarget(links) {
+      return links.each((_, e) => e.target = '_blank');
     }
 
     function showDirInfo(aux2, el, lvl, parentFile) {
@@ -198,8 +198,14 @@ class DirTree extends HTMLDivElement {
           const fileInfo = { title, text };
           listItem = getLiFile(fileInfo, el, lvl + 1);
         }
-
+        let name = $(el).attr('href').substr(0, $(el).attr('href').lastIndexOf('.'));
+        let hash = window.location.hash.split('/');
         $('.column-' + (lvl + 1)).append(listItem);
+        if (name === initialHash[0]) {
+          initialHash.shift();
+          listItem.click();
+        }
+
       };
     }
 
@@ -219,6 +225,7 @@ class DirTree extends HTMLDivElement {
           .removeClass('folder-open bg-ligthgray');
         const nCols = $('.dir-tree.mobile .dir-column').length;
 
+        let name = '';
         if (nCols - 1 == lvlDest) {
           createNewColumn();
           slideCols(lvlDest);
@@ -230,6 +237,7 @@ class DirTree extends HTMLDivElement {
             },
             lvlDest,
           );
+          name = parentFile.substr(0, parentFile.lastIndexOf('.'));
         } else {
           clearDir(lvlDest + 1);
           createNewColumn();
@@ -241,7 +249,12 @@ class DirTree extends HTMLDivElement {
             },
             lvlDest,
           );
+          name = $(el).attr('href').substr(0, $(el).attr('href').lastIndexOf('.'));
         }
+        let hash = window.location.hash.split('/');
+        hash[lvlDest] = name;
+        window.location.hash = hash.slice(0, lvlDest + 1).join('/');
+
         showFileDetails({
           dir: './dir-content',
           file: $(el).attr('href'),
@@ -255,7 +268,10 @@ class DirTree extends HTMLDivElement {
     function getLiFile(fileInfo, el, lvlDest) {
       function clickHandler() {
         clearDir(lvlDest + 1);
-        // const details = detailsTemplate(fileInfo);
+        let hash = window.location.hash.split('/');
+        let name = $(el).attr('href').substr(0, $(el).attr('href').lastIndexOf('.'));
+        hash[lvlDest] = name;
+        window.location.hash = hash.slice(0, lvlDest + 1).join('/');
         showFileDetails({ dir: './dir-content', file: $(el).attr('href') });
 
         $(this).addClass('bg-ligthgray');
