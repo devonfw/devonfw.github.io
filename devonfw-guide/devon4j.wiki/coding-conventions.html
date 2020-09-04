@@ -116,6 +116,7 @@
 <ul class="sectlevel2">
 <li><a href="#coding-conventions.asciidoc_blobs">BLOBs</a></li>
 <li><a href="#coding-conventions.asciidoc_closing-resources">Closing Resources</a></li>
+<li><a href="#coding-conventions.asciidoc_catching-and-handling-exceptions">Catching and handling Exceptions</a></li>
 <li><a href="#coding-conventions.asciidoc_lambdas-and-streams">Lambdas and Streams</a></li>
 <li><a href="#coding-conventions.asciidoc_optionals">Optionals</a></li>
 <li><a href="#coding-conventions.asciidoc_encoding">Encoding</a></li>
@@ -440,7 +441,7 @@ With devonfw we experienced the same for the codebase (what is inside <code>src/
   readData(in);
   in.close();
 } catch (IOException e) {
-  throw new RuntimeIoException(e, IoMode.READ);
+  throw new IllegalStateException("Failed to read data.", e);
 }</code></pre>
 </div>
 </div>
@@ -452,9 +453,38 @@ With devonfw we experienced the same for the codebase (what is inside <code>src/
 <pre class="highlight"><code class="java language-java">try (InputStream in = new FileInputStream(file)) {
   readData(in);
 } catch (IOException e) {
-  throw new RuntimeIoException(e, IoMode.READ);
+  throw new IllegalStateException("Failed to read data.", e);
 }</code></pre>
 </div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="coding-conventions.asciidoc_catching-and-handling-exceptions">Catching and handling Exceptions</h3>
+<div class="paragraph">
+<p>When catching exceptions always ensure the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Never call <code>printStackTrace()</code> method on an exception</p>
+</li>
+<li>
+<p>Either log or wrap and re-throw the entire catched exception. Be aware that the cause(s) of an exception is very valuable information. If you loose such information by improper exception-handling you may be unable to properly analyse production problems what can cause severe issues.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>If you wrap and re-throw an exception ensure that the catched exception is passed as cause to the newly created and thrown exception.</p>
+</li>
+<li>
+<p>If you log an exception ensure that the entire exception is passed as argument to the logger (and not only the result of <code>getMessage()</code> or <code>toString()</code> on the exception).</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>See <a href="guide-exceptions.html#handling-exceptions">exception handling</a></p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect2">
@@ -791,7 +821,7 @@ id = Optional.ofNullable(fooCto).map(FooCto::getBar).map(BarCto::getBar).map(Bar
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2020-08-24 18:44:10 UTC
+Last updated 2020-09-04 11:30:56 UTC
 </sub></div>
 </div>
 </div>

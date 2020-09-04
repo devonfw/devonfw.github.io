@@ -242,11 +242,14 @@
 <p>If we catch an exception and throw a new one, we always <strong>have</strong> to provide the original exception as <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Throwable.html#getCause%28%29">cause</a> to the constructor of the new exception.</p>
 </li>
 <li>
-<p>At the entry points of the application (e.g. a service operation) we have to catch and handle all throwables. This is done via the <em>exception-facade-pattern</em> via an explicit facade or aspect. The devon4j already provides ready-to-use implementations for this such as <a href="https://github.com/devonfw/devon4j/blob/develop/modules/rest/src/main/java/com/devonfw/module/rest/service/impl/RestServiceExceptionFacade.java">RestServiceExceptionFacade</a>. The exception facade has to&#8230;&#8203;</p>
+<p>At the entry points of the application (e.g. a service operation) we have to catch and handle all throwables. This is done via the <em>exception-facade-pattern</em> via an explicit facade or aspect. The <code>devon4j-rest</code> module already provides ready-to-use implementations for this such as <a href="https://github.com/devonfw/devon4j/blob/develop/modules/rest/src/main/java/com/devonfw/module/rest/service/impl/RestServiceExceptionFacade.java">RestServiceExceptionFacade</a>. The exception facade has to &#8230;&#8203;</p>
 <div class="ulist">
 <ul>
 <li>
 <p>log all errors (user errors on info and technical errors on error level)</p>
+</li>
+<li>
+<p>ensure the entire exception is passed to the logger (not only the message) so that the logger can capture the entire stacktrace and the root cause is not lost.</p>
 </li>
 <li>
 <p>convert the error to a result appropriable for the client and secure for <a href="https://www.owasp.org/index.php/Top_10_2013-A6-Sensitive_Data_Exposure">Sensitive Data Exposure</a>. Especially for security exceptions only a generic security error code or message may be revealed but the details shall only be logged but <strong>not</strong> be exposed to the client. All <em>internal exceptions</em> are converted to a generic error with a message like:</p>
@@ -443,7 +446,7 @@
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2020-08-24 18:44:23 UTC
+Last updated 2020-09-04 11:31:13 UTC
 </sub></div>
 </div>
 </div>

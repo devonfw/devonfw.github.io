@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2020-08-24 18:48:50 UTC">
+<meta name="author" content="Updated at 2020-09-04 11:36:49 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -517,7 +517,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2020-08-24 18:49:13 UTC</span><br>
+<span id="author" class="author">Updated at 2020-09-04 11:37:16 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -891,7 +891,7 @@ With devonfw we experienced the same for the codebase (what is inside <code>src/
   readData(in);
   in.close();
 } catch (IOException e) {
-  throw new RuntimeIoException(e, IoMode.READ);
+  throw new IllegalStateException(&quot;Failed to read data.&quot;, e);
 }</code></pre>
 </div>
 </div>
@@ -903,13 +903,42 @@ With devonfw we experienced the same for the codebase (what is inside <code>src/
 <pre class="highlight"><code class="language-java" data-lang="java">try (InputStream in = new FileInputStream(file)) {
   readData(in);
 } catch (IOException e) {
-  throw new RuntimeIoException(e, IoMode.READ);
+  throw new IllegalStateException(&quot;Failed to read data.&quot;, e);
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="coding-conventions.asciidoc_lambdas-and-streams">9.6.3. Lambdas and Streams</h4>
+<h4 id="coding-conventions.asciidoc_catching-and-handling-exceptions">9.6.3. Catching and handling Exceptions</h4>
+<div class="paragraph">
+<p>When catching exceptions always ensure the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Never call <code>printStackTrace()</code> method on an exception</p>
+</li>
+<li>
+<p>Either log or wrap and re-throw the entire catched exception. Be aware that the cause(s) of an exception is very valuable information. If you loose such information by improper exception-handling you may be unable to properly analyse production problems what can cause severe issues.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>If you wrap and re-throw an exception ensure that the catched exception is passed as cause to the newly created and thrown exception.</p>
+</li>
+<li>
+<p>If you log an exception ensure that the entire exception is passed as argument to the logger (and not only the result of <code>getMessage()</code> or <code>toString()</code> on the exception).</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>See <a href="guide-exceptions.html#handling-exceptions">exception handling</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="coding-conventions.asciidoc_lambdas-and-streams">9.6.4. Lambdas and Streams</h4>
 <div class="paragraph">
 <p>With Java8 you have cool new features like lambdas and monads like (<code>Stream</code>, <code>CompletableFuture</code>, <code>Optional</code>, etc.).
 However, these new features can also be misused or lead to code that is hard to read or debug. To avoid pain, we give you the following best practices:</p>
@@ -1030,7 +1059,7 @@ public List&lt;String&gt; twitterHandles(List&lt;Author&gt; authors, String comp
 </div>
 </div>
 <div class="sect3">
-<h4 id="coding-conventions.asciidoc_optionals">9.6.4. Optionals</h4>
+<h4 id="coding-conventions.asciidoc_optionals">9.6.5. Optionals</h4>
 <div class="paragraph">
 <p>With <code>Optional</code> you can wrap values to avoid a <code>NullPointerException</code> (NPE). However, it is not a good code-style to use <code>Optional</code> for every parameter or result to express that it may be null. For such case use <code>@Nullable</code> or even better instead annotate <code>@NotNull</code> where <code>null</code> is not acceptable.</p>
 </div>
@@ -1046,7 +1075,7 @@ id = Optional.ofNullable(fooCto).map(FooCto::getBar).map(BarCto::getBar).map(Bar
 </div>
 </div>
 <div class="sect3">
-<h4 id="coding-conventions.asciidoc_encoding">9.6.5. Encoding</h4>
+<h4 id="coding-conventions.asciidoc_encoding">9.6.6. Encoding</h4>
 <div class="paragraph">
 <p>Encoding (esp. Unicode with combining characters and surrogates) is a complex topic. Please study this topic if you have to deal with encodings and processing of special characters. For the basics follow these recommendations:</p>
 </div>
@@ -1078,7 +1107,7 @@ id = Optional.ofNullable(fooCto).map(FooCto::getBar).map(BarCto::getBar).map(Bar
 </div>
 </div>
 <div class="sect3">
-<h4 id="coding-conventions.asciidoc_prefer-general-api">9.6.6. Prefer general API</h4>
+<h4 id="coding-conventions.asciidoc_prefer-general-api">9.6.7. Prefer general API</h4>
 <div class="paragraph">
 <p>Avoid unnecessary strong bindings:</p>
 </div>
@@ -1239,7 +1268,7 @@ id = Optional.ofNullable(fooCto).map(FooCto::getBar).map(BarCto::getBar).map(Bar
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2020-08-24 18:47:00 UTC
+Last updated 2020-09-04 11:34:36 UTC
 </sub></div>
 
 

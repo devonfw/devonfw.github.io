@@ -21,7 +21,7 @@
 <!-- ************************************* -->
 
 
-<title>Angular Electron</title>
+<title>Add Electron to an Angular application</title>
 <!-- devonfw website stylesheet -->
 <link rel="stylesheet" type="text/css" href="/devonfw.css">
 <!-- Lunr -->
@@ -100,30 +100,23 @@
 <div id="content" class="mt-4 mt-sm-5">
 <div class="toc2">
 <div class="title">Table of Contents</div>
-<ul class="sectlevel0">
-<li><a href="#guide-add-electron.asciidoc">Angular Electron</a>
 <ul class="sectlevel1">
 <li><a href="#guide-add-electron.asciidoc_add-electron-to-an-angular-application">Add Electron to an Angular application</a>
 <ul class="sectlevel2">
 <li><a href="#guide-add-electron.asciidoc_add-electron-and-other-relevant-dependencies">Add Electron and other relevant dependencies</a></li>
-<li><a href="#guide-add-electron.asciidoc_add-electron-build-configuration">Add Electron build configuration</a></li>
 <li><a href="#guide-add-electron.asciidoc_create-the-necessary-typescript-configurations">Create the necessary typescript configurations</a></li>
+<li><a href="#guide-add-electron.asciidoc_add-electron-build-configuration">Add Electron build configuration</a></li>
 <li><a href="#guide-add-electron.asciidoc_modify-angular.json">Modify angular.json</a></li>
-<li><a href="#guide-add-electron.asciidoc_add-angular-electron-directives">Add Angular Electron directives</a></li>
-<li><a href="#guide-add-electron.asciidoc_add-access-electron-apis">Add access Electron APIs</a></li>
-<li><a href="#guide-add-electron.asciidoc_create-the-electron-window-in-main.ts">Create the electron window in <code>main.ts</code></a></li>
+<li><a href="#guide-add-electron.asciidoc_create-the-electron-window-in-electron-main.ts">Create the electron window in <code>electron-main.ts</code></a></li>
 <li><a href="#guide-add-electron.asciidoc_add-the-electron-window-and-improve-the-package.json-scripts">Add the electron window and improve the <code>package.json</code> scripts</a></li>
 </ul>
 </li>
 </ul>
-</li>
-</ul>
-<h1 id="guide-add-electron.asciidoc" class="sect0">Angular Electron</h1>
 <div class="sect1">
 <h2 id="guide-add-electron.asciidoc_add-electron-to-an-angular-application">Add Electron to an Angular application</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>This cookbook recipe explains how to integrate Electron in an Angular 6+ application. <a href="https://electronjs.org/">Electron</a> is a framework for creating native applications with web technologies like JavaScript, HTML, and CSS. As an example, very well known applications as Visual Studio Code, Atom, Slack or Skype (and many more) are using Electron too.</p>
+<p>This cookbook recipe explains how to integrate Electron in an Angular 10+ application. <a href="https://electronjs.org/">Electron</a> is a framework for creating native applications with web technologies like JavaScript, HTML, and CSS. As an example, very well known applications as Visual Studio Code, Atom, Slack or Skype (and many more) are using Electron too.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -132,7 +125,7 @@
 <i class="icon-note" title=""></i>
 </td>
 <td class="content">
-At the moment of this writing Angular 7.2.3 and Electron 4.0.2 were the versions available.
+At the moment of this writing Angular 10.0.4, Electron 9.1.1 and Electron-builder 22.7.0 were the versions available.
 </td>
 </tr>
 </table>
@@ -174,13 +167,8 @@ Please remember if the project has a <code>package-lock.json</code> or <code>yar
 <div class="content">
 <pre class="highlight"><code class="json language-json">"devDependencies": {
 ...
-    "@angular-builders/custom-webpack": "9.0.0",
-    "electron": "8.0.1",
-    "electron-builder": "22.3.2",
-    "electron-reload": "1.5.0",
-    "npm-run-all": "4.1.5",
-    "wait-on": "4.0.0",
-    "webdriver-manager": "12.1.7",
+    "electron": "^9.1.1",
+    "electron-builder": "^22.7.0",
 ...
 },</code></pre>
 </div>
@@ -190,7 +178,7 @@ Please remember if the project has a <code>package-lock.json</code> or <code>yar
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="bash language-bash">$ npm install -D electron electron-builder electron-reload npm-run-all wait-on webdriver-manager</code></pre>
+<pre class="highlight"><code class="bash language-bash">$ npm install -D electron electron-builder</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -198,14 +186,174 @@ Please remember if the project has a <code>package-lock.json</code> or <code>yar
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="bash language-bash">$ yarn add -D electron electron-builder electron-reload npm-run-all wait-on webdriver-manager</code></pre>
+<pre class="highlight"><code class="bash language-bash">$ yarn add -D electron electron-builder</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-add-electron.asciidoc_create-the-necessary-typescript-configurations">Create the necessary typescript configurations</h3>
+<div class="paragraph">
+<p>In order to initiate electron in an angular app we need to modify the <code>tsconfig.json</code> file and create a <code>tsconfig.serve.json</code> and a <code>tsconfig.base.json</code> in the root folder.</p>
+</div>
+<div class="sect3">
+<h4 id="guide-add-electron.asciidoc_tsconfig.json">tsconfig.json</h4>
+<div class="paragraph">
+<p>This file needs to be modified to create references to <code>./src/tsconfig.app.json</code> and <code>./src/tsconfig.spec.json</code> to support different configurations.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+  "files": [],
+  "references": [
+    {
+      "path": "./src/tsconfig.app.json"
+    },
+    {
+      "path": "./src/tsconfig.spec.json"
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-add-electron.asciidoc_tsconfig.app.json">tsconfig.app.json</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "../app",
+    "module": "es2015",
+    "baseUrl": "",
+    "types": []
+  },
+  "include": [
+    "**/*.ts",
+  ],
+  "exclude": [
+    "**/*.spec.ts"
+  ],
+  "angularCompilerOptions": {
+    "fullTemplateTypeCheck": true,
+    "strictInjectionParameters": true,
+    "preserveWhitespaces": true
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-add-electron.asciidoc_tsconfig.spec.json">tsconfig.spec.json</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "../spec",
+    "module": "commonjs",
+    "types": [
+      "jasmine",
+      "node"
+    ]
+  },
+  "files": [
+    "test.ts",
+  ],
+  "include": [
+    "**/*.spec.ts",
+    "**/*.d.ts"
+  ],
+  "exclude": [
+    "dist",
+    "release",
+    "node_modules"
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-add-electron.asciidoc_tsconfig.base.json">tsconfig.base.json</h4>
+<div class="paragraph">
+<p>This is shared betwen tsconfig.app.json and tsconfig.spec.json and it will be extended on each config file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "outDir": "./dist",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "es5",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "es2017",
+      "es2016",
+      "es2015",
+      "dom"
+    ]
+  },
+  "files": [
+    "electron-main.ts"
+    "src/polyfills.ts"
+  ],
+  "include": [
+    "src/**/*.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-add-electron.asciidoc_tsconfig.serve.json">tsconfig.serve.json</h4>
+<div class="paragraph">
+<p>In the root, <code>tsconfig.serve.json</code> needs to be created. This typescript config file is going to be used when we serve electron:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+  "compilerOptions": {
+    "outDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "target": "es5",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "es2017",
+      "dom"
+    ]
+  },
+  "include": [
+    "electron-main.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts"
+  ]
+}</code></pre>
+</div>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="guide-add-electron.asciidoc_add-electron-build-configuration">Add Electron build configuration</h3>
 <div class="paragraph">
-<p>In order to configure electron builds properly a <code>electron-builder.json</code> must be included in the root folder of the application. For more information and fine tuning please refer to the <a href="https://www.electron.build/configuration/configuration">Electron Builder official documentation</a>.</p>
+<p>In order to configure electron builds properly we need to create a new json on our application, let&#8217;s call it electron-builder.json. For more information and fine tuning please refer to the <a href="https://www.electron.build/configuration/configuration">Electron Builder official documentation</a>.</p>
 </div>
 <div class="paragraph">
 <p>The contents of the file will be something similar to the following:</p>
@@ -213,40 +361,24 @@ Please remember if the project has a <code>package-lock.json</code> or <code>yar
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="json language-json">{
-  "productName": "app-name",
-  "directories": {
-    "output": "release/"
+  "productName": "devon4ngElectron",
+  "directories":{
+    "output": "./builder-release"
   },
-    "files": [
-        "**/*",
-        "!**/*.ts",
-        "!*.code-workspace",
-        "!LICENSE.md",
-        "!package.json",
-        "!package-lock.json",
-        "!src/",
-        "!e2e/",
-        "!hooks/",
-        "!angular.json",
-        "!_config.yml",
-        "!karma.conf.js",
-        "!tsconfig.json",
-        "!tslint.json"
-    ],
   "win": {
-    "icon": "dist",
+    "icon": "dist/assets/icons",
     "target": [
       "portable"
     ]
   },
   "mac": {
-    "icon": "dist",
+    "icon": "dist/assets/icons",
     "target": [
       "dmg"
     ]
   },
   "linux": {
-    "icon": "dist",
+    "icon": "dist/assets/icons",
     "target": [
       "AppImage"
     ]
@@ -255,7 +387,7 @@ Please remember if the project has a <code>package-lock.json</code> or <code>yar
 </div>
 </div>
 <div class="paragraph">
-<p>Theres two important things in this file:</p>
+<p>Theres two important things in this files:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -269,238 +401,43 @@ Please remember if the project has a <code>package-lock.json</code> or <code>yar
 </div>
 </div>
 <div class="sect2">
-<h3 id="guide-add-electron.asciidoc_create-the-necessary-typescript-configurations">Create the necessary typescript configurations</h3>
-<div class="paragraph">
-<p>In order to initiate electron in an angular app we need to modify the <code>tsconfig.json</code> file and create a new one named <code>tsconfig-serve.json</code> in the root folder.</p>
-</div>
-<div class="sect3">
-<h4 id="guide-add-electron.asciidoc_tsconfig.json">tsconfig.json</h4>
-<div class="paragraph">
-<p>This file needs to be modified to add the <code>main.ts</code> and <code>src/**/*</code> folders excluding the <code>node_modules</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="json language-json">{
-....
-  },
-  "include": [
-    "main.ts",
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
-....
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="guide-add-electron.asciidoc_tsconfig-serve.json">tsconfig-serve.json</h4>
-<div class="paragraph">
-<p>In the root, <code>tsconfig-serve.json</code> needs to be created. This typescript config file is going to be used when we serve electron:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="json language-json">{
-  "compilerOptions": {
-    "sourceMap": true,
-    "declaration": false,
-    "moduleResolution": "node",
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "target": "es5",
-    "types": ["node"],
-    "lib": ["es2017", "es2016", "es2015", "dom"]
-  },
-  "include": ["main.ts"],
-  "exclude": ["node_modules", "**/*.spec.ts"]
-}</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
 <h3 id="guide-add-electron.asciidoc_modify-angular.json">Modify angular.json</h3>
 <div class="paragraph">
-<p><code>angular.json</code> has to to be modified so the project is built inside <em>/dist</em> without an intermediate folder and include the reference to the custom Webpack configuration.</p>
+<p><code>angular.json</code> has to to be modified so the project is build inside <em>/dist</em> without an intermediate folder.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="TypeScript language-TypeScript">{
-....
+<pre class="highlight"><code class="json language-json">{
   "architect": {
-    ....
     "build": {
-      "options": {
-        ....
-        "outputPath": "dist",
-        ....
-        "customWebpackConfig": {
-          "path": "./angular.webpack.js"
-        }
-      }
+      "outputPath": "dist"
     }
-  ....
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="guide-add-electron.asciidoc_add-angular-electron-directives">Add Angular Electron directives</h3>
-<div class="paragraph">
-<p>In order to use Electron&#8217;s webview tag and its methods inside an Angular application our project needs the directive <code>webview.directive.ts</code> file. We recommend to create this file inside a <strong>shared</strong> module folder, although it has to be declared inside the main module <code>app.module.ts</code>.</p>
-</div>
-<div class="listingblock">
-<div class="title">Listing 1. File webview.directive.ts</div>
-<div class="content">
-<pre class="highlight"><code class="TypeScript language-TypeScript">import { Directive } from '@angular/core';
-
-@Directive({
-  selector: 'webview',
-})
-export class WebviewDirective {}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="guide-add-electron.asciidoc_add-access-electron-apis">Add access Electron APIs</h3>
-<div class="paragraph">
-<p>To call Electron APIs from the Renderer process, install <strong>ngx-electron</strong> package or create <strong>your own ElectronService</strong>.</p>
-</div>
-<div class="paragraph">
-<p>With <code>npm</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="bash language-bash">$ npm install ngx-electron --save</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Or with <code>yarn</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="bash language-bash">$ yarn add ngx-electron --save</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This package contains a module named <strong>NgxElectronModule</strong> which exposes Electron APIs through a service called <strong>ElectronService</strong>.</p>
-</div>
-<div class="paragraph">
-<p>If you decide to implement your own ElectronService, please refer to <a href="https://github.com/devonfw/devon4ng/blob/develop/samples/ElectronTest/src/app/core/service/electron/electron.service.ts">this file</a> in the ElectronTest sample.</p>
-</div>
-<div class="sect3">
-<h4 id="guide-add-electron.asciidoc_update-app.module.ts-and-app-routing.module.ts">Update <code>app.module.ts</code> and <code>app-routing.module.ts</code></h4>
-<div class="paragraph">
-<p>As an example, the <code>webview.directive.ts</code> file is located inside a <code>shared</code> module:</p>
-</div>
-<div class="listingblock">
-<div class="title">Listing 2. File app.module.ts</div>
-<div class="content">
-<pre class="highlight"><code class="TypeScript language-TypeScript">// imports
-import { NgxElectronModule } from 'ngx-electron';
-import { WebviewDirective } from './shared/directives/webview.directive';
-
-@NgModule({
-  declarations: [AppComponent, WebviewDirective],
-  imports: [
-    ...
-    NgxElectronModule
-    ...
-    ],
-  providers: [],
-  bootstrap: [AppComponent],
-})
-export class AppModule {}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Here NgxElectronModule is also added so ElectronService can be injected wherever is needed.</p>
-</div>
-<div class="paragraph">
-<p>After that is done, the use of hash has to be allowed so electron can reload content properly. On the <code>app-routing.module.ts</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="TypeScript language-TypeScript">....
-  imports: [RouterModule.forRoot(routes,
-    {
-      ....
-      useHash: true,
-    },
-  )],</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="guide-add-electron.asciidoc_usage">Usage</h4>
-<div class="paragraph">
-<p>In order to use Electron in any component class the ElectronService must be injected:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="TypeScript language-TypeScript">import { ElectronService } from 'ngx-electron';
-
-...
-
-constructor(
-  // other injected services
-  public electronService: ElectronService,
-) {
-  // previous code...
-
-  if (electronService.isElectronApp) {
-    // Do electron stuff
-  } else {
-    // Do other web stuff
   }
-
 }</code></pre>
-</div>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="icon-tip" title=""></i>
-</td>
-<td class="content">
-A list of all accesible APIs can be found at <a href="https://github.com/ThorstenHans/ngx-electron">Thorsten Hans' ngx-electron repository</a>.
-</td>
-</tr>
-</table>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="guide-add-electron.asciidoc_create-the-electron-window-in-main.ts">Create the electron window in <code>main.ts</code></h3>
+<h3 id="guide-add-electron.asciidoc_create-the-electron-window-in-electron-main.ts">Create the electron window in <code>electron-main.ts</code></h3>
 <div class="paragraph">
 <p>In order to use electron, a file needs to be created at the root of the application (<code>main.ts</code>). This file will create a window with different settings checking if we are using <code>--serve</code> as an argument:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="typescript language-typescript">import { app, BrowserWindow, screen } from 'electron';
+<pre class="highlight"><code class="TypeScript language-TypeScript">import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 
-let win: BrowserWindow = null;
-const args = process.argv.slice(1),
-  serve = args.some(val =&gt; val === '--serve');
+let win: any;
+const args: any = process.argv.slice(1);
+const serve: any = args.some((val) =&gt; val === '--serve');
 
-function createWindow(): BrowserWindow {
-  const electronScreen = screen;
-  const size = electronScreen.getPrimaryDisplay().workAreaSize;
-
+const createWindow:any = ()=&gt;{
   // Create the browser window.
   win = new BrowserWindow({
-    x: 0,
-    y: 0,
-    width: size.width,
-    height: size.height,
+    fullscreen: true,
     webPreferences: {
       nodeIntegration: true,
-      allowRunningInsecureContent: serve ? true : false
     }
   });
 
@@ -528,10 +465,9 @@ function createWindow(): BrowserWindow {
     // Dereference the window object, usually you would store window
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
+    // tslint:disable-next-line:no-null-keyword
     win = null;
   });
-
-  return win;
 }
 
 try {
@@ -540,7 +476,7 @@ try {
   // Some APIs can only be used after this event occurs.
   app.on('ready', createWindow);
 
-  // Quit when all windows are closed.
+   // Quit when all windows are closed.
   app.on('window-all-closed', () =&gt; {
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
@@ -549,7 +485,7 @@ try {
     }
   });
 
-  app.on('activate', () =&gt; {
+   app.on('activate', () =&gt; {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (win === null) {
@@ -566,65 +502,36 @@ try {
 <div class="sect2">
 <h3 id="guide-add-electron.asciidoc_add-the-electron-window-and-improve-the-package.json-scripts">Add the electron window and improve the <code>package.json</code> scripts</h3>
 <div class="paragraph">
-<p>Inside <code>package.json</code> the electron window that will be transformed to <code>main.js</code> when building needs to be added.</p>
+<p>Inside <code>package.json</code> the electron window that will be transformed to <code>electron-main.js</code> when building needs to be added.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="json language-json">{
   ....
-  "main": "main.js",
+  "main": "electron-main.js",
   "scripts": {
   ....
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>scripts</code> section in the <code>package.json</code> can be improved to avoid running too verbose commands. <code>ElectronTest</code> in samples folder contains the following section:</p>
+<p>The <code>scripts</code> section in the <code>package.json</code> can be improved to avoid running too verbose commands. As a very complete example we can take a look to the My Thai Star&#8217;s <code>scripts</code> section and copy the lines useful in your project.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="json language-json">  "scripts": {
-    "postinstall": "electron-builder install-app-deps",
     "ng": "ng",
-    "start": "npm-run-all -p electron:serve ng:serve",
-    "build": "npm run electron:serve-tsc &amp;&amp; ng build",
-    "build:dev": "npm run build -- -c dev",
-    "build:prod": "npm run build -- -c production",
-    "ng:serve": "ng serve",
-    "ng:serve:web": "ng serve -c web -o",
-    "electron:serve-tsc": "tsc -p tsconfig-serve.json",
-    "electron:serve": "wait-on http-get://localhost:4200/ &amp;&amp; npm run electron:serve-tsc &amp;&amp; electron . --serve",
-    "electron:local": "npm run build:prod &amp;&amp; electron .",
-    "electron:linux": "npm run build:prod &amp;&amp; electron-builder build --linux",
-    "electron:windows": "npm run build:prod &amp;&amp; electron-builder build --windows",
-    "electron:mac": "npm run build:prod &amp;&amp; electron-builder build --mac",
+    "start": "ng serve",
+    "build": "ng build",
     "test": "ng test",
-    "e2e": "npm run build:prod &amp;&amp; cross-env TS_NODE_PROJECT='e2e/tsconfig.e2e.json' mocha --timeout 300000 --require ts-node/register e2e/**/*.e2e.ts",
-    "version": "conventional-changelog -i CHANGELOG.md -s -r 0 &amp;&amp; git add CHANGELOG.md",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "e2e": "ng e2e",
+    "electron:serve": "ng build --base-href ./ &amp;&amp; npx electron .",
+    "electron:serve-tsc": "tsc -p tsconfig.serve.json",
+    "electron:pack": "electron-builder --dir --config electron-builder.json",
+    "electron:build": "electron-builder --config electron-builder.json build",
+    "electron:start": "npm run electron:serve-tsc &amp;&amp; npm run electron:serve"
   },</code></pre>
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="icon-note" title=""></i>
-</td>
-<td class="content">
-Some of these lines are intended to be shortcuts used in other scripts. Do not hesitate to modify them depending on your needs.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Some usage examples:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="bash language-bash">$ npm run electron:serve                # Serve Angular app and run it inside electron
-$ npm run electron:local                # Serve Angular app for production and run it inside electron
-$ npm run electron:windows              # Build Angular app for production and package it for Windows OS</code></pre>
 </div>
 </div>
 </div>
@@ -767,7 +674,7 @@ $ npm run electron:windows              # Build Angular app for production and p
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2020-08-24 18:45:14 UTC
+Last updated 2020-09-04 11:32:17 UTC
 </sub></div>
 </div>
 </div>

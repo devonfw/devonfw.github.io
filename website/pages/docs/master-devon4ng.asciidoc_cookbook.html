@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2020-08-24 18:48:50 UTC">
+<meta name="author" content="Updated at 2020-09-04 11:36:49 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -517,7 +517,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2020-08-24 18:49:13 UTC</span><br>
+<span id="author" class="author">Updated at 2020-09-04 11:37:16 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -548,11 +548,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="master-devon4ng.asciidoc_cookbook.html#cookbook-abstract-class-store.asciidoc">20.1. Abstract Class Store</a>
 </li>
-<li><a href="master-devon4ng.asciidoc_cookbook.html#guide-add-electron.asciidoc">20.2. Angular Electron</a>
+<li><a href="master-devon4ng.asciidoc_cookbook.html#guide-angular-mock-service.asciidoc">20.2. Angular Mock Service</a>
 </li>
-<li><a href="master-devon4ng.asciidoc_cookbook.html#guide-angular-mock-service.asciidoc">20.3. Angular Mock Service</a>
-</li>
-<li><a href="master-devon4ng.asciidoc_cookbook.html#guide-cypress.asciidoc">20.4. Testing e2e with Cypress</a>
+<li><a href="master-devon4ng.asciidoc_cookbook.html#guide-cypress.asciidoc">20.3. Testing e2e with Cypress</a>
 </li>
 </ul>
 </li>
@@ -716,13 +714,10 @@ export abstract class Store&lt;T&gt; implements OnDestroy {
 </div>
 </div>
 <!-- toc disabled -->
-</div>
-<div class="sect2">
-<h3 id="guide-add-electron.asciidoc">20.2. Angular Electron</h3>
 <div class="sect3">
-<h4 id="guide-add-electron.asciidoc_add-electron-to-an-angular-application">20.2.1. Add Electron to an Angular application</h4>
+<h4 id="guide-add-electron.asciidoc_add-electron-to-an-angular-application">20.1.1. Add Electron to an Angular application</h4>
 <div class="paragraph">
-<p>This cookbook recipe explains how to integrate Electron in an Angular 6+ application. <a href="https://electronjs.org/">Electron</a> is a framework for creating native applications with web technologies like JavaScript, HTML, and CSS. As an example, very well known applications as Visual Studio Code, Atom, Slack or Skype (and many more) are using Electron too.</p>
+<p>This cookbook recipe explains how to integrate Electron in an Angular 10+ application. <a href="https://electronjs.org/">Electron</a> is a framework for creating native applications with web technologies like JavaScript, HTML, and CSS. As an example, very well known applications as Visual Studio Code, Atom, Slack or Skype (and many more) are using Electron too.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -731,7 +726,7 @@ export abstract class Store&lt;T&gt; implements OnDestroy {
 <div class="title">Note</div>
 </td>
 <td class="content">
-At the moment of this writing Angular 7.2.3 and Electron 4.0.2 were the versions available.
+At the moment of this writing Angular 10.0.4, Electron 9.1.1 and Electron-builder 22.7.0 were the versions available.
 </td>
 </tr>
 </tbody></table>
@@ -773,13 +768,8 @@ Please remember if the project has a <code>package-lock.json</code> or <code>yar
 <div class="content">
 <pre class="highlight"><code class="language-json" data-lang="json">&quot;devDependencies&quot;: {
 ...
-    &quot;@angular-builders/custom-webpack&quot;: &quot;9.0.0&quot;,
-    &quot;electron&quot;: &quot;8.0.1&quot;,
-    &quot;electron-builder&quot;: &quot;22.3.2&quot;,
-    &quot;electron-reload&quot;: &quot;1.5.0&quot;,
-    &quot;npm-run-all&quot;: &quot;4.1.5&quot;,
-    &quot;wait-on&quot;: &quot;4.0.0&quot;,
-    &quot;webdriver-manager&quot;: &quot;12.1.7&quot;,
+    &quot;electron&quot;: &quot;^9.1.1&quot;,
+    &quot;electron-builder&quot;: &quot;^22.7.0&quot;,
 ...
 },</code></pre>
 </div>
@@ -789,7 +779,7 @@ Please remember if the project has a <code>package-lock.json</code> or <code>yar
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">$ npm install -D electron electron-builder electron-reload npm-run-all wait-on webdriver-manager</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ npm install -D electron electron-builder</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -797,14 +787,174 @@ Please remember if the project has a <code>package-lock.json</code> or <code>yar
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">$ yarn add -D electron electron-builder electron-reload npm-run-all wait-on webdriver-manager</code></pre>
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ yarn add -D electron electron-builder</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guide-add-electron.asciidoc_create-the-necessary-typescript-configurations">Create the necessary typescript configurations</h5>
+<div class="paragraph">
+<p>In order to initiate electron in an angular app we need to modify the <code>tsconfig.json</code> file and create a <code>tsconfig.serve.json</code> and a <code>tsconfig.base.json</code> in the root folder.</p>
+</div>
+<div class="sect5">
+<h6 id="guide-add-electron.asciidoc_tsconfig.json">tsconfig.json</h6>
+<div class="paragraph">
+<p>This file needs to be modified to create references to <code>./src/tsconfig.app.json</code> and <code>./src/tsconfig.spec.json</code> to support different configurations.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+  &quot;files&quot;: [],
+  &quot;references&quot;: [
+    {
+      &quot;path&quot;: &quot;./src/tsconfig.app.json&quot;
+    },
+    {
+      &quot;path&quot;: &quot;./src/tsconfig.spec.json&quot;
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="guide-add-electron.asciidoc_tsconfig.app.json">tsconfig.app.json</h6>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+  &quot;extends&quot;: &quot;../tsconfig.base.json&quot;,
+  &quot;compilerOptions&quot;: {
+    &quot;outDir&quot;: &quot;../app&quot;,
+    &quot;module&quot;: &quot;es2015&quot;,
+    &quot;baseUrl&quot;: &quot;&quot;,
+    &quot;types&quot;: []
+  },
+  &quot;include&quot;: [
+    &quot;**/*.ts&quot;,
+  ],
+  &quot;exclude&quot;: [
+    &quot;**/*.spec.ts&quot;
+  ],
+  &quot;angularCompilerOptions&quot;: {
+    &quot;fullTemplateTypeCheck&quot;: true,
+    &quot;strictInjectionParameters&quot;: true,
+    &quot;preserveWhitespaces&quot;: true
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="guide-add-electron.asciidoc_tsconfig.spec.json">tsconfig.spec.json</h6>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+  &quot;extends&quot;: &quot;../tsconfig.base.json&quot;,
+  &quot;compilerOptions&quot;: {
+    &quot;outDir&quot;: &quot;../spec&quot;,
+    &quot;module&quot;: &quot;commonjs&quot;,
+    &quot;types&quot;: [
+      &quot;jasmine&quot;,
+      &quot;node&quot;
+    ]
+  },
+  &quot;files&quot;: [
+    &quot;test.ts&quot;,
+  ],
+  &quot;include&quot;: [
+    &quot;**/*.spec.ts&quot;,
+    &quot;**/*.d.ts&quot;
+  ],
+  &quot;exclude&quot;: [
+    &quot;dist&quot;,
+    &quot;release&quot;,
+    &quot;node_modules&quot;
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="guide-add-electron.asciidoc_tsconfig.base.json">tsconfig.base.json</h6>
+<div class="paragraph">
+<p>This is shared betwen tsconfig.app.json and tsconfig.spec.json and it will be extended on each config file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+  &quot;compileOnSave&quot;: false,
+  &quot;compilerOptions&quot;: {
+    &quot;outDir&quot;: &quot;./dist&quot;,
+    &quot;sourceMap&quot;: true,
+    &quot;declaration&quot;: false,
+    &quot;moduleResolution&quot;: &quot;node&quot;,
+    &quot;emitDecoratorMetadata&quot;: true,
+    &quot;experimentalDecorators&quot;: true,
+    &quot;target&quot;: &quot;es5&quot;,
+    &quot;typeRoots&quot;: [
+      &quot;node_modules/@types&quot;
+    ],
+    &quot;lib&quot;: [
+      &quot;es2017&quot;,
+      &quot;es2016&quot;,
+      &quot;es2015&quot;,
+      &quot;dom&quot;
+    ]
+  },
+  &quot;files&quot;: [
+    &quot;electron-main.ts&quot;
+    &quot;src/polyfills.ts&quot;
+  ],
+  &quot;include&quot;: [
+    &quot;src/**/*.d.ts&quot;
+  ],
+  &quot;exclude&quot;: [
+    &quot;node_modules&quot;
+  ]
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="guide-add-electron.asciidoc_tsconfig.serve.json">tsconfig.serve.json</h6>
+<div class="paragraph">
+<p>In the root, <code>tsconfig.serve.json</code> needs to be created. This typescript config file is going to be used when we serve electron:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+  &quot;compilerOptions&quot;: {
+    &quot;outDir&quot;: &quot;.&quot;,
+    &quot;sourceMap&quot;: true,
+    &quot;declaration&quot;: false,
+    &quot;moduleResolution&quot;: &quot;node&quot;,
+    &quot;emitDecoratorMetadata&quot;: true,
+    &quot;experimentalDecorators&quot;: true,
+    &quot;target&quot;: &quot;es5&quot;,
+    &quot;typeRoots&quot;: [
+      &quot;node_modules/@types&quot;
+    ],
+    &quot;lib&quot;: [
+      &quot;es2017&quot;,
+      &quot;dom&quot;
+    ]
+  },
+  &quot;include&quot;: [
+    &quot;electron-main.ts&quot;
+  ],
+  &quot;exclude&quot;: [
+    &quot;node_modules&quot;,
+    &quot;**/*.spec.ts&quot;
+  ]
+}</code></pre>
+</div>
 </div>
 </div>
 </div>
 <div class="sect4">
 <h5 id="guide-add-electron.asciidoc_add-electron-build-configuration">Add Electron build configuration</h5>
 <div class="paragraph">
-<p>In order to configure electron builds properly a <code>electron-builder.json</code> must be included in the root folder of the application. For more information and fine tuning please refer to the <a href="https://www.electron.build/configuration/configuration">Electron Builder official documentation</a>.</p>
+<p>In order to configure electron builds properly we need to create a new json on our application, let&#x2019;s call it electron-builder.json. For more information and fine tuning please refer to the <a href="https://www.electron.build/configuration/configuration">Electron Builder official documentation</a>.</p>
 </div>
 <div class="paragraph">
 <p>The contents of the file will be something similar to the following:</p>
@@ -812,40 +962,24 @@ Please remember if the project has a <code>package-lock.json</code> or <code>yar
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-json" data-lang="json">{
-  &quot;productName&quot;: &quot;app-name&quot;,
-  &quot;directories&quot;: {
-    &quot;output&quot;: &quot;release/&quot;
+  &quot;productName&quot;: &quot;devon4ngElectron&quot;,
+  &quot;directories&quot;:{
+    &quot;output&quot;: &quot;./builder-release&quot;
   },
-    &quot;files&quot;: [
-        &quot;**/*&quot;,
-        &quot;!**/*.ts&quot;,
-        &quot;!*.code-workspace&quot;,
-        &quot;!LICENSE.md&quot;,
-        &quot;!package.json&quot;,
-        &quot;!package-lock.json&quot;,
-        &quot;!src/&quot;,
-        &quot;!e2e/&quot;,
-        &quot;!hooks/&quot;,
-        &quot;!angular.json&quot;,
-        &quot;!_config.yml&quot;,
-        &quot;!karma.conf.js&quot;,
-        &quot;!tsconfig.json&quot;,
-        &quot;!tslint.json&quot;
-    ],
   &quot;win&quot;: {
-    &quot;icon&quot;: &quot;dist&quot;,
+    &quot;icon&quot;: &quot;dist/assets/icons&quot;,
     &quot;target&quot;: [
       &quot;portable&quot;
     ]
   },
   &quot;mac&quot;: {
-    &quot;icon&quot;: &quot;dist&quot;,
+    &quot;icon&quot;: &quot;dist/assets/icons&quot;,
     &quot;target&quot;: [
       &quot;dmg&quot;
     ]
   },
   &quot;linux&quot;: {
-    &quot;icon&quot;: &quot;dist&quot;,
+    &quot;icon&quot;: &quot;dist/assets/icons&quot;,
     &quot;target&quot;: [
       &quot;AppImage&quot;
     ]
@@ -854,7 +988,7 @@ Please remember if the project has a <code>package-lock.json</code> or <code>yar
 </div>
 </div>
 <div class="paragraph">
-<p>Theres two important things in this file:</p>
+<p>Theres two important things in this files:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -868,238 +1002,43 @@ Please remember if the project has a <code>package-lock.json</code> or <code>yar
 </div>
 </div>
 <div class="sect4">
-<h5 id="guide-add-electron.asciidoc_create-the-necessary-typescript-configurations">Create the necessary typescript configurations</h5>
-<div class="paragraph">
-<p>In order to initiate electron in an angular app we need to modify the <code>tsconfig.json</code> file and create a new one named <code>tsconfig-serve.json</code> in the root folder.</p>
-</div>
-<div class="sect5">
-<h6 id="guide-add-electron.asciidoc_tsconfig.json">tsconfig.json</h6>
-<div class="paragraph">
-<p>This file needs to be modified to add the <code>main.ts</code> and <code>src/**/*</code> folders excluding the <code>node_modules</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-json" data-lang="json">{
-....
-  },
-  &quot;include&quot;: [
-    &quot;main.ts&quot;,
-    &quot;src/**/*&quot;
-  ],
-  &quot;exclude&quot;: [
-    &quot;node_modules&quot;
-  ]
-....
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="guide-add-electron.asciidoc_tsconfig-serve.json">tsconfig-serve.json</h6>
-<div class="paragraph">
-<p>In the root, <code>tsconfig-serve.json</code> needs to be created. This typescript config file is going to be used when we serve electron:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-json" data-lang="json">{
-  &quot;compilerOptions&quot;: {
-    &quot;sourceMap&quot;: true,
-    &quot;declaration&quot;: false,
-    &quot;moduleResolution&quot;: &quot;node&quot;,
-    &quot;emitDecoratorMetadata&quot;: true,
-    &quot;experimentalDecorators&quot;: true,
-    &quot;target&quot;: &quot;es5&quot;,
-    &quot;types&quot;: [&quot;node&quot;],
-    &quot;lib&quot;: [&quot;es2017&quot;, &quot;es2016&quot;, &quot;es2015&quot;, &quot;dom&quot;]
-  },
-  &quot;include&quot;: [&quot;main.ts&quot;],
-  &quot;exclude&quot;: [&quot;node_modules&quot;, &quot;**/*.spec.ts&quot;]
-}</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect4">
 <h5 id="guide-add-electron.asciidoc_modify-angular.json">Modify angular.json</h5>
 <div class="paragraph">
-<p><code>angular.json</code> has to to be modified so the project is built inside <em>/dist</em> without an intermediate folder and include the reference to the custom Webpack configuration.</p>
+<p><code>angular.json</code> has to to be modified so the project is build inside <em>/dist</em> without an intermediate folder.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-TypeScript" data-lang="TypeScript">{
-....
+<pre class="highlight"><code class="language-json" data-lang="json">{
   &quot;architect&quot;: {
-    ....
     &quot;build&quot;: {
-      &quot;options&quot;: {
-        ....
-        &quot;outputPath&quot;: &quot;dist&quot;,
-        ....
-        &quot;customWebpackConfig&quot;: {
-          &quot;path&quot;: &quot;./angular.webpack.js&quot;
-        }
-      }
+      &quot;outputPath&quot;: &quot;dist&quot;
     }
-  ....
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="guide-add-electron.asciidoc_add-angular-electron-directives">Add Angular Electron directives</h5>
-<div class="paragraph">
-<p>In order to use Electron&#x2019;s webview tag and its methods inside an Angular application our project needs the directive <code>webview.directive.ts</code> file. We recommend to create this file inside a <strong>shared</strong> module folder, although it has to be declared inside the main module <code>app.module.ts</code>.</p>
-</div>
-<div class="listingblock">
-<div class="title">Listing 88. File webview.directive.ts</div>
-<div class="content">
-<pre class="highlight"><code class="language-TypeScript" data-lang="TypeScript">import { Directive } from &apos;@angular/core&apos;;
-
-@Directive({
-  selector: &apos;webview&apos;,
-})
-export class WebviewDirective {}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="guide-add-electron.asciidoc_add-access-electron-apis">Add access Electron APIs</h5>
-<div class="paragraph">
-<p>To call Electron APIs from the Renderer process, install <strong>ngx-electron</strong> package or create <strong>your own ElectronService</strong>.</p>
-</div>
-<div class="paragraph">
-<p>With <code>npm</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">$ npm install ngx-electron --save</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Or with <code>yarn</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">$ yarn add ngx-electron --save</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This package contains a module named <strong>NgxElectronModule</strong> which exposes Electron APIs through a service called <strong>ElectronService</strong>.</p>
-</div>
-<div class="paragraph">
-<p>If you decide to implement your own ElectronService, please refer to <a href="https://github.com/devonfw/devon4ng/blob/develop/samples/ElectronTest/src/app/core/service/electron/electron.service.ts">this file</a> in the ElectronTest sample.</p>
-</div>
-<div class="sect5">
-<h6 id="guide-add-electron.asciidoc_update-app.module.ts-and-app-routing.module.ts">Update <code>app.module.ts</code> and <code>app-routing.module.ts</code></h6>
-<div class="paragraph">
-<p>As an example, the <code>webview.directive.ts</code> file is located inside a <code>shared</code> module:</p>
-</div>
-<div class="listingblock">
-<div class="title">Listing 89. File app.module.ts</div>
-<div class="content">
-<pre class="highlight"><code class="language-TypeScript" data-lang="TypeScript">// imports
-import { NgxElectronModule } from &apos;ngx-electron&apos;;
-import { WebviewDirective } from &apos;./shared/directives/webview.directive&apos;;
-
-@NgModule({
-  declarations: [AppComponent, WebviewDirective],
-  imports: [
-    ...
-    NgxElectronModule
-    ...
-    ],
-  providers: [],
-  bootstrap: [AppComponent],
-})
-export class AppModule {}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Here NgxElectronModule is also added so ElectronService can be injected wherever is needed.</p>
-</div>
-<div class="paragraph">
-<p>After that is done, the use of hash has to be allowed so electron can reload content properly. On the <code>app-routing.module.ts</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-TypeScript" data-lang="TypeScript">....
-  imports: [RouterModule.forRoot(routes,
-    {
-      ....
-      useHash: true,
-    },
-  )],</code></pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="guide-add-electron.asciidoc_usage">Usage</h6>
-<div class="paragraph">
-<p>In order to use Electron in any component class the ElectronService must be injected:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-TypeScript" data-lang="TypeScript">import { ElectronService } from &apos;ngx-electron&apos;;
-
-...
-
-constructor(
-  // other injected services
-  public electronService: ElectronService,
-) {
-  // previous code...
-
-  if (electronService.isElectronApp) {
-    // Do electron stuff
-  } else {
-    // Do other web stuff
   }
-
 }</code></pre>
-</div>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tbody><tr>
-<td class="icon">
-<div class="title">Tip</div>
-</td>
-<td class="content">
-A list of all accesible APIs can be found at <a href="https://github.com/ThorstenHans/ngx-electron">Thorsten Hans&apos; ngx-electron repository</a>.
-</td>
-</tr>
-</tbody></table>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="guide-add-electron.asciidoc_create-the-electron-window-in-main.ts">Create the electron window in <code>main.ts</code></h5>
+<h5 id="guide-add-electron.asciidoc_create-the-electron-window-in-electron-main.ts">Create the electron window in <code>electron-main.ts</code></h5>
 <div class="paragraph">
 <p>In order to use electron, a file needs to be created at the root of the application (<code>main.ts</code>). This file will create a window with different settings checking if we are using <code>--serve</code> as an argument:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-typescript" data-lang="typescript">import { app, BrowserWindow, screen } from &apos;electron&apos;;
+<pre class="highlight"><code class="language-TypeScript" data-lang="TypeScript">import { app, BrowserWindow } from &apos;electron&apos;;
 import * as path from &apos;path&apos;;
 import * as url from &apos;url&apos;;
 
-let win: BrowserWindow = null;
-const args = process.argv.slice(1),
-  serve = args.some(val =&gt; val === &apos;--serve&apos;);
+let win: any;
+const args: any = process.argv.slice(1);
+const serve: any = args.some((val) =&gt; val === &apos;--serve&apos;);
 
-function createWindow(): BrowserWindow {
-  const electronScreen = screen;
-  const size = electronScreen.getPrimaryDisplay().workAreaSize;
-
+const createWindow:any = ()=&gt;{
   // Create the browser window.
   win = new BrowserWindow({
-    x: 0,
-    y: 0,
-    width: size.width,
-    height: size.height,
+    fullscreen: true,
     webPreferences: {
       nodeIntegration: true,
-      allowRunningInsecureContent: serve ? true : false
     }
   });
 
@@ -1127,10 +1066,9 @@ function createWindow(): BrowserWindow {
     // Dereference the window object, usually you would store window
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
+    // tslint:disable-next-line:no-null-keyword
     win = null;
   });
-
-  return win;
 }
 
 try {
@@ -1139,7 +1077,7 @@ try {
   // Some APIs can only be used after this event occurs.
   app.on(&apos;ready&apos;, createWindow);
 
-  // Quit when all windows are closed.
+   // Quit when all windows are closed.
   app.on(&apos;window-all-closed&apos;, () =&gt; {
     // On OS X it is common for applications and their menu bar
     // to stay active until the user quits explicitly with Cmd + Q
@@ -1148,7 +1086,7 @@ try {
     }
   });
 
-  app.on(&apos;activate&apos;, () =&gt; {
+   app.on(&apos;activate&apos;, () =&gt; {
     // On OS X it&apos;s common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (win === null) {
@@ -1165,65 +1103,36 @@ try {
 <div class="sect4">
 <h5 id="guide-add-electron.asciidoc_add-the-electron-window-and-improve-the-package.json-scripts">Add the electron window and improve the <code>package.json</code> scripts</h5>
 <div class="paragraph">
-<p>Inside <code>package.json</code> the electron window that will be transformed to <code>main.js</code> when building needs to be added.</p>
+<p>Inside <code>package.json</code> the electron window that will be transformed to <code>electron-main.js</code> when building needs to be added.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-json" data-lang="json">{
   ....
-  &quot;main&quot;: &quot;main.js&quot;,
+  &quot;main&quot;: &quot;electron-main.js&quot;,
   &quot;scripts&quot;: {
   ....
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>scripts</code> section in the <code>package.json</code> can be improved to avoid running too verbose commands. <code>ElectronTest</code> in samples folder contains the following section:</p>
+<p>The <code>scripts</code> section in the <code>package.json</code> can be improved to avoid running too verbose commands. As a very complete example we can take a look to the My Thai Star&#x2019;s <code>scripts</code> section and copy the lines useful in your project.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-json" data-lang="json">  &quot;scripts&quot;: {
-    &quot;postinstall&quot;: &quot;electron-builder install-app-deps&quot;,
     &quot;ng&quot;: &quot;ng&quot;,
-    &quot;start&quot;: &quot;npm-run-all -p electron:serve ng:serve&quot;,
-    &quot;build&quot;: &quot;npm run electron:serve-tsc &amp;&amp; ng build&quot;,
-    &quot;build:dev&quot;: &quot;npm run build -- -c dev&quot;,
-    &quot;build:prod&quot;: &quot;npm run build -- -c production&quot;,
-    &quot;ng:serve&quot;: &quot;ng serve&quot;,
-    &quot;ng:serve:web&quot;: &quot;ng serve -c web -o&quot;,
-    &quot;electron:serve-tsc&quot;: &quot;tsc -p tsconfig-serve.json&quot;,
-    &quot;electron:serve&quot;: &quot;wait-on http-get://localhost:4200/ &amp;&amp; npm run electron:serve-tsc &amp;&amp; electron . --serve&quot;,
-    &quot;electron:local&quot;: &quot;npm run build:prod &amp;&amp; electron .&quot;,
-    &quot;electron:linux&quot;: &quot;npm run build:prod &amp;&amp; electron-builder build --linux&quot;,
-    &quot;electron:windows&quot;: &quot;npm run build:prod &amp;&amp; electron-builder build --windows&quot;,
-    &quot;electron:mac&quot;: &quot;npm run build:prod &amp;&amp; electron-builder build --mac&quot;,
+    &quot;start&quot;: &quot;ng serve&quot;,
+    &quot;build&quot;: &quot;ng build&quot;,
     &quot;test&quot;: &quot;ng test&quot;,
-    &quot;e2e&quot;: &quot;npm run build:prod &amp;&amp; cross-env TS_NODE_PROJECT=&apos;e2e/tsconfig.e2e.json&apos; mocha --timeout 300000 --require ts-node/register e2e/**/*.e2e.ts&quot;,
-    &quot;version&quot;: &quot;conventional-changelog -i CHANGELOG.md -s -r 0 &amp;&amp; git add CHANGELOG.md&quot;,
-    &quot;lint&quot;: &quot;ng lint&quot;
+    &quot;lint&quot;: &quot;ng lint&quot;,
+    &quot;e2e&quot;: &quot;ng e2e&quot;,
+    &quot;electron:serve&quot;: &quot;ng build --base-href ./ &amp;&amp; npx electron .&quot;,
+    &quot;electron:serve-tsc&quot;: &quot;tsc -p tsconfig.serve.json&quot;,
+    &quot;electron:pack&quot;: &quot;electron-builder --dir --config electron-builder.json&quot;,
+    &quot;electron:build&quot;: &quot;electron-builder --config electron-builder.json build&quot;,
+    &quot;electron:start&quot;: &quot;npm run electron:serve-tsc &amp;&amp; npm run electron:serve&quot;
   },</code></pre>
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tbody><tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-Some of these lines are intended to be shortcuts used in other scripts. Do not hesitate to modify them depending on your needs.
-</td>
-</tr>
-</tbody></table>
-</div>
-<div class="paragraph">
-<p>Some usage examples:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">$ npm run electron:serve                # Serve Angular app and run it inside electron
-$ npm run electron:local                # Serve Angular app for production and run it inside electron
-$ npm run electron:windows              # Build Angular app for production and package it for Windows OS</code></pre>
 </div>
 </div>
 <!-- toc disabled -->
@@ -1231,7 +1140,7 @@ $ npm run electron:windows              # Build Angular app for production and p
 </div>
 </div>
 <div class="sect2">
-<h3 id="guide-angular-mock-service.asciidoc">20.3. Angular Mock Service</h3>
+<h3 id="guide-angular-mock-service.asciidoc">20.2. Angular Mock Service</h3>
 <div class="paragraph">
 <p>We&#x2019;ve all been there: A new idea comes, let&#x2019;s quickly prototype it. But wait, there&#x2019;s no backend. What can we do?</p>
 </div>
@@ -1239,13 +1148,13 @@ $ npm run electron:windows              # Build Angular app for production and p
 <p>Below you will find o solution that will get your started quick and easy. The idea is to write a simple mock service that helps us by feeding data into our components.</p>
 </div>
 <div class="sect3">
-<h4 id="guide-angular-mock-service.asciidoc_the-app-we-start-with">20.3.1. The app we start with</h4>
+<h4 id="guide-angular-mock-service.asciidoc_the-app-we-start-with">20.2.1. The app we start with</h4>
 <div class="paragraph">
 <p>Let&#x2019;s say you have a simple boilerplate code, with your favorite styling library hooked up and you&#x2019;re ready to go. The <a href="https://github.com/devonfw/devon4ng/tree/develop/samples/AngularMaterialBasicLayout">Angular Material</a> sample is a good starting place.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="guide-angular-mock-service.asciidoc_the-components">20.3.2. The Components</h4>
+<h4 id="guide-angular-mock-service.asciidoc_the-components">20.2.2. The Components</h4>
 <div class="paragraph">
 <p>Components - are the building blocks of our application. Their main role is to enable fragments of user interfaces. They will either display data (a list, a table, a chart, etc.), or &apos;collect&apos; user interaction (e.g: a form, a menu, etc.)</p>
 </div>
@@ -1262,7 +1171,7 @@ $ npm run electron:windows              # Build Angular app for production and p
 </div>
 </div>
 <div class="sect3">
-<h4 id="guide-angular-mock-service.asciidoc_the-service">20.3.3. The Service</h4>
+<h4 id="guide-angular-mock-service.asciidoc_the-service">20.2.3. The Service</h4>
 <div class="paragraph">
 <p>So, how do we get data in our app? How do we propagate the data to the components and how can we send user interaction from the components to the our data &quot;manager&quot; logic.</p>
 </div>
@@ -1289,7 +1198,7 @@ $ npm run electron:windows              # Build Angular app for production and p
 </div>
 </div>
 <div class="sect3">
-<h4 id="guide-angular-mock-service.asciidoc_the-model">20.3.4. The Model</h4>
+<h4 id="guide-angular-mock-service.asciidoc_the-model">20.2.4. The Model</h4>
 <div id="guide-angular-mock-service.asciidoc_id_data_box" class="imageblock">
 <div class="content">
 <img src="images/data-box.jpg" alt="Data Box" width="600 link=" images data-box.jpg"">
@@ -1316,7 +1225,7 @@ $ npm run electron:windows              # Build Angular app for production and p
 </div>
 </div>
 <div class="sect3">
-<h4 id="guide-angular-mock-service.asciidoc_use-case">20.3.5. Use case</h4>
+<h4 id="guide-angular-mock-service.asciidoc_use-case">20.2.5. Use case</h4>
 <div class="paragraph">
 <p>Enough with the theory, let&#x2019;s see what we have here. The app presents 3 pages as follows:</p>
 </div>
@@ -1353,7 +1262,7 @@ $ npm run electron:windows              # Build Angular app for production and p
 </div>
 </div>
 <div class="sect2">
-<h3 id="guide-cypress.asciidoc">20.4. Testing e2e with Cypress</h3>
+<h3 id="guide-cypress.asciidoc">20.3. Testing e2e with Cypress</h3>
 <div class="paragraph">
 <p>This guide will cover the basics of e2e testing using Cypress.</p>
 </div>
@@ -1377,7 +1286,7 @@ $ npm run electron:windows              # Build Angular app for production and p
 </ul>
 </div>
 <div class="sect3">
-<h4 id="guide-cypress.asciidoc_setup">20.4.1. Setup</h4>
+<h4 id="guide-cypress.asciidoc_setup">20.3.1. Setup</h4>
 <div class="paragraph">
 <p><strong>Install</strong>
 First of all we need to install it, we can use <code>npm install</code>:</p>
@@ -1404,7 +1313,7 @@ First of all we need to install it, we can use <code>npm install</code>:</p>
 </div>
 </div>
 <div class="listingblock">
-<div class="title">Listing 90. tsconfig.json</div>
+<div class="title">Listing 88. tsconfig.json</div>
 <div class="content">
 <pre class="highlight"><code class="language-json" data-lang="json">{
   &quot;compilerOptions&quot;: {
@@ -1427,7 +1336,7 @@ First of all we need to install it, we can use <code>npm install</code>:</p>
 <p>Let&#x2019;s setup the base url so when we run the tests cypress will &quot;navegate&quot; to the right place, go to <code>cypress.json</code> on the root of the project.</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing 91. cypress.json</div>
+<div class="title">Listing 89. cypress.json</div>
 <div class="content">
 <pre class="highlight"><code class="language-json" data-lang="json">{
   &quot;baseUrl&quot;: &quot;http://localhost:4200&quot;
@@ -1436,7 +1345,7 @@ First of all we need to install it, we can use <code>npm install</code>:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="guide-cypress.asciidoc_files--structure">20.4.2. Files / Structure</h4>
+<h4 id="guide-cypress.asciidoc_files--structure">20.3.2. Files / Structure</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-TypeScript" data-lang="TypeScript">/cypress
@@ -1471,7 +1380,7 @@ First of all we need to install it, we can use <code>npm install</code>:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="guide-cypress.asciidoc_tests">20.4.3. Tests</h4>
+<h4 id="guide-cypress.asciidoc_tests">20.3.3. Tests</h4>
 <div class="paragraph">
 <p>The structure is the same than Mocha.</p>
 </div>
@@ -1479,7 +1388,7 @@ First of all we need to install it, we can use <code>npm install</code>:</p>
 <p>First, we create a file, for example <code>form.spec.ts</code>, inside we define a context to group all our tests referred to the same subject.</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing 92. form.spec.ts</div>
+<div class="title">Listing 90. form.spec.ts</div>
 <div class="content">
 <pre class="highlight"><code class="language-TypeScript" data-lang="TypeScript">context(&apos;Button page&apos;, () =&gt; {
   beforeEach(() =&gt; {
@@ -1519,7 +1428,7 @@ you can find an official cypress demo with all the comands being used.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="guide-cypress.asciidoc_fixtures">20.4.4. Fixtures</h4>
+<h4 id="guide-cypress.asciidoc_fixtures">20.3.4. Fixtures</h4>
 <div class="paragraph">
 <p>We use fixtures to mock data, it can be a json, an img, video&#x2026;&#x200B;</p>
 </div>
@@ -1568,7 +1477,7 @@ you can find an official cypress demo with all the comands being used.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="guide-cypress.asciidoc_request--route">20.4.5. Request / Route</h4>
+<h4 id="guide-cypress.asciidoc_request--route">20.3.5. Request / Route</h4>
 <div class="paragraph">
 <p>With cypress you can test your application with real data or with mocks.</p>
 </div>
@@ -1696,7 +1605,7 @@ cy.request({
 </div>
 </div>
 <div class="sect3">
-<h4 id="guide-cypress.asciidoc_custom-comands">20.4.6. Custom comands</h4>
+<h4 id="guide-cypress.asciidoc_custom-comands">20.3.6. Custom comands</h4>
 <div class="paragraph">
 <p>If you see yourself writing the same test more than once (login is a common one), you can create a custom command to make things faster.</p>
 </div>
@@ -1704,7 +1613,7 @@ cy.request({
 <p><code>Cypress.Commands.add(&apos;name&apos;, ()&#x21D2;{})</code> to create the test.</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing 93. commands.ts</div>
+<div class="title">Listing 91. commands.ts</div>
 <div class="content">
 <pre class="highlight"><code class="language-TypeScript" data-lang="TypeScript">Cypress.Commands.add(&apos;checkPlaceholder&apos;, (name) =&gt; {
   cy.get(`[name=${name}]`)
@@ -1720,7 +1629,7 @@ cy.request({
 <p>To use the commands we need to import the files on support/index.ts</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing 94. index.ts</div>
+<div class="title">Listing 92. index.ts</div>
 <div class="content">
 <pre class="highlight"><code class="language-TypeScript" data-lang="TypeScript">import &apos;./commands&apos;
 import &apos;./file1&apos;
@@ -1754,7 +1663,7 @@ import &apos;./folder/file2&apos;</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="guide-cypress.asciidoc_reporter">20.4.7. Reporter</h4>
+<h4 id="guide-cypress.asciidoc_reporter">20.3.7. Reporter</h4>
 <div class="paragraph">
 <p>The tests results appear on the terminal, but to have a more friendly view we can add a reporter.</p>
 </div>
@@ -2062,7 +1971,7 @@ runTests();</code></pre>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2020-08-24 18:47:00 UTC
+Last updated 2020-09-04 11:34:36 UTC
 </sub></div>
 
 

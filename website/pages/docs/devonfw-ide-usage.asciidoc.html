@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2020-08-24 18:48:50 UTC">
+<meta name="author" content="Updated at 2020-09-04 11:36:49 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -517,7 +517,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2020-08-24 18:49:13 UTC</span><br>
+<span id="author" class="author">Updated at 2020-09-04 11:37:16 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -871,6 +871,11 @@ Please note that we are trying to minimize any potential side-effect from <code>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>&#xAB;TOOL&#xBB;_RELEASE_OPTS</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">e.g.<code>clean deploy -Dchangelist= -Pdeploy</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The arguments provided to the build-tool <code>&#xAB;TOOL&#xBB;</code> in order to perform a release build.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEVON_IDE_TRACE</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If value is not an empty string, the <code>devonfw-ide</code> scripts will trace each script line executed. For bash two lines output: before and again after expansion. <strong>ATTENTION:</strong> This is not a regular variable working via <code>devon.properties</code>. Instead manually do <code>export DEVON_IDE_TRACE=true</code> in bash or <code>DEVON_IDE_TRACE=true</code> in windows CMD before running a devon command to get a trace log that you can provide to experts in order to trace down a bug and see what went wrong.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1924,7 +1929,54 @@ To launch VSCode for your current workspace and <code>devonfw-ide</code> install
 </tr>
 </tbody>
 </table>
+<div class="sect4">
+<h5 id="vscode.asciidoc_plugins">plugins</h5>
+<div class="paragraph">
+<p>To be productive with VS Code you need plugins (called <code>extensions</code> in VS Code). Of course <code>devonfw-ide</code> can automate this for your:
+In your <a href="devonfw-ide-usage.asciidoc.html#settings.asciidoc">settings</a> git repository create a folder <a href="https://github.com/devonfw/ide-settings/tree/master/vscode/plugins">vscode/plugins</a> (click this link to see more examples and see which plugins come by default).
+Here you can create a properties file for each plugin. This is an example <a href="https://github.com/devonfw/ide-settings/blob/master/vscode/plugins/devonfw-extension-pack.properties">devonfw-extension-pack.properties</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>plugin_id=devonfw.devonfw-extension-pack
+plugin_active=true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The variables are defined as following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>plugin_id</code> defines the unique ID of the plugin to install. If you want to customize <code>devonfw-ide</code> with new plugins click on <code>Extensions</code> at the bottom of the left navigation icon bar in VS code. Then use the search to find the plugin of your choice. If you click on it the plugin ID is displayed in grey beside the official title at the top of the plugin details page. Copy &amp; paste the ID from here to make up your own custom config.</p>
+</li>
+<li>
+<p><code>plugin_active</code> is an optional parameter. If it is <code>true</code> (default) the plugin will be installed automatically during the project <a href="devonfw-ide-introduction.asciidoc.html#setup.asciidoc">setup</a> for all developers in your team. Otherwise developers can still install the plugin manually via <code>devon vscode add-plugin &#xAB;plugin-name&#xBB;</code> from the config file <code>settings/vscode/plugins/&#xAB;plugin-name&#xBB;.properties</code>. See the <code>settings/vscode/plugins</code> folder for possible values of &#xAB;plugin-name&#xBB;.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In general you should try to stick with the configuration pre-defined by your project. But some plugins may be considered as personal flavor and are typically not predefined by the project config. Such plugins should be shipped with your <a href="devonfw-ide-usage.asciidoc.html#settings.asciidoc">settings</a> as described above with <code>plugin_active=false</code> allowing you to easily install it manually. Surely, you can easily add plugins via the UI of VS code. However, be aware that some plugins may collect sensitive data or could introduce other vulnerabilities. So consider the governance of your project and talk to your technical lead before installing additional plugins that are not pre-defined in your <a href="devonfw-ide-usage.asciidoc.html#settings.asciidoc">settings</a>.</p>
+</div>
+<div class="paragraph">
+<p>As maintainer of the <a href="devonfw-ide-usage.asciidoc.html#settings.asciidoc">settings</a> for your project you should avoid to ship too many plugins that may waste resources but are not used by every developer. By configuring additional plugins with <code>plugin_active=false</code> you can give your developers the freedom to install some additional plugins easily.</p>
+</div>
+<div class="sect5">
+<h6 id="vscode.asciidoc_cleaning-plugins-on-update">cleaning plugins on update</h6>
+<div class="paragraph">
+<p>If you want to striclty manage the plugins for <code>VS code</code> in your project, you can create or edit the file <code>settings/vscode/plugins</code> in your <a href="devonfw-ide-usage.asciidoc.html#settings.asciidoc">settings</a> and add this variable:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>clean_plugins_on_update=true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will wipe all plugins when an update of <code>VS code</code> is performed (e.g. via <code>devon ide update</code>) and reinstall all configured plugins. While this gives you more control over the governance of the plugins and allows to remove a plugin later during project lifecycle. However, this will delete all manually installed plugins automatically without asking.</p>
+</div>
 <!-- toc disabled -->
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="yarn.asciidoc">5.4.19. yarn</h4>
@@ -2592,7 +2644,7 @@ active=true</pre>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2020-08-24 18:47:00 UTC
+Last updated 2020-09-04 11:34:36 UTC
 </sub></div>
 
 
