@@ -3,7 +3,16 @@ const path = require('path');
 const lunr = require('lunr');
 const cheerio = require('cheerio');
 
-function getLunrDoc(dirname, extension) {
+let visitedExploreDocs = [];
+
+function getLunrDoc(docsDirname, exploreDirname, extension) {
+  let docs = getDocumentsFromDocs(docsDirname, extension);
+  docs = docs.concat(getDocumentsFromExplore(exploreDirname, extension));
+
+  generateIndexJson(docs);
+}
+
+function getDocumentsFromDocs(dirname, extension) {
   let files = getFilesFromDir(dirname, extension);
 
   let docs = [];
@@ -13,7 +22,42 @@ function getLunrDoc(dirname, extension) {
   };
   files.forEach((file) => docs.push(readFromFilename(file, processing)));
 
-  generateIndexJson(docs);
+  return docs;
+}
+
+function getDocumentsFromExplore(dirname, extension) {
+  let docs = [];
+  let htmlStr = fs.readFileSync(path.join(dirname, 'dir-content', 'entry-point' + extension), 'utf-8');
+  let $ = cheerio.load(htmlStr);
+  $('div#content div.links-to-files > div.sectionbody > div.paragraph a').each(function (_, link) {
+    docs = docs.concat(getDocumentsFromExploreFile(dirname, link.attribs['href'], '#'));
+  });
+  return docs;
+}
+
+function getDocumentsFromExploreFile(dirname, file, parenthash) {
+  visitedExploreDocs.push(file);
+  let docs = [];
+  let filePath = path.join(dirname, 'dir-content', file);
+  if (fs.existsSync(filePath)) {
+    let htmlStr = fs.readFileSync(filePath, 'utf-8');
+    let $ = cheerio.load(htmlStr);
+    let hash = parenthash + '/' + file.substr(0, file.lastIndexOf('.'));
+    let doc = {
+      id: path.join(dirname, 'explore.html').replace(/\\/g,'/') + hash,
+      type: 'explore',
+      title: $('div#content div.directory h2').text(),
+      body: $('div#content div.directory p').text(),
+    };
+    docs.push(doc);
+    $('div#content div.links-to-files > div.sectionbody > div.paragraph a').each(function (_, link) {
+      if (visitedExploreDocs.indexOf(link.attribs['href']) === -1) {
+        docs = docs.concat(getDocumentsFromExploreFile(dirname, link.attribs['href'], hash));
+      }
+    });
+
+  }
+  return docs;
 }
 
 function normalize(path) {
@@ -45,7 +89,7 @@ function getFilesFromDir(dirname, extension) {
   let item;
   let result = [];
 
-  dirContent.forEach(function(dirItem) {
+  dirContent.forEach(function (dirItem) {
     item = `${dirname}/${dirItem}`;
     fileStats = fs.lstatSync(item);
 
@@ -67,6 +111,7 @@ function readFromFilename(
 ) {
   let doc = {
     id: file,
+    type: 'docs',
     title: 'not found',
     body: fs.readFileSync(file, 'utf-8'),
   };
@@ -81,7 +126,7 @@ function readFromFilename(
   let lines = doc.body.split('\n');
   let titleLevel = 10;
 
-  lines.forEach(function(line) {
+  lines.forEach(function (line) {
     let matchRes = line.match(/<h([0-9]).*>(.*|\n*)<\/h([0-9])>/);
     if (matchRes && matchRes.length > 2 && matchRes[1] < titleLevel) {
       console.log(matchRes);
@@ -102,13 +147,13 @@ function readFromFilename(
 }
 
 function generateIndexJson(documents) {
-  let idx = lunr(function() {
+  let idx = lunr(function () {
     this.ref('id');
     this.field('title');
     this.field('body');
     this.metadataWhitelist = ['position'];
 
-    documents.forEach(function(doc) {
+    documents.forEach(function (doc) {
       this.add(doc);
     }, this);
   });
@@ -122,6 +167,6 @@ function generateIndexJson(documents) {
   return idxJson;
 }
 
-if (process.argv.length > 3) {
-  getLunrDoc(process.argv[2], process.argv[3]);
+if (process.argv.length > 4) {
+  getLunrDoc(process.argv[2], process.argv[3], process.argv[4]);
 }
