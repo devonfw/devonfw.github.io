@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2020-09-07 13:28:32 UTC">
+<meta name="author" content="Updated at 2020-09-07 14:39:08 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -517,7 +517,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2020-09-07 13:29:02 UTC</span><br>
+<span id="author" class="author">Updated at 2020-09-07 14:39:38 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -716,6 +716,415 @@ git clone https://github.com/devonfw/my-thai-star.git</code></pre>
 <div class="paragraph">
 <p>You should now take a look at both the front- and backend code and familiarize yourself with its structure and concepts, since most devonfw projects follow this exemplary implementation. Please visit the <em>architecture overview</em> pages of <a href="https://devonfw.com/website/pages/docs/master-devon4ng.asciidoc_architecture.html#architecture.asciidoc">devon4ng</a> and <a href="https://github.com/devonfw/devon4j/wiki/architecture">devon4j</a> to learn more about the internal workings of front- and backend.</p>
 </div>
+<div class="paragraph">
+<p>&#xFFFD;&#xFFFD;= ISTIO Service Mesh Implementation Guide</p>
+</div>
+<div class="paragraph">
+<p>== Introduction</p>
+</div>
+<div class="paragraph">
+<p>A Service mesh separating applications from network functions like resilience, fault tolerance, etc.,</p>
+</div>
+<div class="paragraph">
+<p>A service mesh addresses the below functions without changing the application code.</p>
+</div>
+<div class="paragraph">
+<p><strong> Test the new versions of services without impacting the users.
+</strong> Scale the services.
+<strong> Find the services with the help of service registry.
+</strong> Test against failures.
+<strong> Secure service-to-service communication.
+</strong> Route traffic to a specific way.
+<strong> Circuit breaking and fault injection.
+</strong> Monitor the services and collect matrices.
+* Tracing.</p>
+</div>
+<div class="paragraph">
+<p>ISTIO service mesh is an open environment for Connecting, Securing, Monitoring services across the environments.</p>
+</div>
+<div class="paragraph">
+<p>== ISTIO Architecture</p>
+</div>
+<div class="paragraph">
+<p>image:images/istio/media/image1.png[image,width=373,height=277]</p>
+</div>
+<div class="paragraph">
+<p>ISTIO is split into data plane and control plane.</p>
+</div>
+<div class="paragraph">
+<p>[.underline]<mark>Data Plane</mark></p>
+</div>
+<div class="paragraph">
+<p>The data plane is a set of intelligent proxies (Envoy) deployed as sidecars that mediate and control all network communication among microservices.</p>
+</div>
+<div class="paragraph">
+<p>image:images/istio/media/image2.png[image,width=199,height=185]</p>
+</div>
+<div class="paragraph">
+<p>[.underline]<mark>Control Plane</mark></p>
+</div>
+<div class="paragraph">
+<p>The control plane is managing and configuring proxies to route traffic and enforcing policies.</p>
+</div>
+<div class="paragraph">
+<p><strong> Pilot manages all the proxies and responsible for routing
+</strong> Mixer collects telemetry and policy check
+* Citadel does Certificate management (TLS certs to Envoys)</p>
+</div>
+<div class="paragraph">
+<p>== ISTIO installation</p>
+</div>
+<div class="paragraph">
+<p>Download ISTIO from https://github.com/istio/istio/releases/[releases]</p>
+</div>
+<div class="paragraph">
+<p><code>istioctl install --set profile=demo</code></p>
+</div>
+<div class="paragraph">
+<p>Here used demo profile, there are other profiles for production.</p>
+</div>
+<div class="paragraph">
+<p>Verify installation:</p>
+</div>
+<div class="paragraph">
+<p><code>kubectl get all -n istio-system</code></p>
+</div>
+<div class="paragraph">
+<p>Inject sidecar container automatically by issuing the below command.</p>
+</div>
+<div class="paragraph">
+<p><code>kubectl label namespace default istio-injection=enabled</code></p>
+</div>
+<div class="paragraph">
+<p>Verify:</p>
+</div>
+<div class="paragraph">
+<p><code>kubectl get namespace -L istio-injection</code></p>
+</div>
+<div class="paragraph">
+<p>== Traffic Management</p>
+</div>
+<div class="paragraph">
+<p>ISITO&apos;s traffic management model relies on the Envoy proxies which deployed as sidecars to services.</p>
+</div>
+<div class="paragraph">
+<p>Below are the traffic management API resources</p>
+</div>
+<div class="paragraph">
+<p><strong> Virtual Services
+</strong> Destination Rules
+<strong> Gateways
+</strong> Service Entries
+* Sidecars</p>
+</div>
+<div class="paragraph">
+<p>A virtual service, higher level abstraction of Kubernetes Service, lets you configure how requests are routed to a service within an Istio service mesh. Your mesh may have multiple virtual services or none. Virtual service consists of routing rules that are evaluated in order.</p>
+</div>
+<div class="paragraph">
+<p>=== Dark Launch</p>
+</div>
+<div class="paragraph">
+<p>The following virtual service routes requests to different versions of a service depending on whether the request comes from a testuser. If the testuser calls then version v1 will be used, and for others version v2.</p>
+</div>
+<div class="paragraph">
+<p>image:images/istio/media/image3.png[image,width=601,height=124]</p>
+</div>
+<div class="paragraph">
+<p>=== Blue/Green deployment</p>
+</div>
+<div class="paragraph">
+<p>In blue/green deployment two versions of the application running. Both versions are live on different domain names, in this example it is mtsj.com and test.mtsj.com.</p>
+</div>
+<div class="paragraph">
+<p>[arabic]
+. Define 2 virtual services for mtsj v1 and v2 versions.
+. Define DestinationRule and configure the subsets for v1 and v2.</p>
+</div>
+<div class="paragraph">
+<p>image:images/istio/media/image4.png[image,width=601,height=139]</p>
+</div>
+<div class="paragraph">
+<p>When end user browses <em>mtsj.com</em>, the gateway call goes to subset v1 of the virtual service and redirects to destination version v1, and for <em>test.mtsj.com</em> to version v2.</p>
+</div>
+<div class="paragraph">
+<p>=== Canary Deployment (Traffic Splitting)</p>
+</div>
+<div class="paragraph">
+<p>In canary deployment old and new versions of the application alive. ISTIO can be configured, how much percentage of traffic can go to each version.</p>
+</div>
+<div class="paragraph">
+<p>image:images/istio/media/image5.png[image,width=601,height=123]</p>
+</div>
+<div class="paragraph">
+<p>Here, the traffic is divided 75% to the version V1, and 25% to the version V2, as we gain confidence the percentage can be increased the latest version and gradually the traffic to the old version can be reduced and removed.</p>
+</div>
+<div class="paragraph">
+<p>==== MyThaiStar Implementation</p>
+</div>
+<div class="paragraph">
+<p>In this example dish will have two versions and the traffic will be routed alternately using the ISTIO configuration.</p>
+</div>
+<div class="paragraph">
+<p>Find all configuration files in istio/trafficmanagement/canary directory under mythaistarmicroservices example.</p>
+</div>
+<div class="paragraph">
+<p>[arabic]
+. MyThaiStar: defines below
+[loweralpha]
+.. Service
+.. Service Account
+.. Deployment</p>
+</div>
+<div class="paragraph">
+<p>The above configurations are defined in a single yaml file for all the different services like angular, dish, image etc.</p>
+</div>
+<div class="paragraph">
+<p>[arabic, start=2]
+. dish-v2: Dish Version 2 can be kept separately in different yaml file.
+. mts-gateway &#xFFFD;&#xFFFD;&#xFFFD; defines the ingress gateway which routes the outbound request to each service.
+. destination-rule-all &#xFFFD;&#xFFFD;&#xFFFD; defines the subsets here for later traffic routing
+. dish-50-50: traffic routing for different versions of dishmanagement.</p>
+</div>
+<div class="paragraph">
+<p>=== Network Resilience</p>
+</div>
+<div class="paragraph">
+<p>==== Timeout</p>
+</div>
+<div class="paragraph">
+<p>Istio lets you adjust the timeouts using virtual services. The default timeout is 15 seconds.</p>
+</div>
+<div class="paragraph">
+<p>==== image:images/istio/media/image6.png[image,width=185,height=155]</p>
+</div>
+<div class="paragraph">
+<p>==== Retry</p>
+</div>
+<div class="paragraph">
+<p>A retry setting specifies the maximum number of times an Envoy proxy attempts to connect to a service if the initial call fails.</p>
+</div>
+<div class="paragraph">
+<p>image:images/istio/media/image7.png[image,width=211,height=152]</p>
+</div>
+<div class="paragraph">
+<p>Retries can also be configured on Gateway Error, Connection failure, Connection Refused or any 5xx error from the application.</p>
+</div>
+<div class="paragraph">
+<p>retryOn: gateway-error,connect-failure,refused-stream,5xx</p>
+</div>
+<div class="paragraph">
+<p>==== Circuit Breakers</p>
+</div>
+<div class="paragraph">
+<p>By defining the destination rule, set limits for calls to individual hosts within a service, such as the number of concurrent connections or how many times calls to this host have failed once the limit reached.</p>
+</div>
+<div class="paragraph">
+<p><strong> Outlier Detection is an ISTIO Resiliency strategy to detect unusual host behaviour and evict the unhealthy hosts from the set of load balanced healthy hosts inside a cluster.
+</strong> If a request is sent to a service instance and it fails (returns a 50X error code), then ISTIO ejects the instance from the load balanced pool for a specified duration.</p>
+</div>
+<div class="paragraph">
+<p>image:images/istio/media/image8.png[image,width=182,height=150]</p>
+</div>
+<div class="paragraph">
+<p>==== Fault Injection</p>
+</div>
+<div class="paragraph">
+<p>Two types of faults can be generated using ISTIO. This is useful for the testing.</p>
+</div>
+<div class="paragraph">
+<p>Delays: timing failures.</p>
+</div>
+<div class="paragraph">
+<p>Aborts: crash failures.</p>
+</div>
+<div class="paragraph">
+<p>Below example is a crash failure Virtual Service. The below example configured to receive http status 500 error for the testuser. The application works fine for all other users.</p>
+</div>
+<div class="paragraph">
+<p>image:images/istio/media/image9.png[image,width=229,height=377]</p>
+</div>
+<div class="paragraph">
+<p>The below virtual service configured to wait 10s for all requests.</p>
+</div>
+<div class="paragraph">
+<p>image:images/istio/media/image10.png[image,width=254,height=217]</p>
+</div>
+<div class="paragraph">
+<p>== Security</p>
+</div>
+<div class="paragraph">
+<p>ISTIO provides security solution has the below functions.</p>
+</div>
+<div class="paragraph">
+<p><strong> Traffic encryption
+</strong> Mutual TLS and fine-grained access policies.
+* Auditing tools</p>
+</div>
+<div class="paragraph">
+<p>=== Authentication</p>
+</div>
+<div class="paragraph">
+<p>ISTIO provides two types of authentication.</p>
+</div>
+<div class="paragraph">
+<p><strong> Peer authentication, secures service to service authentication
+</strong> Request authentication is end user authentication to verify credential attached to the request.</p>
+</div>
+<div class="paragraph">
+<p>=== Mutual TLS Authentication</p>
+</div>
+<div class="paragraph">
+<p>By default, the TLS protocol only proves the identity of the server to the client. Mutual TLS authentication ensures that traffic has been traffic is secure and trusted in both the directions between the client and server.</p>
+</div>
+<div class="paragraph">
+<p>All traffic between services with proxies uses mutual TLS by default.</p>
+</div>
+<div class="paragraph">
+<p>=== Peer Authentication</p>
+</div>
+<div class="paragraph">
+<p>Peer authentication has Permissive, Strict and Disabled mode. With permissive mode, a service accepts both plain text and mutual TLS traffic. Permissive mode is good at the time of onboarding and should switch to Strict later.</p>
+</div>
+<div class="paragraph">
+<p>The authentication policy can be applied to mesh-wide, namespace wide or workload specific using the selector field.</p>
+</div>
+<div class="paragraph">
+<p>image:images/istio/media/image11.png[image,width=275,height=148]</p>
+</div>
+<div class="paragraph">
+<p>Here the policy applied to the workload bookings.</p>
+</div>
+<div class="paragraph">
+<p>Check the default mesh policy:</p>
+</div>
+<div class="paragraph">
+<p><code>kubectl describe meshpolicy default</code></p>
+</div>
+<div class="paragraph">
+<p>=== Request authentication</p>
+</div>
+<div class="paragraph">
+<p>Request authentication policies specify the values needed to validate JWT tokens.</p>
+</div>
+<div class="paragraph">
+<p>[cols=&quot;,,,&quot;,]
+|===
+|<strong>Authentication</strong> |<strong>Applies to</strong> |<strong>Uses</strong> |<strong>Identity</strong>
+|Peer authentication |Service to service |mTLS |source.principal
+|Request authentication |End User authentication |JWT |request.auth.principal
+|===</p>
+</div>
+<div class="paragraph">
+<p>=== Authorization</p>
+</div>
+<div class="paragraph">
+<p>Apply an authorization policy to the workload/namespace/mesh to enforce the access control. Supports ALLOW and DENY actions.</p>
+</div>
+<div class="paragraph">
+<p>[.underline]<mark>Deny All</mark></p>
+</div>
+<div class="paragraph">
+<p>Below example authorization policy without any rules denies access to all workloads in admin namespace.</p>
+</div>
+<div class="paragraph">
+<p>image:images/istio/media/image12.png[image,width=221,height=97]</p>
+</div>
+<div class="paragraph">
+<p>Example below allowing the GET methods from order service.</p>
+</div>
+<div class="paragraph">
+<p>image:images/istio/media/image13.png[image,width=247,height=174]</p>
+</div>
+<div class="paragraph">
+<p>Example below denies the request to the /registered path for requests without request principals.</p>
+</div>
+<div class="paragraph">
+<p>=== image:images/istio/media/image14.png[image,width=236,height=166]</p>
+</div>
+<div class="paragraph">
+<p>=== Observability</p>
+</div>
+<div class="paragraph">
+<p>ISTIO generates</p>
+</div>
+<div class="paragraph">
+<p>Metrics - for monitor latency, traffic, errors and saturation.</p>
+</div>
+<div class="paragraph">
+<p>Distributed Traces to identify call flows and service dependencies</p>
+</div>
+<div class="paragraph">
+<p>Access Logs enables audit service behaviour to the individual service level.</p>
+</div>
+<div class="paragraph">
+<p>==== Grafana dashboard</p>
+</div>
+<div class="paragraph">
+<p>Grafana and Prometheus are preconfigured addons on ISTIO. To enable, choose the configuration profile which has Prometheus and Grafana enabled. Eg: Demo profile</p>
+</div>
+<div class="paragraph">
+<p>Verify Prometheus and Grafana running in the cluster.</p>
+</div>
+<div class="paragraph">
+<p><code>kubectl get pods -n istio-system</code></p>
+</div>
+<div class="paragraph">
+<p>Execute the below command to make the Grafana available.</p>
+</div>
+<div class="paragraph">
+<p><code>kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=grafana -o jsonpath=&apos;\{.items[0].metadata.name}&apos;) 3000:3000 &amp;</code></p>
+</div>
+<div class="paragraph">
+<p>Use the below URLs to view the dashboard</p>
+</div>
+<div class="paragraph">
+<p>http://localhost:3000/dashboard/db/istio-mesh-dashboard</p>
+</div>
+<div class="paragraph">
+<p>==== Kiali dashboard</p>
+</div>
+<div class="paragraph">
+<p>The Kiali dashboard helps you understand the structure of your service mesh by displaying the topology. The demo profile enables Kiali dashboard also.</p>
+</div>
+<div class="paragraph">
+<p>Access the Kiali dashboard. The default user name is admin and default password is admin.</p>
+</div>
+<div class="paragraph">
+<p><code>istioctl dashboard kiali</code></p>
+</div>
+<div class="paragraph">
+<p>=== Minikube Troubleshooting Tips</p>
+</div>
+<div class="paragraph">
+<p>This documentation provides the troubleshooting tips while working with minikube in a local machine.</p>
+</div>
+<div class="paragraph">
+<p>[arabic]
+. Always start minikube with a minimum of 4GB of memory or more if available.</p>
+</div>
+<div class="paragraph">
+<p><code>minikube start --memory=4096</code></p>
+</div>
+<div class="paragraph">
+<p>[arabic, start=2]
+. If minikube is not starting throwing any error even after multiple attempts. Try the below tips:
+[loweralpha]
+.. Delete the minikube in your local machine using <code>minikube delete</code> and do a fresh minikube start.
+.. In any case, if minikube is not starting even after the above step, go to .minikube folder under the users directory and delete it manually. Now try starting minikube.
+. Set docker environment in minikube using <code>minikube docker-env</code>. Now all the docker commands that are run will be on the docker inside minikube. So building your application after executing the above command will have the application docker images available to minikube.
+[loweralpha]
+.. To exit minikube docker environment use <code>minikube docker-env -u</code>
+. In any case, if you face any error related to docker image such as <code>Failed to pull image</code>, or <code>image not found</code> errors we will have to manually push the application docker image to minikube docker cache using the below commands.</p>
+</div>
+<div class="paragraph">
+<p>[loweralpha]
+. For better results - stop minikube using <code>minikube stop</code> command.
+. Execute the command <code>minikube cache add imageName/tagName</code>.
+. Now start the minikube. To verify if the docker image has been added to minikube docker execute <code>minikube ssh docker images</code>.
+. To remove any docker image from minikube docker stop any containers running that docker image and then execute <code>minikube cache delete imageName/tagName</code>.
+. To reload any docker image to minikube docker environment, execute <code>minikube cache reload</code>.
+. In any case, if the docker images are not getting removed from minikube docker environment then navigate to .minikube/cache/images and then delete the particular image.</p>
+</div>
 </div>
 </div>
 </div>
@@ -851,7 +1260,7 @@ git clone https://github.com/devonfw/my-thai-star.git</code></pre>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2020-09-07 13:26:12 UTC
+Last updated 2020-09-07 14:36:44 UTC
 </sub></div>
 
 
