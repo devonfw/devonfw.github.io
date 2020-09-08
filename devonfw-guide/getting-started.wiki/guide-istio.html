@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>ISTIO Service Mesh Implementation Guide</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-istio.asciidoc">ISTIO Service Mesh Implementation Guide</a>
+<ul class="sectlevel1">
+<li><a href="#guide-istio.asciidoc_introduction">Introduction</a></li>
+<li><a href="#guide-istio.asciidoc_istio-architecture">ISTIO Architecture</a>
+<ul class="sectlevel2">
+<li><a href="#guide-istio.asciidoc_data-plane">Data Plane</a></li>
+<li><a href="#guide-istio.asciidoc_control-plane">Control Plane</a></li>
+</ul>
+</li>
+<li><a href="#guide-istio.asciidoc_istio-installation">ISTIO installation</a></li>
+<li><a href="#guide-istio.asciidoc_traffic-management">Traffic Management</a>
+<ul class="sectlevel2">
+<li><a href="#guide-istio.asciidoc_dark-launch">Dark Launch</a></li>
+<li><a href="#guide-istio.asciidoc_bluegreen-deployment">Blue/Green deployment</a></li>
+<li><a href="#guide-istio.asciidoc_canary-deployment-traffic-splitting">Canary Deployment (Traffic Splitting)</a></li>
+<li><a href="#guide-istio.asciidoc_network-resilience">Network Resilience</a></li>
+</ul>
+</li>
+<li><a href="#guide-istio.asciidoc_security">Security</a>
+<ul class="sectlevel2">
+<li><a href="#guide-istio.asciidoc_authentication">Authentication</a></li>
+<li><a href="#guide-istio.asciidoc_mutual-tls-authentication">Mutual TLS Authentication</a></li>
+<li><a href="#guide-istio.asciidoc_peer-authentication">Peer Authentication</a></li>
+<li><a href="#guide-istio.asciidoc_request-authentication">Request authentication</a></li>
+<li><a href="#guide-istio.asciidoc_authorization">Authorization</a></li>
+</ul>
+</li>
+<li><a href="#guide-istio.asciidoc_observability">Observability</a>
+<ul class="sectlevel2">
+<li><a href="#guide-istio.asciidoc_grafana-dashboard">Grafana dashboard</a></li>
+<li><a href="#guide-istio.asciidoc_kiali-dashboard">Kiali dashboard</a></li>
+</ul>
+</li>
+<li><a href="#guide-istio.asciidoc_minikube-troubleshooting-tips">Minikube Troubleshooting Tips</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-istio.asciidoc" class="sect0">ISTIO Service Mesh Implementation Guide</h1>
+<div class="sect1">
+<h2 id="guide-istio.asciidoc_introduction">Introduction</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A service mesh separating applications from network functions like resilience, fault tolerance, etc,.</p>
+</div>
+<div class="paragraph">
+<p>A service mesh addresses the below functions without changing the application code.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Test the new versions of services without impacting the users.</p>
+</li>
+<li>
+<p>Scale the services.</p>
+</li>
+<li>
+<p>Find the services with the help of service registry.</p>
+</li>
+<li>
+<p>Test against failures.</p>
+</li>
+<li>
+<p>Secure service-to-service communication.</p>
+</li>
+<li>
+<p>Route traffic to a specific way.</p>
+</li>
+<li>
+<p>Circuit breaking and fault injection.</p>
+</li>
+<li>
+<p>Monitor the services and collect matrices.</p>
+</li>
+<li>
+<p>Tracing.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>ISTIO service mesh is an open environment for Connecting, Securing, Monitoring services across the environments.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-istio.asciidoc_istio-architecture">ISTIO Architecture</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/istio/media/image1.png" alt="image" width="373" height="277"></span></p>
+</div>
+<div class="paragraph">
+<p>ISTIO is split into data plane and control plane.</p>
+</div>
+<div class="sect2">
+<h3 id="guide-istio.asciidoc_data-plane">Data Plane</h3>
+<div class="paragraph">
+<p>The data plane is a set of intelligent proxies (Envoy) deployed as sidecars that mediate and control all network communication among microservices.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/istio/media/image2.png" alt="image" width="199" height="185"></span></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-istio.asciidoc_control-plane">Control Plane</h3>
+<div class="paragraph">
+<p>The control plane is managing and configuring proxies to route traffic and enforcing policies.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Pilot manages all the proxies and responsible for routing</p>
+</li>
+<li>
+<p>Mixer collects telemetry and policy check</p>
+</li>
+<li>
+<p>Citadel does Certificate management (TLS certs to Envoys)</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-istio.asciidoc_istio-installation">ISTIO installation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Download ISTIO from <a href="https://github.com/istio/istio/releases/">releases</a></p>
+</div>
+<div class="paragraph">
+<p><code>istioctl install --set profile=demo</code></p>
+</div>
+<div class="paragraph">
+<p>Here used demo profile, there are other profiles for production.</p>
+</div>
+<div class="paragraph">
+<p>Verify installation:</p>
+</div>
+<div class="paragraph">
+<p><code>kubectl get all -n istio-system</code></p>
+</div>
+<div class="paragraph">
+<p>Inject sidecar container automatically by issuing the below command.</p>
+</div>
+<div class="paragraph">
+<p><code>kubectl label namespace default istio-injection=enabled</code></p>
+</div>
+<div class="paragraph">
+<p>Verify:</p>
+</div>
+<div class="paragraph">
+<p><code>kubectl get namespace -L istio-injection</code></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-istio.asciidoc_traffic-management">Traffic Management</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>ISITO&#8217;s traffic management model relies on the Envoy proxies which deployed as sidecars to services.</p>
+</div>
+<div class="paragraph">
+<p>Below are the traffic management API resources</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Virtual Services</p>
+</li>
+<li>
+<p>Destination Rules</p>
+</li>
+<li>
+<p>Gateways</p>
+</li>
+<li>
+<p>Service Entries</p>
+</li>
+<li>
+<p>Sidecars</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>A virtual service, higher level abstraction of Kubernetes Service, lets you configure how requests are routed to a service within an Istio service mesh. Your mesh may have multiple virtual services or none. Virtual service consists of routing rules that are evaluated in order.</p>
+</div>
+<div class="sect2">
+<h3 id="guide-istio.asciidoc_dark-launch">Dark Launch</h3>
+<div class="paragraph">
+<p>The following virtual service routes requests to different versions of a service depending on whether the request comes from a testuser. If the testuser calls then version v1 will be used, and for others version v2.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/istio/media/image3.png" alt="image" width="601" height="124"></span></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-istio.asciidoc_bluegreen-deployment">Blue/Green deployment</h3>
+<div class="paragraph">
+<p>In blue/green deployment two versions of the application running. Both versions are live on different domain names, in this example it is mtsj.com and test.mtsj.com.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Define 2 virtual services for mtsj v1 and v2 versions.</p>
+</li>
+<li>
+<p>Define DestinationRule and configure the subsets for v1 and v2.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/istio/media/image4.png" alt="image" width="601" height="139"></span></p>
+</div>
+<div class="paragraph">
+<p>When end user browses <em>mtsj.com</em>, the gateway call goes to subset v1 of the virtual service and redirects to destination version v1, and for <em>test.mtsj.com</em> to version v2.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-istio.asciidoc_canary-deployment-traffic-splitting">Canary Deployment (Traffic Splitting)</h3>
+<div class="paragraph">
+<p>In canary deployment old and new versions of the application alive. ISTIO can be configured, how much percentage of traffic can go to each version.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/istio/media/image5.png" alt="image" width="601" height="123"></span></p>
+</div>
+<div class="paragraph">
+<p>Here, the traffic is divided 75% to the version V1, and 25% to the version V2, as we gain confidence the percentage can be increased the latest version and gradually the traffic to the old version can be reduced and removed.</p>
+</div>
+<div class="sect3">
+<h4 id="guide-istio.asciidoc_mythaistar-implementation">MyThaiStar Implementation</h4>
+<div class="paragraph">
+<p>In this example dish will have two versions and the traffic will be routed alternately using the ISTIO configuration.</p>
+</div>
+<div class="paragraph">
+<p>Find all configuration files in istio/trafficmanagement/canary directory under mythaistarmicroservices example.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>MyThaiStar defines below</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Service</p>
+</li>
+<li>
+<p>Service Account</p>
+</li>
+<li>
+<p>Deployment</p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The above configurations are defined in a single yaml file for all the different services like angular, dish, image etc.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>dish-v2: Dish Version 2 can be kept separately in different yaml file.</p>
+</li>
+<li>
+<p>mts-gateway defines the ingress gateway which routes the outbound request to each service.</p>
+</li>
+<li>
+<p>destination-rule-all defines the subsets here for later traffic routing</p>
+</li>
+<li>
+<p>dish-50-50: traffic routing for different versions of dishmanagement.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-istio.asciidoc_network-resilience">Network Resilience</h3>
+<div class="sect3">
+<h4 id="guide-istio.asciidoc_timeout">Timeout</h4>
+<div class="paragraph">
+<p>Istio lets you adjust the timeouts using virtual services. The default timeout is 15 seconds.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/istio/media/image6.png" alt="image" width="185" height="155"></span></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-istio.asciidoc_retry">Retry</h4>
+<div class="paragraph">
+<p>A retry setting specifies the maximum number of times an Envoy proxy attempts to connect to a service if the initial call fails.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/istio/media/image7.png" alt="image" width="211" height="152"></span></p>
+</div>
+<div class="paragraph">
+<p>Retries can also be configured on Gateway Error, Connection failure, Connection Refused or any 5xx error from the application.</p>
+</div>
+<div class="paragraph">
+<p>retryOn: gateway-error,connect-failure,refused-stream,5xx</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-istio.asciidoc_circuit-breakers">Circuit Breakers</h4>
+<div class="paragraph">
+<p>By defining the destination rule, set limits for calls to individual hosts within a service, such as the number of concurrent connections or how many times calls to this host have failed once the limit reached.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Outlier Detection is an ISTIO Resiliency strategy to detect unusual host behaviour and evict the unhealthy hosts from the set of load balanced healthy hosts inside a cluster.</p>
+</li>
+<li>
+<p>If a request is sent to a service instance and it fails (returns a 50X error code), then ISTIO ejects the instance from the load balanced pool for a specified duration.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/istio/media/image8.png" alt="image" width="182" height="150"></span></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-istio.asciidoc_fault-injection">Fault Injection</h4>
+<div class="paragraph">
+<p>Two types of faults can be generated using ISTIO. This is useful for the testing.</p>
+</div>
+<div class="paragraph">
+<p>Delays: timing failures.</p>
+</div>
+<div class="paragraph">
+<p>Aborts: crash failures.</p>
+</div>
+<div class="paragraph">
+<p>Below example is a crash failure Virtual Service. The below example configured to receive http status 500 error for the testuser. The application works fine for all other users.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/istio/media/image9.png" alt="image" width="229" height="377"></span></p>
+</div>
+<div class="paragraph">
+<p>The below virtual service configured to wait 10s for all requests.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/istio/media/image10.png" alt="image" width="254" height="217"></span></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-istio.asciidoc_security">Security</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>ISTIO provides security solution has the below functions.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Traffic encryption</p>
+</li>
+<li>
+<p>Mutual TLS and fine-grained access policies.</p>
+</li>
+<li>
+<p>Auditing tools</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="guide-istio.asciidoc_authentication">Authentication</h3>
+<div class="paragraph">
+<p>ISTIO provides two types of authentication.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Peer authentication, secures service to service authentication</p>
+</li>
+<li>
+<p>Request authentication is end user authentication to verify credential attached to the request.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-istio.asciidoc_mutual-tls-authentication">Mutual TLS Authentication</h3>
+<div class="paragraph">
+<p>By default, the TLS protocol only proves the identity of the server to the client. Mutual TLS authentication ensures that traffic has been traffic is secure and trusted in both the directions between the client and server.</p>
+</div>
+<div class="paragraph">
+<p>All traffic between services with proxies uses mutual TLS by default.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-istio.asciidoc_peer-authentication">Peer Authentication</h3>
+<div class="paragraph">
+<p>Peer authentication has Permissive, Strict and Disabled mode. With permissive mode, a service accepts both plain text and mutual TLS traffic. Permissive mode is good at the time of onboarding and should switch to Strict later.</p>
+</div>
+<div class="paragraph">
+<p>The authentication policy can be applied to mesh-wide, namespace wide or workload specific using the selector field.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/istio/media/image11.png" alt="image" width="275" height="148"></span></p>
+</div>
+<div class="paragraph">
+<p>Here the policy applied to the workload bookings.</p>
+</div>
+<div class="paragraph">
+<p>Check the default mesh policy:</p>
+</div>
+<div class="paragraph">
+<p><code>kubectl describe meshpolicy default</code></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-istio.asciidoc_request-authentication">Request authentication</h3>
+<div class="paragraph">
+<p>Request authentication policies specify the values needed to validate JWT tokens.</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Authentication</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Applies to</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Uses</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Identity</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Peer authentication</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Service to service</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mTLS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">source.principal</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Request authentication</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">End User authentication</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JWT</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">request.auth.principal</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="guide-istio.asciidoc_authorization">Authorization</h3>
+<div class="paragraph">
+<p>Apply an authorization policy to the workload/namespace/mesh to enforce the access control. Supports ALLOW and DENY actions.</p>
+</div>
+<div class="sect3">
+<h4 id="guide-istio.asciidoc_deny-all">Deny All</h4>
+<div class="paragraph">
+<p>Below example authorization policy without any rules denies access to all workloads in admin namespace.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/istio/media/image12.png" alt="image" width="221" height="97"></span></p>
+</div>
+<div class="paragraph">
+<p>Example below allowing the GET methods from order service.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/istio/media/image13.png" alt="image" width="247" height="174"></span></p>
+</div>
+<div class="paragraph">
+<p>Example below denies the request to the /registered path for requests without request principals.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/istio/media/image14.png" alt="image" width="236" height="166"></span></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-istio.asciidoc_observability">Observability</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>ISTIO generates</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Metrics - for monitor latency, traffic, errors and saturation.</p>
+</li>
+<li>
+<p>Distributed Traces to identify call flows and service dependencies</p>
+</li>
+<li>
+<p>Access Logs enables audit service behaviour to the individual service level.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="guide-istio.asciidoc_grafana-dashboard">Grafana dashboard</h3>
+<div class="paragraph">
+<p>Grafana and Prometheus are preconfigured addons on ISTIO. To enable, choose the configuration profile which has Prometheus and Grafana enabled. Eg: Demo profile</p>
+</div>
+<div class="paragraph">
+<p>Verify Prometheus and Grafana running in the cluster.</p>
+</div>
+<div class="paragraph">
+<p><code>kubectl get pods -n istio-system</code></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-istio.asciidoc_kiali-dashboard">Kiali dashboard</h3>
+<div class="paragraph">
+<p>The Kiali dashboard helps you understand the structure of your service mesh by displaying the topology. The demo profile enables Kiali dashboard also.</p>
+</div>
+<div class="paragraph">
+<p>Access the Kiali dashboard. The default user name is admin and default password is admin.</p>
+</div>
+<div class="paragraph">
+<p><code>istioctl dashboard kiali</code></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-istio.asciidoc_minikube-troubleshooting-tips">Minikube Troubleshooting Tips</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This documentation provides the troubleshooting tips while working with minikube in a local machine.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Always start minikube with a minimum of 4GB of memory or more if available. Using command <code>minikube start --memory=4096</code></p>
+</li>
+<li>
+<p>If minikube is not starting or throwing any error even after multiple attempts. Try the below tips:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Delete the minikube in your local machine using <code>minikube delete</code> and do a fresh minikube start.</p>
+</li>
+<li>
+<p>In any case, if minikube is not starting even after the above step, go to .minikube folder under the users directory and delete it manually. Now try starting minikube.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Set docker environment in minikube using <code>minikube docker-env</code>. Now all the docker commands that are run will be on the docker inside minikube. So building your application after executing the above command will have the application docker images available to minikube.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>To exit minikube docker environment use <code>minikube docker-env -u</code></p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>In any case, if you face any error related to docker image such as <code>Failed to pull image</code>, or <code>image not found</code> errors we will have to manually push the application docker image to minikube docker cache using the below commands.</p>
+</li>
+<li>
+<p>For better results - stop minikube using <code>minikube stop</code> command.</p>
+</li>
+<li>
+<p>Execute the command <code>minikube cache add imageName/tagName</code>.</p>
+</li>
+<li>
+<p>Now start the minikube. To verify if the docker image has been added to minikube docker execute <code>minikube ssh docker images</code>.</p>
+</li>
+<li>
+<p>To remove any docker image from minikube docker stop any containers running that docker image and then execute <code>minikube cache delete imageName/tagName</code>.</p>
+</li>
+<li>
+<p>To reload any docker image to minikube docker environment, execute <code>minikube cache reload</code>.</p>
+</li>
+<li>
+<p>In any case, if the docker images are not getting removed from minikube docker environment then navigate to .minikube/cache/images and then delete the particular image.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Execute the below command to make the Grafana available.</p>
+</div>
+<div class="paragraph">
+<p><code>kubectl -n istio-system port-forward $(kubectl -n istio-system get pod -l app=grafana -o jsonpath='\{.items[0].metadata.name}') 3000:3000 &amp;</code></p>
+</div>
+<div class="paragraph">
+<p>Use the below URLs to view the dashboard in local machine.</p>
+</div>
+<div class="paragraph">
+<p><a href="http://localhost:3000/dashboard/db/istio-mesh-dashboard" class="bare">http://localhost:3000/dashboard/db/istio-mesh-dashboard</a></p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html#introduction-why-should-i-use-devonfw.asciidoc">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devon4j.asciidoc_architecture.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-ide-support.asciidoc.html#LICENSE.asciidoc">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2020-09-08 06:20:38 UTC
+</sub></div>
+</div>
+</div>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+</body>
+</html>
