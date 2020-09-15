@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>End to End POC Code generation using Entity class</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#end-to-end-poc-code-generation-using-entity-class">End to End POC Code generation using Entity class</a>
+<ul class="sectlevel1">
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#steps-to-create-a-sample-project-using-cobigen">Steps to create a Sample Project using Cobigen</a>
+<ul class="sectlevel2">
+<li><a href="#back-end">Back End</a></li>
+<li><a href="#front-end">Front End</a></li>
+</ul>
+</li>
+<li><a href="#adapt-cobigen_templates">Adapt CobiGen_Templates</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="end-to-end-poc-code-generation-using-entity-class" class="sect0">End to End POC Code generation using Entity class</h1>
+<div class="paragraph">
+<p>This article helps to create a sample application using cobigen.</p>
+</div>
+<div class="sect1">
+<h2 id="prerequisites">Prerequisites</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Download and install devonnfw IDE <a href="https://devonfw.com/website/pages/docs/devonfw-ide-introduction.asciidoc.html#setup.asciidoc">here</a>,</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="steps-to-create-a-sample-project-using-cobigen">Steps to create a Sample Project using Cobigen</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The HOW_TO is divided in 2 parts:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>BE-Back End generator (DB + DAO + services) – CONTRACT FIRST APPROACH</p>
+</li>
+<li>
+<p>FE-Front End generator (Web App Angular + Ionic App) – CONTRACT FIRST APPROACH</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image9.png" alt="cobigen ionic code genartion"></span></p>
+</div>
+<div class="paragraph">
+<p>So, ready to go! We’re going to start from the BE part …</p>
+</div>
+<div class="sect2">
+<h3 id="back-end">Back End</h3>
+<div class="paragraph">
+<p>run \devonfw-ide-scripts-3.2.4\eclipse-main.bat</p>
+</div>
+<div class="paragraph">
+<p>It will open eclipse</p>
+</div>
+<div class="paragraph">
+<p>create a project using below command from the command prompt</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">devon java create com.example.domain.myapp</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Import the project to eclipse as maven project
+<span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image14.png" alt="eclipse devon"></span></p>
+</div>
+<div class="paragraph">
+<p>Click <strong>FINISH</strong></p>
+</div>
+<div class="paragraph">
+<p>Now We have the following 4 projects.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image15.png" alt="eclipse package explorer"></span></p>
+</div>
+<div class="paragraph">
+<p><strong>BEFORE to start to create an Entity class, remember to create the tables !</strong></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="7">
+<li>
+<p>Create a new <strong>SQL</strong> <strong>file</strong> (i.e: V0005<em>CreateTables_ItaPoc.sql) inside </em>jwtsample-__core and insert the following script:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="sql language-sql">CREATE TABLE EMPLOYEE (
+id BIGINT auto_increment, modificationCounter *INTEGER* *NOT* *NULL*,
+employeeid BIGINT auto_increment,
+name VARCHAR(255),
+surname VARCHAR(255),
+email VARCHAR(255),
+PRIMARY KEY (employeeid)
+);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong><em>WARNING</em></strong>: please note that there are 2 underscore in the name !</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image16.png" alt="sql file"></span></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="8">
+<li>
+<p>Now create another SQL file (i.e: V0006__PopulateTables-ItaPoc.sql) and add following script about the INSERT in order to populate the table created before</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><strong><em>WARNING</em></strong>: please note that there are 2 underscore in the name !</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="sql language-sql">INSERT INTO EMPLOYEE (id, modificationCounter, employeeid, name, surname,email) VALUES (1, 1, 1, 'Stefano','Rossini','stefano.rossini@capgemini.com');
+INSERT INTO  EMPLOYEE (id, modificationCounter, employeeid, name, surname,email) VALUES (2, 2, 2, 'Angelo','Muresu', 'angelo.muresu@capgemini.com');
+INSERT INTO EMPLOYEE (id, modificationCounter, employeeid, name, surname,email) VALUES (3, 3, 3, 'Jaime','Gonzalez', 'jaime.diaz-gonzalez@capgemini.com');</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image17.png" alt="sql insert"></span></p>
+</div>
+<div class="paragraph">
+<p><strong>Let&#8217;s create the Entity Class for the code generation</strong></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="9">
+<li>
+<p>Create a package <strong>employeemanagement.dataacess.api</strong> under the folder jwtsample-core. Note: It is important to follow this naming convention for CobiGen to work properly.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/poc-entity-package.png" alt="package"></span></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Now create a JPA Entity class in this package</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Column;
+@Entity
+@javax.persistence.Table(name = "EMPLOYEE")
+public class EmployeeEntity {
+  @Column(name = "EMPLOYEEID")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long employeeId;
+  @Column(name = "NAME")
+  private String name;
+  @Column(name = "SURNAME")
+  private String surname;
+  @Column(name = "EMAIL")
+  private String email;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>then generate getters and setters  for all attributes …</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="10">
+<li>
+<p>Use Cobigen to generate code. Right click on EmployeeEntity. CobiGen &#8594; Generate</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>It will ask you to download the templates, click on <em>update</em>:</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image19.png" alt="cobigen generate"></span></p>
+</div>
+<div class="paragraph">
+<p>It will automatically download the latest version of <em>CobiGen_Templates</em>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Attention:</strong> If you want to adapt the CobiGen_Templates, (normally this is not neccessary), you will find at the end of this document a tutorial on how to import them and adapt them!</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="11">
+<li>
+<p>Click on all the option selected as below:</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image20.png" alt="cobigen option selection"></span></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="12">
+<li>
+<p>Click on finish. Below Screen would be seen. Click on continue</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image21.png" alt="cobigen finish"></span></p>
+</div>
+<div class="paragraph">
+<p><strong>The entire <span class="underline">BE layer</span> structure having CRUD operation methods will be auto generated.</strong></p>
+</div>
+<div class="paragraph">
+<p>Some classes will be generated on the api part (<em>jwtsample-api)</em>, normally it will be interfaces, as shown below:</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image22.png" alt="be layer"></span></p>
+</div>
+<div class="paragraph">
+<p>Some other classes will be generated on the core part (<em>jwtsample-core)</em>, normally it will be implementations as shown below:</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image23.png" alt="core folder"></span></p>
+</div>
+<div class="paragraph">
+<p><strong>BEFORE to generate the FE</strong>, please start the Tomcat server to check that BE Layer has been generated properly.</p>
+</div>
+<div class="paragraph">
+<p>To start a server you just have to right click on <em>SpringBootApp.java</em> &#8594; <em>run as &#8594; Spring Boot app</em></p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image24.png" alt="Eclipse run as"></span></p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image25.png" alt="Spring boot run"></span></p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image26.png" alt="Spring boot run"></span></p>
+</div>
+<div class="paragraph">
+<p><strong>BE DONE</strong></p>
+</div>
+<div class="paragraph">
+<p>Last but not least: We make a quick REST services test !</p>
+</div>
+<div class="paragraph">
+<p>See in the application.properties the TCP Port and the PATH</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image27.png" alt="application properties"></span></p>
+</div>
+<div class="paragraph">
+<p>Now compose the Rest service URL:</p>
+</div>
+<div class="paragraph">
+<p>service class path&gt;/&lt;service method path&gt;</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>&lt;server&gt; refers to server with port no. (ie: localhost:8081)</p>
+</li>
+<li>
+<p>&lt;app&gt; is in the application.propeeties (empty in our case, see above)</p>
+</li>
+<li>
+<p>&lt;rest service class path&gt; refers to EmployeemanagementRestService: (i.e: /employeemanagement/v1)</p>
+</li>
+<li>
+<p>&lt;service method path&gt;/employee/{id}  (i.e: for  getEmployee method)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image28.png" alt="url mapping"></span></p>
+</div>
+<div class="paragraph">
+<p>URL of getEmployee for this example is:</p>
+</div>
+<div class="paragraph">
+<p>for all employees</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="URL language-URL">http://localhost:8081/services/rest/employeemanagement/v1/employee/search</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>for the specific employee</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="URL language-URL">http://localhost:8081/services/rest/employeemanagement/v1/employee/1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now download <a href="https://www.getpostman.com/apps">Postman</a> to test the rest services.</p>
+</div>
+<div class="paragraph">
+<p>Once done, you have to create a POST Request for the LOGIN and insert in the body the JSON containing the username and password <em>waiter</em></p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image29.png" alt="postman"></span></p>
+</div>
+<div class="paragraph">
+<p>Once done with success (<strong>Status: 200 OK</strong>) …</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image30.png" alt="postman"></span></p>
+</div>
+<div class="paragraph">
+<p>… We create a NEW POST Request and We copy the Authorization Bearer field (see above) and We paste it in the Token field (see below)</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image31.png" alt="postman"></span></p>
+</div>
+<div class="paragraph">
+<p>and specific the JSON parameters for the pagination of the Request that We’re going to send:</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image32.png" alt="postman"></span></p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image33.png" alt="postman"></span></p>
+</div>
+<div class="paragraph">
+<p>Now you can click <span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image34.png" alt="postman"></span></p>
+</div>
+<div class="paragraph">
+<p>Now you ‘ve to check that response has got <strong>Status: 200 OK</strong> and to see the below list of Employee</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image35.png" alt="postman"></span></p>
+</div>
+<div class="paragraph">
+<p>Now that We have successfully tested the BE is time to go to create the FE !</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="front-end">Front End</h3>
+<div class="paragraph">
+<p>Let’s start now with angular Web and then Ionic app.</p>
+</div>
+<div class="sect3">
+<h4 id="angular-web-app">Angular Web App</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>To generate angular structure, download or clone <strong>devon4ng-application-template</strong> from</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="URL language-URL">https://github.com/devonfw/devon4ng-application-template</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image36.png" alt="devon dist folder"></span></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="2">
+<li>
+<p>Once done, right click on EmployeeEto.java  file present under the package <em>com.devonfw.poc.employeemanagement.logic.api.to</em></p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image37.png" alt="eclipse generate"></span></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="4">
+<li>
+<p>Click on Finish</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image38.png" alt="eclipse"></span></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="5">
+<li>
+<p>The entire ANGULAR structure has been auto generated. The generated code will be merged to the existing.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image39.png" alt="angular ee layer"></span></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="6">
+<li>
+<p>IMPORTANT now you have to add in the <strong><em>app-routing.module.ts</em></strong> file the next content, as a child of HomeComponent, in order to enable the route of the new generated component</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">,\{
+path: 'employee',
+component: EmployeeGridComponent,
+canActivate: [AuthGuard],
+},</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Following picture explain where to place the above content:</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image40.png" alt="routes"></span></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="7">
+<li>
+<p>Open the command prompt and execute <em>devon yarn install</em> from the base folder, which would download all the required libraries..</p>
+</li>
+</ol>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="8">
+<li>
+<p>Check the file <strong>environment.ts</strong> if the server path is correct. (for production you will have to change also the environment.prod.ts file)</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image42.png" alt="environment"></span></p>
+</div>
+<div class="paragraph">
+<p>In order to do that it’s important to look at the application.properties to see the values as PATH, TCP port etc …</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image43.png" alt="configure"></span></p>
+</div>
+<div class="paragraph">
+<p>For example in this case the URL should be since the context path is empty the server URLS should be like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">export const environment = {
+production: false,
+restPathRoot: 'http://localhost:8081/',
+restServiceRoot: 'http://localhost:8081/services/rest/',
+security: 'jwt'
+};</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Warning</strong>: REMEMBER to set security filed to <strong>jwt</strong> , if it is not configured already.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="9">
+<li>
+<p>Now run the <strong>ng serve -o</strong> command to run the Angular Application.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image44.png" alt="image44"></span></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="10">
+<li>
+<p>If the command execution is <strong>successful</strong>, the below screen will <strong>appear</strong> and it would be automatically redirected to the url:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="URL language-URL">http://localhost:4200/login</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image45.png" alt="image45"></span></p>
+</div>
+<div class="paragraph">
+<p><strong>WebApp DONE</strong></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="ionic-mobile-app">Ionic Mobile App</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>To generate Ionic structure, download or clone <strong>devon4ng-application-template</strong> from</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="URL language-URL">https://github.com/devonfw/devon4ng-ionic-application-template</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Once done, Right click on the <strong>EmployeeEto</strong> as you already did before in order to use CobiGen.</p>
+</li>
+<li>
+<p>Click on the selected options as seen in the screenshot:</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image46.png" alt="image46"></span></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="4">
+<li>
+<p>Click on Finish</p>
+</li>
+<li>
+<p>The entire ionic structure will be auto generated.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image47.png" alt="image47"></span></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="6">
+<li>
+<p>Change the server url (with correct serve url) in environment.ts, environment.prod.ts and environment.android.ts files (i.e: itapoc\devon4ng-ionic-application-template\src\environments\).</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The angular.json file inside the project has already a build configuration for android.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image48.png" alt="image48"></span></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="7">
+<li>
+<p>Run npm install in the root folder to download the dependecies</p>
+</li>
+<li>
+<p>Run ionic serve</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image49.png" alt="image49"></span></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="11">
+<li>
+<p></p>
+<div class="paragraph">
+<p>Once the execution is successful</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image50.png" alt="image50"></span></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Mobile App DONE*</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>So: well done</p>
+</div>
+<div class="paragraph">
+<p>Starting from an Entity class you’ve successfully generated the Back-End layer (REST, SOAP, DTO, Spring services, Hibernate DAO), the Angular Web App and the Ionic mobile App!</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image51.png" alt="image51"></span></p>
+</div>
+<div class="sect4">
+<h5 id="build-apk">Build APK</h5>
+<div class="paragraph">
+<p>Since We’re going to create apk remember the following pre-conditions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://gradle.org/install/">Gradle</a></p>
+</li>
+<li>
+<p><a href="https://developer.android.com/studio">Android Studio</a></p>
+</li>
+<li>
+<p><a href="https://developer.android.com/studio/#command-tools">Android sdk</a></p>
+</li>
+<li>
+<p><a href="https://capacitor.ionicframework.com/docs/getting-started/">Capacitor</a></p>
+</li>
+</ul>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Now, open cmd and type the path where your <em>devon4ng-ionic-application-template</em> project is present.</p>
+</li>
+<li>
+<p>Run the following commands:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>npx cap init</p>
+</li>
+<li>
+<p>ionic build --configuration=android</p>
+</li>
+<li>
+<p>npx cap add android</p>
+</li>
+<li>
+<p>npx cap copy</p>
+</li>
+<li>
+<p>npx cap open android</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Build the APK using Android studio.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image52.png" alt="image52"></span>
+<span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image53.png" alt="image53"></span>
+<span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image54.png" alt="image54"></span>
+<span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image55.png" alt="image55"></span></p>
+</div>
+<div class="paragraph">
+<p>You can find your apk file in</p>
+</div>
+<div class="paragraph">
+<p>/devon4ng-ionic-application-template/android/app/build/outputs/apk/debug</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="adapt-cobigen_templates">Adapt CobiGen_Templates</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>After following this tutorial, you will have the CobiGen_Templates downloaded on your local machine. To import these templates you need to do the following:</p>
+</div>
+<div class="paragraph">
+<p>Right click in any part of the package explorer, then click on CobiGen &#8594; Adapt templates</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image56.png" alt="image56"></span></p>
+</div>
+<div class="paragraph">
+<p>Click <em>Ok</em>:</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image57.png" alt="image57"></span></p>
+</div>
+<div class="paragraph">
+<p>Now the CobiGen_Templates project will be automatically imported into your workspace, as shown on the image below:</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image58.png" alt="image58"></span></p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image59.png" alt="image59"></span></p>
+</div>
+<div class="paragraph">
+<p>Now you just need to change the Java version of the project to JRE 1.8. Right click on the JRE system library, and then on <em>Properties:</em></p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image60.png" alt="image60"></span></p>
+</div>
+<div class="paragraph">
+<p>Now change the version to Java 1.8
+<span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image61.png" alt="image61"></span></p>
+</div>
+<div class="paragraph">
+<p>Now you have successfully imported the CobiGen templates. If you want to edit them, you will find them in the folder <em>src/main/templates.</em> For instance, the Java templates are located here:</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image62.png" alt="image62"></span></p>
+</div>
+<div class="paragraph">
+<p>Now you can adapt the templates as much as you want. Documentation about this can be found on:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="URL language-URL">https://github.com/devonfw/tools-cobigen/wiki/Guide-to-the-Reader</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html#introduction-why-should-i-use-devonfw.asciidoc">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devon4j.asciidoc_architecture.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-ide-support.asciidoc.html#LICENSE.asciidoc">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2020-09-15 06:48:52 UTC
+</sub></div>
+</div>
+</div>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+</body>
+</html>
