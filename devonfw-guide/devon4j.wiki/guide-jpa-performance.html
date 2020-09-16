@@ -130,7 +130,7 @@
 <h2 id="guide-jpa-performance.asciidoc_n-plus-1-problem">N plus 1 Problem</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The most prominent phenomena is call the <em>N+1 Problem</em>.
+<p>The most prominent phenomena is call the <code>N+1 Problem</code>.
 We use entities from our <a href="https://github.com/devonfw/my-thai-star">MTS</a> demo app as an example to explain the problem.
 There is a <a href="https://github.com/devonfw/my-thai-star/blob/develop/java/mtsj/core/src/main/java/com/devonfw/application/mtsj/dishmanagement/dataaccess/api/DishEntity.java">DishEntity</a> that has a <code>@ManyToMany</code> relation to
 <a href="https://github.com/devonfw/my-thai-star/blob/develop/java/mtsj/core/src/main/java/com/devonfw/application/mtsj/dishmanagement/dataaccess/api/IngredientEntity.java">IngredientEntity</a>.
@@ -155,7 +155,7 @@ Now <code>findDishById</code> caused 1 initial query statement and for any numbe
 <h2 id="guide-jpa-performance.asciidoc_solving-n-plus-1-problem">Solving N plus 1 Problem</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>To solve the N+1 Problem you need to change your code to only trigger a single statement instead. This can be archived in various ways. The most universal solution is to use <code>FETCH JOIN`s in order to pre-load the nested `N</code> child entities into the first level cache of the JPA vendor implementation. This will behave as if the <code>@ManyToMany</code> relation to <code>IngredientEntity</code> was having <code>FetchType.EAGER</code> but only for the that specific query and not in general. Because changing <code>@ManyToMany</code> to <code>FetchType.EAGER</code> would cause bad performance for other usecases where only the dish but not its extra ingredients are needed. For this reason all relations, including <code>@OneToOne</code> should always be <code>FetchType.LAZY</code>. Back to our example we simply replace <code>dao.findDishById(dishId)</code> with <code>dao.findDishWithExtrasById(dishId)</code> that we implement by the following JPQL query:</p>
+<p>To solve the N+1 Problem you need to change your code to only trigger a single statement instead. This can be archived in various ways. The most universal solution is to use <code>FETCH JOIN</code> in order to pre-load the nested <code>N</code> child entities into the first level cache of the JPA vendor implementation. This will behave very similar as if the <code>@ManyToMany</code> relation to <code>IngredientEntity</code> was having <code>FetchType.EAGER</code> but only for the specific query and not in general. Because changing <code>@ManyToMany</code> to <code>FetchType.EAGER</code> would cause bad performance for other usecases where only the dish but not its extra ingredients are needed. For this reason all relations, including <code>@OneToOne</code> should always be <code>FetchType.LAZY</code>. Back to our example we simply replace <code>dao.findDishById(dishId)</code> with <code>dao.findDishWithExtrasById(dishId)</code> that we implement by the following JPQL query:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -320,7 +320,7 @@ Now <code>findDishById</code> caused 1 initial query statement and for any numbe
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2020-09-15 10:01:41 UTC
+Last updated 2020-09-16 16:13:06 UTC
 </sub></div>
 </div>
 </div>
