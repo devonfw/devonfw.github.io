@@ -44,7 +44,7 @@ function getDocumentsFromExploreFile(dirname, file, parenthash) {
     let $ = cheerio.load(htmlStr);
     let hash = parenthash + '/' + file.substr(0, file.lastIndexOf('.'));
     let doc = {
-      id: path.join(dirname, 'explore.html').replace(/\\/g,'/') + hash,
+      id: path.join(dirname, 'explore.html').replace(/\\/g, '/') + hash,
       type: 'explore',
       title: $('div#content div.directory h2').text(),
       body: $('div#content div.directory p').text(),
@@ -109,9 +109,10 @@ function readFromFilename(
   file,
   processing = { preprocessing: [], postprocessing: [] },
 ) {
+  let isTutorial = !!file.match(/\/[^\/]*?(tutorial|how[-_]?to)-/i);
   let doc = {
     id: file,
-    type: 'docs',
+    type: isTutorial ? 'tutorial' : 'docs',
     title: 'not found',
     body: fs.readFileSync(file, 'utf-8'),
   };
@@ -129,7 +130,6 @@ function readFromFilename(
   lines.forEach(function (line) {
     let matchRes = line.match(/<h([0-9]).*>(.*|\n*)<\/h([0-9])>/);
     if (matchRes && matchRes.length > 2 && matchRes[1] < titleLevel) {
-      console.log(matchRes);
       titleLevel = matchRes[1];
       doc.title = matchRes[2];
     }
