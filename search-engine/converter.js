@@ -20,7 +20,7 @@ function getDocumentsFromDocs(dirname, extension) {
     preprocessing: [getContent],
     postprocessing: [removeHtml, removeTooMuchSpaces],
   };
-  files.forEach((file) => docs.push(readFromFilename(file, processing)));
+  files.forEach((file) => docs = docs.concat(readFromFilename(file, processing)));
 
   return docs;
 }
@@ -110,40 +110,38 @@ function readFromFilename(
   processing = { preprocessing: [], postprocessing: [] },
 ) {
   let isTutorial = !!file.match(/\/[^\/]*?(tutorial|how[-_]?to)-/i);
-  let doc = {
-    id: file,
-    type: isTutorial ? 'tutorial' : 'docs',
-    title: 'not found',
-    body: fs.readFileSync(file, 'utf-8'),
-  };
+  let chapterRegex = /<h[1-4].+?id="(?<id>[^"].+?)".*?>((([0-9]+\.\s?)+\s)?(?<title>[^<]+))<\/h[1-4]>(?<content>.+?)(?=((<h[1-4].+?id="([^"].+?)".*?>)|$))/isg;
+
+  let docs = [];
+  let fileContent = fs.readFileSync(file, 'utf-8');
 
   const preprocessing = processing.preprocessing;
   if (preprocessing) {
     for (let i = 0; i < preprocessing.length; i++) {
-      doc.body = preprocessing[i](doc.body);
+      fileContent = preprocessing[i](fileContent);
     }
   }
-
-  let lines = doc.body.split('\n');
-  let titleLevel = 10;
-
-  lines.forEach(function (line) {
-    let matchRes = line.match(/<h([0-9]).*>(.*|\n*)<\/h([0-9])>/);
-    if (matchRes && matchRes.length > 2 && matchRes[1] < titleLevel) {
-      titleLevel = matchRes[1];
-      doc.title = matchRes[2];
+  let doc = {};
+  console.log(file + ' isTutorial: ' + isTutorial);
+  while ((regexMatch = chapterRegex.exec(fileContent)) !== null) {
+    console.log(regexMatch.groups.title + ' -> #' + regexMatch.groups.id)
+    let doc = {
+      id: file + '#' + regexMatch.groups.id,
+      type: isTutorial ? 'tutorial' : 'docs',
+      title: regexMatch.groups.title,
+      body: regexMatch[0],
+    };
+    const postprocessing = processing.postprocessing;
+    if (postprocessing) {
+      for (let i = 0; i < postprocessing.length; i++) {
+        doc.title = postprocessing[i](doc.title);
+        doc.body = postprocessing[i](doc.body);
+      }
     }
-  });
-
-  const postprocessing = processing.postprocessing;
-  if (postprocessing) {
-    for (let i = 0; i < postprocessing.length; i++) {
-      doc.title = postprocessing[i](doc.title);
-      doc.body = postprocessing[i](doc.body);
-    }
+    docs.push(doc);
   }
 
-  return doc;
+  return docs;
 }
 
 function generateIndexJson(documents) {
