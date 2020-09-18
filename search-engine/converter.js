@@ -5,9 +5,10 @@ const cheerio = require('cheerio');
 
 let visitedExploreDocs = [];
 
-function getLunrDoc(docsDirname, exploreDirname, extension) {
+function getLunrDoc(docsDirname, exploreDirname, katacodaDirname, extension) {
   let docs = getDocumentsFromDocs(docsDirname, extension);
   docs = docs.concat(getDocumentsFromExplore(exploreDirname, extension));
+  docs = docs.concat(getDocumentsFromKatacoda(katacodaDirname, extension));
 
   generateIndexJson(docs);
 }
@@ -32,6 +33,42 @@ function getDocumentsFromExplore(dirname, extension) {
   $('div#content div.links-to-files > div.sectionbody > div.paragraph a').each(function (_, link) {
     docs = docs.concat(getDocumentsFromExploreFile(dirname, link.attribs['href'], '#'));
   });
+  return docs;
+}
+
+function getDocumentsFromKatacoda(dirname, extension) {
+  let docs = [];
+
+  let dirContent = fs.readdirSync(path.join(__dirname, dirname));
+
+  dirContent.forEach(function (dirItem) {
+    item = path.join(dirname, dirItem);
+    fileStats = fs.lstatSync(item);
+
+    if (fileStats.isDirectory()) {
+      if(fs.existsSync(`${item}/index.json`)){
+        console.log(`${item}`);
+        let indexJson = fs.readFileSync(`${item}/index.json`, 'utf-8');
+        let index = JSON.parse(indexJson);
+        
+        let introFilename = item + '/' + index['details']['intro']['text'];
+        let intro = '';
+
+        if(fs.existsSync(introFilename)){
+          intro = fs.readFileSync(introFilename, 'utf-8');
+        }
+
+        let doc = {
+          id: 'https://www.katacoda.com/devonfw/scenarios/' + dirItem,
+          type: 'tutorial',
+          title: index.title,
+          body: index.title + '\r\n' + intro,
+        };
+        docs.push(doc);
+      }
+    }
+  });
+
   return docs;
 }
 
@@ -165,6 +202,6 @@ function generateIndexJson(documents) {
   return idxJson;
 }
 
-if (process.argv.length > 4) {
-  getLunrDoc(process.argv[2], process.argv[3], process.argv[4]);
+if (process.argv.length > 5) {
+  getLunrDoc(process.argv[2], process.argv[3], process.argv[4], process.argv[5]);
 }
