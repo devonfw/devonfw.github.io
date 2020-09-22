@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Mirabaud CICD Environment Setup</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body id="dsf-mirabaud-cicd-environment-setup.asciidoc" class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Initial requirements:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>OS</strong>: RHEL 6.5</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Remote setup in CI machine (located in the Netherlands)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>    - Jenkins
+    - Nexus
+    - GitLab
+    - Mattermost
+    - Atlassian Crucible
+    - SonarQube</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dsf-mirabaud-cicd-environment-setup.asciidoc_1.-install-docker-and-docker-compose-in-rhel-6.5">1. Install Docker and Docker Compose in RHEL 6.5</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="dsf-mirabaud-cicd-environment-setup.asciidoc_docker">Docker</h3>
+<div class="paragraph">
+<p>Due to that OS version, the only way to have Docker running in the CI machine is by installing it from the <strong>EPEL</strong> repository (Extra Packages for Enterprise Linux).</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="1">
+<li>
+<p>Add EPEL</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code># rpm -iUvh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="2">
+<li>
+<p>Install <code>docker.io</code> from that repository</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code># yum -y install docker-io</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="3">
+<li>
+<p>Start Docker daemon</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code># service docker start</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="4">
+<li>
+<p>Check the installation</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code># docker -v
+Docker version 1.7.1, build 786b29d/1.7.1</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-mirabaud-cicd-environment-setup.asciidoc_docker-compose">Docker Compose</h3>
+<div class="paragraph">
+<p>Download and install it via <strong>curl</strong>. It will use <a href="https://github.com/docker/compose/releases?after=1.7.0-rc2">this site</a>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code># curl -L https://github.com/docker/compose/releases/download/1.5.0/docker-compose-`uname -s`-`uname -m` &gt; /usr/local/bin/docker-compose
+
+# chmod +x /usr/local/bin/docker-compose</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Add it to your <code>sudo</code> path:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="1">
+<li>
+<p>Find out where it is:</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre># echo $PATH</pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="2">
+<li>
+<p>Copy the <code>docker-compose</code> file from <code>/usr/local/bin/</code> to your <code>sudo</code> PATH.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code># docker-compose -v
+docker-compose version 1.5.2, build 7240ff3</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dsf-mirabaud-cicd-environment-setup.asciidoc_2.-directories-structure">2. Directories structure</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Several directories had been added to organize some files related to docker (like <code>docker-compose.yml</code>) and docker volumes for each service. Here&#8217;s how it looks:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="yaml language-yaml">/home
+    /[username]
+        /jenkins
+            /volumes
+                /jenkins_home
+        /sonarqube
+            /volumes
+                /conf
+                /data
+                /extensions
+                /lib
+                    /bundled-plugins
+        /nexus
+            /volumes
+                /nexus-data
+        /crucible
+            /volumes
+                /
+        /gitlab
+            docker-compose.yml
+            /volumes
+                /etc
+                    /gitlab
+                /var
+                    /log
+                    /opt
+        /mattermost
+            docker-compose.yml
+            /volumes
+                /db
+                    /var
+                        /lib
+                            /postgresql
+                                /data
+                /app
+                    /mattermost
+                        /config
+                        /data
+                        /logs
+                /web
+                    /cert</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dsf-mirabaud-cicd-environment-setup.asciidoc_3.-cicd-services-with-docker">3. CICD Services with Docker</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Some naming conventions had been followed as naming containers as <code>mirabaud_[service]</code>.</p>
+</div>
+<div class="paragraph">
+<p>Several folders have been created to store each service&#8217;s volumes, <code>docker-compose.yml</code>(s), extra configuration settings and so on:</p>
+</div>
+<div class="sect2">
+<h3 id="dsf-mirabaud-cicd-environment-setup.asciidoc_jenkins">Jenkins</h3>
+<div class="sect3">
+<h4 id="dsf-mirabaud-cicd-environment-setup.asciidoc_command">Command</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code># docker run -d -p 8080:8080 -p 50000:50000 --name=mirabaud_jenkins \
+    -v /home/[username]/jenkins/volumes/jenkins_home:/var/jenkins_home \
+    jenkins</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dsf-mirabaud-cicd-environment-setup.asciidoc_generate-keystore">Generate keystore</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>keytool -importkeystore -srckeystore server.p12 -srcstoretype pkcs12 -srcalias 1 -destkeystore newserver.jks -deststoretype jks -destalias server</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dsf-mirabaud-cicd-environment-setup.asciidoc_start-jekins-with-ssl-todo-make-a-docker-compose.yml-for-this">Start jekins with SSL (TODO: make a docker-compose.yml for this):</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>sudo docker run -d --name mirabaud_jenkins -v /jenkins:/var/jenkins_home -p 8080:8443 jenkins --httpPort=-1 --httpsPort=8443 --httpsKeyStore=/var/jenkins_home/certs/keystore.jks --httpsKeyStorePassword=Mirabaud2017</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dsf-mirabaud-cicd-environment-setup.asciidoc_volumes">Volumes</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>volumes/jenkins_home:/var/jenkins_home</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-mirabaud-cicd-environment-setup.asciidoc_sonarqube">SonarQube</h3>
+<div class="sect3">
+<h4 id="dsf-mirabaud-cicd-environment-setup.asciidoc_command">Command</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code># docker run -d -p 9000:9000 -p 9092:9092 --name=mirabaud_sonarqube \
+    -v /home/[username]/sonarqube/volumes/conf:/opt/sonarqube/conf \
+    -v /home/[username]/sonarqube/volumes/data:/opt/sonarqube/data \
+    -v /home/[username]/sonarqube/volumes/extensions:/opt/sonarqube/extensions \
+    -v /home/[username]/sonarqube/volumes/lib/bundled-plugins:/opt/sonarqube//lib/bundled-plugins \
+    sonarqube</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dsf-mirabaud-cicd-environment-setup.asciidoc_volumes">Volumes</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>volumes/conf:/opt/sonarqube/conf
+volumes/data:/opt/sonarqube/data
+volumes/extensions:/opt/sonarqube/extensions
+volumes/lib/bundled-plugins:/opt/sonarqube/lib/bundled-plugins</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-mirabaud-cicd-environment-setup.asciidoc_nexus">Nexus</h3>
+<div class="sect3">
+<h4 id="dsf-mirabaud-cicd-environment-setup.asciidoc_command">Command</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code># docker run -d -p 8081:8081 --name=mirabaud_nexus\
+    -v /home/[username]/nexus/nexus-data:/sonatype-work
+    sonatype/nexus</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dsf-mirabaud-cicd-environment-setup.asciidoc_volumes">Volumes</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>volumes/nexus-data/:/sonatype-work</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-mirabaud-cicd-environment-setup.asciidoc_atlassian-crucible">Atlassian Crucible</h3>
+<div class="sect3">
+<h4 id="dsf-mirabaud-cicd-environment-setup.asciidoc_command">Command</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code># docker run -d -p 8084:8080 --name=mirabaud_crucible \
+    -v /home/[username]/crucible/volumes/data:/atlassian/data/crucible
+    mswinarski/atlassian-crucible:latest</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dsf-mirabaud-cicd-environment-setup.asciidoc_volumes">Volumes</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>volumes/data:/atlassian/data/crucible</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dsf-mirabaud-cicd-environment-setup.asciidoc_4.-cicd-services-with-docker-compose">4. CICD Services with Docker Compose</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Both Services had been deploying by using the <code># docker-compose up -d</code> command from their root directories (<code>/gitlab</code> and <code>/mattermost</code>). The syntax of the two <code>docker-compose.yml</code> files is the one corresponding with the 1st version (due to the <code>docker-compose v1.5</code>).</p>
+</div>
+<div class="sect2">
+<h3 id="dsf-mirabaud-cicd-environment-setup.asciidoc_gitlab">GitLab</h3>
+<div class="sect3">
+<h4 id="dsf-mirabaud-cicd-environment-setup.asciidoc_docker-compose.yml"><code>docker-compose.yml</code></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="yaml language-yaml">mirabaud:
+    image: 'gitlab/gitlab-ce:latest'
+    restart: always
+    ports:
+            - '8888:80'
+    volumes:
+            - '/home/[username]/gitlab/volumes/etc/gilab:/etc/gitlab'
+            - '/home/[username]/gitlab/volumes/var/log:/var/log/gitlab'
+            - '/home/[username]/gitlab/volumes/var/opt:/var/opt/gitlab'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dsf-mirabaud-cicd-environment-setup.asciidoc_command-docker">Command (docker)</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>docker run -d -p 8888:80 --name=mirabaud_gitlab \
+    -v /home/[username]/gitlab/volumes/etc/gitlab/:/etc/gitlab \
+    -v /home/[username]/gitlab/volumes/var/log:/var/log/gitlab \
+    -v /home/[username]/gitlab/volumes/var/opt:/var/opt/gitlab \
+    gitlab/gitlab-ce</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dsf-mirabaud-cicd-environment-setup.asciidoc_volumes">Volumes</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>volumes/etc/gitlab:/etc/gitlab
+volumes/var/opt:/var/log/gitlab
+volumes/var/log:/var/log/gitlab</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-mirabaud-cicd-environment-setup.asciidoc_mattermost">Mattermost</h3>
+<div class="sect3">
+<h4 id="dsf-mirabaud-cicd-environment-setup.asciidoc_docker-compose.yml"><code>docker-compose.yml</code>:</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="yaml language-yaml">db:
+  image: mattermost/mattermost-prod-db
+  restart: unless-stopped
+  volumes:
+    - ./volumes/db/var/lib/postgresql/data:/var/lib/postgresql/data
+    - /etc/localtime:/etc/localtime:ro
+  environment:
+    - POSTGRES_USER=mmuser
+    - POSTGRES_PASSWORD=mmuser_password
+    - POSTGRES_DB=mattermost
+
+app:
+  image: mattermost/mattermost-prod-app
+  links:
+    - db:db
+  restart: unless-stopped
+  volumes:
+    - ./volumes/app/mattermost/config:/mattermost/config:rw
+    - ./volumes/app/mattermost/data:/mattermost/data:rw
+    - ./volumes/app/mattermost/logs:/mattermost/logs:rw
+    - /etc/localtime:/etc/localtime:ro
+  environment:
+    - MM_USERNAME=mmuser
+    - MM_PASSWORD=mmuser_password
+    - MM_DBNAME=mattermost
+
+web:
+  image: mattermost/mattermost-prod-web
+  ports:
+    - "8088:80"
+    - "8089:443"
+  links:
+    - app:app
+  restart: unless-stopped
+  volumes:
+    - ./volumes/web/cert:/cert:ro
+    - /etc/localtime:/etc/localtime:ro</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dsf-mirabaud-cicd-environment-setup.asciidoc_ssl-certificate">SSL Certificate</h4>
+<div class="paragraph">
+<p>How to generate the certificates:</p>
+</div>
+<div class="paragraph">
+<p>Get the <strong>crt</strong> and <strong>key</strong> from CA or <strong>generate a new one self-signed</strong>. Then:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>// 1. create the p12 keystore
+# openssl pkcs12 -export -in cert.crt -inkey mycert.key -out certkeystore.p12
+
+// 2. export the pem certificate with password
+# openssl pkcs12 -in certkeystore.p12 -out cert.pem
+
+// 3. export the pem certificate without password
+# openssl rsa -in cert.pem -out key-no-password.pem</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>SSL:</p>
+</div>
+<div class="paragraph">
+<p>Copy the cert and the key without password at:</p>
+</div>
+<div class="paragraph">
+<p><code>./volumes/web/cert/cert.pem</code></p>
+</div>
+<div class="paragraph">
+<p>and</p>
+</div>
+<div class="paragraph">
+<p><code>./volumes/web/cert/key-no-password.pem</code></p>
+</div>
+<div class="paragraph">
+<p>Restart the server and the SSL should be enabled at port <strong>8089</strong> using <strong>HTTPS</strong>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dsf-mirabaud-cicd-environment-setup.asciidoc_volumes">Volumes</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>-- db --
+volumes/db/var/lib/postgresql/data:/var/lib/postgresql/data
+/etc/localtime:/etc/localtime:ro                                # absolute path
+
+-- app --
+volumes/app/mattermost/config:/mattermost/config:rw
+volumes/app/mattermost/data:/mattermost/data:rw
+volumes/app/mattermost/logs:/mattermost/logs:rw
+/etc/localtime:/etc/localtime:ro                                # absolute path
+
+-- web --
+volumes/web/cert:/cert:ro
+/etc/localtime:/etc/localtime:ro                                # absolute path</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dsf-mirabaud-cicd-environment-setup.asciidoc_5.-service-integration">5. Service Integration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>All integrations had been done following <strong>CICD Services Integration</strong> guides:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#dsf-mirabaud-jenkins-nexus-integration.asciidoc">Jenkins - Nexus integration</a></p>
+</li>
+<li>
+<p><a href="#dsf-mirabaud-jenkins-gitLab-integration.asciidoc">Jenkins - GitLab integration</a></p>
+</li>
+<li>
+<p><a href="#dsf-mirabaud-jenkins-sonarQube-integration.asciidoc">Jenkins - SonarQube integration</a></p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+These guides may be obsolete. You can find here the <a href="dsf-how-to-use.html#Step-1---Configuration-and-service-integration">official configuration guides</a>,
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html#introduction-why-should-i-use-devonfw.asciidoc">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devon4j.asciidoc_architecture.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-ide-support.asciidoc.html#LICENSE.asciidoc">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2020-09-22 08:55:50 UTC
+</sub></div>
+</div>
+</div>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+</body>
+</html>

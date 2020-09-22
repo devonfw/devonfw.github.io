@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Jenkinsfile</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body id="dsf-configure-jenkins.asciidoc" class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="sect1">
+<h2 id="dsf-configure-jenkins.asciidoc_introduction">Introduction</h2>
+<div class="sectionbody">
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/configuration/jenkinsfile-cicd-activity-diagram.jpg" alt="jenkinsfile cicd activity diagram">
+</div>
+</div>
+<div class="paragraph">
+<p>Here you are going to learn how you should configure the jenkinsfile of your project to apply CI/CD operations and enables automated application deployment.</p>
+</div>
+<div class="paragraph">
+<p>Here you can find examples of the Jenkinsfile generated by cicdgen:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://raw.githubusercontent.com/devonfw/cicdgen/develop/schematics/src/devon4j/files/Jenkinsfile">devon4j</a></p>
+</li>
+<li>
+<p><a href="https://raw.githubusercontent.com/devonfw/cicdgen/develop/schematics/src/devon4ng/files/Jenkinsfile">devon4ng</a></p>
+</li>
+<li>
+<p><a href="https://raw.githubusercontent.com/devonfw/cicdgen/develop/schematics/src/devon4node/files/Jenkinsfile">devon4node</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Next you could find an explanation about what is done in these Jenkinsfiles.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dsf-configure-jenkins.asciidoc_environment-values">Environment values</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>At the top of the pipeline you should add the environment variables. in this tutorial you need the next variables:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>    // sonarQube
+    // Name of the sonarQube tool
+    sonarTool = 'SonarQube'
+    // Name of the sonarQube environment
+    sonarEnv = "SonarQube"
+
+    // Nexus
+    // Artifact groupId
+    groupId = '&lt;%= groupid %&gt;'
+    // Nexus repository ID
+    repositoryId = 'pl-nexus'
+    // Nexus internal URL
+    repositoryUrl = 'http://nexus3-core:8081/nexus3/repository/'
+    // Maven global settings configuration ID
+    globalSettingsId = 'MavenSettings'
+    // Maven tool id
+    mavenInstallation = 'Maven3'
+
+    // Docker registry
+    dockerRegistry = 'docker-registry-&lt;%= plurl %&gt;'
+    dockerRegistryCredentials = 'nexus-docker'
+    dockerTool = 'docker-global'
+
+    // OpenShift
+    openshiftUrl = '&lt;%= ocurl %&gt;'
+    openShiftCredentials = 'openshift'
+    openShiftNamespace = '&lt;%= ocn %&gt;'</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dsf-configure-jenkins.asciidoc_stages">Stages</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The pipeline consists of stages, and at the beginning of each stage it is declared for which branches the step will be executed.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/configuration/jenkinsfile-stages.jpg" alt="jenkinsfile stages">
+</div>
+</div>
+<div class="paragraph">
+<p>Now it is time to create the stages.</p>
+</div>
+<div class="sect2">
+<h3 id="dsf-configure-jenkins.asciidoc_setup-jenkins-tools">Setup Jenkins tools</h3>
+<div class="paragraph">
+<p>The first stage is one of the most dangerous, because in it on one hand the tools are added to the pipeline and to the path and on other hand the values are tagged depending on the branch that is being executed. If you are going to create a ci/cd for a new branch or you are going to modify something, be very careful with everything that this first step declares.</p>
+</div>
+<div class="paragraph">
+<p>This is an example of this stage:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>script {
+    tool yarn
+    tool Chrome-stable
+    tool dockerTool
+
+    if (env.BRANCH_NAME.startsWith('release')) {
+        dockerTag = "release"
+        repositoryName = 'maven-releases'
+        dockerEnvironment = "_uat"
+        openShiftNamespace += "-uat"
+        sonarProjectKey = '-release'
+    }
+
+    if (env.BRANCH_NAME == 'develop') {
+        dockerTag = "latest"
+        repositoryName = 'maven-snapshots'
+        dockerEnvironment = "_dev"
+        openShiftNamespace += "-dev"
+        sonarProjectKey = '-develop'
+    }
+
+    if (env.BRANCH_NAME == 'master') {
+        dockerTag = "production"
+        repositoryName = 'maven-releases'
+        dockerEnvironment = '_prod'
+        openShiftNamespace += "-prod"
+        sonarProjectKey = ''
+    }
+
+    sh "yarn"
+}</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-configure-jenkins.asciidoc_code-lint-analysis">Code lint analysis</h3>
+<div class="paragraph">
+<p>The next stage is to analyze the code making a lint analysis. To do it your project should have a tslint file with the configuration (<em>tslint.json</em>).</p>
+</div>
+<div class="paragraph">
+<p>analyzing the code in your pipeline is as simple as executing the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>sh """yarn lint"""</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+Your project need to have an script with tslint configuration (<em>tslint.json</em>).
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-configure-jenkins.asciidoc_execute-tests">Execute tests</h3>
+<div class="paragraph">
+<p>To test you application first of all your application should have created the tests and you should use one of the next two options:</p>
+</div>
+<div class="paragraph">
+<p><strong>Execute test with maven</strong> (It should be used by devon4j).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>withMaven(globalMavenSettingsConfig: globalSettingsId, maven: mavenInstallation) {
+    sh "mvn clean test"
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Execute test with yarn</strong> (It should be used by devon4ng or devon4node).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>sh """yarn test:ci"""</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+Remeber that your project should have the tests created and in case of do it with yarn or npm, you package.json should have the script declared. This is an example <code>"test:ci": "ng test --browsers ChromeHeadless --watch=false"</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-configure-jenkins.asciidoc_sonarqube-analisys">SonarQube Analisys</h3>
+<div class="paragraph">
+<p>It is time to see if your application complies the requirements of the sonar analysis.</p>
+</div>
+<div class="paragraph">
+<p>To do it you could use one of the next two options:</p>
+</div>
+<div class="paragraph">
+<p><strong>Execute Sonar with sonarTool</strong> (It should be used by devon4ng or devon4node).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>script {
+    def scannerHome = tool sonarTool
+    def props = readJSON file: 'package.json'
+    withSonarQubeEnv(sonarEnv) {
+        sh """
+            ${scannerHome}/bin/sonar-scanner \
+                -Dsonar.projectKey=${props.name}${sonarProjectKey} \
+                -Dsonar.projectName=${props.name}${sonarProjectKey} \
+                -Dsonar.projectVersion=${props.version} \
+                -Dsonar.sources=${srcDir} \
+                -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
+        """
+    }
+    timeout(time: 1, unit: 'HOURS') {
+        def qg = waitForQualityGate()
+        if (qg.status != 'OK') {
+            error "Pipeline aborted due to quality gate failure: ${qg.status}"
+        }
+    }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Execute Sonar with maven</strong> (It should be used by devon4j).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>script {
+    withMaven(globalMavenSettingsConfig: globalSettingsId, maven: mavenInstallation) {
+        withSonarQubeEnv(sonarEnv) {
+            // Change the project name (in order to simulate branches with the free version)
+            sh "cp pom.xml pom.xml.bak"
+            sh "cp api/pom.xml api/pom.xml.bak"
+            sh "cp core/pom.xml core/pom.xml.bak"
+            sh "cp server/pom.xml server/pom.xml.bak"
+
+            def pom = readMavenPom file: './pom.xml';
+            pom.artifactId = "${pom.artifactId}${sonarProjectKey}"
+            writeMavenPom model: pom, file: 'pom.xml'
+
+            def apiPom = readMavenPom file: 'api/pom.xml'
+            apiPom.parent.artifactId = pom.artifactId
+            apiPom.artifactId = "${pom.artifactId}-api"
+            writeMavenPom model: apiPom, file: 'api/pom.xml'
+
+            def corePom = readMavenPom file: 'core/pom.xml'
+            corePom.parent.artifactId = pom.artifactId
+            corePom.artifactId = "${pom.artifactId}-core"
+            writeMavenPom model: corePom, file: 'core/pom.xml'
+
+            def serverPom = readMavenPom file: 'server/pom.xml'
+            serverPom.parent.artifactId = pom.artifactId
+            serverPom.artifactId = "${pom.artifactId}-server"
+            writeMavenPom model: serverPom, file: 'server/pom.xml'
+
+            sh "mvn sonar:sonar"
+
+            sh "mv pom.xml.bak pom.xml"
+            sh "mv api/pom.xml.bak api/pom.xml"
+            sh "mv core/pom.xml.bak core/pom.xml"
+            sh "mv server/pom.xml.bak server/pom.xml"
+        }
+    }
+    timeout(time: 1, unit: 'HOURS') {
+        def qg = waitForQualityGate()
+        if (qg.status != 'OK') {
+            error "Pipeline aborted due to quality gate failure: ${qg.status}"
+        }
+    }
+}</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-configure-jenkins.asciidoc_build">Build</h3>
+<div class="paragraph">
+<p>If SonarQube is passed, you could build your application. To do it, if you are using devon4ng or devon4node you only need to add the next command:</p>
+</div>
+<div class="paragraph">
+<p>sh """yarn build"""</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+If you are using devon4j this and the next step <em>Store in Nexus</em> are making together using <code>mvn deploy</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-configure-jenkins.asciidoc_store-in-nexus">Store in Nexus</h3>
+<div class="paragraph">
+<p>One time the application has been built the code of the application you could find the the artifacts stored in the dist folder. You should push these artifacts to store them in Nexus.</p>
+</div>
+<div class="paragraph">
+<p>You can do it following one of the next options:</p>
+</div>
+<div class="paragraph">
+<p><strong>Use maven deploy config of your project</strong> (It should be used by devon4j).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>withMaven(globalMavenSettingsConfig: globalSettingsId, maven: mavenInstallation) {
+    sh "mvn deploy -Dmaven.test.skip=true"
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Configure maven deploy in your pipeline</strong> (It should be used by devon4ng and devon4node).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>script {
+    def props = readJSON file: 'package.json'
+    zip dir: 'dist/', zipFile: """${props.name}.zip"""
+    version = props.version
+    if (!version.endsWith("-SNAPSHOT") &amp;&amp; env.BRANCH_NAME == 'develop') {
+        version = "${version}-SNAPSHOT"
+        version = version.replace("-RC", "")
+    }
+
+    if (!version.endsWith("-RC") &amp;&amp; env.BRANCH_NAME.startsWith('release')) {
+        version = "${version}-RC"
+        version = version.replace("-SNAPSHOT", "")
+    }
+
+    if (env.BRANCH_NAME == 'master' &amp;&amp; (version.endsWith("-RC") || version.endsWith("-SNAPSHOT"))){
+        version = version.replace("-RC", "")
+        version = version.replace("-SNAPSHOT", "")
+    }
+
+    withMaven(globalMavenSettingsConfig: globalSettingsId, maven: mavenInstallation) {
+        sh """
+            mvn deploy:deploy-file \
+                -DgroupId=${groupId} \
+                -DartifactId=${props.name} \
+                -Dversion=${version} \
+                -Dpackaging=zip \
+                -Dfile=${props.name}.zip \
+                -DrepositoryId=${repositoryId} \
+                -Durl=${repositoryUrl}${repositoryName}
+        """
+    }
+}</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-configure-jenkins.asciidoc_create-docker-image">Create docker image</h3>
+<div class="paragraph">
+<p>Now we need to use this artifacts to create a Docker image. To create the docker image you need an external server to do it. You could do it using one of the next:</p>
+</div>
+<div class="paragraph">
+<p><strong>Create docker image using OpenShift cluster</strong></p>
+</div>
+<div class="paragraph">
+<p>To create the docker image with this option you need to configure your OpenShift. You could read how to configure it <a href="dsf-deployment-dsf4openshift.html#configure-builds-to-create-docker-image-using-OpenShift">here</a>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>props = readJSON file: 'package.json'
+withCredentials([usernamePassword(credentialsId: "${openShiftCredentials}", passwordVariable: 'pass', usernameVariable: 'user')]) {
+    sh "oc login -u ${user} -p ${pass} ${openshiftUrl} --insecure-skip-tls-verify"
+    try {
+        sh "oc start-build ${props.name} --namespace=${openShiftNamespace} --from-dir=dist --wait"
+        sh "oc import-image ${props.name} --namespace=${openShiftNamespace} --from=${dockerRegistry}/${props.name}:${dockerTag} --confirm"
+    } catch (e) {
+        sh """
+            oc logs \$(oc get builds -l build=${props.name} --namespace=${openShiftNamespace} --sort-by=.metadata.creationTimestamp -o name | tail -n 1) --namespace=${namespace}
+            throw e
+        """
+    }
+}</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+if your project is a maven project you should read the <em>pom.xml</em> file instead of the <em>package.json</em>, you could do it with the next command <code>def pom = readMavenPom file: 'pom.xml'</code>. Due to the fact that there are different variable names between those two files, remember to modify <strong>${props.name}</strong> for <strong>${pom.artifactId}</strong> in the code.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><strong>Create docker image using docker server</strong></p>
+</div>
+<div class="paragraph">
+<p>To create the docker image with this option you need to install docker and configure where is the docker host in your jenkins.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>docker.withRegistry("""${dockerRegistryProtocol}${dockerRegistry}""", dockerRegistryCredentials) {
+    def props = readJSON file: 'package.json'
+    def customImage = docker.build("${props.name}:${props.version}", "-f ${dockerFileName} .")
+    customImage.push()
+    customImage.push(dockerTag);
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><a href="dsf-deployment-dsf4openshift.html#configure-builds-to-create-docker-image-using-OpenShift">here</a></p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+if your project is a maven project you should read the <em>pom.xml</em> file instead of the <em>package.json</em>, you could do it with the next command <code>def pom = readMavenPom file: 'pom.xml'</code>. Due to the fact that there are different variable names between those two files, remember to modify <strong>${props.name}</strong> for <strong>${pom.artifactId}</strong> and <strong>${props.version}</strong> for <strong>${pom.version}</strong> in the code.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-configure-jenkins.asciidoc_deploy-docker-image">Deploy docker image</h3>
+<div class="paragraph">
+<p>Once you have the docker image in the registry we only need to import it into your deployment environment. We can do it executing one of the next commands:</p>
+</div>
+<div class="paragraph">
+<p><strong>Deploy docker image in OpenShift cluster</strong></p>
+</div>
+<div class="paragraph">
+<p>To deploy the docker image with this option you need to configure your OpenShift. You could read how to configure it <a href="dsf-deployment-dsf4openshift.html#configure-new-environment">here</a>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>script {
+    props = readJSON file: 'package.json'
+    withCredentials([usernamePassword(credentialsId: "${openShiftCredentials}", passwordVariable: 'pass', usernameVariable: 'user')]) {
+        sh "oc login -u ${user} -p ${pass} ${openshiftUrl} --insecure-skip-tls-verify"
+        try {
+            sh "oc import-image ${props.name} --namespace=${openShiftNamespace} --from=${dockerRegistry}/${props.name}:${dockerTag} --confirm"
+        } catch (e) {
+            sh """
+                oc logs \$(oc get builds -l build=${props.name} --namespace=${openShiftNamespace} --sort-by=.metadata.creationTimestamp -o name | tail -n 1) --namespace=${openShiftNamespace}
+                throw e
+            """
+        }
+    }
+}</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+if your project is a maven project you should read the <em>pom.xml</em> file instead of the <em>package.json</em>, you could do it with the next command <code>def pom = readMavenPom file: 'pom.xml'</code>. Due to the fact that there are different variable names between those two files, remember to modify <strong>${props.name}</strong> for <strong>${pom.artifactId}</strong> in the code.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><strong>Deploy docker image using docker server</strong></p>
+</div>
+<div class="paragraph">
+<p>To deploy the docker image with this option you need to install docker and configure your docker server and also integrate it with Jenkins.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>script {
+    docker.withRegistry("""${dockerRegistryProtocol}${dockerRegistry}""", dockerRegistryCredentials) {
+        def props = readJSON file: 'package.json'
+        docker.image("${props.name}:${props.version}").pull()
+
+        def containerId = sh returnStdout: true, script: """docker ps -aqf "name=${containerName}${dockerEnvironment}" """
+        if (containerId?.trim()) {
+            sh "docker rm -f ${containerId.trim()}"
+        }
+
+        println """docker run -d --name ${containerName}${dockerEnvironment} --network=${networkName} ${dockerRegistry}/${props.name}:${props.version}"""
+        sh """docker run -d --name ${containerName}${dockerEnvironment} --network=${networkName} ${dockerRegistry}/${props.name}:${props.version}"""
+    }
+}</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+if your project is a maven project you should read the <em>pom.xml</em> file instead of the <em>package.json</em>, you could do it with the next command <code>def pom = readMavenPom file: 'pom.xml'</code>. Due to the fact that there are different variable names between those two files, remember to modify <strong>${props.name}</strong> for <strong>${pom.artifactId}</strong> and <strong>${props.version}</strong> for <strong>${pom.version}</strong> in the code.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-configure-jenkins.asciidoc_check-status">Check status</h3>
+<div class="paragraph">
+<p>Now is time to check if your pods are running ok.</p>
+</div>
+<div class="paragraph">
+<p>To check if your pods are ok in OpenShift you should add the next code to your pipeline:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>script {
+    props = readJSON file: 'package.json'
+    sleep 30
+    withCredentials([usernamePassword(credentialsId: "${openShiftCredentials}", passwordVariable: 'pass', usernameVariable: 'user')]) {
+        sh "oc login -u ${user} -p ${pass} ${openshiftUrl} --insecure-skip-tls-verify"
+        sh "oc project ${openShiftNamespace}"
+
+        def oldRetry = -1;
+        def oldState = "";
+
+        sh "oc get pods -l app=${props.name} &gt; out"
+        def status = sh (
+            script: "sed 's/[\t ][\t ]*/ /g' &lt; out | sed '2q;d' | cut -d' ' -f3",
+            returnStdout: true
+        ).trim()
+
+        def retry = sh (
+            script: "sed 's/[\t ][\t ]*/ /g' &lt; out | sed '2q;d' | cut -d' ' -f4",
+            returnStdout: true
+        ).trim().toInteger();
+
+        while (retry &lt; 5 &amp;&amp; (oldRetry != retry || oldState != status)) {
+            sleep 30
+            oldRetry = retry
+            oldState = status
+
+            sh """oc get pods -l app=${props.name} &gt; out"""
+            status = sh (
+                script: "sed 's/[\t ][\t ]*/ /g' &lt; out | sed '2q;d' | cut -d' ' -f3",
+                returnStdout: true
+            ).trim()
+
+            retry = sh (
+                script: "sed 's/[\t ][\t ]*/ /g' &lt; out | sed '2q;d' | cut -d' ' -f4",
+                returnStdout: true
+            ).trim().toInteger();
+        }
+
+        if(status != "Running"){
+            try {
+                sh """oc logs \$(oc get pods -l app=${props.name} --sort-by=.metadata.creationTimestamp -o name | tail -n 1)"""
+            } catch (e) {
+                sh "echo error reading logs"
+            }
+            error("The pod is not running, cause: " + status)
+        }
+    }
+}</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dsf-configure-jenkins.asciidoc_post-operations">Post operations</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When all its finish, remember to clean your workspace.</p>
+</div>
+<div class="paragraph">
+<p>post {
+    cleanup {
+        cleanWs()
+    }
+}</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+You could also delete your dir adding the next command <code>deleteDir()</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html#introduction-why-should-i-use-devonfw.asciidoc">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devon4j.asciidoc_architecture.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-ide-support.asciidoc.html#LICENSE.asciidoc">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2020-09-22 08:55:39 UTC
+</sub></div>
+</div>
+</div>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+</body>
+</html>
