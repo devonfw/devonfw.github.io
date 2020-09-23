@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2020-09-22 13:25:38 UTC">
+<meta name="author" content="Updated at 2020-09-23 11:04:08 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -517,7 +517,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2020-09-22 13:26:01 UTC</span><br>
+<span id="author" class="author">Updated at 2020-09-23 11:04:34 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -614,7 +614,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <pre>Open your favourite terminal (Win/Linux/iOS)
 Go to future project&apos;s path
-Type _dotnet new --install Devon4Net.WebAPI.Template
+Type dotnet new --install Devon4Net.WebAPI.Template
 Type dotnet new Devon4NetAPI
 Go to project&apos;s path
 You are ready to start developing with devon4Net</pre>
@@ -696,7 +696,7 @@ Install-Package Devon4Net.Application.WebAPI.Configuration</pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-json" data-lang="json">&quot;devonfw&quot;: {
+<pre class="highlight"><code class="language-json" data-lang="json"> &quot;devonfw&quot;: {
     &quot;UseDetailedErrorsKey&quot;: true,
     &quot;UseIIS&quot;: false,
     &quot;UseSwagger&quot;: true,
@@ -747,8 +747,15 @@ Install-Package Devon4Net.Application.WebAPI.Configuration</pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-json" data-lang="json">{
+  &quot;ExtraSettingsFiles&quot;: [
+    &quot;Put a directory path (relative/absolute/linux-like) like /run/secrets/global where there are many settings/secret files to load&quot;,
+    &quot;Put a specific file name (with/without path) like /app-configs/app/extra-settings.json&quot;
+  ],
   &quot;ConnectionStrings&quot;: {
-    &quot;Default&quot;: &quot;Your connection string here&quot;
+    &quot;Default&quot;: &quot;Todos&quot;,
+    &quot;Employee&quot;: &quot;Employee&quot;,
+    &quot;RabbitMqBackup&quot;: &quot;Add your database connection string here for messaging backup&quot;,
+    &quot;MediatRBackup&quot;: &quot;Add your database connection string here for messaging backup&quot;
   },
   &quot;Logging&quot;: {
     &quot;LogLevel&quot;: {
@@ -794,23 +801,30 @@ Install-Package Devon4Net.Application.WebAPI.Configuration</pre>
       &quot;CertificateEncryptionAlgorithm&quot;: &quot;&quot;
     }
   },
-  &quot;Cors&quot;: {
-    &quot;Origins&quot;: [
-      {
-        &quot;CorsPolicy&quot;: &quot;CorsPolicy1&quot;,
-        &quot;Origins&quot;: &quot;http://example.com,http://www.contoso.com&quot;,
-        &quot;Headers&quot;: &quot;accept,content-type,origin,x-custom-header&quot;,
-        &quot;Methods&quot;: &quot;GET,POST,HEAD&quot;,
-        &quot;AllowCredentials&quot;: true
-      }
-    ]
-  },
+  &quot;Cors&quot;: []
+  //[
+  //  {
+  //    &quot;CorsPolicy&quot;: &quot;CorsPolicy1&quot;,
+  //    &quot;Origins&quot;: &quot;http://example.com,http://www.contoso.com&quot;,
+  //    &quot;Headers&quot;: &quot;accept,content-type,origin,x-custom-header&quot;,
+  //    &quot;Methods&quot;: &quot;GET,POST,HEAD&quot;,
+  //    &quot;AllowCredentials&quot;: true
+  //  },
+  //  {
+  //    &quot;CorsPolicy&quot;: &quot;CorsPolicy2&quot;,
+  //    &quot;Origins&quot;: &quot;http://example.com,http://www.contoso.com&quot;,
+  //    &quot;Headers&quot;: &quot;accept,content-type,origin,x-custom-header&quot;,
+  //    &quot;Methods&quot;: &quot;GET,POST,HEAD&quot;,
+  //    &quot;AllowCredentials&quot;: true
+  //  }
+  //]
+  ,
   &quot;CircuitBreaker&quot;: {
-    &quot;CheckCertificate&quot;: true,
+    &quot;CheckCertificate&quot;: false,
     &quot;Endpoints&quot;: [
       {
-        &quot;Name&quot;: &quot;SampleService&quot;,
-        &quot;BaseAddress&quot;: &quot;https://localhost:5001/&quot;,
+        &quot;Name&quot;: &quot;AnsibleTower&quot;,
+        &quot;BaseAddress&quot;: &quot;PUT THE IP ADDRESS HERE&quot;,
         &quot;Headers&quot;: {
         },
         &quot;WaitAndRetrySeconds&quot;: [
@@ -819,7 +833,39 @@ Install-Package Devon4Net.Application.WebAPI.Configuration</pre>
           0.001
         ],
         &quot;DurationOfBreak&quot;: 0.0005,
-        &quot;UseCertificate&quot;: true,
+        &quot;UseCertificate&quot;: false,
+        &quot;Certificate&quot;: &quot;localhost.pfx&quot;,
+        &quot;CertificatePassword&quot;: &quot;localhost&quot;,
+        &quot;SslProtocol&quot;: &quot;3072&quot; //TLS12
+      },
+      {
+        &quot;Name&quot;: &quot;CyberArk&quot;,
+        &quot;BaseAddress&quot;: &quot;PUT THE IP ADDRESS HERE&quot;,
+        &quot;Headers&quot;: {
+        },
+        &quot;WaitAndRetrySeconds&quot;: [
+          0.0001,
+          0.0005,
+          0.001
+        ],
+        &quot;DurationOfBreak&quot;: 0.0005,
+        &quot;UseCertificate&quot;: false,
+        &quot;Certificate&quot;: &quot;localhost.pfx&quot;,
+        &quot;CertificatePassword&quot;: &quot;localhost&quot;,
+        &quot;SslProtocol&quot;: &quot;3072&quot; //TLS12
+      },
+      {
+        &quot;Name&quot;: &quot;SmaxHcm&quot;,
+        &quot;BaseAddress&quot;: &quot;PUT THE IP ADDRESS HERE&quot;,
+        &quot;Headers&quot;: {
+        },
+        &quot;WaitAndRetrySeconds&quot;: [
+          0.0001,
+          0.0005,
+          0.001
+        ],
+        &quot;DurationOfBreak&quot;: 0.0005,
+        &quot;UseCertificate&quot;: false,
         &quot;Certificate&quot;: &quot;localhost.pfx&quot;,
         &quot;CertificatePassword&quot;: &quot;localhost&quot;,
         &quot;SslProtocol&quot;: &quot;3072&quot; //TLS12
@@ -852,6 +898,115 @@ Install-Package Devon4Net.Application.WebAPI.Configuration</pre>
       &quot;RetryIntervalMs&quot;: 15,
       &quot;MaxUdpMessageSize&quot;: 8192
     }
+  },
+  &quot;RabbitMq&quot;: {
+    &quot;EnableRabbitMq&quot;: false,
+    &quot;Hosts&quot;: [
+      {
+        &quot;Host&quot;: &quot;127.0.0.1&quot;,
+        &quot;Port&quot;: 5672,
+        &quot;Ssl&quot;: false,
+        &quot;SslServerName&quot;: &quot;localhost&quot;,
+        &quot;SslCertPath&quot;: &quot;localhost.pfx&quot;,
+        &quot;SslCertPassPhrase&quot;: &quot;localhost&quot;,
+        &quot;SslPolicyErrors&quot;: &quot;RemoteCertificateNotAvailable&quot; //None, RemoteCertificateNotAvailable, RemoteCertificateNameMismatch, RemoteCertificateChainErrors
+      }
+    ],
+
+    &quot;VirtualHost&quot;: &quot;/&quot;,
+    &quot;UserName&quot;: &quot;admin&quot;,
+    &quot;Password&quot;: &quot;password&quot;,
+    &quot;Product&quot;: &quot;devon4net&quot;,
+    &quot;RequestedHeartbeat&quot;: 10, //Set to zero for no heartbeat
+    &quot;PrefetchCount&quot;: 50,
+    &quot;PublisherConfirms&quot;: false,
+    &quot;PersistentMessages&quot;: true,
+    &quot;Platform&quot;: &quot;localhost&quot;,
+    &quot;Timeout&quot;: 10,
+    &quot;Backup&quot;: {
+      &quot;UseLocalBackup&quot;: false,
+      &quot;DatabaseName&quot;: &quot;devon4netMessageBackup.db&quot;
+    }
+  },
+  &quot;MediatR&quot;: {
+    &quot;EnableMediatR&quot;: false,
+    &quot;Backup&quot;: {
+      &quot;UseLocalBackup&quot;: false,
+      &quot;DatabaseName&quot;: &quot;devon4netMessageBackup.db&quot;
+    }
+  },
+  &quot;LiteDb&quot;: {
+    &quot;DatabaseLocation&quot;: &quot;devon4net.db&quot;
+  },
+  &quot;AnsibleTower&quot;: {
+    &quot;EnableAnsible&quot;: false,
+    &quot;Name&quot;: &quot;AnsibleTower&quot;,
+    &quot;CircuitBreakerName&quot;: &quot;AnsibleTower&quot;,
+    &quot;ApiUrlBase&quot;: &quot;/api/v2/?format=json&quot;,
+    &quot;Version&quot;: &quot;1.0.5.29&quot;,
+    &quot;Username&quot;: &quot;&quot;,
+    &quot;Password&quot;: &quot;&quot;
+  },
+  &quot;CyberArk&quot;: {
+    &quot;EnableCyberArk&quot;: false,
+    &quot;Username&quot;: &quot;&quot;,
+    &quot;Password&quot;: &quot;&quot;,
+    &quot;CircuitBreakerName&quot;: &quot;CyberArk&quot;
+  },
+  &quot;SmaxHcm&quot;: {
+    &quot;EnableSmax&quot;: false,
+    &quot;Username&quot;: &quot;&quot;,
+    &quot;Password&quot;: &quot;&quot;,
+    &quot;TenantId&quot;: &quot;&quot;,
+    &quot;CircuitBreakerName&quot;: &quot;SmaxHcm&quot;,
+    &quot;ProviderId&quot;: &quot;&quot;
+  },
+  &quot;Kafka&quot;: {
+    &quot;EnableKafka&quot;: true,
+    &quot;Administration&quot;: [
+      {
+        &quot;AdminId&quot;: &quot;Admin1&quot;,
+        &quot;Servers&quot;: &quot;127.0.0.1:9092&quot;
+      }
+    ],
+    &quot;Producers&quot;: [
+      {
+        &quot;ProducerId&quot;: &quot;Producer1&quot;, // devon identifier
+        &quot;Servers&quot;: &quot;127.0.0.1:9092&quot;, // Initial list of brokers as a CSV list of broker host or host:port. The application may also use `rd_kafka_brokers_add()` to add brokers during runtime
+        &quot;ClientId&quot;: &quot;client1&quot;, //Client identifier
+        &quot;Topic&quot;: &quot;devonfw&quot;, // topics to deliver the message
+        &quot;MessageMaxBytes&quot;: 1000000, //Maximum Kafka protocol request message size. Due to differing framing overhead between protocol versions the producer is unable to reliably enforce a strict max message limit at produce time and may exceed the maximum size by one message in protocol ProduceRequests, the broker will enforce the the topic&apos;s `max.message.bytes` limit (see Apache Kafka documentation)
+        &quot;CompressionLevel&quot;: -1, // [0-9] for gzip; [0-12] for lz4; only 0 for snappy; -1 = codec-dependent default compression level
+        &quot;CompressionType&quot;: &quot;None&quot;, // None, Gzip, Snappy, Lz4, Zstd
+        &quot;ReceiveMessageMaxBytes&quot;: 100000000,
+        &quot;EnableSslCertificateVerification&quot;: false,
+        &quot;CancellationDelayMaxMs&quot;: 100, // The maximum length of time (in milliseconds) before a cancellation request is acted on. Low values may result in measurably higher CPU usage
+        &quot;Ack&quot;: &quot;None&quot;, //Zero=Broker does not send any response/ack to client, One=The leader will write the record to its local log but will respond without awaiting full acknowledgement from all followers. All=Broker will block until message is committed by all in sync replicas (ISRs). If there are less than min.insync.replicas (broker configuration) in the ISR set the produce request will fail
+        &quot;Debug&quot;: &quot;&quot;, //A comma-separated list of debug contexts to enable. Detailed Producer debugging: broker,topic,msg. Consumer: consumer,cgrp,topic,fetch
+        &quot;BrokerAddressTtl&quot;: 1000, //How long to cache the broker address resolving results (milliseconds)
+        &quot;BatchNumMessages&quot;: 1000000, // Maximum size (in bytes) of all messages batched in one MessageSet, including protocol framing overhead. This limit is applied after the first message has been added to the batch, regardless of the first message&apos;s size, this is to ensure that messages that exceed batch.size are produced. The total MessageSet size is also limited by batch.num.messages and message.max.bytes
+        &quot;EnableIdempotence&quot;: false, //When set to `true`, the producer will ensure that messages are successfully produced exactly once and in the original produce order. The following configuration properties are adjusted automatically (if not modified by the user) when idempotence is enabled: `max.in.flight.requests.per.connection=5` (must be less than or equal to 5), `retries=INT32_MAX` (must be greater than 0), `acks=all`, `queuing.strategy=fifo`. Producer instantation will fail if user-supplied configuration is incompatible
+        &quot;MaxInFlight&quot;: 5,
+        &quot;MessageSendMaxRetries&quot;: 5,
+        &quot;BatchSize&quot;: 100000000 // Maximum size (in bytes) of all messages batched in one MessageSet, including protocol framing overhead. This limit is applied after the first message has been added to the batch, regardless of the first message&apos;s size, this is to ensure that messages that exceed batch.size are produced. The total MessageSet size is also limited by batch.num.messages and message.max.bytes
+      }
+    ],
+    &quot;Consumers&quot;: [
+      {
+        &quot;ConsumerId&quot;: &quot;Consumer1&quot;, // devon identifier
+        &quot;Servers&quot;: &quot;127.0.0.1:9092&quot;,
+        &quot;GroupId&quot;: &quot;group1&quot;,
+        &quot;Topics&quot;: &quot;devonfw&quot;, // Comma separated topics to subscribe
+        &quot;AutoCommit&quot;: true, //Automatically and periodically commit offsets in the background. Note: setting this to false does not prevent the consumer from fetching previously committed start offsets. To circumvent this behaviour set specific start offsets per partition in the call to assign()
+        &quot;StatisticsIntervalMs&quot;: 0, //librdkafka statistics emit interval. The application also needs to register a stats callback using `rd_kafka_conf_set_stats_cb()`. The granularity is 1000ms. A value of 0 disables statistics
+        &quot;SessionTimeoutMs&quot;: 10000, //Client group session and failure detection timeout. The consumer sends periodic heartbeats (heartbeat.interval.ms) to indicate its liveness to the broker. If no hearts are received by the broker for a group member within the session timeout, the broker will remove the consumer from the group and trigger a rebalance. The allowed range is configured with the **broker** configuration properties `group.min.session.timeout.ms` and `group.max.session.timeout.ms`. Also see `max.poll.interval.ms`
+        &quot;AutoOffsetReset&quot;: &quot;Largest&quot;, //Action to take when there is no initial offset in offset store or the desired offset is out of range: &apos;smallest&apos;,&apos;earliest&apos; - automatically reset the offset to the smallest offset, &apos;largest&apos;,&apos;latest&apos; - automatically reset the offset to the largest offset, &apos;error&apos; - trigger an error which is retrieved by consuming messages and checking &apos;message-&amp;gt;err&apos;
+        &quot;EnablePartitionEof&quot;: true, //Verify CRC32 of consumed messages, ensuring no on-the-wire or on-disk corruption to the messages occurred. This check comes at slightly increased CPU usage
+        &quot;IsolationLevel&quot;: &quot;ReadCommitted&quot;, //Controls how to read messages written transactionally: `ReadCommitted` - only return transactional messages which have been committed. `ReadUncommitted` - return all messages, even transactional messages which have been aborted.
+        &quot;EnableSslCertificateVerification&quot;: false,
+        &quot;Debug&quot;: &quot;&quot; //A comma-separated list of debug contexts to enable. Detailed Producer debugging: broker,topic,msg. Consumer: consumer,cgrp,topic,fetch
+      }
+    ]
   }
 }</code></pre>
 </div>
@@ -1650,7 +1805,7 @@ DNS.5 = fake2.local</code></pre>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2020-09-22 13:23:27 UTC
+Last updated 2020-09-23 11:01:24 UTC
 </sub></div>
 
 
