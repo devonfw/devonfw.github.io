@@ -8,6 +8,15 @@ const headerModule = (function (window) {
     docs: "Documentation"
   }
 
+  function createSearchResultGroupsTemplate(title, resultHtml) {
+    return `
+    <div>
+      <div>${title}</div>
+      <div>${resultHtml}</div>
+    </div>
+  `;
+  }
+
   function searchResultGroupsTemplate(results) {
     let result = '';
     console.log(results);
@@ -15,12 +24,7 @@ const headerModule = (function (window) {
       if (results[type]) {
         let resultHtml = results[type].join('');
         let title = typeTitleMap[type];
-        let groupTemplate = `
-        <div>
-          <div>${title}</div>
-          <div>${resultHtml}</div>
-        </div>
-      `;
+        let groupTemplate = createSearchResultGroupsTemplate(title, resultHtml);
         result += groupTemplate;
       }
     }
@@ -28,12 +32,7 @@ const headerModule = (function (window) {
       if (!typeTitleMap[type]) {
         let resultHtml = results[type].join('');
         let title = type;
-        let groupTemplate = `
-        <div>
-          <div>${title}</div>
-          <div>${resultHtml}</div>
-        </div>
-      `;
+        let groupTemplate = createSearchResultGroupsTemplate(title, resultHtml);
         result += groupTemplate;
       }
     }
