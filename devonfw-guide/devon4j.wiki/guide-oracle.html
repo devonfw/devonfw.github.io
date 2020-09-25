@@ -223,8 +223,13 @@ spring.datasource.jmx-enabled=true
 <h2 id="guide-oracle.asciidoc_messaging">Messaging</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In case you want to do messaging based on JMS you might consider the <a href="https://docs.oracle.com/cd/E11882_01/server.112/e11013/aq_intro.htm">Oracle JMS</a> also called Oracle Streams Advanced Queuing, or Oracle Advanced Queuing, or OAQ or AQ for short. OAQ is a JMS provider based on the Oracle RDBMS and included in the DB product for no extra fee. OAQ has some features that exceed the JMS standard like a retention time (i.e. a built-in backup mechanism that allows to make messages "unread" within a configurable period of time so that these messages do not have to be resent by the sending application). Also, OAQ messages are stored in relational tables so they can easily be observed by a test driver in a system test scenario.
-Capgemini has used the <a href="https://projects.spring.io/spring-data-jdbc-ext/">Spring Data JDBC Extension</a> in order to process OAQ messages within <strong>the same technical transaction</strong> as the resulting Oracle RDBMS data changes <strong>without</strong> using 2PC and an XA-compliant transaction manager - which is not available out of the box in Tomcat. This is possible only due to the fact that OAQ queues and RDBMS tables actually reside in the same database. However, this is higher magic and should only be tried if high transaction rates must be achieved by avoiding 2PC.</p>
+<p>In case you want to do messaging based on JMS you might consider the <a href="https://docs.oracle.com/cd/E11882_01/server.112/e11013/aq_intro.htm">Oracle JMS</a> also called Oracle Streams Advanced Queuing, or Oracle Advanced Queuing, or OAQ or AQ for short. OAQ is a JMS provider based on the Oracle RDBMS and included in the DB product for no extra fee. OAQ has some features that exceed the JMS standard like a retention time (i.e. a built-in backup mechanism that allows to make messages "unread" within a configurable period of time so that these messages do not have to be resent by the sending application). Also, OAQ messages are stored in relational tables so they can easily be process  messages within <strong>the same technical transaction</strong>. They also might be observed by a test driver in a system test scenario.</p>
+</div>
+<div class="paragraph">
+<p>This is possible only due to the fact that OAQ queues and RDBMS tables actually reside in the same database and quite straightforward to setup if you are using an Oracle connection pool.</p>
+</div>
+<div class="paragraph">
+<p>If you are working with an application server or use a different connection pool, things get more complicated. Spring offers a (now deprecated project)<a href="https://projects.spring.io/spring-data-jdbc-ext/">Spring Data JDBC Extension</a> in order to process OAQ messages within the same technical transaction even when using an application server.</p>
 </div>
 </div>
 </div>
@@ -376,7 +381,7 @@ Capgemini has used the <a href="https://projects.spring.io/spring-data-jdbc-ext/
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2020-09-23 15:23:08 UTC
+Last updated 2020-09-25 10:16:24 UTC
 </sub></div>
 </div>
 </div>
