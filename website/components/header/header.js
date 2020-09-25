@@ -11,8 +11,8 @@ const headerModule = (function (window) {
   function createSearchResultGroupsTemplate(title, resultHtml) {
     return `
     <div>
-      <div>${title}</div>
-      <div>${resultHtml}</div>
+      <div class="srg-title px-3 mt-3">${title}</div>
+      <div class="srg-content px-3">${resultHtml}</div>
     </div>
   `;
   }
@@ -39,17 +39,16 @@ const headerModule = (function (window) {
     return result;
   }
 
-  function searchResultTemplate(title, link) {
+  function searchResultTemplate(title, link, linktext) {
     let template = `
       <div class="px-3 mt-3">
         <div class="sr-title">
           ${title}
         </div>
         <div class="sr-content cursor-pointer">
-          <a href="${link}">${link}</a>
+          <a href="${link}">${linktext}</a>
         </div>
-      </div>
-      <div class="mt-2 mb-2 w-100 bg-dark hr-2"></div>`;
+      </div>`;
     return template;
   }
 
@@ -105,6 +104,16 @@ const headerModule = (function (window) {
     });
   }
 
+  function linktext(type, href){
+    if(type == 'docs' || type == 'tutorial'){
+      return href.split('#')[0];
+    }
+    if(type == 'explore'){
+      return href.split('#')[1] || href;
+    }
+    return href;
+  }
+
   function query(searchData) {
     let query = document.getElementById('search-field').value;
     let queryRes = query ? searchData.index.search(query) : [];
@@ -126,7 +135,7 @@ const headerModule = (function (window) {
       }
       if (results[obj.type].length < ConfigModule.searchInfo.maxNumberOfResults) {
         displayedResultsCount++;
-        results[obj.type].push(searchResultTemplate(title, res.ref.replace('..', '')));
+        results[obj.type].push(searchResultTemplate(title, res.ref.replace('..', ''), linktext(obj.type, res.ref.replace('..', ''))));
       } else {
         showSeeMore = true;
       }
