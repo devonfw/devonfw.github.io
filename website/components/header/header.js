@@ -50,7 +50,7 @@ const headerModule = (function (window) {
         eventHandler = `onclick="openExploreLink('${link}')"`;
       }
     let template = `
-      <div class="px-3 mt-3">
+      <div class="px-3 mt-1">
         <div class="sr-title">
           ${title}
         </div>
