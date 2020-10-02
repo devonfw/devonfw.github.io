@@ -142,11 +142,23 @@ function getFilesFromDir(dirname, extension) {
   return result;
 }
 
+function getType(file){
+  let isTutorial = !!file.match(/\/[^\/]*?(tutorial|how[-_]?to)-/i);
+  let isReleaseNote = !!file.match(/\/[^\/]*?(release[-_]?notes)-/i);
+  if(isTutorial){
+    return 'tutorial';
+  } 
+  if(isReleaseNote){
+    return 'releasenote';
+  }
+  return 'docs'
+}
+
 function readFromFilename(
   file,
   processing = { preprocessing: [], postprocessing: [] },
 ) {
-  let isTutorial = !!file.match(/\/[^\/]*?(tutorial|how[-_]?to)-/i);
+  let type = getType(file);
   let chapterRegex = /<h[1-4].+?id="(?<id>[^"].+?)".*?>((([0-9]+\.\s?)+\s)?(?<title>[^<]+))<\/h[1-4]>(?<content>.+?)(?=((<h[1-4].+?id="([^"].+?)".*?>)|$))/isg;
 
   let docs = [];
@@ -159,12 +171,12 @@ function readFromFilename(
     }
   }
   let doc = {};
-  console.log(file + ' isTutorial: ' + isTutorial);
+  console.log(file + ' type: ' + type);
   while ((regexMatch = chapterRegex.exec(fileContent)) !== null) {
     console.log(regexMatch.groups.title + ' -> #' + regexMatch.groups.id)
     let doc = {
       id: file + '#' + regexMatch.groups.id,
-      type: isTutorial ? 'tutorial' : 'docs',
+      type: type,
       title: regexMatch.groups.title,
       body: regexMatch[0],
     };

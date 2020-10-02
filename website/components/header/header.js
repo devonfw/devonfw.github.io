@@ -3,9 +3,10 @@ import { ConfigModule } from '../../config/devonfw-site-conf.js';
 const headerModule = (function (window) {
 
   let typeTitleMap = {
-    tutorial: "Tutorial",
+    tutorial: "Tutorials",
     explore: "Explore",
-    docs: "Documentation"
+    docs: "Documentation",
+    releasenote: "Release Notes"
   }
 
   function createSearchResultGroupsTemplate(title, resultHtml) {
@@ -19,7 +20,6 @@ const headerModule = (function (window) {
 
   function searchResultGroupsTemplate(results) {
     let result = '';
-    console.log(results);
     for (let type in typeTitleMap) {
       if (results[type]) {
         let resultHtml = results[type].join('');
