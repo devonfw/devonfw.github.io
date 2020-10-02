@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2020-10-01 17:58:01 UTC">
+<meta name="author" content="Updated at 2020-10-02 14:25:30 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -517,7 +517,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2020-10-01 17:58:28 UTC</span><br>
+<span id="author" class="author">Updated at 2020-10-02 14:25:58 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -551,6 +551,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="guide-oracle.asciidoc.html#guide-oracle.asciidoc_messaging">36.4. Messaging</a>
 </li>
 <li><a href="guide-oracle.asciidoc.html#guide-oracle.asciidoc_general-notes-on-the-use-of-oracle-products">36.5. General Notes on the use of Oracle products</a>
+</li>
+<li><a href="guide-oracle.asciidoc.html#guide-oracle.asciidoc_fix-for-tns-listener-issues">36.6. Fix for TNS-Listener issues</a>
 </li>
 </ul>
 </li>
@@ -735,6 +737,52 @@ Capgemini has used the <a href="https://projects.spring.io/spring-data-jdbc-ext/
 <div class="paragraph">
 <p>Software components like the JDBC driver or the UCP may be available without a registration or fee but they are protected by the Oracle Technology Network (OTN) License Agreement. The most important aspect of this licence agreement is the fact that an IT service provider is not allowed to simply download the Oracle software component, bundle it in a software artefact and deliver it to the customer. Instead, the Oracle software component must be (from a legal point of view) provided by the owner of the Oracle DB licence (i.e. your customer). This can be achieved in two ways: Advise your customer to install the Oracle software component in the application server as a library that can be used by your custom built system. Or, in cases where this is not feasible, e.g. in a OpenShift environment where the IT service provider delivers complete Docker images, you must advise your customer to (legally, i.e. documented in a written form) provide the Oracle software component to you, i.e. you don&#x2019;t download the software component from the Oracle site but receive it from your customer.</p>
 </div>
+</div>
+<div class="sect2">
+<h3 id="guide-oracle.asciidoc_fix-for-tns-listener-issues">36.6. Fix for TNS-Listener issues</h3>
+<div class="paragraph">
+<p>When switching networks (e.g. due to VPN) you might end up that your local Oracle XE stopps working with this error:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>Listener refused the connection with the following error:
+ORA-12505, TNS:listener does not currently know of SID given in connect descriptor</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>While a reboot resolves this problem, it is a huge pain to reboot every time this error occurs as this wastes a lot of time.
+Therefore we suggest the following fix:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Go to your oracle installation and open the folder <code>product/&#xAB;version&#xBB;/dbhomeXE/network/admin</code>.</p>
+</li>
+<li>
+<p>Edit the file <code>listener.ora</code> and change the value of the property <code>HOST</code> from your qualified hostname to <code>localhost</code> (<code>HOST = localhost</code>).</p>
+</li>
+<li>
+<p>Edit the file <code>tnsnames.ora</code> and change the value of the <code>HOST</code> properties (two occurences) from your qualified hostname to <code>localhost</code> (<code>HOST = localhost</code>).</p>
+</li>
+<li>
+<p>Reboot your machine or (on windows) restart the service <code>OracleServiceXE</code> via <code>services.msc</code>.</p>
+</li>
+<li>
+<p>Now this problem should be gone forever and you can continue your work.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>On older XE versions until 11g you could run the following SQL (<code>sqlplus / as sysdba @reset_tns_listener.sql</code>):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>WHENEVER SQLERROR EXIT;
+ALTER SYSTEM SET local_listener = &apos;(ADDRESS = (PROTOCOL = TCP)(HOST = 127.0.0.1)(PORT = 1521))&apos;;
+ALTER SYSTEM REGISTER;
+EXIT;</code></pre>
+</div>
+</div>
 <!-- toc disabled -->
 </div>
 </div>
@@ -871,7 +919,7 @@ Capgemini has used the <a href="https://projects.spring.io/spring-data-jdbc-ext/
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2020-10-01 17:55:11 UTC
+Last updated 2020-10-02 14:22:35 UTC
 </sub></div>
 
 

@@ -108,6 +108,7 @@
 <li><a href="#guide-oracle.asciidoc_pooling">Pooling</a></li>
 <li><a href="#guide-oracle.asciidoc_messaging">Messaging</a></li>
 <li><a href="#guide-oracle.asciidoc_general-notes-on-the-use-of-oracle-products">General Notes on the use of Oracle products</a></li>
+<li><a href="#guide-oracle.asciidoc_fix-for-tns-listener-issues">Fix for TNS-Listener issues</a></li>
 </ul>
 </li>
 </ul>
@@ -254,6 +255,54 @@ Capgemini has used the <a href="https://projects.spring.io/spring-data-jdbc-ext/
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="guide-oracle.asciidoc_fix-for-tns-listener-issues">Fix for TNS-Listener issues</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When switching networks (e.g. due to VPN) you might end up that your local Oracle XE stopps working with this error:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>Listener refused the connection with the following error:
+ORA-12505, TNS:listener does not currently know of SID given in connect descriptor</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>While a reboot resolves this problem, it is a huge pain to reboot every time this error occurs as this wastes a lot of time.
+Therefore we suggest the following fix:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Go to your oracle installation and open the folder <code>product/«version»/dbhomeXE/network/admin</code>.</p>
+</li>
+<li>
+<p>Edit the file <code>listener.ora</code> and change the value of the property <code>HOST</code> from your qualified hostname to <code>localhost</code> (<code>HOST = localhost</code>).</p>
+</li>
+<li>
+<p>Edit the file <code>tnsnames.ora</code> and change the value of the <code>HOST</code> properties (two occurences) from your qualified hostname to <code>localhost</code> (<code>HOST = localhost</code>).</p>
+</li>
+<li>
+<p>Reboot your machine or (on windows) restart the service <code>OracleServiceXE</code> via <code>services.msc</code>.</p>
+</li>
+<li>
+<p>Now this problem should be gone forever and you can continue your work.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>On older XE versions until 11g you could run the following SQL (<code>sqlplus / as sysdba @reset_tns_listener.sql</code>):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>WHENEVER SQLERROR EXIT;
+ALTER SYSTEM SET local_listener = '(ADDRESS = (PROTOCOL = TCP)(HOST = 127.0.0.1)(PORT = 1521))';
+ALTER SYSTEM REGISTER;
+EXIT;</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer" class="footer">
 <div class="openblock footerLinks">
@@ -391,7 +440,7 @@ Capgemini has used the <a href="https://projects.spring.io/spring-data-jdbc-ext/
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2020-10-01 17:54:21 UTC
+Last updated 2020-10-02 14:21:44 UTC
 </sub></div>
 </div>
 </div>
