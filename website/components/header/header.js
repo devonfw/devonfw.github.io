@@ -2,6 +2,11 @@ import { ConfigModule } from '../../config/devonfw-site-conf.js';
 
 const headerModule = (function (window) {
 
+  window.openExploreLink = function(link) {
+    document.location.href = link;
+    document.location.reload();
+  }
+
   let typeTitleMap = {
     tutorial: "Tutorials",
     explore: "Explore",
@@ -39,14 +44,18 @@ const headerModule = (function (window) {
     return result;
   }
 
-  function searchResultTemplate(title, link, linktext) {
+  function searchResultTemplate(title, link, linktext, type) {
+    let eventHandler = '';
+      if(type == 'explore') {
+        eventHandler = `onclick="openExploreLink('${link}')"`;
+      }
     let template = `
       <div class="px-3 mt-3">
         <div class="sr-title">
           ${title}
         </div>
         <div class="sr-content cursor-pointer">
-          <a href="${link}">${linktext}</a>
+          <a href="${link}" ${eventHandler}>${linktext}</a>
         </div>
       </div>`;
     return template;
@@ -135,7 +144,7 @@ const headerModule = (function (window) {
       }
       if (results[obj.type].length < ConfigModule.searchInfo.maxNumberOfResults) {
         displayedResultsCount++;
-        results[obj.type].push(searchResultTemplate(title, res.ref.replace('..', ''), linktext(obj.type, res.ref.replace('..', ''))));
+        results[obj.type].push(searchResultTemplate(title, res.ref.replace('..', ''), linktext(obj.type, res.ref.replace('..', '')), obj.type));
       } else {
         showSeeMore = true;
       }
