@@ -144,7 +144,7 @@ const headerModule = (function (window) {
       }
       if (results[obj.type].length < ConfigModule.searchInfo.maxNumberOfResults) {
         displayedResultsCount++;
-        results[obj.type].push(searchResultTemplate(title, res.ref.replace('..', ''), linktext(obj.type, res.ref.replace('..', '')), obj.type));
+        results[obj.type].push(searchResultTemplate(title, obj.path.replace('..', ''), linktext(obj.type, obj.path.replace('..', '')), obj.type));
       } else {
         showSeeMore = true;
       }

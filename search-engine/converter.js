@@ -4,6 +4,7 @@ const lunr = require('lunr');
 const cheerio = require('cheerio');
 
 let visitedExploreDocs = [];
+let id = 0;
 
 function getLunrDoc(docsDirname, exploreDirname, katacodaDirname, extension) {
   let docs = getDocumentsFromDocs(docsDirname, extension);
@@ -59,7 +60,8 @@ function getDocumentsFromKatacoda(dirname, extension) {
         }
 
         let doc = {
-          id: 'https://www.katacoda.com/devonfw/scenarios/' + dirItem,
+          id: id++,
+          path: 'https://www.katacoda.com/devonfw/scenarios/' + dirItem,
           type: 'tutorial',
           title: index.title,
           body: index.title + '\r\n' + intro,
@@ -81,7 +83,8 @@ function getDocumentsFromExploreFile(dirname, file, parenthash) {
     let $ = cheerio.load(htmlStr);
     let hash = parenthash + '/' + file.substr(0, file.lastIndexOf('.'));
     let doc = {
-      id: path.join(dirname, 'explore.html').replace(/\\/g, '/') + hash,
+      id: id++,
+      path: path.join(dirname, 'explore.html').replace(/\\/g, '/') + hash,
       type: 'explore',
       title: $('div#content div.directory h2').text(),
       body: $('div#content div.directory p').text(),
@@ -175,7 +178,8 @@ function readFromFilename(
   while ((regexMatch = chapterRegex.exec(fileContent)) !== null) {
     console.log(regexMatch.groups.title + ' -> #' + regexMatch.groups.id)
     let doc = {
-      id: file + '#' + regexMatch.groups.id,
+      id: id++,
+      path: file + '#' + regexMatch.groups.id,
       type: type,
       title: regexMatch.groups.title,
       body: regexMatch[0],
