@@ -114,7 +114,7 @@ const headerModule = (function (window) {
   }
 
   function linktext(type, href){
-    if(type == 'docs' || type == 'tutorial'){
+    if(type == 'docs' || type == 'tutorial' || type == 'releasenote'){
       return href.split('#')[0];
     }
     if(type == 'explore'){
