@@ -5,6 +5,7 @@ function configModule() {
   const searchInfo = {
     docsPath: `${BASE_PATH}website/docs-json.json`,
     indexPath: `${BASE_PATH}website/index.json`,
+    maxNumberOfResults: 6
   };
 
   /* path:
