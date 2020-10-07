@@ -32,6 +32,9 @@ function getSnippets(occMap, range, text) {
   // for each word in the search query
   for (let i = 0; i < occurrencesKeys.length; i++) {
     let key = occurrencesKeys[i];
+    if(!occurrencesMap[key].body){
+      return '';
+    }
     let ocurrences = occurrencesMap[key].body.position;
 
     // for each ocurrence of a word
