@@ -106,6 +106,11 @@ class DirTree extends HTMLDivElement {
             <p class="details-links-devon4node custom-col">
             </p>
           </div>
+		  <div id="details-links-katacoda">
+            <h4>Katacoda Tutorials</h4>
+            <p class="details-links-katacoda custom-col">
+            </p>
+          </div>
           <div id="details-videos">
             <h4 class="mt-4">Videos</h4>
             <p class="details-videos custom-col">
@@ -148,6 +153,7 @@ class DirTree extends HTMLDivElement {
         const devon4netLinks = addTarget(aux.find('.devon4net-links a'));
         const devon4ngLinks = addTarget(aux.find('.devon4ng-links a'));
         const devon4nodeLinks = addTarget(aux.find('.devon4node-links a'));
+		const katacodaLinks = addTarget(aux.find('.katacoda-links-small a'));
         const videosLinks = aux.find('.videos-links a');
 
         if (text != "" ||
@@ -156,6 +162,7 @@ class DirTree extends HTMLDivElement {
           devon4netLinks.length != 0 ||
           devon4ngLinks.length != 0 ||
           devon4nodeLinks.length != 0 ||
+		  katacodaLinks.length != 0 ||
           videosLinks.length != 0) {
           const fileInfo = { title, text, url, editUrl };
           const details = detailsTemplate(fileInfo);
@@ -165,6 +172,7 @@ class DirTree extends HTMLDivElement {
           setHtmlOrHide('details-links-devon4net', devon4netLinks);
           setHtmlOrHide('details-links-devon4ng', devon4ngLinks);
           setHtmlOrHide('details-links-devon4node', devon4nodeLinks);
+		  setHtmlOrHide('details-links-katacoda', katacodaLinks);
           setHtmlOrHide('details-videos', videosLinks);
         }
         else {
