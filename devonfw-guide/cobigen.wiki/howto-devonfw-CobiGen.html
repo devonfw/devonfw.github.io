@@ -205,6 +205,32 @@ to open eclipse</p>
 <p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image15.png" alt="eclipse package explorer"></span></p>
 </div>
 <div class="paragraph">
+<p>Remove the existing configure method from myapp-core <strong>com.example.domain.myapp.general.service.impl.config.BaseWebSecurityConfig</strong> and copy below security configuration code and paste.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Override
+ public void configure(HttpSecurity http) throws Exception {
+   http.authorizeRequests().anyRequest().permitAll().and().csrf().disable()
+       .addFilterAfter(getSimpleRestAuthenticationFilter(), BasicAuthenticationFilter.class)
+       .addFilterAfter(getSimpleRestLogoutFilter(), LogoutFilter.class);
+   if (this.corsEnabled) {
+     http.addFilterBefore(getCorsFilter(), CsrfFilter.class);
+   }
+ }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Check resources/config/application.properties to see the values as PATH, TCP port etc …
+Also make sure the below property is present.</p>
+</div>
+<div class="paragraph">
+<p><em>security.cors.enabled=true</em></p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/application_properties.png" alt="configure"></span></p>
+</div>
+<div class="paragraph">
 <p><strong>BEFORE to start to create an Entity class, remember to create the tables !</strong></p>
 </div>
 <div class="ulist">
@@ -215,13 +241,13 @@ to open eclipse</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>V0001__R001_Create_schema.sql (<strong>Please note</strong>  2 underscores after V0001)</p>
+<p>V0005__CreateTables_ItaPoc.sql (<strong>Please note</strong>  2 underscores after V0005)</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="sql language-sql">CREATE TABLE EMPLOYEE (
 id BIGINT auto_increment,
-modificationCounter NOT NULL,
+modificationCounter INT NOT NULL,
 employeeid BIGINT auto_increment,
 name VARCHAR(255),
 surname VARCHAR(255),
@@ -236,7 +262,7 @@ PRIMARY KEY (employeeid)
 <div class="ulist">
 <ul>
 <li>
-<p>Now create another SQL file (i.e: V0002__R001_Create_schema.sql ) and add following script about the INSERT in order to populate the table created before</p>
+<p>Now create another SQL file (i.e: V0006__PopulateTables-ItaPoc.sql ) and add following script about the INSERT in order to populate the table created before</p>
 </li>
 </ul>
 </div>
@@ -291,7 +317,7 @@ INSERT INTO EMPLOYEE (id, modificationCounter, employeeid, name, surname,email) 
 <p><strong>Prepare Entity class</strong></p>
 </div>
 <div class="paragraph">
-<p>Create a package <strong>employeemanagement.dataaccess.api</strong></p>
+<p>Create a package <strong>com.example.domain.myapp.employeemanagement.dataaccess.api</strong></p>
 </div>
 <div class="paragraph">
 <p>under the folder myapp-core. Note: It is important to follow this naming convention for CobiGen to work properly.</p>
@@ -443,7 +469,10 @@ public class EmployeeEntity {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="URL language-URL">http://localhost:8081/services/rest/employeemanagement/v1/employee/search</code></pre>
+<pre class="highlight"><code class="URL language-URL">POST
+http://localhost:8081/services/rest/employeemanagement/v1/employee/search
+Content-Type    application/json
+{"name":"Angelo"}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -451,7 +480,8 @@ public class EmployeeEntity {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="URL language-URL">http://localhost:8081/services/rest/employeemanagement/v1/employee/1</code></pre>
+<pre class="highlight"><code class="URL language-URL">GET
+http://localhost:8081/services/rest/employeemanagement/v1/employee/1</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -460,25 +490,23 @@ public class EmployeeEntity {
 <div class="paragraph">
 <p>Login Test using postman</p>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="URL language-URL">    POST
+    http://localhost:8081/services/rest/login
+    Content-Type    application/json
+    {
+    "j_username":"admin",
+    "j_password":"admin"
+     }</code></pre>
+</div>
+</div>
 <div class="ulist">
 <ul>
 <li>
-<p>Type the URL <a href="http://localhost:8081/services/rest/login" class="bare">http://localhost:8081/services/rest/login</a></p>
-</li>
-<li>
-<p>Set the header
-Content-Type    application/json</p>
-</li>
-<li>
-<p>Use the below JSON as body</p>
+<p>Set the header</p>
 </li>
 </ul>
-</div>
-<div class="paragraph">
-<p>{
-    "j_username":"admin",
-    "j_password":"admin"
-}</p>
 </div>
 <div class="paragraph">
 <p><strong>Send</strong> will return 200 OK as response.</p>
@@ -540,6 +568,12 @@ Content-Type    application/json</p>
 <p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image36.png" alt="devon dist folder"></span></p>
 </div>
 <div class="paragraph">
+<p>Place the files inside workspace under the folder devon4ng-application-template.</p>
+</div>
+<div class="paragraph">
+<p>eg: C:\projects\devonfw-ide-scripts-2020.08.002\workspaces\main\devon4ng-application-template</p>
+</div>
+<div class="paragraph">
 <p>In Devon IDE, right click on EmployeeEto.java file present under the package com.example.domain.myapp.employeemanagement.logic.api.to</p>
 </div>
 <div class="paragraph">
@@ -597,7 +631,7 @@ Content-Type    application/json</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Following picture explain where to place the above content:</p>
+<p>Following picture explain where to place the above content, also remove if any duplicate code is there.</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/routing-module.png" alt="routes"></span></p>
@@ -605,7 +639,8 @@ Content-Type    application/json</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Add newly generated module to the left menu.</p>
+<p>Add newly generated module to the left menu.
+Modify the file  app\layout\nav-bar\nav-bar.component.html, add the below code.</p>
 </li>
 </ul>
 </div>
@@ -625,31 +660,12 @@ Content-Type    application/json</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Open the command prompt and execute <em>devon yarn install</em> from the base folder, which would download all the required libraries..</p>
-</li>
-<li>
 <p>Check the file <strong>environment.ts</strong> if the server path is correct. (for production you will have to change also the environment.prod.ts file)</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image42.png" alt="environment"></span></p>
-</div>
-<div class="paragraph">
-<p>Check</p>
-</div>
-<div class="paragraph">
-<p><em>resources/config/application.properties</em></p>
-</div>
-<div class="paragraph">
-<p>to see the values as PATH, TCP port etc …
-Also make sure the below property is present.</p>
-</div>
-<div class="paragraph">
-<p><em>security.cors.enabled=true</em></p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/application_properties.png" alt="configure"></span></p>
 </div>
 <div class="paragraph">
 <p>For example in this case the URL should be since the context path is empty the server URLS should be like:</p>
@@ -667,13 +683,24 @@ security: 'jwt'
 <div class="paragraph">
 <p><strong>Warning</strong>: REMEMBER to set security filed to <strong>jwt</strong> , if it is not configured already.</p>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>Open the command prompt and execute below command from the base folder, which would download all the required libraries..</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>devon yarn install</code></pre>
+</div>
+</div>
 <div class="paragraph">
 <p>Run the below command for the front end.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>devon yarn install
-devon ng serve</code></pre>
+<pre class="highlight"><code>devon ng serve</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -695,7 +722,7 @@ devon ng serve</code></pre>
 <p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/e2e_gen/image45.png" alt="image45"></span></p>
 </div>
 <div class="paragraph">
-<p><strong>WebApp DONE</strong></p>
+<p><strong>WebApp Done</strong></p>
 </div>
 </div>
 <div class="sect3">
@@ -783,7 +810,7 @@ devon ng serve</code></pre>
 <div class="ulist">
 <ul>
 <li>
-<p>Mobile App DONE*</p>
+<p>Mobile App Done*</p>
 </li>
 </ul>
 </div>
@@ -1055,7 +1082,7 @@ devon ng serve</code></pre>
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2020-10-22 08:47:29 UTC
+Last updated 2020-10-22 11:26:09 UTC
 </sub></div>
 </div>
 </div>
