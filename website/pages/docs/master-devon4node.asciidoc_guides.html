@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2020-11-13 17:41:50 UTC">
+<meta name="author" content="Updated at 2020-11-30 17:03:23 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -517,7 +517,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2020-11-13 17:42:00 UTC</span><br>
+<span id="author" class="author">Updated at 2020-11-30 17:03:39 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -542,31 +542,29 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="master-devon4node.asciidoc_guides.html#guides-key-principles.asciidoc">33.1. Key Principles</a>
 </li>
-<li><a href="master-devon4node.asciidoc_guides.html#guides-cli.asciidoc">33.2. devon4node CLI</a>
+<li><a href="master-devon4node.asciidoc_guides.html#guides-code-generation.asciidoc">33.2. Code Generation</a>
 </li>
-<li><a href="master-devon4node.asciidoc_guides.html#guides-code-generation.asciidoc">33.3. Code Generation</a>
+<li><a href="master-devon4node.asciidoc_guides.html#guides-coding-conventions.asciidoc">33.3. Coding Conventions</a>
 </li>
-<li><a href="master-devon4node.asciidoc_guides.html#guides-coding-conventions.asciidoc">33.4. Coding Conventions</a>
+<li><a href="master-devon4node.asciidoc_guides.html#guides-dependency-injection.asciidoc">33.4. Dependency Injection</a>
 </li>
-<li><a href="master-devon4node.asciidoc_guides.html#guides-dependency-injection.asciidoc">33.5. Dependency Injection</a>
+<li><a href="master-devon4node.asciidoc_guides.html#guides-configuration-module.asciidoc">33.5. Configuration Module</a>
 </li>
-<li><a href="master-devon4node.asciidoc_guides.html#guides-configuration-module.asciidoc">33.6. Configuration Module</a>
+<li><a href="master-devon4node.asciidoc_guides.html#guides-auth-jwt.asciidoc">33.6. Auth JWT module</a>
 </li>
-<li><a href="master-devon4node.asciidoc_guides.html#guides-auth-jwt.asciidoc">33.7. Auth JWT module</a>
+<li><a href="master-devon4node.asciidoc_guides.html#guides-swagger.asciidoc">33.7. Swagger</a>
 </li>
-<li><a href="master-devon4node.asciidoc_guides.html#guides-swagger.asciidoc">33.8. Swagger</a>
+<li><a href="master-devon4node.asciidoc_guides.html#guides-typeorm.asciidoc">33.8. TypeORM</a>
 </li>
-<li><a href="master-devon4node.asciidoc_guides.html#guides-typeorm.asciidoc">33.9. TypeORM</a>
+<li><a href="master-devon4node.asciidoc_guides.html#guides-serializer.asciidoc">33.9. Serializer</a>
 </li>
-<li><a href="master-devon4node.asciidoc_guides.html#guides-serializer.asciidoc">33.10. Serializer</a>
+<li><a href="master-devon4node.asciidoc_guides.html#guides-validation.asciidoc">33.10. Validation</a>
 </li>
-<li><a href="master-devon4node.asciidoc_guides.html#guides-validation.asciidoc">33.11. Validation</a>
+<li><a href="master-devon4node.asciidoc_guides.html#guides-logger.asciidoc">33.11. Logger</a>
 </li>
-<li><a href="master-devon4node.asciidoc_guides.html#guides-logger.asciidoc">33.12. Logger</a>
+<li><a href="master-devon4node.asciidoc_guides.html#guides-mailer.asciidoc">33.12. Mailer Module</a>
 </li>
-<li><a href="master-devon4node.asciidoc_guides.html#guides-mailer.asciidoc">33.13. Mailer Module</a>
-</li>
-<li><a href="master-devon4node.asciidoc_guides.html#guides-eslint-sonarqube-config.asciidoc">33.14. Importing your ESLint reports into SonarQube</a>
+<li><a href="master-devon4node.asciidoc_guides.html#guides-eslint-sonarqube-config.asciidoc">33.13. Importing your ESLint reports into SonarQube</a>
 </li>
 </ul>
 </li>
@@ -695,1825 +693,19 @@ export class SomeModule {}</code></pre>
 <div class="sect3">
 <h4 id="guides-key-principles.asciidoc_productivity">33.1.3. Productivity</h4>
 <div class="paragraph">
-<p>devon4node is designed to create secure enterprise applications. But also, it allow you to do it in a fast way. To increase the productivity devon4node, devon4node provide a CLI with some commands in order to generate some boilerplate code.</p>
+<p>devon4node is designed to create secure enterprise applications. But also, it allow you to do it in a fast way. To increase the productivity devon4node, devon4node provide schematics in order to generate some boilerplate code.</p>
 </div>
 <div class="paragraph">
-<p>For example, to create a module you need to create a new file for a module (or copy it) and write the code, then you need to import it in the AppModule. This is a easy example, but you can introduce some errors: forget to import it in the AppModule, introduce errors with the copy/paste and so on. By using the command <code>devon4node g module --name &lt;module-name&gt;</code> it will do everything for you. Just a simple command. In this specific case probably you do not see any advantage, but there are other complex cases where you can generate more complex code with the <code>devon4node</code> command.</p>
+<p>For example, to create a module you need to create a new file for a module (or copy it) and write the code, then you need to import it in the AppModule. This is a easy example, but you can introduce some errors: forget to import it in the AppModule, introduce errors with the copy/paste and so on. By using the command <code>nest g module --name &lt;module-name&gt;</code> it will do everything for you. Just a simple command. In this specific case probably you do not see any advantage, but there are other complex cases where you can generate more complex code with nest and devon4node schematics command.</p>
 </div>
 <div class="paragraph">
-<p>See <a href="master-devon4node.asciidoc_guides.html#guides-cli.asciidoc">CLI</a> and <a href="master-devon4node.asciidoc_guides.html#guides-code-generation.asciidoc">code generation</a> in order to know how to increase your productivity creating devon4node applications.</p>
+<p>See <a href="master-devon4node.asciidoc_guides.html#guides-code-generation.asciidoc">code generation</a> in order to know how to increase your productivity creating devon4node applications.</p>
 </div>
 <!-- toc disabled -->
 </div>
 </div>
 <div class="sect2">
-<h3 id="guides-cli.asciidoc">33.2. devon4node CLI</h3>
-<div class="paragraph">
-<p>devon4node CLI is a tool designed to manage devon4node applications in a easy way. Highly inspired by Nest CLI.</p>
-</div>
-<div class="paragraph">
-<p>In this page we will explain all commands available and their arguments.</p>
-</div>
-<div class="sect3">
-<h4 id="guides-cli.asciidoc_prerequisites">33.2.1. Prerequisites</h4>
-<div class="ulist">
-<ul>
-<li>
-<p>NodeJS lts</p>
-</li>
-<li>
-<p>yarn</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect3">
-<h4 id="guides-cli.asciidoc_devon4node">33.2.2. devon4node</h4>
-<div class="paragraph">
-<p>After install the devon4node CLI package <code>npm i -g @devon4node/cli</code>, the command <code>devon4node</code> (or <code>d4n</code>) must be available in your system. This have <code>new</code>, <code>generate</code> and <code>db</code> subcommands and also accepts the following arguments:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-v, --version</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows version number</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Examples:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>devon4node -h
-devon4node new -h</pre>
-</div>
-</div>
-<div class="sect4">
-<h5 id="guides-cli.asciidoc_new">new</h5>
-<div class="paragraph">
-<p><code>devon4node new</code> allows you to create new devon4node applications. It&#x2019;s an interactive command and it will ask you for everything that it need in order to create a new application.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Show help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--no-interactive, -n</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Execute the command without ask anything to the user</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--skip-git, -g</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to skip git repository initialization.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--skip-install, -s</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to skip package installation.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--typeorm, -t</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to select the type of database.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--config-module, -c</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to add config module or not.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--swagger, -a</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to add swagger module or not.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--security, -y</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to add security (cors + HTTP security headers) or not.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--mailer, -m</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to add mailer module or not.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--auth-jwt, -j</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to add Auth JWT module or not.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--version, -v</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Show version number</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Examples:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>devon4node new my-app -sg
-devon4node new my-app -n
-devon4node new my-app -n -typeorm sqlite -config-module -auth-jwt</pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="guides-cli.asciidoc_generate">generate</h5>
-<div class="paragraph">
-<p>This command allows you to generate code into your application. It receive he name of the schematic that will generate the code.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Show help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--interactive, -i</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Generate code using the interactive mode (same as new command).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--skip-install, -s</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to skip package installation.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run, -d</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--path, -p</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Path to project.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Examples:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>devon4node generate -i
-devon4node generate service --name my-service</pre>
-</div>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_application">application</h6>
-<div class="paragraph">
-<p>Create a devon4node application. It is used by the new command.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run, -d</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--path,</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Path to project.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--name, -n</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the application.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_angular-app">angular-app</h6>
-<div class="paragraph">
-<p>Create a new Angular application. Inherit from <a href="https://docs.nestjs.com/cli/overview">Nest CLI</a></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run, -d</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--path,</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Path to project.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--initApp</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Flag to skip the angular application generation.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--name, -n</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the application.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_class">class</h6>
-<div class="paragraph">
-<p>Create a new class.Inherit from <a href="https://docs.nestjs.com/cli/overview">Nest CLI</a></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run, -d</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--path, -p</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The path to create the class.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--name, -n</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the class.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--flat</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Flag to indicate if a directory is created.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--spec</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specifies if a spec file is generated.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--language</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Nest class language (ts/js).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--sourceRoot</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Nest controller source root directory.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_controller">controller</h6>
-<div class="paragraph">
-<p>Create a Nest controller.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run, -d</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--path, -p</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The path to create the controller.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--name, -n</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the controller. To create a controller with name Banana in the module fruits you need to introduce fruits/banana</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--spec</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specifies if a spec file is generated.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_decorator">decorator</h6>
-<div class="paragraph">
-<p>Create a Nest decorator. Inherit from <a href="https://docs.nestjs.com/cli/overview">Nest CLI</a></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run, -d</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--path, -p</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The path to create the decorator.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--name, -n</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the decorator.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--language</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Nest decorator language (ts/js).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--sourceRoot</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Nest decorator source root directory.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--flat</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Flag to indicate if a directory is created.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_filter">filter</h6>
-<div class="paragraph">
-<p>Create a Nest filter.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run, -d</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--path, -p</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The path to create the filter.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--name, -n</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the filter. To create a filter with name Banana in the module fruits you need to introduce fruits/banana</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--language</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Nest filter language (ts/js).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--sourceRoot</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Nest filter source root directory.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--flat</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Flag to indicate if a directory is created.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--spec</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specifies if a spec file is generated.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_gateway">gateway</h6>
-<div class="paragraph">
-<p>Create a Nest gateway. Inherit from <a href="https://docs.nestjs.com/cli/overview">Nest CLI</a></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run, -d</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--path, -p</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The path to create the gateway.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--name, -n</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the gateway.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--language</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Nest gateway language (ts/js).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--sourceRoot</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Nest gateway source root directory.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--flat</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Flag to indicate if a directory is created.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--spec</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specifies if a spec file is generated.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_guard">guard</h6>
-<div class="paragraph">
-<p>Create a Nest guard.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run, -d</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--path, -p</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The path to create the guard.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--name, -n</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the guard. To create a guard with name Banana in the module fruits you need to introduce fruits/banana</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--language</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Nest guard language (ts/js).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--sourceRoot</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Nest guard source root directory.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--flat</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Flag to indicate if a directory is created.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--spec</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specifies if a spec file is generated.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_interceptor">interceptor</h6>
-<div class="paragraph">
-<p>Create a Nest interceptor.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run, -d</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--path, -p</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The path to create the interceptor.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--name, -n</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the interceptor. To create an interceptor with name Banana in the module fruits you need to introduce fruits/banana</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--language</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Nest interceptor language (ts/js).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--sourceRoot</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Nest interceptor source root directory.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--flat</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Flag to indicate if a directory is created.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--spec</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specifies if a spec file is generated.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_interface">interface</h6>
-<div class="paragraph">
-<p>Create a Nest interface. Inherit from <a href="https://docs.nestjs.com/cli/overview">Nest CLI</a></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run, -d</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--path, -p</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The path to create the interface.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--name, -n</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the interface.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--sourceRoot</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Nest interface source root directory</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--flat</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Flag to indicate if a directory is created.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_middleware">middleware</h6>
-<div class="paragraph">
-<p>Create a Nest middleware.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run, -d</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--path, -p</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The path to create the middleware.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--name, -n</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the middleware. To create a middleware with name Banana in the module fruits you need to introduce fruits/banana</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--language</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Nest middleware language (ts/js).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--sourceRoot</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Nest middleware source root directory.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--flat</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Flag to indicate if a directory is created.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--spec</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specifies if a spec file is generated.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_module">module</h6>
-<div class="paragraph">
-<p>Create a Nest module.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run, -d</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--path, -p</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The path to create the module.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--name, -n</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the module. To create a module named module-b as a submodule of module-a, you need to introduce module-a/module-b</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--module</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The path to import the module.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--language</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Nest module language (ts/js).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--sourceRoot</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Nest module source root directory.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--skipImport</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Flag to skip the module import.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_pipe">pipe</h6>
-<div class="paragraph">
-<p>Create a Nest pipe.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run, -d</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--path, -p</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The path to create the pipe.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--name, -n</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the pipe. To create a pipe with name Banana in the module fruits you need to introduce fruits/banana</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--language</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Nest pipe language (ts/js).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--sourceRoot</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Nest pipe source root directory.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--flat</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Flag to indicate if a directory is created.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--spec</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specifies if a spec file is generated.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_provider">provider</h6>
-<div class="paragraph">
-<p>Create a Nest provider. Inherit from <a href="https://docs.nestjs.com/cli/overview">Nest CLI</a></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run, -d</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--path, -p</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The path to create the provider.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--name, -n</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the provider.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--language</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Nest provider language (ts/js).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--sourceRoot</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Nest provider source root directory.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--flat</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Flag to indicate if a directory is created.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--spec</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specifies if a spec file is generated.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_service">service</h6>
-<div class="paragraph">
-<p>Create a Nest service.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run, -d</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--path, -p</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The path to create the service.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--name, -n</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the service.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--spec</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specifies if a spec file is generated. To create a service with name Banana in the module fruits you need to introduce fruits/banana</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_resolver">resolver</h6>
-<div class="paragraph">
-<p>Create a Nest resolver. Inherit from <a href="https://docs.nestjs.com/cli/overview">Nest CLI</a></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run, -d</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--path, -p</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The path to create the resolver.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--name, -n</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the resolver.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--language</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Nest resolver language (ts/js).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--sourceRoot</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Nest resolver source root directory.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--flat</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Flag to indicate if a directory is created.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--spec</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Specifies if a spec file is generated.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_configuration">configuration</h6>
-<div class="paragraph">
-<p>Create a Nest CLI configuration. Inherit from <a href="https://docs.nestjs.com/cli/overview">Nest CLI</a></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run, -d</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--path,</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Path to project.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_library">library</h6>
-<div class="paragraph">
-<p>Create a Nest library (mono-repo). Inherit from <a href="https://docs.nestjs.com/cli/overview">Nest CLI</a></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run, -d</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--path, -p</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The path to create the library.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--name, -n</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the library.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--prefix</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The prefix of the library.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--language</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Nest library language.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--rootDir</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The libraries root directory.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_sub-app">sub-app</h6>
-<div class="paragraph">
-<p>Create a Nest application (mono-repo). Inherit from <a href="https://docs.nestjs.com/cli/overview">Nest CLI</a></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run, -d</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--path, -p</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The path to create the application.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--name, -n</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the application.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--language</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Nest application language.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--rootDir</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Applications root directory.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_typeorm">typeorm</h6>
-<div class="paragraph">
-<p>Initialize typeorm into your current project in a correct way.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run, -d</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--path, -p</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Path to project.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--db</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Database type.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_entity">entity</h6>
-<div class="paragraph">
-<p>Add a TypeOrm entity to your project. Requires TypeORM installed in the project.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run, -d</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--path, -p</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Change the application folder where you will create the entity</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--name, -n</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The entity name. To create a entity with name Banana in the module fruits you need to introduce fruits/banana</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_config-module">config-module</h6>
-<div class="paragraph">
-<p>Add the config module to the project.</p>
-</div>
-<div class="paragraph">
-<p>It will add the @devon4node/common module as a project dependency. Then, it will generate the configuration module into your project and add it in the core module. Also, it generates the config files for the most common environments.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run, -d</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--path, -p</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Path to project.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_crud">crud</h6>
-<div class="paragraph">
-<p>Generate CRUD methods for a entity. Requires TypeORM installed in the project.</p>
-</div>
-<div class="paragraph">
-<p>It will add the @nestjsx/crud module as a project dependency. Then, generates an entity, a CRUD controller and a CRUD service. It also register the entity, controller and service in the module.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run, -d</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--path, -p</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Change the application folder where you will create the crud</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--name, -n</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The crud name. To create crud with name Banana in the module fruits you need to introduce fruits/banana</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_mailer">mailer</h6>
-<div class="paragraph">
-<p>Add @devon4node/mailer module to project.</p>
-</div>
-<div class="paragraph">
-<p>It will add the @devon4node/mailer module as a project dependency. Also, it will add it to the core module and it will generate some email template examples.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run, -d</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--path, -p</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Path to project.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_swagger">swagger</h6>
-<div class="paragraph">
-<p>Add swagger module to project.</p>
-</div>
-<div class="paragraph">
-<p>It will add the @nestjs/swagger module as a project dependency. Also, it will update the main.ts file in order to expose the endpoint for swagger. The default endpoint is: <code>/v1/api</code></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run, -d</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--path, -p</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Path to project.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_auth-jwt">auth-jwt</h6>
-<div class="paragraph">
-<p>Add the auth JWT module to the project.</p>
-</div>
-<div class="paragraph">
-<p>It will add to your project the auth-jwt and user module. Also, it will import those modules into the core module.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run, -d</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--path, -p</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Path to project.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_all-in-one">all-in-one</h6>
-<div class="paragraph">
-<p>Execute multiple schematics at the same time.</p>
-</div>
-<div class="paragraph">
-<p>This schematic is used by the interactive mode.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run, -d</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--path, -p</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Path to config file</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_security">security</h6>
-<div class="paragraph">
-<p>Add cors and helmet to your project.</p>
-</div>
-<div class="paragraph">
-<p>It will add helmet package as project dependency and update the main.ts file in order to enable the cors and helmet in your application.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dry-run, -d</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Allow to test changes before execute command.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--path, -p</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Path to project.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect4">
-<h5 id="guides-cli.asciidoc_db">db</h5>
-<div class="paragraph">
-<p>Execute a database command. This command is an alias of <code>typeorm</code> command, so if you exetue the command <code>devon4node db migration:create</code> under the hood it will execute <code>typeorm migration:create</code>. For more information see <a href="https://typeorm.io/#/using-cli">typeorm CLI documentation</a>.</p>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_schemasync">schema:sync</h6>
-<div class="paragraph">
-<p>Synchronizes your entities with database schema. It runs schema update queries on all connections you have. To run update queries on a concrete connection use -c option.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--connection, -c</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the connection on which schema synchronization needs to to run.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--config, -f</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the file with connection configuration.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--version, -v</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows number version</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Examples:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>devon4node db schema:sync</pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_schemalog">schema:log</h6>
-<div class="paragraph">
-<p>Shows sql to be executed by schema:sync command. It shows sql log only for your default connection. To run update queries on a concrete connection use -c option.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--connection, -c</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the connection on which schema synchronization needs to to run.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--config, -f</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the file with connection configuration.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--version, -v</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows number version</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_schemadrop">schema:drop</h6>
-<div class="paragraph">
-<p>Drops all tables in the database on your default connection. To drop table of a concrete connection&#x2019;s database use -c option.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--connection, -c</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the connection on which schema synchronization needs to to run.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--config, -f</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the file with connection configuration.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--version, -v</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows number version</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_query">query</h6>
-<div class="paragraph">
-<p>Executes given SQL query on a default connection. Specify connection name to run query on a specific connection.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--connection, -c</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the connection on which schema synchronization needs to to run.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--config, -f</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the file with connection configuration.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--version, -v</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows number version</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_entitycreate">entity:create</h6>
-<div class="paragraph">
-<p>Generates a new entity.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--connection, -c</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the connection on which to run a query</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--name, -n</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the entity class.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dir</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Directory where entity should be created.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--config, -f</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the file with connection configuration.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--version, -v</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows number version</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_subscribercreate">subscriber:create</h6>
-<div class="paragraph">
-<p>Generates a new subscriber.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--connection, -c</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the connection on which to run a query</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--name, -n</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the entity class.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dir</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Directory where entity should be created.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--config, -f</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the file with connection configuration.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--version, -v</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows number version</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_migrationcreate">migration:create</h6>
-<div class="paragraph">
-<p>Creates a new migration file.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--connection, -c</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the connection on which to run a query</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--name, -n</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the entity class.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dir</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Directory where entity should be created.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--config, -f</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the file with connection configuration.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--version, -v</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows number version</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Examples:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>devon4node db migration:create -n InsertData</pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_migrationgenerate">migration:generate</h6>
-<div class="paragraph">
-<p>Generates a new migration file with sql needs to be executed to update schema.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--connection, -c</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the connection on which to run a query</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--name, -n</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the entity class.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--dir</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Directory where entity should be created.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--config, -f</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the file with connection configuration.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--version, -v</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows number version</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Examples:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>devon4node db migration:generate -n CreateTables</pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_migrationrun">migration:run</h6>
-<div class="paragraph">
-<p>Runs all pending migrations.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--connection, -c</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the connection on which run a query.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--transaction, -t</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Indicates if transaction should be used or not for migration run. Enabled by default.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--config, -f</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the file with connection configuration.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--version, -v</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows number version</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_migrationshow">migration:show</h6>
-<div class="paragraph">
-<p>Show all migrations and whether they have been run or not</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--connection, -c</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the connection on which run a query.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--config, -f</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the file with connection configuration.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--version, -v</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows number version</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_migrationrevert">migration:revert</h6>
-<div class="paragraph">
-<p>Reverts last executed migration.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--connection, -c</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the connection on which run a query.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--transaction, -t</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Indicates if transaction should be used or not for migration revert. Enabled by default.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--config, -f</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the file with connection configuration.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--version, -v</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows number version</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_version">version</h6>
-<div class="paragraph">
-<p>Prints TypeORM version this project uses.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--version, -v</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows number version</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Examples:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>devon4node db version</pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="guides-cli.asciidoc_cacheclear">cache:clear</h6>
-<div class="paragraph">
-<p>Clears all data stored in query runner cache.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Arguments</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--help, -h</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows help</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--connection, -c</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the connection on which run a query.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--config, -f</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Name of the file with connection configuration.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">--version, -v</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Shows number version</p></td>
-</tr>
-</tbody>
-</table>
-<!-- toc disabled -->
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="guides-code-generation.asciidoc">33.3. Code Generation</h3>
+<h3 id="guides-code-generation.asciidoc">33.2. Code Generation</h3>
 <div class="paragraph">
 <p>As we mention in the page <a href="#guide-key-principles.asciidoc">key principles</a>, one of our key principles is Productivity. In order to provide that productivity, we have some tools to generate code. These tools will help you generate the common parts of the application so that you can focus only on the specific functionality.</p>
 </div>
@@ -2523,7 +715,7 @@ devon4node generate service --name my-service</pre>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="master-devon4node.asciidoc_guides.html#guides-cli.asciidoc">devon4node CLI</a></p>
+<p><a href="https://www.npmjs.com/package/@devon4node/schematics">devon4node schematics through Nest CLI</a></p>
 </li>
 <li>
 <p><a href="https://github.com/devonfw/cobigen">CobiGen</a></p>
@@ -2531,168 +723,189 @@ devon4node generate service --name my-service</pre>
 </ul>
 </div>
 <div class="sect3">
-<h4 id="guides-code-generation.asciidoc_differences-between-tools">33.3.1. Differences between tools</h4>
+<h4 id="guides-code-generation.asciidoc_nest-cli-and-devon4node-schematics">33.2.1. Nest CLI and Devon4node schematics</h4>
 <div class="paragraph">
-<p>As you may have noticed, we have two tools to generate code, instead of having just one. What is the reason? The reason is that each tool starts from a different input. devon4node CLI receives user input, while cobigen receives code already exists and generates the rest accordingly. So, in order to increase the productivity, we can combine the use of both.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="guides-code-generation.asciidoc_devon4node-cli">33.3.2. devon4node CLI</h4>
-<div class="paragraph">
-<p>The description of devon4node CLI is discussed on his <a href="master-devon4node.asciidoc_guides.html#guides-cli.asciidoc">page</a>. Anyway, in this page we will explain how to use it with the interactive mode.</p>
+<p>We are going to use the Nest CLI to generate code of our application, you can know more about NodeJs CLI in the official <a href="https://docs.nestjs.com/cli/overview:">documentation</a>.</p>
 </div>
 <div class="sect4">
-<h5 id="guides-code-generation.asciidoc_new-application">New application</h5>
+<h5 id="guides-code-generation.asciidoc_install-devon4node-schematics">Install devon4node schematics</h5>
 <div class="paragraph">
-<p>To create a new devon4node application, you just need to type the command <code>devon4node new</code></p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="images/new-app1.jpg" alt="new app1">
-</div>
+<p>First of all, you need to install Nest CLI</p>
 </div>
 <div class="paragraph">
-<p>The interactive mode will request you some input. First, you need to choose the general components of the application. Those are described in the <a href="master-devon4node.asciidoc_guides.html#guides-cli.asciidoc">devon4node CLI</a> page.</p>
+<p>Execute the command <code>yarn global add @nestjs/cli</code>.
+You can also use npm: <code>npm install -g @nestjs/cli</code></p>
 </div>
 <div class="paragraph">
-<p>If you choose database, then you can select the database that you want:</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="images/new-app2.jpg" alt="new app2">
-</div>
+<p>And then Devon4node schematics globally with the following command:</p>
 </div>
 <div class="paragraph">
-<p>Then, you can choose to create application modules or not.</p>
+<p><code>yarn global add @devon4node/schematics</code> or <code>npm install -g @devon4node/schematics</code></p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
 <div class="paragraph">
-<p>If yes, you need introduce the module name:</p>
+<p>If you get an error trying execute any devon4node schematic related to collection not found, try to reinstall devon4node/schematics on the project folder or be sure that schematics folder is inside @devon4node in node_modules.
+<code>yarn add @devon4node/schematics</code></p>
 </div>
-<div class="imageblock">
-<div class="content">
-<img src="images/new-app3.jpg" alt="new app3">
-</div>
-</div>
-<div class="paragraph">
-<p>And then, select the components</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="images/new-app4.jpg" alt="new app4">
-</div>
-</div>
-<div class="paragraph">
-<p>and names</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="images/new-app5.jpg" alt="new app5">
-</div>
-</div>
-<div class="paragraph">
-<p>It will generate some files:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>CREATE /test-app/.prettierrc (51 bytes)
-CREATE /test-app/nest-cli.json (67 bytes)
-CREATE /test-app/package.json (2358 bytes)
-CREATE /test-app/README.md (3370 bytes)
-CREATE /test-app/tsconfig.build.json (97 bytes)
-CREATE /test-app/tsconfig.json (568 bytes)
-CREATE /test-app/tslint.json (426 bytes)
-CREATE /test-app/src/main.ts (1033 bytes)
-CREATE /test-app/test/app.e2e-spec.ts (561 bytes)
-CREATE /test-app/test/jest-e2e.json (183 bytes)
-CREATE /test-app/src/app/app.controller.spec.ts (617 bytes)
-CREATE /test-app/src/app/app.controller.ts (274 bytes)
-CREATE /test-app/src/app/app.module.ts (371 bytes)
-CREATE /test-app/src/app/app.service.ts (142 bytes)
-CREATE /test-app/src/app/core/core.module.ts (1047 bytes)
-CREATE /test-app/src/app/shared/logger/winston.logger.ts (1081 bytes)
-CREATE /test-app/src/app/core/configuration/configuration.module.ts (214 bytes)
-CREATE /test-app/src/app/core/configuration/model/index.ts (24 bytes)
-CREATE /test-app/src/app/core/configuration/model/types.ts (280 bytes)
-CREATE /test-app/src/app/core/configuration/services/configuration.service.spec.ts (2950 bytes)
-CREATE /test-app/src/app/core/configuration/services/configuration.service.ts (1078 bytes)
-CREATE /test-app/src/app/core/configuration/services/index.ts (42 bytes)
-CREATE /test-app/src/config/default.ts (322 bytes)
-CREATE /test-app/src/config/develop.ts (817 bytes)
-CREATE /test-app/src/config/production.ts (817 bytes)
-CREATE /test-app/src/config/test.ts (816 bytes)
-CREATE /test-app/src/config/uat.ts (817 bytes)
-CREATE /test-app/docker-compose.yml (25 bytes)
-CREATE /test-app/ormconfig.json (467 bytes)
-CREATE /test-app/src/app/shared/model/entities/base-entity.entity.ts (517 bytes)
-CREATE /test-app/src/app/core/auth/auth.module.ts (897 bytes)
-CREATE /test-app/src/app/core/auth/controllers/auth.controller.spec.ts (3086 bytes)
-CREATE /test-app/src/app/core/auth/controllers/auth.controller.ts (1087 bytes)
-CREATE /test-app/src/app/core/auth/controllers/index.ts (36 bytes)
-CREATE /test-app/src/app/core/auth/decorators/index.ts (36 bytes)
-CREATE /test-app/src/app/core/auth/decorators/roles.decorator.spec.ts (870 bytes)
-CREATE /test-app/src/app/core/auth/decorators/roles.decorator.ts (124 bytes)
-CREATE /test-app/src/app/core/auth/guards/index.ts (32 bytes)
-CREATE /test-app/src/app/core/auth/guards/roles.guard.spec.ts (2354 bytes)
-CREATE /test-app/src/app/core/auth/guards/roles.guard.ts (712 bytes)
-CREATE /test-app/src/app/core/auth/model/index.ts (74 bytes)
-CREATE /test-app/src/app/core/auth/model/roles.enum.ts (39 bytes)
-CREATE /test-app/src/app/core/auth/model/user-request.interface.ts (140 bytes)
-CREATE /test-app/src/app/core/auth/services/auth.service.spec.ts (3777 bytes)
-CREATE /test-app/src/app/core/auth/services/auth.service.ts (1076 bytes)
-CREATE /test-app/src/app/core/auth/services/index.ts (33 bytes)
-CREATE /test-app/src/app/core/auth/strategies/index.ts (33 bytes)
-CREATE /test-app/src/app/core/auth/strategies/jwt.strategy.spec.ts (713 bytes)
-CREATE /test-app/src/app/core/auth/strategies/jwt.strategy.ts (618 bytes)
-CREATE /test-app/src/app/core/user/user.module.ts (338 bytes)
-CREATE /test-app/src/app/core/user/model/index.ts (82 bytes)
-CREATE /test-app/src/app/core/user/model/dto/user-payload.dto.ts (188 bytes)
-CREATE /test-app/src/app/core/user/model/entities/user.entity.ts (542 bytes)
-CREATE /test-app/src/app/core/user/services/index.ts (33 bytes)
-CREATE /test-app/src/app/core/user/services/user.service.spec.ts (2127 bytes)
-CREATE /test-app/src/app/core/user/services/user.service.ts (1065 bytes)
-CREATE /test-app/test/auth/auth.service.mock.ts (948 bytes)
-CREATE /test-app/test/user/user.repository.mock.ts (1095 bytes)
-CREATE /test-app/src/app/test/test.module.ts (469 bytes)
-CREATE /test-app/src/app/test/model/entities/test.entity.ts (174 bytes)
-CREATE /test-app/src/app/test/model/index.ts (88 bytes)
-CREATE /test-app/src/app/test/controllers/test.crud.controller.ts (393 bytes)
-CREATE /test-app/src/app/test/services/test.crud.service.ts (394 bytes)
-CREATE /test-app/src/app/test/services/index.ts (69 bytes)
-CREATE /test-app/src/app/test/controllers/index.ts (75 bytes)
-CREATE /test-app/src/app/test/controllers/test.controller.spec.ts (496 bytes)
-CREATE /test-app/src/app/test/controllers/test.controller.ts (107 bytes)
-CREATE /test-app/src/app/test/services/test.service.spec.ts (464 bytes)
-CREATE /test-app/src/app/test/services/test.service.ts (92 bytes)
-CREATE /test-app/src/app/test/model/entities/another-test.entity.ts (181 bytes)</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Then, install all dependencies, format the code and initialize git.</p>
+</td>
+</tr>
+</tbody></table>
 </div>
 </div>
 <div class="sect4">
-<h5 id="guides-code-generation.asciidoc_generate-more-components">Generate more components</h5>
+<h5 id="guides-code-generation.asciidoc_generate-new-devon4node-application">Generate new devon4node application</h5>
 <div class="paragraph">
-<p>The <code>generate</code> command has also an interactive mode. To execute <code>generate</code> command in interactive mode, you only need to change to an existing application and then execute the command <code>devon4node generate -i</code></p>
+<p>To start creating a devon4node application, execute the command:</p>
+</div>
+<div class="paragraph">
+<p><code>nest g -c @devon4node/schematics application [application-name]</code></p>
+</div>
+<div class="paragraph">
+<p>If you do not put a name, the command line will ask you for one.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guides-code-generation.asciidoc_generate-code-for-typeorm">Generate code for Typeorm</h5>
+<div class="paragraph">
+<p>Initialize typeorm into your current project in a correct way.</p>
+</div>
+<div class="paragraph">
+<p><code>nest g -c @devon4node/schematics typeorm</code></p>
+</div>
+<div class="paragraph">
+<p>Then, you will be asked about which DB you want to use.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="images/typeorm-schematic.PNG" alt="typeorm schematic"></span></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guides-code-generation.asciidoc_generate-crud">Generate CRUD</h5>
+<div class="paragraph">
+<p>Generate CRUD methods for a entity. Requires TypeORM installed in the project.</p>
+</div>
+<div class="paragraph">
+<p>It will add the @nestjsx/crud module as a project dependency. Then, generates an entity, a CRUD controller and a CRUD service. It also register the entity, controller and service in the module.</p>
+</div>
+<div class="paragraph">
+<p>Execute <code>nest g -c @devon4node/schematics crud</code> and then you will need to write a name for the crud.</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/generate-interactive.jpg" alt="generate interactive">
+<img src="images/crud-schematic.PNG" alt="crud schematic">
 </div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guides-code-generation.asciidoc_generate-typeorm-entity">Generate Typeorm entity</h5>
+<div class="paragraph">
+<p>Add a TypeOrm entity to your project. Requires TypeORM installed in the project.</p>
 </div>
 <div class="paragraph">
-<p>The functionality is the same as new command, but the difference is <code>generate</code> command do not generate the base application.</p>
+<p>Execute <code>nest g -c @devon4node/schematics entity</code> and you will be asked for an entity name.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guides-code-generation.asciidoc_add-config-module">Add config-module</h5>
+<div class="paragraph">
+<p>Add the config module to the project.</p>
+</div>
+<div class="paragraph">
+<p>It will add the @devon4node/common module as a project dependency. Then, it will generate the configuration module into your project and add it in the core module. Also, it generates the config files for the most common environments.</p>
+</div>
+<div class="paragraph">
+<p>The command to execute will be <code>nest g -c @devon4node/schematics config-module</code></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guides-code-generation.asciidoc_add-mailer-module">Add mailer module</h5>
+<div class="paragraph">
+<p>Add @devon4node/mailer module to project.</p>
+</div>
+<div class="paragraph">
+<p>It will add the @devon4node/mailer module as a project dependency. Also, it will add it to the core module and it will generate some email template examples.</p>
+</div>
+<div class="paragraph">
+<p>Write the command <code>nest g -c @devon4node/schematics mailer</code></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guides-code-generation.asciidoc_add-swagger-module">Add swagger module</h5>
+<div class="paragraph">
+<p>Add swagger module to project.</p>
+</div>
+<div class="paragraph">
+<p>It will add the @nestjs/swagger module as a project dependency. Also, it will update the main.ts file in order to expose the endpoint for swagger. The default endpoint is: /v1/api</p>
+</div>
+<div class="paragraph">
+<p>Execute the command <code>nest g -c @devon4node/schematics swagger</code></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guides-code-generation.asciidoc_add-auth-jwt-module">Add auth-jwt module</h5>
+<div class="paragraph">
+<p>Add the auth JWT module to the project.</p>
+</div>
+<div class="paragraph">
+<p>It will add to your project the auth-jwt and user module. Also, it will import those modules into the core module.</p>
+</div>
+<div class="paragraph">
+<p>Execute <code>nest g -c @devon4node/schematics auth-jwt</code></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guides-code-generation.asciidoc_add-security">Add security</h5>
+<div class="paragraph">
+<p>Add cors and helmet to your project.</p>
+</div>
+<div class="paragraph">
+<p>It will add helmet package as project dependency and update the main.ts file in order to enable the cors and helmet in your application.</p>
+</div>
+<div class="paragraph">
+<p>Execute <code>nest g -c @devon4node/schematics security</code></p>
 </div>
 </div>
 <div class="sect4">
 <h5 id="guides-code-generation.asciidoc_generate-database-migrations">Generate database migrations</h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Generate database migrations</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>In order to create migration scripts with typeorm, you need to install ts-node: <code>yarn global add ts-node</code> or <code>npm i -g ts-node</code></p>
+</li>
+<li>
+<p>Generate the tables creation migration: <code>yarn run typeorm migration:generate -n CreateTables</code></p>
+<div class="imageblock">
+<div class="content">
+<img src="images/insert-data.PNG" alt="insert data">
+</div>
+</div>
 <div class="paragraph">
-<p>The last command that we have in order to generate command is <code>devon4node db migration:generate -n MigrationName</code>. It will connect to the database, read all entities and then it will generate a migration file with all sql queries need to transform the current status of the database to the status defined by the entities. If the database is empty, it will generate all sql queries need to create all tables defined in the entities. You can find a example in the <a href="https://github.com/devonfw/devon4node/blob/develop/samples/todo/src/migration/1571244118394-CreateTables.ts">todo example</a></p>
+<p>It will connect to the database, read all entities and then it will generate a migration file with all sql queries need to transform the current status of the database to the status defined by the entities. If the database is empty, it will generate all sql queries need to create all tables defined in the entities. You can find a example in the todo example</p>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>As typeorm is the tool used for DB. You can check official documentation for more information.
+See <a href="https://typeorm.io/#/using-cli">typeorm CLI documentation</a>.</p>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="guides-code-generation.asciidoc_cobigen">33.3.3. CobiGen</h4>
+<h4 id="guides-code-generation.asciidoc_cobigen">33.2.2. CobiGen</h4>
 <div class="paragraph">
 <p>Currently, we do not have templates to generate devon4node code (we have planned to do that in the future). Instead, we have templates that read the code of a devon4node application and generate a devon4ng application. Visit the <a href="https://github.com/devonfw/cobigen">CobiGen</a> page for more information.</p>
 </div>
@@ -2700,7 +913,7 @@ CREATE /test-app/src/app/test/model/entities/another-test.entity.ts (181 bytes)<
 </div>
 </div>
 <div class="sect2">
-<h3 id="guides-coding-conventions.asciidoc">33.4. Coding Conventions</h3>
+<h3 id="guides-coding-conventions.asciidoc">33.3. Coding Conventions</h3>
 <div class="paragraph">
 <p>devon4node defines some coding conventions in order to improve the readability, reduce the merge conflicts and be able to develop applications in an industrialized way.</p>
 </div>
@@ -2716,7 +929,7 @@ CREATE /test-app/src/app/test/model/entities/another-test.entity.ts (181 bytes)<
 <p><code>Prettier</code>: <a href="https://prettier.io/">Prettier</a> is a code formatter. We recommend to use the Prettier VSCode extension (included in the devonfw Platform Extension Pack) and enable the <code>editor.formatOnSave</code> option.</p>
 </li>
 <li>
-<p><code>devon4node CLI</code>: this tool will generate code follwing the devon4node coding conventions. Also, when you generate a new project using the devon4node CLI, it generates the configuration files for TSLint and Prettier that satisfy the devon4node coding conventions.</p>
+<p><code>devon4node application schematic</code>: this tool will generate code follwing the devon4node coding conventions. Also, when you generate a new project using the devon4node application schematic, it generates the configuration files for TSLint and Prettier that satisfy the devon4node coding conventions.</p>
 </li>
 </ul>
 </div>
@@ -2724,7 +937,7 @@ CREATE /test-app/src/app/test/model/entities/another-test.entity.ts (181 bytes)<
 <p>When you combine all tools, you can be sure that you follow the devon4node coding conventions.</p>
 </div>
 <div class="sect3">
-<h4 id="guides-coding-conventions.asciidoc_detailed-devon4node-coding-conventions">33.4.1. Detailed devon4node Coding Conventions</h4>
+<h4 id="guides-coding-conventions.asciidoc_detailed-devon4node-coding-conventions">33.3.1. Detailed devon4node Coding Conventions</h4>
 <div class="paragraph">
 <p>Here we will detail some of most important devon4node coding conventions. To be sure that you follows all devon4node coding conventions use the tools described before.</p>
 </div>
@@ -2882,7 +1095,7 @@ if (condition) {
 </div>
 </div>
 <div class="sect3">
-<h4 id="guides-coding-conventions.asciidoc_pre-commit-hooks">33.4.2. Pre-commit hooks</h4>
+<h4 id="guides-coding-conventions.asciidoc_pre-commit-hooks">33.3.2. Pre-commit hooks</h4>
 <div class="paragraph">
 <p>In order to ensure that your new code follows the coding conventions, devon4node uses by default husky. Husky is a tool that allows you to configure git hooks easly in your project. When you make a <code>git commit</code> in your devon4node project, it will execute two actions:</p>
 </div>
@@ -2915,7 +1128,7 @@ If you want to skip the git hooks, you can do a commit passing the <code>--no-ve
 </div>
 </div>
 <div class="sect2">
-<h3 id="guides-dependency-injection.asciidoc">33.5. Dependency Injection</h3>
+<h3 id="guides-dependency-injection.asciidoc">33.4. Dependency Injection</h3>
 <div class="paragraph">
 <p>The <a href="https://en.wikipedia.org/wiki/Dependency_injection">dependency injection</a> is a well-known common design pattern applied by frameworks in all languages, like <a href="https://spring.io/">Spring</a> in Java, <a href="https://angular.io/">Angular</a> and others. The intention of this page is not to explain how dependency injection works, but instead how it is addressed by NestJS.</p>
 </div>
@@ -2923,7 +1136,7 @@ If you want to skip the git hooks, you can do a commit passing the <code>--no-ve
 <p>NestJS resolve the dependency injection in their modules. When you define a provider in a module, it can be injected in all components of the module. By default, those providers are only available in the module where it is defined. The only way to export a module provider to other modules which import it is adding those provider to the export array. You can also reexport modules.</p>
 </div>
 <div class="sect3">
-<h4 id="guides-dependency-injection.asciidoc_inject-dependencies-in-nestjs">33.5.1. Inject dependencies in NestJS</h4>
+<h4 id="guides-dependency-injection.asciidoc_inject-dependencies-in-nestjs">33.4.1. Inject dependencies in NestJS</h4>
 <div class="paragraph">
 <p>In oder to inject a dependency in a NestJS component, you need to declare it in the component constructor. Example:</p>
 </div>
@@ -2959,7 +1172,7 @@ export class CoffeeModule {}</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="guides-dependency-injection.asciidoc_dependency-graph">33.5.2. Dependency Graph</h4>
+<h4 id="guides-dependency-injection.asciidoc_dependency-graph">33.4.2. Dependency Graph</h4>
 <div class="imageblock">
 <div class="content">
 <img src="images/plantuml/dependency-injection1.png" alt="dependency injection1">
@@ -2981,7 +1194,7 @@ export class CoffeeModule {}</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="guides-dependency-injection.asciidoc_custom-providers">33.5.3. Custom providers</h4>
+<h4 id="guides-dependency-injection.asciidoc_custom-providers">33.4.3. Custom providers</h4>
 <div class="paragraph">
 <p>When you want to change the provider name, you can use a NestJS feature called <a href="https://docs.nestjs.com/fundamentals/custom-providers">custom providers</a>. For example, if you want to define a provider called <code>MockUserService</code> with the provider token <code>UserService</code> you can define it like:</p>
 </div>
@@ -3023,9 +1236,9 @@ export class CoffeeModule {}</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="guides-configuration-module.asciidoc">33.6. Configuration Module</h3>
+<h3 id="guides-configuration-module.asciidoc">33.5. Configuration Module</h3>
 <div class="paragraph">
-<p>devon4node provides a way to generate a configuration module inside your appication. To generate it you only need to execute the command <code>devon4node generate config-module</code>. This command will generate inside your application:</p>
+<p>devon4node provides a way to generate a configuration module inside your appication. To generate it you only need to execute the command <code>nest g -c @devon4node/schematics config-module</code>. This command will generate inside your application:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -3072,7 +1285,7 @@ some code generators will add some properties to this module, so, be sure that t
 </tbody></table>
 </div>
 <div class="sect3">
-<h4 id="guides-configuration-module.asciidoc_use-the-configuration-service">33.6.1. Use the configuration service</h4>
+<h4 id="guides-configuration-module.asciidoc_use-the-configuration-service">33.5.1. Use the configuration service</h4>
 <div class="paragraph">
 <p>To use the configuration service, you only need to inject it as dependency. As configuration module is defined in the core module, it will be available everywhere in your application. Example:</p>
 </div>
@@ -3089,19 +1302,19 @@ some code generators will add some properties to this module, so, be sure that t
 </div>
 </div>
 <div class="sect3">
-<h4 id="guides-configuration-module.asciidoc_choose-an-environment-file">33.6.2. Choose an environment file</h4>
+<h4 id="guides-configuration-module.asciidoc_choose-an-environment-file">33.5.2. Choose an environment file</h4>
 <div class="paragraph">
 <p>By default, when you use the configuration service it will take the properties defined in the default.ts file. If you want to change the configuration file, you only need to set the NODE_ENV environment property with the name of the desired environment. Examples: in windows execute <code>set NODE_ENV=develop</code> before executing the application, in linux execute <code>NODE_ENV=develop</code> before executing the application or <code>NODE_ENV=develop yarn start</code>.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="guides-configuration-module.asciidoc_override-configuration-properties">33.6.3. Override configuration properties</h4>
+<h4 id="guides-configuration-module.asciidoc_override-configuration-properties">33.5.3. Override configuration properties</h4>
 <div class="paragraph">
 <p>Sometimes, you want to keep some configuration property secure, and you do not want to publish it to the repository, or you want to reuse some configuration file but you need to change some properties. For those scenarios, you can override configuration properties by defining a environment variable with the same name. For example, if you want to override the property host, you can do: <code>set host=&quot;newhost&quot;</code>. It also works with objects. For example, if you want to change the value of secret in the property jwtConfig for <a href="https://github.com/devonfw/devon4node/blob/develop/samples/employee/src/config/develop.ts">this example</a>, you can set a environment variable like this: <code>set jwtConfig=&quot;{&quot;secret&quot;: &quot;newsecret&quot;}&quot;</code>. As you can see, this environment variable has a JSON value. It will take object and merge the jwtConfig property with the properties defined inside the environment variable. It other properties maintain their value. The behaviour is the same for the nested objects.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="guides-configuration-module.asciidoc_add-a-configuration-property">33.6.4. Add a configuration property</h4>
+<h4 id="guides-configuration-module.asciidoc_add-a-configuration-property">33.5.4. Add a configuration property</h4>
 <div class="paragraph">
 <p>In order to add a new property to the configuration module, you need to follow some steps:</p>
 </div>
@@ -3154,12 +1367,12 @@ some code generators will add some properties to this module, so, be sure that t
 </div>
 </div>
 <div class="sect2">
-<h3 id="guides-auth-jwt.asciidoc">33.7. Auth JWT module</h3>
+<h3 id="guides-auth-jwt.asciidoc">33.6. Auth JWT module</h3>
 <div class="paragraph">
 <p>devon4node provides a way to generate a default authentication module using JWT (JSON Web Token). It uses the <code>@nestjs/passport</code> library descrbe <a href="https://docs.nestjs.com/techniques/authentication">here</a>.</p>
 </div>
 <div class="paragraph">
-<p>To generate the devon4node auth-jwt module you only need to execute the command: <code>devon4node generate auth-jwt</code>. We generate this module inside the applications instead of distributing a npm package because this module is prone to be modified depending on the requirements. It alse generate a basic user module.</p>
+<p>To generate the devon4node auth-jwt module you only need to execute the command: <code>nest generate -c @devon4node/schematics auth-jwt</code>. We generate this module inside the applications instead of distributing a npm package because this module is prone to be modified depending on the requirements. It alse generate a basic user module.</p>
 </div>
 <div class="paragraph">
 <p>In this page we will explain the default implementation provided by devon4node. For more information about authentication, JWT, passport and other you can see:</p>
@@ -3181,7 +1394,7 @@ some code generators will add some properties to this module, so, be sure that t
 </ul>
 </div>
 <div class="sect3">
-<h4 id="guides-auth-jwt.asciidoc_auth-jwt-endpoints">33.7.1. Auth JWT endpoints</h4>
+<h4 id="guides-auth-jwt.asciidoc_auth-jwt-endpoints">33.6.1. Auth JWT endpoints</h4>
 <div class="paragraph">
 <p>In order to execute authentication operations, the auth-jwt module exposes the following endpoints:</p>
 </div>
@@ -3200,7 +1413,7 @@ some code generators will add some properties to this module, so, be sure that t
 </div>
 </div>
 <div class="sect3">
-<h4 id="guides-auth-jwt.asciidoc_protect-endpoints-with-auth-jwt">33.7.2. Protect endpoints with auth-jwt</h4>
+<h4 id="guides-auth-jwt.asciidoc_protect-endpoints-with-auth-jwt">33.6.2. Protect endpoints with auth-jwt</h4>
 <div class="paragraph">
 <p>In order to protect your endpoints with auth-jwt module you only need to add the <code>AuthGuard()</code> in the <code>UseGuards</code> decorator. Example:</p>
 </div>
@@ -3218,7 +1431,7 @@ currentUser(@Request() req: UserRequest) {
 </div>
 </div>
 <div class="sect3">
-<h4 id="guides-auth-jwt.asciidoc_role-based-access-control">33.7.3. Role based Access Control</h4>
+<h4 id="guides-auth-jwt.asciidoc_role-based-access-control">33.6.3. Role based Access Control</h4>
 <div class="paragraph">
 <p>The auth-jwt module provides also a way to control the access to some endpoints by using roles. For example, if you want to grant access to a endpoint only to admins, you only need to add the <code>Roles</code> decorator to those endpoints with the roles allowed. Example:</p>
 </div>
@@ -3236,7 +1449,7 @@ currentUser(@Request() req: UserRequest) {
 </div>
 </div>
 <div class="sect2">
-<h3 id="guides-swagger.asciidoc">33.8. Swagger</h3>
+<h3 id="guides-swagger.asciidoc">33.7. Swagger</h3>
 <div class="paragraph">
 <p>We can use swagger (OpenAPI) in order to describe the endpoints that our application exposes.</p>
 </div>
@@ -3244,7 +1457,7 @@ currentUser(@Request() req: UserRequest) {
 <p>NestJS provides a module which will read the code of our application and will expose one endpoint where we can see the swagger.</p>
 </div>
 <div class="paragraph">
-<p>Add swagger to a devon4node application is simple, you only need to execute the command <code>devon4node generate swagger</code> and it will do everything for you. The next time that you start your application, you will be able to see the swagger at <code>/v1/api</code> endpoint.</p>
+<p>Add swagger to a devon4node application is simple, you only need to execute the command <code>nest g -c @devon4node/schematics swagger</code> and it will do everything for you. The next time that you start your application, you will be able to see the swagger at <code>/v1/api</code> endpoint.</p>
 </div>
 <div class="paragraph">
 <p>The swagger module can read your code in order to create the swagger definition, but sometimes you need to help him by decorating your handlers.</p>
@@ -3267,18 +1480,18 @@ the OpenAPI specification that this module supports is v2.0. The OpenAPI v3.0 is
 <!-- toc disabled -->
 </div>
 <div class="sect2">
-<h3 id="guides-typeorm.asciidoc">33.9. TypeORM</h3>
+<h3 id="guides-typeorm.asciidoc">33.8. TypeORM</h3>
 <div class="paragraph">
 <p>TypeORM is the default ORM provided by devon4node. It supports MySQL, MariaDB, Postgres, CockroachDB, SQLite, Microsoft SQL Server, Oracle, sql.js relational dabases and also supports MongoDB NoSQL database.</p>
 </div>
 <div class="paragraph">
-<p>Add TypeORM support to a devon4node application is very easy: you only need to execute the command <code>devon4node generate typeorm</code> and it will add all required dependencies to the project and also imports the @nestjs/typeorm module.</p>
+<p>Add TypeORM support to a devon4node application is very easy: you only need to execute the command <code>nest g -c @devon4node/schematics typeorm</code> and it will add all required dependencies to the project and also imports the @nestjs/typeorm module.</p>
 </div>
 <div class="paragraph">
 <p>For more information about TypeORM and the integration with NestJS you can visit <a href="https://typeorm.io">TypeORM webpage</a>, <a href="https://github.com/typeorm/typeorm">TypeORM GitHub repository</a> and <a href="https://docs.nestjs.com/recipes/sql-typeorm">NestJS TypeORM documentation page</a></p>
 </div>
 <div class="sect3">
-<h4 id="guides-typeorm.asciidoc_configuration">33.9.1. Configuration</h4>
+<h4 id="guides-typeorm.asciidoc_configuration">33.8.1. Configuration</h4>
 <div class="paragraph">
 <p>When you have the configuration module, the typeorm generator will add one property in order to be able to configure the database depending on the environment. Example:</p>
 </div>
@@ -3317,12 +1530,12 @@ the OpenAPI specification that this module supports is v2.0. The OpenAPI v3.0 is
 </div>
 </div>
 <div class="sect3">
-<h4 id="guides-typeorm.asciidoc_entity">33.9.2. Entity</h4>
+<h4 id="guides-typeorm.asciidoc_entity">33.8.2. Entity</h4>
 <div class="paragraph">
-<p>Entity is a class that maps to a database table. The devon4node CLI has a generator to create new entities. You only need to execute the command <code>devon4node generate entity --name &lt;module-name&gt;/&lt;entity-name&gt;</code> and it generate the entity.</p>
+<p>Entity is a class that maps to a database table. The devon4node schematics has a generator to create new entities. You only need to execute the command <code>nest g -c @devon4node/schematics entity &lt;entity-name&gt;</code> and it generate the entity.</p>
 </div>
 <div class="paragraph">
-<p>In the entity, you must define all columns, relations, primary keys of your database table. By default, devon4node provides a class named <code>BaseEntity</code>. All entities created with the devon4node CLI will extends the <code>BaseEntity</code>. This entity provides you some common columns:</p>
+<p>In the entity, you must define all columns, relations, primary keys of your database table. By default, devon4node provides a class named <code>BaseEntity</code>. All entities created with the devon4node schematics will extends the <code>BaseEntity</code>. This entity provides you some common columns:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -3345,7 +1558,7 @@ the OpenAPI specification that this module supports is v2.0. The OpenAPI v3.0 is
 </div>
 </div>
 <div class="sect3">
-<h4 id="guides-typeorm.asciidoc_repository">33.9.3. Repository</h4>
+<h4 id="guides-typeorm.asciidoc_repository">33.8.3. Repository</h4>
 <div class="paragraph">
 <p>With repositories, you can manage (insert, update, delete, load, etc.) a concrete entity. Using this pattern, we have separated the data (Entities) from the methods to manage it (Repositories).</p>
 </div>
@@ -3370,7 +1583,7 @@ the OpenAPI specification that this module supports is v2.0. The OpenAPI v3.0 is
 <div class="title">Note</div>
 </td>
 <td class="content">
-if you generate the entities with the devon4node CLI, this step is not neccesary, devon4node CLI do it for you.
+if you generate the entities with the devon4node schematic, this step is not neccesary, devon4node schematic will do it for you.
 </td>
 </tr>
 </tbody></table>
@@ -3393,7 +1606,7 @@ if you generate the entities with the devon4node CLI, this step is not neccesary
 </div>
 </div>
 <div class="sect2">
-<h3 id="guides-serializer.asciidoc">33.10. Serializer</h3>
+<h3 id="guides-serializer.asciidoc">33.9. Serializer</h3>
 <div class="paragraph">
 <p>Serialization is the process of translating data structures or object state into a format that can be transmitted across network and reconstructed later.</p>
 </div>
@@ -3459,12 +1672,12 @@ if you generate the entities with the devon4node CLI, this step is not neccesary
 <!-- toc disabled -->
 </div>
 <div class="sect2">
-<h3 id="guides-validation.asciidoc">33.11. Validation</h3>
+<h3 id="guides-validation.asciidoc">33.10. Validation</h3>
 <div class="paragraph">
 <p>To be sure that your application will works well, you must validate any input data. devon4node by default provides a <code>ValidationPipe</code>. This <code>ValidationPipe</code> is the responsible of validate the request input and, if the input do not pass the validation process, it returns a <code>400 Bad Request</code> error.</p>
 </div>
 <div class="sect3">
-<h4 id="guides-validation.asciidoc_defining-validators">33.11.1. Defining Validators</h4>
+<h4 id="guides-validation.asciidoc_defining-validators">33.10.1. Defining Validators</h4>
 <div class="paragraph">
 <p>The <code>ValidationPipe</code> needs to know how to validate the input. For that purpose we use the <code>class-validator</code> package. This package allows you to define the validation of a class by using decorators.</p>
 </div>
@@ -3524,7 +1737,7 @@ The <code>ValidationPipe</code> only works if you put a specific type in the han
 </div>
 </div>
 <div class="sect2">
-<h3 id="guides-logger.asciidoc">33.12. Logger</h3>
+<h3 id="guides-logger.asciidoc">33.11. Logger</h3>
 <div class="paragraph">
 <p>When you create a new devon4node application, it already has a logger: <code>src/app/shared/logger/winston.logger.ts</code>. This logger provide the methods <code>log</code>, <code>error</code> and <code>warn</code>. All of those methods will write a log message, but with a different log level.</p>
 </div>
@@ -3535,7 +1748,7 @@ The <code>ValidationPipe</code> only works if you put a specific type in the han
 <p>As you can see it is a simple example about how to use logger in a devon4node application. It will be update to a complex one in the next versions.</p>
 </div>
 <div class="sect3">
-<h4 id="guides-logger.asciidoc_how-to-use-logger">33.12.1. How to use logger</h4>
+<h4 id="guides-logger.asciidoc_how-to-use-logger">33.11.1. How to use logger</h4>
 <div class="paragraph">
 <p>In order to use the logger you only need to inject the logger as a dependency:</p>
 </div>
@@ -3559,7 +1772,7 @@ The <code>ValidationPipe</code> only works if you put a specific type in the han
 </div>
 </div>
 <div class="sect2">
-<h3 id="guides-mailer.asciidoc">33.13. Mailer Module</h3>
+<h3 id="guides-mailer.asciidoc">33.12. Mailer Module</h3>
 <div class="paragraph">
 <p>This module enables you to send emails in devon4node. It also provides a template engine using Handlebars.</p>
 </div>
@@ -3567,7 +1780,7 @@ The <code>ValidationPipe</code> only works if you put a specific type in the han
 <p>It is a NestJS module that inject into your application a MailerService, which is the responsible to send the emails using the nodemailer library.</p>
 </div>
 <div class="sect3">
-<h4 id="guides-mailer.asciidoc_installing">33.13.1. Installing</h4>
+<h4 id="guides-mailer.asciidoc_installing">33.12.1. Installing</h4>
 <div class="paragraph">
 <p>Execute the following command in a devon4node project:</p>
 </div>
@@ -3578,7 +1791,7 @@ The <code>ValidationPipe</code> only works if you put a specific type in the han
 </div>
 </div>
 <div class="sect3">
-<h4 id="guides-mailer.asciidoc_configuring">33.13.2. Configuring</h4>
+<h4 id="guides-mailer.asciidoc_configuring">33.12.2. Configuring</h4>
 <div class="paragraph">
 <p>To configure the mailer module, you only need to import it in your application into another module. Example:</p>
 </div>
@@ -3682,7 +1895,7 @@ Then, you need to call to forRoot function in the module imports. Example:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="guides-mailer.asciidoc_usage">33.13.3. Usage</h4>
+<h4 id="guides-mailer.asciidoc_usage">33.12.3. Usage</h4>
 <div class="paragraph">
 <p>In order to use, you only need to inject using the dependency injection the MailerService.</p>
 </div>
@@ -3828,7 +2041,7 @@ this.mailer.sendTemplateMail(&apos;example@example.com&apos;, &apos;This is a su
 </div>
 </div>
 <div class="sect3">
-<h4 id="guides-mailer.asciidoc_handlebars-templates">33.13.4. Handlebars templates</h4>
+<h4 id="guides-mailer.asciidoc_handlebars-templates">33.12.4. Handlebars templates</h4>
 <div class="paragraph">
 <p>As mentioned above, this module allow you to use Handlebars as template engine, but it is optional. If you do not need the Handlebars, you just need to keep the hbsOptions undefined.</p>
 </div>
@@ -3841,7 +2054,7 @@ At the moment of module initialization, it will read the content of the template
 </div>
 </div>
 <div class="sect3">
-<h4 id="guides-mailer.asciidoc_local-development">33.13.5. Local development</h4>
+<h4 id="guides-mailer.asciidoc_local-development">33.12.5. Local development</h4>
 <div class="paragraph">
 <p>If you want to work with this module but you don&#x2019;t have a SMTP server, you can use the <code>streamTransport</code>. Example:</p>
 </div>
@@ -3871,14 +2084,14 @@ mail.message.pipe(process.stdout);</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="guides-eslint-sonarqube-config.asciidoc">33.14. Importing your ESLint reports into SonarQube</h3>
+<h3 id="guides-eslint-sonarqube-config.asciidoc">33.13. Importing your ESLint reports into SonarQube</h3>
 <div class="paragraph">
 <p>This guide covers the import of ESLint reports into SonarQube instances in CI environments, as this is the recommended way of using ESLint and SonarQube for devon4node projects. The prerequisites for this process are a CI environment, preferably a <a href="https://github.com/devonfw/production-line">Production Line</a> instance, and the <a href="https://eslint.org/docs/user-guide/command-line-interface">ESLint CLI</a>, which is already included when generating a new devon4node project.</p>
 </div>
 <div class="sect4">
 <h5 id="guides-eslint-sonarqube-config.asciidoc_configuring-the-eslint-analysis">Configuring the ESLint analysis</h5>
 <div class="paragraph">
-<p>You can configure the ESLint analysis parameters in the <code>.eslintrc.js</code> file inside the top-level directory of your project. If you created your node project using the devon4node CLI, this file will already exist. If you want to make further adjustments to it, have a look at the <a href="https://eslint.org/docs/user-guide/configuring">ESLint documentation</a>.</p>
+<p>You can configure the ESLint analysis parameters in the <code>.eslintrc.js</code> file inside the top-level directory of your project. If you created your node project using the devon4node application schematic, this file will already exist. If you want to make further adjustments to it, have a look at the <a href="https://eslint.org/docs/user-guide/configuring">ESLint documentation</a>.</p>
 </div>
 <div class="paragraph">
 <p>The ESLint analysis script <code>lint</code> is already configured in the <code>scripts</code> part of your <code>package.json</code>. Simply add <code>-f json &gt; report.json</code>, so that the output of the analysis is saved in a .json file. Additional information to customization options for the ESLint CLI can be found <a href="https://eslint.org/docs/user-guide/command-line-interface#options">here</a>.</p>
@@ -4032,7 +2245,7 @@ To avoid duplicated issues, you can associate an empty TypeScript quality profil
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2020-11-13 17:39:16 UTC
+Last updated 2020-11-30 17:01:08 UTC
 </sub></div>
 
 
