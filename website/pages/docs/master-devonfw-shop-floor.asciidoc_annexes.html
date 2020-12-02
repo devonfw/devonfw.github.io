@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2020-11-30 17:03:23 UTC">
+<meta name="author" content="Updated at 2020-12-02 13:08:38 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -517,7 +517,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2020-11-30 17:03:39 UTC</span><br>
+<span id="author" class="author">Updated at 2020-12-02 13:08:55 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -560,9 +560,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="master-devonfw-shop-floor.asciidoc_annexes.html#master-devonfw-shop-floor.asciidoc_mirabaud-experience">58.3. Mirabaud Experience</a>
 </li>
-<li><a href="master-devonfw-shop-floor.asciidoc_annexes.html#master-devonfw-shop-floor.asciidoc_okd-openshift-origin">58.4. OKD (OpenShift Origin)</a>
+<li><a href="master-devonfw-shop-floor.asciidoc_annexes.html#master-devonfw-shop-floor.asciidoc_azure-devops">58.4. Azure DevOps</a>
 </li>
-<li><a href="master-devonfw-shop-floor.asciidoc_annexes.html#master-devonfw-shop-floor.asciidoc_istio-guide">58.5. ISTIO Guide</a>
+<li><a href="master-devonfw-shop-floor.asciidoc_annexes.html#master-devonfw-shop-floor.asciidoc_okd-openshift-origin">58.5. OKD (OpenShift Origin)</a>
+</li>
+<li><a href="master-devonfw-shop-floor.asciidoc_annexes.html#dsf-okd.asciidoc">58.6. OKD &lt;em&gt;(OpenShift Origin)&lt;/em&gt;</a>
+</li>
+<li><a href="master-devonfw-shop-floor.asciidoc_annexes.html#master-devonfw-shop-floor.asciidoc_istio-guide">58.7. ISTIO Guide</a>
 </li>
 </ul>
 </li>
@@ -2307,9 +2311,462 @@ These guides may be obsolete. You can find here the <a href="dsf-how-to-use.html
 </div>
 </div>
 <div class="sect2">
-<h3 id="master-devonfw-shop-floor.asciidoc_okd-openshift-origin">58.4. OKD (OpenShift Origin)</h3>
+<h3 id="master-devonfw-shop-floor.asciidoc_azure-devops">58.4. Azure DevOps</h3>
 <div class="sect3">
-<h4 id="dsf-okd.asciidoc">58.4.1. OKD <em>(OpenShift Origin)</em></h4>
+<h4 id="create-an-azure-pipeline-from-scratch">58.4.1. Create an Azure pipeline from scratch</h4>
+<div class="paragraph">
+<p>The following steps will allow you to create a basic pipeline in Azure Devops from scratch</p>
+</div>
+<div class="paragraph">
+<p>In order to deploy in Azure, we&#x2019;ve created an automatic pipeline in Azure Devops that will be executed automaticaly when  developers make a push to the Azure repositories, the pipeline will compile the code, build the application and ensure with automatic tests that the build is not going to break the application, to ensure a good quality code the code will be analyzed by sonar as well as your code coverage and last but not least, your application will be deployed using Azure App Services.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dsf-azure-pipelines.asciidoc_steps">58.4.2. Steps</h4>
+<div class="paragraph">
+<p>1- Sign in to your Azure DevOps organization and navigate to your project.</p>
+</div>
+<div class="paragraph">
+<p>2- Go to Pipelines, and then select New Pipeline.</p>
+</div>
+<div class="paragraph">
+<p>3- Choose the location of your source code(Github, Bitbucket,Azure repos..etc), in this case we have our code in Azure Repos Git.</p>
+</div>
+<div class="paragraph">
+<p>A list of your repositories will be shown here:</p>
+</div>
+<div class="paragraph">
+<p>4- When the list of repositories appears, select your repository.</p>
+</div>
+<div class="paragraph">
+<p>Depending on your project type(Java, .NET, Python or JavaScript) the following configuration will change, in this case our project is a .NET, for more type of projects please follow the <a href="https://docs.microsoft.com/es-es/azure/devops/pipelines/create-first-pipeline?view=azure-devops&amp;tabs=net%2Ctfs-2018-2%2Cbrowser">official documentation</a>.</p>
+</div>
+<div class="paragraph">
+<p>5- When the Configure tab appears, select ASP.NET Core(or the one according to your project)</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/others/azure-pipelines/configuration.png" alt="configuration">
+</div>
+</div>
+<div class="paragraph">
+<p>6- A .yaml file in your ./ location will be generated with all the required steps to run your pipeline.
+The name of this .yaml file is &apos;azure-pipelines.yaml&apos; wich is the default name that will be used in your pipeline settings.</p>
+</div>
+<div class="paragraph">
+<p><em>Note:If you change the name or the location, you will need to specify in the pipeline settings the new name or location:</em></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/others/azure-pipelines/pipeline-settings.png" alt="pipeline settings">
+</div>
+</div>
+<div class="paragraph">
+<p>The pipeline is created with the minimum required steps to run it which are the following:</p>
+</div>
+<div class="sect4">
+<h5 id="dsf-azure-pipelines.asciidoc_triggers">TRIGGERS</h5>
+<div class="paragraph">
+<p>Triggers that will activate the pipeline execution</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">trigger:
+- master
+- develop</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="dsf-azure-pipelines.asciidoc_variables">VARIABLES</h5>
+<div class="paragraph">
+<p>Variables that will be used in the next steps</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">variables:
+  solution: &apos;**/*.sln&apos;
+  buildPlatform: &apos;Any CPU&apos;
+  buildConfiguration: &apos;Release&apos;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="dsf-azure-pipelines.asciidoc_tools-and-libraries">TOOLS AND LIBRARIES</h5>
+<div class="paragraph">
+<p>For .NET:</p>
+</div>
+<div class="paragraph">
+<p><strong>-NuGet Tool Installer task</strong>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">- task: NuGetToolInstaller@1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Use this task to find, download, and cache a specified version of NuGet and add it to the PATH.</p>
+</div>
+<div class="paragraph">
+<p><strong>-The NuGet command to run</strong>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">- task: NuGetCommand@2
+  inputs:
+    restoreSolution: &apos;$(solution)&apos;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The NuGet command to run.</p>
+</div>
+<div class="paragraph">
+<p>For more info use the official <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/nuget?view=azure-devops">documentation</a>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="dsf-azure-pipelines.asciidoc_build">BUILD</h5>
+<div class="paragraph">
+<p><strong>-Visual Studio Build task</strong>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">- task: VSBuild@1
+  inputs:
+    solution: &apos;$(solution)&apos;
+    msbuildArgs: &apos;/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation=&quot;$(build.artifactStagingDirectory)\WebApp.zip&quot; /p:DeployIisAppPath=&quot;Default Web Site&quot;&apos;
+    platform: &apos;$(buildPlatform)&apos;
+    configuration: &apos;$(buildConfiguration)&apos;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Use this task to build with MSBuild and set the Visual Studio version property.</p>
+</div>
+<div class="paragraph">
+<p>For more info use the official <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/visual-studio-build?view=azure-devops">documentation</a></p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="dsf-azure-pipelines.asciidoc_test">TEST</h5>
+<div class="paragraph">
+<p><strong>-Visual Studio Test task</strong>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">- task: DotNetCoreCLI@2
+  inputs:
+    command: &apos;test&apos;
+    arguments: &apos;/p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$(Agent.TempDirectory)/&apos;
+    projects: &apos;$(solution)&apos;
+    publishTestResults: true
+  continueOnError: false
+  displayName: &apos;Dot Net Core CLI Test&apos;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Use this task to run unit and functional tests (Selenium, Appium, Coded UI test, and more) using the Visual Studio Test Runner.</p>
+</div>
+<div class="paragraph">
+<p>For more info use the official <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/vstest?view=azure-devops">documentation</a></p>
+</div>
+<div class="paragraph">
+<p>This steps are the ones generated when your pipeline is created, we can create the ones we need using the Azure Devops wizard in an easy way.</p>
+</div>
+<div class="paragraph">
+<p>In our case, apart from build and test, we also need to deploy</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="dsf-azure-pipelines.asciidoc_deploy">DEPLOY</h5>
+
+</div>
+<div class="sect4">
+<h5 id="dsf-azure-pipelines.asciidoc_app-services">App Services</h5>
+<div class="paragraph">
+<p>While deploying with App Services, 2 steps are required:</p>
+</div>
+<div class="sect5">
+<h6 id="dsf-azure-pipelines.asciidoc_step-1-publish">Step 1: Publish</h6>
+<div class="paragraph">
+<p>Use this task in a pipeline to publish artifacts for the Azure Pipeline</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">- task: PublishPipelineArtifact@0
+  inputs:
+    artifactName: &apos;Bad_Weather_Backend&apos;
+    targetPath: &apos;$(Build.ArtifactStagingDirectory)&apos;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To know more about the use of predefined variables in azure take a look at the <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&amp;tabs=yaml">documentation</a></p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="dsf-azure-pipelines.asciidoc_step-2-deployment">Step 2: Deployment</h6>
+<div class="paragraph">
+<p>Use this task to deploy to a range of App Services on Azure</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml">- task: AzureRmWebAppDeployment@4
+  inputs:
+    ConnectionType: &apos;AzureRM&apos;
+    azureSubscription: &apos;bad-weather-poc-rs-bw-dev&apos;
+    appType: &apos;webApp&apos;
+    WebAppName: &apos;bwbackendbe&apos;
+    packageForLinux: &apos;$(build.artifactStagingDirectory)\WebApp.zip&apos;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This task has 2 prerequisites:</p>
+</div>
+<div class="paragraph">
+<p>1-App Service instance:</p>
+</div>
+<div class="paragraph">
+<p>The task is used to deploy a Web App project or Azure Function project to an existing Azure App Service instance, which must exist before the task runs.</p>
+</div>
+<div class="paragraph">
+<p>2-Azure Subscription:</p>
+</div>
+<div class="paragraph">
+<p>In order to deploy to Azure, an Azure subscription must be <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/library/connect-to-azure?view=azure-devops">linked to the pipeline</a>.</p>
+</div>
+<div class="paragraph">
+<p>To know more about the input arguments for this task, make use of the offcial <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/azure-rm-web-app-deployment?view=azure-devops">documentation</a></p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dsf-azure-sonarqube-integration.asciidoc_integrate-the-sonarqube-plugin-in-an-azure-devops-pipeline">58.4.3. Integrate the SonarQube plugin in an Azure DevOps pipeline</h4>
+<div class="paragraph">
+<p>The purpose of this readme is that you can configure your Azure Devops pipeline in order to be able to run a code analysis, analyse the code coverage and publish the results through the Sonar plugin.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dsf-azure-sonarqube-integration.asciidoc_how-to-do-it">58.4.4. How to do it</h4>
+<div class="sect5">
+<h6 id="dsf-azure-sonarqube-integration.asciidoc_step-1-create-a-service-connection">Step 1: Create a service connection</h6>
+<div class="paragraph">
+<p>The first thing to do is to declare your SonarQube server as a service endpoint in your Azure DevOps project settings.</p>
+</div>
+<div class="paragraph">
+<p>Go to project settings &#x2192; pipelines &#x2192; service connections and <strong>create</strong> and choose &apos;SonarQube&apos;.</p>
+</div>
+<div class="paragraph">
+<p><strong>Create service connection</strong></p>
+</div>
+<div class="paragraph">
+<p>Specify the server url and the connection name of your SonarQube server and the token Auth
+Go to your SonarQube server and log in as admin,
+once inside, go to administration &#x2192; Security &#x2192; Users &#x2192; Administrator &#x2192; Tokens&#x2192; And <strong>generate</strong> the token.
+Copy the generated token(once created it will never appear again so don&#x2019;t lose it) and paste it and click on <strong>save</strong> .</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/others/azure-sonarqube/ServiceConnection.png" alt="ServiceConnection">
+</div>
+</div>
+<div class="paragraph">
+<p>The service connection has been created.
+Once this step is done your service creation will appear now in the <em>service connections</em> side bar.</p>
+</div>
+<div class="paragraph">
+<p>For more info regarding the Authentication part please read the <a href="https://docs.sonarqube.org/latest/user-guide/user-token/">official documentation</a></p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="dsf-azure-sonarqube-integration.asciidoc_step-2-add-the-required-tasks-in-the-azure-pipeline">Step 2: Add the required tasks in the azure pipeline</h6>
+<div class="paragraph">
+<p>In order to integrate the SonarQube in the pipeline, 3 steps or <strong>tasks</strong> are required(Depending on the different solutions like .NET, Java, C..etc some of this tasks can be optional), this tasks are:</p>
+</div>
+<div class="paragraph">
+<p>Prepare Analysis configuration
+Run Code Analysis
+Publish Quality Gate result</p>
+</div>
+<div class="paragraph">
+<p>We can use the wizard to create this in an easy way, search &quot;SonarQube&quot; and let&#x2019;s configure the tasks one by one.</p>
+</div>
+<div class="paragraph">
+<p><strong>Prepare Analysis configuration:</strong></p>
+</div>
+<div class="paragraph">
+<p>Fill the required fields and click on <strong>add</strong></p>
+</div>
+<div class="paragraph">
+<p>The <strong>prepare</strong> task will be now shown in the pipeline code:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/others/azure-sonarqube/sonarprepare.png" alt="sonarprepare">
+</div>
+</div>
+<div class="paragraph">
+<p>Follow the <a href="https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-azure-devops/">official documentation</a> if you have doubts while filling the fields:</p>
+</div>
+<div class="paragraph">
+<p>Once the <strong>prepare</strong> is done, continue with the code analysis.</p>
+</div>
+<div class="paragraph">
+<p><strong>Run Code Analysis</strong></p>
+</div>
+<div class="paragraph">
+<p>Select this from the task assistant and just like happened with the first task, the code will appear in your pipeline.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/others/azure-sonarqube/runAnalysis.png" alt="runAnalysis">
+</div>
+</div>
+<div class="paragraph">
+<p>Now, let&#x2019;s publish the result of the analysis.</p>
+</div>
+<div class="paragraph">
+<p><strong>Publish quality gate result</strong></p>
+</div>
+<div class="paragraph">
+<p>Same as we did before, select in the display the publish extension and add it</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/others/azure-sonarqube/publish.png" alt="publish">
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="dsf-azure-sonarqube-integration.asciidoc_step-3-run-the-pipeline">Step 3: Run the pipeline</h6>
+<div class="paragraph">
+<p>With this, all the required steps to integrate SonarQube in your Azure DevOps pipeline are done, the last thing you need to do is <strong>run</strong> your pipeline and your code will be analyzed and the results published.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="install-and-use-custom-sonar-plugin-in-azure-devops">58.4.5. Install and use custom sonar plugin in Azure Devops</h4>
+<div class="paragraph">
+<p>By default, the sonar plugin is not capable to be used in every branch you want to, to do this you need to purchase a license or customize the current plugin in order to satisfy our needs.</p>
+</div>
+<div class="paragraph">
+<p>How to costumize the plugin is not the purpose of this documentation, this documentation is for the intallment and use of it.</p>
+</div>
+<div class="paragraph">
+<p>If you want to install a custom plugin, sign into your Azure Devops organization and once you are in, click on the marketplace icon:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/others/azure-sonarqube/custom-plugin/marketplace.png" alt="marketplace">
+</div>
+</div>
+<div class="paragraph">
+<p>Select *browse marketplace&gt;publish extension</p>
+</div>
+<div class="paragraph">
+<p>Choose the extension you want to install and clik on the options</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/others/azure-sonarqube/custom-plugin/extension.png" alt="extension">
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Important</strong>:</p>
+</div>
+<div class="paragraph">
+<p>You need to choose the organization for which you are going to use the extension and <strong>share it</strong>, if not, you won&#x2019;t be able to install it.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/others/azure-sonarqube/custom-plugin/share-unshare.png" alt="share unshare">
+</div>
+</div>
+<div class="paragraph">
+<p>Once you&#x2019;ve done this click on View extension and &apos;Get it free&apos;, the extension will be downloaded and you will be able to use it in the next screen</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/others/azure-sonarqube/custom-plugin/install.png" alt="install">
+</div>
+</div>
+<div class="paragraph">
+<p>If there are no organizations you can seee the possible causes <a href="https://docs.microsoft.com/en-us/azure/devops/marketplace/faq-extensions?view=azure-devops#no-organizations">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>Another cause might be that you forgot to share the extension.</p>
+</div>
+<div class="paragraph">
+<p>Note: If the install button does not appear, it&#x2019;s possible that you don&#x2019;t have permissions to install it so you will need to talk with the owner of the org.
+Another posibility is that you can <em>request</em> an installation.</p>
+</div>
+<div class="paragraph">
+<p>Once installed, in the pipeline wizard it will appear and you will be able to select it.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/others/azure-sonarqube/custom-plugin/wizard.png" alt="wizard">
+</div>
+</div>
+<div class="paragraph">
+<p>We can see in the image the default plugin and the customized one.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="master-devonfw-shop-floor.asciidoc_okd-openshift-origin">58.5. OKD (OpenShift Origin)</h3>
+
+</div>
+<div class="sect2">
+<h3 id="dsf-okd.asciidoc">58.6. OKD <em>(OpenShift Origin)</em></h3>
+<div class="sect3">
+<h4 id="dsf-okd.asciidoc_what-is-okd">58.6.1. What is OKD</h4>
+<div class="paragraph">
+<p>OKD is a distribution of Kubernetes optimized for continuous application development and multi-tenant deployment. OKD is the upstream Kubernetes distribution embedded in Red Hat OpenShift.</p>
+</div>
+<div class="paragraph">
+<p>OKD embeds Kubernetes and extends it with security and other integrated concepts. OKD is also referred to as Origin in github and in the documentation.</p>
+</div>
+<div class="paragraph">
+<p>OKD provides a complete open source container application platform. If you are looking for enterprise-level support, or information on partner certification, Red Hat also offers <a href="https://www.openshift.com/">Red Hat OpenShift Container Platform</a>.</p>
+</div>
+<hr>
+<h4 id="dsf-okd.asciidoc_continue-reading..." class="discrete">Continue reading&#x2026;&#x200B;</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="master-devonfw-shop-floor.asciidoc_annexes.html#dsf-okd-how-to-install.asciidoc">How to install Openshift Origin</a></p>
+</li>
+<li>
+<p><a href="master-devonfw-shop-floor.asciidoc_annexes.html#dsf-okd-initial-setup.asciidoc">Initial setup</a></p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="master-devonfw-shop-floor.asciidoc_annexes.html#dsf-okd-s2i.asciidoc">s2i</a></p>
+</li>
+<li>
+<p><a href="master-devonfw-shop-floor.asciidoc_annexes.html#dsf-okd-templates.asciidoc">templates</a></p>
+</li>
+<li>
+<p><a href="master-devonfw-shop-floor.asciidoc_annexes.html#dsf-okd-customize.asciidoc">Customize Openshift</a></p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="master-devonfw-shop-floor.asciidoc_annexes.html#dsf-okd-customize-icons.asciidoc">Customize icons</a></p>
+</li>
+<li>
+<p><a href="master-devonfw-shop-floor.asciidoc_annexes.html#dsf-okd-customize-catalog.asciidoc">Customize catalog</a></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dsf-okd.asciidoc">58.6.2. OKD <em>(OpenShift Origin)</em></h4>
 <div class="sect4">
 <h5 id="dsf-okd.asciidoc_what-is-okd">What is OKD</h5>
 <div class="paragraph">
@@ -2359,7 +2816,7 @@ These guides may be obsolete. You can find here the <a href="dsf-how-to-use.html
 </div>
 </div>
 <div class="sect3">
-<h4 id="dsf-okd-how-to-install.asciidoc">58.4.2. Install OKD <em>(Openshift Origin)</em></h4>
+<h4 id="dsf-okd-how-to-install.asciidoc">58.6.3. Install OKD <em>(Openshift Origin)</em></h4>
 <div class="sect4">
 <h5 id="dsf-okd-how-to-install.asciidoc_pre-requisites">Pre-requisites</h5>
 <div class="sect5">
@@ -2454,7 +2911,7 @@ wget https://raw.githubusercontent.com/openshift-evangelists/oc-cluster-wrapper/
 </div>
 </div>
 <div class="sect3">
-<h4 id="dsf-okd-how-to-install.asciidoc">58.4.3. How to use Oc Cluster Wrapper</h4>
+<h4 id="dsf-okd-how-to-install.asciidoc">58.6.4. How to use Oc Cluster Wrapper</h4>
 <div class="paragraph">
 <p>With oc cluster wrapper we could have different clusters with different context.</p>
 </div>
@@ -2484,7 +2941,7 @@ wget https://raw.githubusercontent.com/openshift-evangelists/oc-cluster-wrapper/
 </div>
 </div>
 <div class="sect3">
-<h4 id="dsf-okd-initial-setup.asciidoc">58.4.4. devonfw Openshift Origin Initial Setup</h4>
+<h4 id="dsf-okd-initial-setup.asciidoc">58.6.5. devonfw Openshift Origin Initial Setup</h4>
 <div class="paragraph">
 <p>These are scripts to customize an Openshift cluster to be a devonfw Openshift.</p>
 </div>
@@ -2532,7 +2989,7 @@ wget https://raw.githubusercontent.com/openshift-evangelists/oc-cluster-wrapper/
 </div>
 </div>
 <div class="sect3">
-<h4 id="dsf-okd-s2i.asciidoc">58.4.5. s2i devonfw</h4>
+<h4 id="dsf-okd-s2i.asciidoc">58.6.6. s2i devonfw</h4>
 <div class="paragraph">
 <p>This are the s2i source and templates to build an s2i images. It provides OpenShift builder images for components of the devonfw (at this moment only for angular and java).</p>
 </div>
@@ -2638,7 +3095,7 @@ oc start-build s2i-devonfw-angular --namespace=devonfw</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="dsf-okd-templates.asciidoc">58.4.6. devonfw templates</h4>
+<h4 id="dsf-okd-templates.asciidoc">58.6.7. devonfw templates</h4>
 <div class="paragraph">
 <p>This are the devonfw templates to build devonfw apps for Openshift using the s2i images. They are based on the work of Mickuehl in Oasp templates/mythaistar for deploy My Thai Star.</p>
 </div>
@@ -2758,7 +3215,7 @@ $ oc new-app --template=devonfw-java --namespace=mythaistar --param-file=paramfi
 </div>
 </div>
 <div class="sect3">
-<h4 id="dsf-okd-customize.asciidoc">58.4.7. Customize Openshift Origin for devonfw</h4>
+<h4 id="dsf-okd-customize.asciidoc">58.6.8. Customize Openshift Origin for devonfw</h4>
 <div class="paragraph">
 <p>This is a guide to customize Openshift cluster.</p>
 </div>
@@ -3228,9 +3685,9 @@ assetConfig:
 </div>
 </div>
 <div class="sect2">
-<h3 id="master-devonfw-shop-floor.asciidoc_istio-guide">58.5. ISTIO Guide</h3>
+<h3 id="master-devonfw-shop-floor.asciidoc_istio-guide">58.7. ISTIO Guide</h3>
 <div class="sect3">
-<h4 id="dsf-istio-guide.asciidoc">58.5.1. ISTIO Service Mesh Implementation Guide</h4>
+<h4 id="dsf-istio-guide.asciidoc">58.7.1. ISTIO Service Mesh Implementation Guide</h4>
 <div class="sect4">
 <h5 id="dsf-istio-guide.asciidoc_introduction">Introduction</h5>
 <div class="paragraph">
@@ -3919,7 +4376,7 @@ assetConfig:
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2020-11-30 17:01:08 UTC
+Last updated 2020-12-02 13:06:11 UTC
 </sub></div>
 
 

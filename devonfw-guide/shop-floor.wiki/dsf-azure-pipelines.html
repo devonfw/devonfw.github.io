@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Create an Azure pipeline from scratch</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="sect1">
+<h2 id="create-an-azure-pipeline-from-scratch">Create an Azure pipeline from scratch</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following steps will allow you to create a basic pipeline in Azure Devops from scratch</p>
+</div>
+<div class="paragraph">
+<p>In order to deploy in Azure, we&#8217;ve created an automatic pipeline in Azure Devops that will be executed automaticaly when  developers make a push to the Azure repositories, the pipeline will compile the code, build the application and ensure with automatic tests that the build is not going to break the application, to ensure a good quality code the code will be analyzed by sonar as well as your code coverage and last but not least, your application will be deployed using Azure App Services.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="dsf-azure-pipelines.asciidoc_steps">Steps</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>1- Sign in to your Azure DevOps organization and navigate to your project.</p>
+</div>
+<div class="paragraph">
+<p>2- Go to Pipelines, and then select New Pipeline.</p>
+</div>
+<div class="paragraph">
+<p>3- Choose the location of your source code(Github, Bitbucket,Azure repos..etc), in this case we have our code in Azure Repos Git.</p>
+</div>
+<div class="paragraph">
+<p>A list of your repositories will be shown here:</p>
+</div>
+<div class="paragraph">
+<p>4- When the list of repositories appears, select your repository.</p>
+</div>
+<div class="paragraph">
+<p>Depending on your project type(Java, .NET, Python or JavaScript) the following configuration will change, in this case our project is a .NET, for more type of projects please follow the <a href="https://docs.microsoft.com/es-es/azure/devops/pipelines/create-first-pipeline?view=azure-devops&amp;tabs=net%2Ctfs-2018-2%2Cbrowser">official documentation</a>.</p>
+</div>
+<div class="paragraph">
+<p>5- When the Configure tab appears, select ASP.NET Core(or the one according to your project)</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/azure-pipelines/configuration.png" alt="configuration">
+</div>
+</div>
+<div class="paragraph">
+<p>6- A .yaml file in your ./ location will be generated with all the required steps to run your pipeline.
+The name of this .yaml file is 'azure-pipelines.yaml' wich is the default name that will be used in your pipeline settings.</p>
+</div>
+<div class="paragraph">
+<p><em>Note:If you change the name or the location, you will need to specify in the pipeline settings the new name or location:</em></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/others/azure-pipelines/pipeline-settings.png" alt="pipeline settings">
+</div>
+</div>
+<div class="paragraph">
+<p>The pipeline is created with the minimum required steps to run it which are the following:</p>
+</div>
+<div class="sect2">
+<h3 id="dsf-azure-pipelines.asciidoc_triggers">TRIGGERS</h3>
+<div class="paragraph">
+<p>Triggers that will activate the pipeline execution</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="yaml language-yaml">trigger:
+- master
+- develop</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-azure-pipelines.asciidoc_variables">VARIABLES</h3>
+<div class="paragraph">
+<p>Variables that will be used in the next steps</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="yaml language-yaml">variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-azure-pipelines.asciidoc_tools-and-libraries">TOOLS AND LIBRARIES</h3>
+<div class="paragraph">
+<p>For .NET:</p>
+</div>
+<div class="paragraph">
+<p><strong>-NuGet Tool Installer task</strong>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="yaml language-yaml">- task: NuGetToolInstaller@1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Use this task to find, download, and cache a specified version of NuGet and add it to the PATH.</p>
+</div>
+<div class="paragraph">
+<p><strong>-The NuGet command to run</strong>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="yaml language-yaml">- task: NuGetCommand@2
+  inputs:
+    restoreSolution: '$(solution)'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The NuGet command to run.</p>
+</div>
+<div class="paragraph">
+<p>For more info use the official <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/nuget?view=azure-devops">documentation</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-azure-pipelines.asciidoc_build">BUILD</h3>
+<div class="paragraph">
+<p><strong>-Visual Studio Build task</strong>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="yaml language-yaml">- task: VSBuild@1
+  inputs:
+    solution: '$(solution)'
+    msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:DesktopBuildPackageLocation="$(build.artifactStagingDirectory)\WebApp.zip" /p:DeployIisAppPath="Default Web Site"'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Use this task to build with MSBuild and set the Visual Studio version property.</p>
+</div>
+<div class="paragraph">
+<p>For more info use the official <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/visual-studio-build?view=azure-devops">documentation</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-azure-pipelines.asciidoc_test">TEST</h3>
+<div class="paragraph">
+<p><strong>-Visual Studio Test task</strong>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="yaml language-yaml">- task: DotNetCoreCLI@2
+  inputs:
+    command: 'test'
+    arguments: '/p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:CoverletOutput=$(Agent.TempDirectory)/'
+    projects: '$(solution)'
+    publishTestResults: true
+  continueOnError: false
+  displayName: 'Dot Net Core CLI Test'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Use this task to run unit and functional tests (Selenium, Appium, Coded UI test, and more) using the Visual Studio Test Runner.</p>
+</div>
+<div class="paragraph">
+<p>For more info use the official <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/vstest?view=azure-devops">documentation</a></p>
+</div>
+<div class="paragraph">
+<p>This steps are the ones generated when your pipeline is created, we can create the ones we need using the Azure Devops wizard in an easy way.</p>
+</div>
+<div class="paragraph">
+<p>In our case, apart from build and test, we also need to deploy</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dsf-azure-pipelines.asciidoc_deploy">DEPLOY</h3>
+
+</div>
+<div class="sect2">
+<h3 id="dsf-azure-pipelines.asciidoc_app-services">App Services</h3>
+<div class="paragraph">
+<p>While deploying with App Services, 2 steps are required:</p>
+</div>
+<div class="sect3">
+<h4 id="dsf-azure-pipelines.asciidoc_step-1-publish">Step 1: Publish</h4>
+<div class="paragraph">
+<p>Use this task in a pipeline to publish artifacts for the Azure Pipeline</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="yaml language-yaml">- task: PublishPipelineArtifact@0
+  inputs:
+    artifactName: 'Bad_Weather_Backend'
+    targetPath: '$(Build.ArtifactStagingDirectory)'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To know more about the use of predefined variables in azure take a look at the <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&amp;tabs=yaml">documentation</a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dsf-azure-pipelines.asciidoc_step-2-deployment">Step 2: Deployment</h4>
+<div class="paragraph">
+<p>Use this task to deploy to a range of App Services on Azure</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="yaml language-yaml">- task: AzureRmWebAppDeployment@4
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'bad-weather-poc-rs-bw-dev'
+    appType: 'webApp'
+    WebAppName: 'bwbackendbe'
+    packageForLinux: '$(build.artifactStagingDirectory)\WebApp.zip'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This task has 2 prerequisites:</p>
+</div>
+<div class="paragraph">
+<p>1-App Service instance:</p>
+</div>
+<div class="paragraph">
+<p>The task is used to deploy a Web App project or Azure Function project to an existing Azure App Service instance, which must exist before the task runs.</p>
+</div>
+<div class="paragraph">
+<p>2-Azure Subscription:</p>
+</div>
+<div class="paragraph">
+<p>In order to deploy to Azure, an Azure subscription must be <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/library/connect-to-azure?view=azure-devops">linked to the pipeline</a>.</p>
+</div>
+<div class="paragraph">
+<p>To know more about the input arguments for this task, make use of the offcial <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/azure-rm-web-app-deployment?view=azure-devops">documentation</a></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html#introduction-why-should-i-use-devonfw.asciidoc">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devon4j.asciidoc_architecture.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-ide-support.asciidoc.html#LICENSE.asciidoc">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2020-12-02 13:07:31 UTC
+</sub></div>
+</div>
+</div>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+</body>
+</html>
