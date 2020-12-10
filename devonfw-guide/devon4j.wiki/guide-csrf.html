@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Cross-site request forgery (CSRF)</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-csrf.asciidoc">Cross-site request forgery (CSRF)</a>
+<ul class="sectlevel1">
+<li><a href="#guide-csrf.asciidoc_secure-devon4j-server-against-csrf">Secure devon4j server against CSRF</a>
+<ul class="sectlevel2">
+<li><a href="#guide-csrf.asciidoc_dependency">Dependency</a></li>
+<li><a href="#guide-csrf.asciidoc_pluggable-web-security">Pluggable web-security</a></li>
+<li><a href="#guide-csrf.asciidoc_custom-csrfrequestmatcher">Custom CsrfRequestMatcher</a></li>
+<li><a href="#guide-csrf.asciidoc_csrfrestservice">CsrfRestService</a></li>
+<li><a href="#guide-csrf.asciidoc_how-it-works">How it works</a></li>
+</ul>
+</li>
+<li><a href="#guide-csrf.asciidoc_configure-devon4ng-client-for-csrf">Configure devon4ng client for CSRF</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-csrf.asciidoc" class="sect0">Cross-site request forgery (CSRF)</h1>
+<div class="paragraph">
+<p>CSRF is a type of malicious exploit of a web application that allows an attacker to induce users to perform actions that they do not intend to perform.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/jwt_flow.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/csrf.png" alt="csrf" width="450"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>More details about csrf can be found at <a href="https://owasp.org/www-community/attacks/csrf" class="bare">https://owasp.org/www-community/attacks/csrf</a>.</p>
+</div>
+<div class="sect1">
+<h2 id="guide-csrf.asciidoc_secure-devon4j-server-against-csrf">Secure devon4j server against CSRF</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In case your devon4j server application is not accessed by browsers or the web-client is using <a href="#guide-jwt.asciidoc">JWT based authentication</a>, you are already safe according to CSRF.
+However, if your application is accessed from a browser and you are using <em>form based authentication</em> (with session coockie) or <em>basic authentication</em>, you need to enable CSRF protection.
+This guide will tell you how to do this.</p>
+</div>
+<div class="sect2">
+<h3 id="guide-csrf.asciidoc_dependency">Dependency</h3>
+<div class="paragraph">
+<p>To secure your devon4j application against CSRF attacks, you only need to add the following dependency:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.devonfw.java.starters&lt;/groupId&gt;
+  &lt;artifactId&gt;devon4j-starter-security-csrf&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Starting with devon4j version <code>2020.12.001</code> application template, this is all you need to do.
+However, if you have started from an older version or you want to understand more, please read on.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-csrf.asciidoc_pluggable-web-security">Pluggable web-security</h3>
+<div class="paragraph">
+<p>To enable pluggable security via devon4j security starters you need to apply <code>WebSecurityConfigurer</code> to your <code>BaseWebSecurityConfig</code> (your class extending spring-boot&#8217;s <code>WebSecurityConfigurerAdapter</code>) as following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">  @Inject
+  private WebSecurityConfigurer webSecurityConfigurer;
+
+  public void configure(HttpSecurity http) throws Exception {
+    // disable CSRF protection by default, use csrf starter to override.
+	  http = http.csrf().disable();
+	  // apply pluggable web-security from devon4j security starters
+    http = this.webSecurityConfigurer.configure(http);
+    .....
+  }</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-csrf.asciidoc_custom-csrfrequestmatcher">Custom CsrfRequestMatcher</h3>
+<div class="paragraph">
+<p>If you want to customize which HTTP requests will require a CSRF token, you can implement your own <code>CsrfRequestMatcher</code> and provide it to the devon4j CSRF protection via qualified injection as following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Named("CsrfRequestMatcher")
+public class CsrfRequestMatcher implements RequestMatcher {
+  @Override
+  public boolean matches(HttpServletRequest request) {
+    .....
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Please note that the exact name (<code>@Named("CsrfRequestMatcher")</code>) is required here to ensure your custom implementation will be injected properly.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-csrf.asciidoc_csrfrestservice">CsrfRestService</h3>
+<div class="paragraph">
+<p>With the <code>devon4j-starter-security-csrf</code> the <code>CsrfRestService</code> gets integrated into your app.
+It provides an operation to get the CSRF token via an HTTP <code>GET</code> request.
+The URL path to retrieve this CSRF token is <code>services/rest/csrf/v1/token</code>.
+As a result you will get a JSON like the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="javascript language-javascript">{
+  "token":"3a8a5f66-c9eb-4494-81e1-7cc58bc3a519",
+  "parameterName":"_csrf",
+  "headerName":"X-CSRF-TOKEN"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>token</code> value is a strong random value that will differ for each user session.
+It has to be send with subsequent HTTP requests (when method is other than <code>GET</code>) in the specified header (<code>X-CSRF-TOKEN</code>).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-csrf.asciidoc_how-it-works">How it works</h3>
+<div class="paragraph">
+<p>Putting it all together, a browser client should call the <code>CsrfRestService</code> after successfull login to receive the current CSRF token.
+With every subsequent HTTP request (other than <code>GET</code>) the client has to send this token in the according HTTP header.
+Otherwise the server will reject the request to prevent CSRF attacks.
+Therefore, an attacker might make your browser perform HTTP requests towards your devon4j application backend via <code>&lt;image&gt;</code> elements, <code>&lt;iframes&gt;</code>, etc.
+Your browser will then still include your session coockie if you are already logged in (e.g. from another tab).
+However, in case he wants to trigger <code>DELETE</code> or <code>POST</code> requests trying your browser to make changes in the application (delete or update data, etc.) this will fail without CSRF token.
+The attacker may make your browser retrieve the CSRF token but he will not be able to retrieve the result and put it into the header of other requests due to the same-origin-policy.
+This way your application will be secured against CSRF attacks.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-csrf.asciidoc_configure-devon4ng-client-for-csrf">Configure devon4ng client for CSRF</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Devon4ng client configuration for CSRF is described <a href="https://github.com/devonfw/devon4ng/blob/develop/documentation/guide-consuming-rest-services">here</a></p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html#introduction-why-should-i-use-devonfw.asciidoc">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devon4j.asciidoc_architecture.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-ide-support.asciidoc.html#LICENSE.asciidoc">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2020-12-10 08:22:53 UTC
+</sub></div>
+</div>
+</div>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+</body>
+</html>
