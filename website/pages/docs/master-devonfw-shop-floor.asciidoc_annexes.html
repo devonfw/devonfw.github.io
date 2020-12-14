@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2020-12-14 10:03:47 UTC">
+<meta name="author" content="Updated at 2020-12-14 15:52:22 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -517,7 +517,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2020-12-14 10:04:08 UTC</span><br>
+<span id="author" class="author">Updated at 2020-12-14 15:52:44 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -2313,7 +2313,165 @@ These guides may be obsolete. You can find here the <a href="dsf-how-to-use.html
 <div class="sect2">
 <h3 id="master-devonfw-shop-floor.asciidoc_azure-devops">58.4. Azure DevOps</h3>
 <div class="sect3">
-<h4 id="create-an-azure-pipeline-from-scratch">58.4.1. Create an Azure pipeline from scratch</h4>
+<h4 id="dsf-azure-install-sonar-with-docker-in-a-virtual-machine.asciidoc_connect-to-a-virtual-machinevm-in-azure">58.4.1. Connect to a Virtual Machine(VM) in Azure</h4>
+<div class="sect5">
+<h6 id="dsf-azure-install-sonar-with-docker-in-a-virtual-machine.asciidoc_pre-requisites">Pre-requisites</h6>
+<div class="paragraph">
+<p>Have a VM created and a private key in order to connect to it</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="dsf-azure-install-sonar-with-docker-in-a-virtual-machine.asciidoc_establish-a-connection">Establish a connection</h6>
+<div class="paragraph">
+<p>1- Open the client of your choice(putty,cmder,bash)</p>
+</div>
+<div class="paragraph">
+<p>2- Ensure you have read-only access to the private key.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>chmod 400 azureuser.pem</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>3- Run this command to connect to your VM</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>ssh -i &lt;private key path&gt; azureuser@51.103.78.61</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>note: To get the IP go to your azure portal, click on your VM, click on <strong>Networking</strong> and you will find the IP needed to establish the connection</em></p>
+</div>
+<div class="paragraph">
+<p>You are connected:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/others/azure-sonarqube/vm-connection.png" alt="vm connection">
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dsf-azure-install-sonar-with-docker-in-a-virtual-machine.asciidoc_install-sonar-using-docker-and-docker-compose">58.4.2. Install Sonar using Docker and Docker-compose</h4>
+<div class="paragraph">
+<p>As an example we will use the practical case of Bad Weather, a project where we were asked to install Sonar inside a VM in Azure portal</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/others/azure-sonarqube/install-sonar.png" alt="install sonar">
+</div>
+</div>
+<div class="paragraph">
+<p>We had 2 possible scenarios, we went for the <strong>case A</strong> since no other service will be installed in this VM</p>
+</div>
+<div class="sect5">
+<h6 id="dsf-azure-install-sonar-with-docker-in-a-virtual-machine.asciidoc_steps">Steps</h6>
+<div class="paragraph">
+<p>1- Install docker and docker compose in the VM</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>sudo dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+sudo dnf list docker-ce
+sudo dnf install docker-ce --nobest -y
+sudo systemctl start docker
+sudo systemctl enable docker
+docker --version
+sudo dnf install curl -y
+sudo curl -L &quot;https://github.com/docker/compose/releases/download/1.25.0/docker-compose-$(uname -s)-$(uname -m)&quot; -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+docker-compose --version</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>2- Deploy SonarQube and Postgress</p>
+</div>
+<div class="paragraph">
+<p>2.1- Set necesary parameters for sonarqube</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>sudo sysctl -w vm.max_map_count=262144
+sudo sysctl -w fs.file-max=65536
+sudo ulimit -n 65536
+sudo ulimit -u 4096</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>2.2- Use docker-compose with the next definition to deploy it:</p>
+</div>
+<div class="paragraph">
+<p>vim /home/sonar/docker-compose.yaml</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>version: &quot;3&quot;
+
+services:
+  sonarqube:
+    image: &quot;sonarqube:7.9-community&quot;
+    networks:
+      - sonar
+    environment:
+      - sonar.jdbc.username=user
+      - sonar.jdbc.password=pass
+      - sonar.jdbc.url=jdbc:postgresql://sonarqube-db:5432/sonar
+    ports:
+      - &quot;80:9000&quot;
+	depends_on:
+      - &quot;sonarqube-db&quot;
+    volumes:
+      - &quot;$PWD/volumes/sonarqube/conf:/opt/sonarqube/conf&quot;
+      - &quot;$PWD/volumes/sonarqube/data:/opt/sonarqube/data&quot;
+      - &quot;$PWD/volumes/sonarqube/extensions:/opt/sonarqube/extensions&quot;
+      - &quot;$PWD/volumes/sonarqube/logs:/opt/sonarqube/logs&quot;
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+  sonarqube-db:
+    image: &quot;postgres:12-alpine&quot;
+    networks:
+      - sonar
+    volumes:
+      - &quot;$PWD/volumes/sonarqube-db/data:/var/lib/postgresql/data&quot;
+    environment:
+      - POSTGRES_USER=youruser
+      - POSTGRES_PASSWORD=yourpass
+      - POSTGRES_DB=sonar
+      - PGDATA=/var/lib/postgresql/data
+
+networks:
+  sonar:
+    driver: bridge</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>3- Update the start configuration to set automatically the correct values and run the docker-compose</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>vim /usr/local/sbin/start.sh
+
+sysctl -w vm.max_map_count=262144
+sysctl -w fs.file-max=65536
+ulimit -n 65536
+ulimit -u 4096
+
+cd /home/sonar &amp;&amp; docker-compose up -d</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Your Sonar is Up and running in your VM</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="create-an-azure-pipeline-from-scratch">58.4.3. Create an Azure pipeline from scratch</h4>
 <div class="paragraph">
 <p>The following steps will allow you to create a basic pipeline in Azure Devops from scratch</p>
 </div>
@@ -2322,7 +2480,7 @@ These guides may be obsolete. You can find here the <a href="dsf-how-to-use.html
 </div>
 </div>
 <div class="sect3">
-<h4 id="dsf-azure-pipelines.asciidoc_steps">58.4.2. Steps</h4>
+<h4 id="dsf-azure-pipelines.asciidoc_steps">58.4.4. Steps</h4>
 <div class="paragraph">
 <p>1- Sign in to your Azure DevOps organization and navigate to your project.</p>
 </div>
@@ -2540,13 +2698,13 @@ The name of this .yaml file is &apos;azure-pipelines.yaml&apos; wich is the defa
 </div>
 </div>
 <div class="sect3">
-<h4 id="dsf-azure-sonarqube-integration.asciidoc_integrate-the-sonarqube-plugin-in-an-azure-devops-pipeline">58.4.3. Integrate the SonarQube plugin in an Azure DevOps pipeline</h4>
+<h4 id="dsf-azure-sonarqube-integration.asciidoc_integrate-the-sonarqube-plugin-in-an-azure-devops-pipeline">58.4.5. Integrate the SonarQube plugin in an Azure DevOps pipeline</h4>
 <div class="paragraph">
 <p>The purpose of this readme is that you can configure your Azure Devops pipeline in order to be able to run a code analysis, analyse the code coverage and publish the results through the Sonar plugin.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="dsf-azure-sonarqube-integration.asciidoc_how-to-do-it">58.4.4. How to do it</h4>
+<h4 id="dsf-azure-sonarqube-integration.asciidoc_how-to-do-it">58.4.6. How to do it</h4>
 <div class="sect5">
 <h6 id="dsf-azure-sonarqube-integration.asciidoc_step-1-create-a-service-connection">Step 1: Create a service connection</h6>
 <div class="paragraph">
@@ -2644,7 +2802,7 @@ Publish Quality Gate result</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="install-and-use-custom-sonar-plugin-in-azure-devops">58.4.5. Install and use custom sonar plugin in Azure Devops</h4>
+<h4 id="install-and-use-custom-sonar-plugin-in-azure-devops">58.4.7. Install and use custom sonar plugin in Azure Devops</h4>
 <div class="paragraph">
 <p>By default, the sonar plugin is not capable to be used in every branch you want to, to do this you need to purchase a license or customize the current plugin in order to satisfy our needs.</p>
 </div>
@@ -4376,7 +4534,7 @@ assetConfig:
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2020-12-14 10:01:37 UTC
+Last updated 2020-12-14 15:50:01 UTC
 </sub></div>
 
 
