@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2020-12-14 15:52:22 UTC">
+<meta name="author" content="Updated at 2020-12-17 19:16:10 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -517,7 +517,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2020-12-14 15:52:44 UTC</span><br>
+<span id="author" class="author">Updated at 2020-12-17 19:16:25 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -2466,6 +2466,19 @@ cd /home/sonar &amp;&amp; docker-compose up -d</pre>
 </div>
 </div>
 <div class="paragraph">
+<p>4- Add this to execute the docker-compose file every time the machine turns on</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>crontab -e
+@reboot /usr/local/sbin/start.sh
+
+vim /etc/sysctl.conf
+vm.max_map_count=262144
+fs.file-max=65536</pre>
+</div>
+</div>
+<div class="paragraph">
 <p>Your Sonar is Up and running in your VM</p>
 </div>
 </div>
@@ -2698,13 +2711,82 @@ The name of this .yaml file is &apos;azure-pipelines.yaml&apos; wich is the defa
 </div>
 </div>
 <div class="sect3">
-<h4 id="dsf-azure-sonarqube-integration.asciidoc_integrate-the-sonarqube-plugin-in-an-azure-devops-pipeline">58.4.5. Integrate the SonarQube plugin in an Azure DevOps pipeline</h4>
+<h4 id="dsf-azure-connection-strings.asciidoc_connection-strings">58.4.5. CONNECTION STRINGS</h4>
+<div class="paragraph">
+<p>Once your database is created, you will need to connect that DB to your backend application, this can be made using <a href="https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/connection-strings"><strong>connection strings</strong></a>.</p>
+</div>
+<div class="sect5">
+<h6 id="dsf-azure-connection-strings.asciidoc_create-the-connection-string">CREATE THE CONNECTION STRING</h6>
+<div class="paragraph">
+<p>Go to the Azure portal,select the App Service that you want to connect with the DB, to be able to establish this connection, both your DB and your App Service must be under the same resource group.</p>
+</div>
+<div class="paragraph">
+<p>P.E</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/others/azure-connection-strings/resource-group.png" alt="resource group">
+</div>
+</div>
+<div class="paragraph">
+<p>As we can see here, both the app service and the DB exist under the same resource group &apos;BW-dev&apos;</p>
+</div>
+<div class="paragraph">
+<p>Select your app service and go to &apos;settings &gt; Configuration&apos;, scroll down looking for &apos;Connection strings&apos; and click on &quot;New connection string&quot;</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/others/azure-connection-strings/appservice.png" alt="appservice">
+</div>
+</div>
+<div class="paragraph">
+<p>Put the name you want(we&#x2019;ve put the name &apos;Context&apos;, this name will be used later in your appSettings.json) and select the DB type, and for fill the value box go to &apos;Home&gt;SQL databases&apos;, click on the target DB and click on &apos;Show database connection strings&apos;, copy the value that appears there and paste it in the value box.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/others/azure-connection-strings/db.png" alt="db">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/others/azure-connection-strings/connection-string.png" alt="connection string">
+</div>
+</div>
+<div class="paragraph">
+<p>Paste the connection string in the &apos;value&apos; box and click OK</p>
+</div>
+<div class="paragraph">
+<p>Your connection string has been created.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="dsf-azure-connection-strings.asciidoc_use-the-connection-string">USE THE CONNECTION STRING</h6>
+<div class="paragraph">
+<p>Go to your project, open the file AppSettings.json and add the connection string</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">  &quot;ConnectionStrings&quot;: {
+    &quot;Context&quot;: &quot;Source=(localdb)\\MSSQLLocalDB;Initial Catalog=my-db;Integrated Security=True;&quot;
+  }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Context is the name that we choose for the connection string that we&#x2019;ve created before and that value is only for local purposes.</p>
+</div>
+<div class="paragraph">
+<p><strong>When the application is deployed,the value for context will be replaced for the value of the connection string that we&#x2019;ve created in the earlier steps</strong>, using this we avoid to put the user and the password into the code and we use them as secrets that will be replaced in the deployment.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dsf-azure-sonarqube-integration.asciidoc_integrate-the-sonarqube-plugin-in-an-azure-devops-pipeline">58.4.6. Integrate the SonarQube plugin in an Azure DevOps pipeline</h4>
 <div class="paragraph">
 <p>The purpose of this readme is that you can configure your Azure Devops pipeline in order to be able to run a code analysis, analyse the code coverage and publish the results through the Sonar plugin.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="dsf-azure-sonarqube-integration.asciidoc_how-to-do-it">58.4.6. How to do it</h4>
+<h4 id="dsf-azure-sonarqube-integration.asciidoc_how-to-do-it">58.4.7. How to do it</h4>
 <div class="sect5">
 <h6 id="dsf-azure-sonarqube-integration.asciidoc_step-1-create-a-service-connection">Step 1: Create a service connection</h6>
 <div class="paragraph">
@@ -2802,7 +2884,7 @@ Publish Quality Gate result</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="install-and-use-custom-sonar-plugin-in-azure-devops">58.4.7. Install and use custom sonar plugin in Azure Devops</h4>
+<h4 id="install-and-use-custom-sonar-plugin-in-azure-devops">58.4.8. Install and use custom sonar plugin in Azure Devops</h4>
 <div class="paragraph">
 <p>By default, the sonar plugin is not capable to be used in every branch you want to, to do this you need to purchase a license or customize the current plugin in order to satisfy our needs.</p>
 </div>
@@ -4534,7 +4616,7 @@ assetConfig:
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2020-12-14 15:50:01 UTC
+Last updated 2020-12-17 19:13:59 UTC
 </sub></div>
 
 
