@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Introduction About How devonfw IDE manages Projects</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#projects-page.asciidoc_introduction-about-how-devonfw-ide-manages-projects">Introduction About How devonfw IDE manages Projects</a></li>
+<li><a href="#projects-page.asciidoc">Projects</a>
+<ul class="sectlevel1">
+<li><a href="#projects-page.asciidoc_how-to-create-a-project">How to create a project</a>
+<ul class="sectlevel3">
+<li><a href="#projects-page.asciidoc_3.1-creation">3.1 Creation</a></li>
+<li><a href="#projects-page.asciidoc_3.2-setup-installation">3.2 Setup installation</a></li>
+<li><a href="#projects-page.asciidoc_project-details-page">Project Details Page</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="sect1">
+<h2 id="projects-page.asciidoc_introduction-about-how-devonfw-ide-manages-projects">Introduction About How devonfw IDE manages Projects</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><strong>devonfw IDE</strong> manages multiple projects that include Angular, JAVA, and Node.<br></p>
+</li>
+<li>
+<p><strong>devonfw IDE</strong> provides rich UI for creating multiple projects, abstracting all the functionality which is usually required while creating an application like opening a command terminal, specifying workspace, and executing commands.<br></p>
+</li>
+<li>
+<p><strong>devonfw IDE</strong> makes it easy to see all the projects which are in different devonfw IDE workspace, just by changing the "devonfw Instance" dropdown.</p>
+</li>
+<li>
+<p><strong>devonfw IDE</strong> makes it very easy to open a project in a different IDE like Visual Studio or Eclipse respectively just by right click on the Project folder and open option.</p>
+</li>
+<li>
+<p><strong>devonfw IDE</strong> also makes it easy to delete the project, explore the project location.<br></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<h1 id="projects-page.asciidoc" class="sect0">Projects</h1>
+<div class="paragraph">
+<p>Click on the <strong>Projects</strong> link on the sidebar to navigate to the project&#8217;s screen. The screen looks simple and describes more about creating projects.<br></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/project_page/project_screen.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/project_page/project_screen.png" alt="Project Screen" width="600"></a>
+</div>
+</div>
+<div class="sect1">
+<h2 id="projects-page.asciidoc_how-to-create-a-project">How to create a project</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Three main steps are involved in creating any devonfw project. They are:<br></p>
+</div>
+<div class="paragraph">
+<p><strong>Step 1. Project Type</strong><br></p>
+</div>
+<div class="paragraph">
+<p>In this first step the user has to choose the language resp. technology to start the project with, e.g. <strong>JAVA</strong>, <strong>Angular</strong>, or <strong>Node</strong> and click the <strong>Next</strong> button for to continue to the next step.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/project_page/project_type.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/project_page/project_type.png" alt="Project Type" width="600"></a>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Step 2. Project Data</strong><br></p>
+</div>
+<div class="paragraph">
+<p>After the <strong>Project type</strong> selection, the second screen will appear for the user to fill up all the required fields. Once the user entered all the required fields, then the <strong>Next</strong> button will enable for the final step.<br></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/project_page/project_data.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/project_page/project_data.png" alt="Project Data" width="600"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>User can change the <strong>devonfw IDE</strong> workspace where the project is going to generate, just by changing the option in the <strong>devonfw instance</strong> dropdown which is set globally at the top of the project screen.<br></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/home_page/toolbar_workspace.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/home_page/toolbar_workspace.png" alt="Toolbar" width="600"></a>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Step 3. Execution</strong><br></p>
+</div>
+<div class="paragraph">
+<p>The execution step takes all the user entered data from the <strong>Project Data</strong> step and executes the respective commands to generate the project.<br></p>
+</div>
+<div class="paragraph">
+<p><strong>Execution</strong> has divided into two sections:<br>
+- Creation<br>
+- Setup Installation</p>
+</div>
+<div class="sect3">
+<h4 id="projects-page.asciidoc_3.1-creation">3.1 Creation</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Creates only source code and notify the user if the project creation fails or success.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/project_page/creation.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/project_page/creation.png" alt="Creation" width="600"></a>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>In case any network issue or technical issue and the user wants to re-run the <strong>Project execution</strong> process, then the <strong>Retry</strong> button will help to start the process again.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/project_page/retry.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/project_page/retry.png" alt="Retry" width="600"></a>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="projects-page.asciidoc_3.2-setup-installation">3.2 Setup installation</h4>
+<div class="paragraph">
+<p>Allows user to install the dependencies of application (maven modules for java, node modules for node, angular) by clicking <strong>Proceed</strong> button.<br></p>
+</div>
+<div class="paragraph">
+<p>The installation can be skipped by clicking <strong>cancel</strong> button.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/project_page/installation.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/project_page/installation.png" alt="Installation" width="600"></a>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Step 4.</strong> Click on <strong>Finish</strong> button to go to <strong>Project Details Screen</strong>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/project_page/project_details_screen.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/project_page/project_details_screen.png" alt="Project Details Screen" width="600"></a>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="projects-page.asciidoc_project-details-page">Project Details Page</h3>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/project_page/project_details_features.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/project_page/project_details_features.png" alt="Project Details Features" width="600"></a>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Project Details screen provides thorough information about the Project Details with respect to <strong>devonfw IDE</strong> instances. The screen describes as follow ( check the above screen for the reference ):<br></p>
+<div class="ulist">
+<ul>
+<li>
+<p>It shows the total number of projects available in each <strong>devonfw IDE</strong>.</p>
+</li>
+<li>
+<p>Filtering and searching the projects.</p>
+</li>
+<li>
+<p><strong>Add New Project</strong> - For creating a Project.</p>
+</li>
+<li>
+<p>Project folder which gives information about the project like which technology the project belongs to, the name of the project, and when it has created.</p>
+</li>
+<li>
+<p>There are many operations that are available on right-click on <strong>Project folder</strong> they are :</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Opening a project in different IDE ( Visual Studio or Eclipse )</p>
+</li>
+<li>
+<p>Enclosing Folder, and</p>
+</li>
+<li>
+<p>Deleting the project.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Users can see projects of different <strong>devonfw IDE</strong> workspace just by changing the option in the <strong>devonfw instance</strong> dropdown which is set globally at the top of the screen.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html#introduction-why-should-i-use-devonfw.asciidoc">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devon4j.asciidoc_architecture.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-ide-support.asciidoc.html#LICENSE.asciidoc">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2020-12-21 16:05:01 UTC
+</sub></div>
+</div>
+</div>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+</body>
+</html>
