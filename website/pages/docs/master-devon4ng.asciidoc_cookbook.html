@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2021-02-02 12:25:12 UTC">
+<meta name="author" content="Updated at 2021-02-02 19:04:21 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -517,7 +517,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2021-02-02 12:25:25 UTC</span><br>
+<span id="author" class="author">Updated at 2021-02-02 19:04:35 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -551,6 +551,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="master-devon4ng.asciidoc_cookbook.html#guide-angular-mock-service.asciidoc">21.2. Angular Mock Service</a>
 </li>
 <li><a href="master-devon4ng.asciidoc_cookbook.html#guide-cypress.asciidoc">21.3. Testing e2e with Cypress</a>
+</li>
+<li><a href="master-devon4ng.asciidoc_cookbook.html#guide-eslint.asciidoc">21.4. Angular ESLint support</a>
 </li>
 </ul>
 </li>
@@ -2001,6 +2003,100 @@ runTests();</code></pre>
 <p>On <a href="https://github.com/cypress-io/cypress-example-kitchensink">kitchensink</a>
 you can find an official cypress demo with all the comands being used.</p>
 </div>
+<!-- toc disabled -->
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-eslint.asciidoc">21.4. Angular ESLint support</h3>
+<div class="admonitionblock important">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+ESLint is supported in Angular 10.1.0 onwards.
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="sect3">
+<h4 id="guide-eslint.asciidoc_what-about-tslint">21.4.1. What about TSLint?</h4>
+<div class="paragraph">
+<p>TSLint is a fantastic tool. It is a linter that was written specifically to work based on the TypeScript AST format. This has advantages and disadvantages, as with most decisions we are faced with in software engineering!</p>
+</div>
+<div class="paragraph">
+<p>One advantage is there is no tooling required to reconcile differences between ESLint and TypeScript AST formats, but the major disadvantage is that the tool is therefore unable to reuse any of the previous work which has been done in the JavaScript ecosystem around linting, and it has to reimplement everything from scratch. Everything from rules to auto-fixing capabilities and more.</p>
+</div>
+<div class="paragraph">
+<p>However, the backers behind TSLint announced in 2019 that <strong>they would be deprecating TSLint in favor of supporting</strong> <code>typescript-eslint</code> in order to benefit the community. You can read more about that here: <a href="https://medium.com/palantir/tslint-in-2019-1a144c2317a9" class="bare">https://medium.com/palantir/tslint-in-2019-1a144c2317a9</a></p>
+</div>
+<div class="paragraph">
+<p>The TypeScript Team themselves also announced their plans to move the TypeScript codebase from TSLint to <code>typescript-eslint</code>, and they have been big supporters of this project. More details at <a href="https://github.com/microsoft/TypeScript/issues/30553" class="bare">https://github.com/microsoft/TypeScript/issues/30553</a></p>
+</div>
+<div class="paragraph">
+<p>Angular ESLint support comes from the <a href="https://github.com/angular-eslint/angular-eslint"><code>angular-eslint</code></a> tooling package. Angular documentation also links to this repository as you can check in the <a href="https://angular.io/cli/lint"><code>ng lint</code> section</a> of the Angular CLI documentation.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-eslint.asciidoc_quick-start-with-angular-and-eslint">21.4.2. Quick start with Angular and ESLint</h4>
+<div class="paragraph">
+<p>In order to create a brand new Angular CLI workspace which uses ESLint instead of TSLint and Codelyzer, simply run the following commands:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash"># Install the Angular CLI and @angular-eslint/schematics globally however you want (e.g. npm, yarn, volta etc)
+
+$ npm i -g @angular/cli @angular-devkit/core @angular-devkit/schematics @angular-eslint/schematics
+
+# Create a new Angular CLI workspace using the @angular-eslint/schematics collection (instead of the default)
+
+$ ng new --collection=@angular-eslint/schematics</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-eslint.asciidoc_migrating-an-angular-cli-project-from-codelyzer-and-tslint">21.4.3. Migrating an Angular CLI project from Codelyzer and TSLint</h4>
+<div class="sect4">
+<h5 id="guide-eslint.asciidoc_1---add-relevant-dependencies">1 - Add relevant dependencies</h5>
+<div class="paragraph">
+<p>The first step is to run the schematic to add <code>@angular-eslint</code> to your project:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ ng add @angular-eslint/schematics</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will handle installing the latest version of all the relevant packages for you and adding them to the devDependencies of your package.json.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guide-eslint.asciidoc_2---run-the-convert-tslint-to-eslint-schematic-on-a-project">2 - Run the convert-tslint-to-eslint schematic on a project</h5>
+<div class="paragraph">
+<p>The next thing to do is consider which &quot;project&quot; you want to migrate to use ESLint. If you have a single application in your workspace you will likely have just a single entry in the projects configuration object within your <code>angular.json</code> file. If you have a <code>projects/`</code> directory in your workspace, you will have multiple entries in your <code>projects</code> configuration and you will need to chose which one you want to migrate using the <code>convert-tslint-to-eslint</code> schematic.</p>
+</div>
+<div class="paragraph">
+<p>You can run it like so:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-bash" data-lang="bash">$ ng g @angular-eslint/schematics:convert-tslint-to-eslint {{YOUR_PROJECT_NAME_GOES_HERE}}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>From now on, <code>ng lint</code> will use ESLint!</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guide-eslint.asciidoc_3---remove-root-tslint-configuration-and-use-only-eslint">3 - Remove root TSLint configuration and use only ESLint</h5>
+<div class="paragraph">
+<p>Once you are happy with your ESLint setup, you simply need to remove the root-level <code>tslint.json</code> and potentially uninstall TSLint and any TSLint-related plugins/dependencies if your Angular CLI workspace is now no longer using TSLint at all.</p>
+</div>
+<div class="paragraph">
+<p>More info at <a href="https://github.com/angular-eslint/angular-eslint" class="bare">https://github.com/angular-eslint/angular-eslint</a></p>
+</div>
 </div>
 </div>
 </div>
@@ -2138,7 +2234,7 @@ you can find an official cypress demo with all the comands being used.</p>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-02-02 12:22:46 UTC
+Last updated 2021-02-02 19:01:53 UTC
 </sub></div>
 
 
