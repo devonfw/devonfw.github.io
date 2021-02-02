@@ -2,4 +2,5 @@
 
 **Implements**
 
-* 
+* [ ] code formatted
+* [ ] warnings removed

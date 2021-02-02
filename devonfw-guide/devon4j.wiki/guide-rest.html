@@ -448,12 +448,12 @@ Now your service may throw exceptions but the façade with automatically handle 
 <p><strong>HTTP Method</strong>: <code>GET</code></p>
 </li>
 <li>
-<p><strong>URL example</strong>: <code>/products/123</code></p>
+<p><strong>URL example</strong>: <code>/services/rest/productmanagement/v1/product/123</code></p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>For loading of a single resource, embed the <code>identifier</code> of the resource in the URL (for example <code>/products/123</code>).</p>
+<p>For loading of a single resource, embed the <code>identifier</code> (e.g. <code>123</code>) of the resource in the URL.</p>
 </div>
 <div class="paragraph">
 <p>The response contains the resource in JSON format, using a JSON object at the top-level, for example:</p>
@@ -461,8 +461,9 @@ Now your service may throw exceptions but the façade with automatically handle 
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="javascript language-javascript">{
-    "name": "Steak",
-    "color": "brown"
+  "id": 123,
+  "name": "Steak",
+  "color": "brown"
 }</code></pre>
 </div>
 </div>
@@ -475,7 +476,7 @@ Now your service may throw exceptions but the façade with automatically handle 
 <p><strong>HTTP Method</strong>: <code>GET</code></p>
 </li>
 <li>
-<p><strong>URL example</strong>: <code>/products</code></p>
+<p><strong>URL example</strong>: <code>/services/rest/productmanagement/v1/product</code></p>
 </li>
 </ul>
 </div>
@@ -488,16 +489,18 @@ Now your service may throw exceptions but the façade with automatically handle 
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="javascript language-javascript">{
-    "result": [
-        {
-            "name": "Steak",
-            "color": "brown"
-        },
-        {
-            "name": "Broccoli",
-            "color": "green"
-        }
-    ]
+  "result": [
+    {
+      "id": 123,
+      "name": "Steak",
+      "color": "brown"
+    },
+    {
+      "id": 124,
+      "name": "Broccoli",
+      "color": "green"
+    }
+  ]
 }</code></pre>
 </div>
 </div>
@@ -510,7 +513,7 @@ Now your service may throw exceptions but the façade with automatically handle 
 <p><strong>HTTP Method</strong>: <code>POST</code></p>
 </li>
 <li>
-<p><strong>URL example</strong>: <code>/products</code></p>
+<p><strong>URL example</strong>: <code>/services/rest/productmanagement/v1/product</code></p>
 </li>
 </ul>
 </div>
@@ -518,7 +521,7 @@ Now your service may throw exceptions but the façade with automatically handle 
 <p>The resource will be passed via JSON in the request body. If updating an existing resource, include the resource&#8217;s <code>identifier</code> in the JSON and not in the URL, in order to avoid ambiguity.</p>
 </div>
 <div class="paragraph">
-<p>If saving was successful, an empty HTTP 204 response is generated.</p>
+<p>If saving was successful, the updated product (e.g. with assigned ID or updated modification counter) is returned.</p>
 </div>
 <div class="paragraph">
 <p>If saving was unsuccessful, refer below for the format to return errors to the client.</p>
@@ -532,7 +535,7 @@ Now your service may throw exceptions but the façade with automatically handle 
 <p><strong>HTTP Method</strong>: <code>POST</code></p>
 </li>
 <li>
-<p><strong>URL example</strong>: <code>/products/search</code></p>
+<p><strong>URL example</strong>: <code>/services/rest/productmanagement/v1/product/search</code></p>
 </li>
 </ul>
 </div>
@@ -542,11 +545,11 @@ Now your service may throw exceptions but the façade with automatically handle 
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="javascript language-javascript">{
-    "status": "OPEN",
-    "pagination": {
-        "page": 2,
-        "size": 25
-    }
+  "status": "OPEN",
+  "pagination": {
+    "page": 2,
+    "size": 25
+  }
 }</code></pre>
 </div>
 </div>
@@ -556,21 +559,23 @@ Now your service may throw exceptions but the façade with automatically handle 
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="javascript language-javascript">{
-    "pagination": {
-        "page": 2,
-        "size": 25,
-        "total": null
+  "pagination": {
+    "page": 2,
+    "size": 25,
+    "total": null
+  },
+  "result": [
+    {
+      "id": 123,
+      "name": "Steak",
+      "color": "brown"
     },
-    "result": [
-        {
-            "name": "Steak",
-            "color": "brown"
-        },
-        {
-            "name": "Broccoli",
-            "color": "green"
-        }
-    ]
+    {
+      "id": 124,
+      "name": "Broccoli",
+      "color": "green"
+    }
+  ]
 }</code></pre>
 </div>
 </div>
@@ -579,7 +584,7 @@ Now your service may throw exceptions but the façade with automatically handle 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="java language-java">@Path("/category/search")
+<pre class="highlight"><code class="java language-java">  @Path("/category/search")
   @POST
   public PaginatedListTo&lt;CategoryEto&gt; findCategorysByPost(CategorySearchCriteriaTo searchCriteriaTo) {
     return this.dishmanagement.findCategoryEtos(searchCriteriaTo);
@@ -624,12 +629,12 @@ Now your service may throw exceptions but the façade with automatically handle 
 <p><strong>HTTP Method</strong>: <code>DELETE</code></p>
 </li>
 <li>
-<p><strong>URL example</strong>: <code>/products/123</code></p>
+<p><strong>URL example</strong>: <code>/services/rest/productmanagement/v1/product/123</code></p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>For deletion of a single resource, embed the <code>identifier</code> of the resource in the URL (for example <code>/products/123</code>).</p>
+<p>For deletion of a single resource, embed the <code>identifier</code> of the resource in the URL.</p>
 </div>
 </div>
 <div class="sect2">
@@ -640,9 +645,9 @@ Now your service may throw exceptions but the façade with automatically handle 
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="javascript language-javascript">{
-    "message": "A human-readable message describing the error",
-    "code": "A code identifying the concrete error",
-    "uuid": "An identifier (generally the correlation id) to help identify corresponding requests in logs"
+  "message": "A human-readable message describing the error",
+  "code": "A code identifying the concrete error",
+  "uuid": "An identifier (generally the correlation id) to help identify corresponding requests in logs"
 }</code></pre>
 </div>
 </div>
@@ -652,16 +657,16 @@ Now your service may throw exceptions but the façade with automatically handle 
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="javascript language-javascript">{
-    "message": "A human-readable message describing the error",
-    "code": "A code identifying the concrete error",
-    "uuid": "An identifier (generally the correlation id) to help identify corresponding requests in logs",
-    "errors": {
-        "property failing validation": [
-            "First error message on this property",
-            "Second error message on this property"
-        ],
-        // ....
-    }
+  "message": "A human-readable message describing the error",
+  "code": "A code identifying the concrete error",
+  "uuid": "An identifier (generally the correlation id) to help identify corresponding requests in logs",
+  "errors": {
+    "property failing validation": [
+       "First error message on this property",
+       "Second error message on this property"
+    ],
+    // ....
+  }
 }</code></pre>
 </div>
 </div>
@@ -706,10 +711,7 @@ Now your service may throw exceptions but the façade with automatically handle 
 <div class="sect2">
 <h3 id="guide-rest.asciidoc_csrf">CSRF</h3>
 <div class="paragraph">
-<p>A common security threat is <a href="https://www.owasp.org/index.php/Top_10_2013-A8-Cross-Site_Request_Forgery_(CSRF)">CSRF</a> for REST services. Therefore all REST operations that are performing modifications (PUT, POST, DELETE, etc. - all except GET) have to be secured against CSRF attacks. In devon4j we are using spring-security that already solves CSRF token generation and verification. The integration is part of the application template as well as the sample-application.</p>
-</div>
-<div class="paragraph">
-<p>For testing in development environment the CSRF protection can be disabled using the JVM option <code>-DCsrfDisabled=true</code> when starting the application.</p>
+<p>A common security threat is <a href="https://www.owasp.org/index.php/Top_10_2013-A8-Cross-Site_Request_Forgery_(CSRF)">CSRF</a> for REST services. Therefore all REST operations that are performing modifications (PUT, POST, DELETE, etc. - all except GET) have to be secured against CSRF attacks. See <a href="#guide-csrf.asciidoc">CSRF</a> how to do this.</p>
 </div>
 </div>
 <div class="sect2">
@@ -857,7 +859,7 @@ Now your service may throw exceptions but the façade with automatically handle 
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-02-01 19:42:11 UTC
+Last updated 2021-02-02 12:20:35 UTC
 </sub></div>
 </div>
 </div>

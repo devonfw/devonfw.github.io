@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2021-02-01 19:48:02 UTC">
+<meta name="author" content="Updated at 2021-02-02 12:25:12 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -517,7 +517,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2021-02-01 19:48:16 UTC</span><br>
+<span id="author" class="author">Updated at 2021-02-02 12:25:25 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -5300,12 +5300,12 @@ Now your service may throw exceptions but the fa&#xE7;ade with automatically han
 <p><strong>HTTP Method</strong>: <code>GET</code></p>
 </li>
 <li>
-<p><strong>URL example</strong>: <code>/products/123</code></p>
+<p><strong>URL example</strong>: <code>/services/rest/productmanagement/v1/product/123</code></p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>For loading of a single resource, embed the <code>identifier</code> of the resource in the URL (for example <code>/products/123</code>).</p>
+<p>For loading of a single resource, embed the <code>identifier</code> (e.g. <code>123</code>) of the resource in the URL.</p>
 </div>
 <div class="paragraph">
 <p>The response contains the resource in JSON format, using a JSON object at the top-level, for example:</p>
@@ -5313,8 +5313,9 @@ Now your service may throw exceptions but the fa&#xE7;ade with automatically han
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-javascript" data-lang="javascript">{
-    &quot;name&quot;: &quot;Steak&quot;,
-    &quot;color&quot;: &quot;brown&quot;
+  &quot;id&quot;: 123,
+  &quot;name&quot;: &quot;Steak&quot;,
+  &quot;color&quot;: &quot;brown&quot;
 }</code></pre>
 </div>
 </div>
@@ -5327,7 +5328,7 @@ Now your service may throw exceptions but the fa&#xE7;ade with automatically han
 <p><strong>HTTP Method</strong>: <code>GET</code></p>
 </li>
 <li>
-<p><strong>URL example</strong>: <code>/products</code></p>
+<p><strong>URL example</strong>: <code>/services/rest/productmanagement/v1/product</code></p>
 </li>
 </ul>
 </div>
@@ -5340,16 +5341,18 @@ Now your service may throw exceptions but the fa&#xE7;ade with automatically han
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-javascript" data-lang="javascript">{
-    &quot;result&quot;: [
-        {
-            &quot;name&quot;: &quot;Steak&quot;,
-            &quot;color&quot;: &quot;brown&quot;
-        },
-        {
-            &quot;name&quot;: &quot;Broccoli&quot;,
-            &quot;color&quot;: &quot;green&quot;
-        }
-    ]
+  &quot;result&quot;: [
+    {
+      &quot;id&quot;: 123,
+      &quot;name&quot;: &quot;Steak&quot;,
+      &quot;color&quot;: &quot;brown&quot;
+    },
+    {
+      &quot;id&quot;: 124,
+      &quot;name&quot;: &quot;Broccoli&quot;,
+      &quot;color&quot;: &quot;green&quot;
+    }
+  ]
 }</code></pre>
 </div>
 </div>
@@ -5362,7 +5365,7 @@ Now your service may throw exceptions but the fa&#xE7;ade with automatically han
 <p><strong>HTTP Method</strong>: <code>POST</code></p>
 </li>
 <li>
-<p><strong>URL example</strong>: <code>/products</code></p>
+<p><strong>URL example</strong>: <code>/services/rest/productmanagement/v1/product</code></p>
 </li>
 </ul>
 </div>
@@ -5370,7 +5373,7 @@ Now your service may throw exceptions but the fa&#xE7;ade with automatically han
 <p>The resource will be passed via JSON in the request body. If updating an existing resource, include the resource&#x2019;s <code>identifier</code> in the JSON and not in the URL, in order to avoid ambiguity.</p>
 </div>
 <div class="paragraph">
-<p>If saving was successful, an empty HTTP 204 response is generated.</p>
+<p>If saving was successful, the updated product (e.g. with assigned ID or updated modification counter) is returned.</p>
 </div>
 <div class="paragraph">
 <p>If saving was unsuccessful, refer below for the format to return errors to the client.</p>
@@ -5384,7 +5387,7 @@ Now your service may throw exceptions but the fa&#xE7;ade with automatically han
 <p><strong>HTTP Method</strong>: <code>POST</code></p>
 </li>
 <li>
-<p><strong>URL example</strong>: <code>/products/search</code></p>
+<p><strong>URL example</strong>: <code>/services/rest/productmanagement/v1/product/search</code></p>
 </li>
 </ul>
 </div>
@@ -5394,11 +5397,11 @@ Now your service may throw exceptions but the fa&#xE7;ade with automatically han
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-javascript" data-lang="javascript">{
-    &quot;status&quot;: &quot;OPEN&quot;,
-    &quot;pagination&quot;: {
-        &quot;page&quot;: 2,
-        &quot;size&quot;: 25
-    }
+  &quot;status&quot;: &quot;OPEN&quot;,
+  &quot;pagination&quot;: {
+    &quot;page&quot;: 2,
+    &quot;size&quot;: 25
+  }
 }</code></pre>
 </div>
 </div>
@@ -5408,21 +5411,23 @@ Now your service may throw exceptions but the fa&#xE7;ade with automatically han
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-javascript" data-lang="javascript">{
-    &quot;pagination&quot;: {
-        &quot;page&quot;: 2,
-        &quot;size&quot;: 25,
-        &quot;total&quot;: null
+  &quot;pagination&quot;: {
+    &quot;page&quot;: 2,
+    &quot;size&quot;: 25,
+    &quot;total&quot;: null
+  },
+  &quot;result&quot;: [
+    {
+      &quot;id&quot;: 123,
+      &quot;name&quot;: &quot;Steak&quot;,
+      &quot;color&quot;: &quot;brown&quot;
     },
-    &quot;result&quot;: [
-        {
-            &quot;name&quot;: &quot;Steak&quot;,
-            &quot;color&quot;: &quot;brown&quot;
-        },
-        {
-            &quot;name&quot;: &quot;Broccoli&quot;,
-            &quot;color&quot;: &quot;green&quot;
-        }
-    ]
+    {
+      &quot;id&quot;: 124,
+      &quot;name&quot;: &quot;Broccoli&quot;,
+      &quot;color&quot;: &quot;green&quot;
+    }
+  ]
 }</code></pre>
 </div>
 </div>
@@ -5431,7 +5436,7 @@ Now your service may throw exceptions but the fa&#xE7;ade with automatically han
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Path(&quot;/category/search&quot;)
+<pre class="highlight"><code class="language-java" data-lang="java">  @Path(&quot;/category/search&quot;)
   @POST
   public PaginatedListTo&lt;CategoryEto&gt; findCategorysByPost(CategorySearchCriteriaTo searchCriteriaTo) {
     return this.dishmanagement.findCategoryEtos(searchCriteriaTo);
@@ -5476,12 +5481,12 @@ Now your service may throw exceptions but the fa&#xE7;ade with automatically han
 <p><strong>HTTP Method</strong>: <code>DELETE</code></p>
 </li>
 <li>
-<p><strong>URL example</strong>: <code>/products/123</code></p>
+<p><strong>URL example</strong>: <code>/services/rest/productmanagement/v1/product/123</code></p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>For deletion of a single resource, embed the <code>identifier</code> of the resource in the URL (for example <code>/products/123</code>).</p>
+<p>For deletion of a single resource, embed the <code>identifier</code> of the resource in the URL.</p>
 </div>
 </div>
 <div class="sect4">
@@ -5492,9 +5497,9 @@ Now your service may throw exceptions but the fa&#xE7;ade with automatically han
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-javascript" data-lang="javascript">{
-    &quot;message&quot;: &quot;A human-readable message describing the error&quot;,
-    &quot;code&quot;: &quot;A code identifying the concrete error&quot;,
-    &quot;uuid&quot;: &quot;An identifier (generally the correlation id) to help identify corresponding requests in logs&quot;
+  &quot;message&quot;: &quot;A human-readable message describing the error&quot;,
+  &quot;code&quot;: &quot;A code identifying the concrete error&quot;,
+  &quot;uuid&quot;: &quot;An identifier (generally the correlation id) to help identify corresponding requests in logs&quot;
 }</code></pre>
 </div>
 </div>
@@ -5504,16 +5509,16 @@ Now your service may throw exceptions but the fa&#xE7;ade with automatically han
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-javascript" data-lang="javascript">{
-    &quot;message&quot;: &quot;A human-readable message describing the error&quot;,
-    &quot;code&quot;: &quot;A code identifying the concrete error&quot;,
-    &quot;uuid&quot;: &quot;An identifier (generally the correlation id) to help identify corresponding requests in logs&quot;,
-    &quot;errors&quot;: {
-        &quot;property failing validation&quot;: [
-            &quot;First error message on this property&quot;,
-            &quot;Second error message on this property&quot;
-        ],
-        // ....
-    }
+  &quot;message&quot;: &quot;A human-readable message describing the error&quot;,
+  &quot;code&quot;: &quot;A code identifying the concrete error&quot;,
+  &quot;uuid&quot;: &quot;An identifier (generally the correlation id) to help identify corresponding requests in logs&quot;,
+  &quot;errors&quot;: {
+    &quot;property failing validation&quot;: [
+       &quot;First error message on this property&quot;,
+       &quot;Second error message on this property&quot;
+    ],
+    // ....
+  }
 }</code></pre>
 </div>
 </div>
@@ -5552,10 +5557,7 @@ Now your service may throw exceptions but the fa&#xE7;ade with automatically han
 <div class="sect4">
 <h5 id="guide-rest.asciidoc_csrf">CSRF</h5>
 <div class="paragraph">
-<p>A common security threat is <a href="https://www.owasp.org/index.php/Top_10_2013-A8-Cross-Site_Request_Forgery_(CSRF)">CSRF</a> for REST services. Therefore all REST operations that are performing modifications (PUT, POST, DELETE, etc. - all except GET) have to be secured against CSRF attacks. In devon4j we are using spring-security that already solves CSRF token generation and verification. The integration is part of the application template as well as the sample-application.</p>
-</div>
-<div class="paragraph">
-<p>For testing in development environment the CSRF protection can be disabled using the JVM option <code>-DCsrfDisabled=true</code> when starting the application.</p>
+<p>A common security threat is <a href="https://www.owasp.org/index.php/Top_10_2013-A8-Cross-Site_Request_Forgery_(CSRF)">CSRF</a> for REST services. Therefore all REST operations that are performing modifications (PUT, POST, DELETE, etc. - all except GET) have to be secured against CSRF attacks. See <a href="devon4j.asciidoc_guides.html#guide-csrf.asciidoc">CSRF</a> how to do this.</p>
 </div>
 </div>
 <div class="sect4">
@@ -8951,7 +8953,7 @@ To configure this you may use the healthcheck of the service to find out if the 
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-02-01 19:45:00 UTC
+Last updated 2021-02-02 12:22:46 UTC
 </sub></div>
 
 
