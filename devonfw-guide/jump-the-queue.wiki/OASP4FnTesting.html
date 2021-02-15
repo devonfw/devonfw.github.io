@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Testing of OASP4Fn Applications</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#OASP4FnTesting.asciidoc">Testing of OASP4Fn Applications</a>
+<ul class="sectlevel1">
+<li><a href="#oasp4fntesting.asciidoc_install-global-dependencies">Install Global Dependencies</a></li>
+<li><a href="#oasp4fntesting.asciidoc_writing-the-tests">Writing the Tests</a>
+<ul class="sectlevel2">
+<li><a href="#oasp4fntesting.asciidoc_setting-up-file">Setting up File</a></li>
+<li><a href="#oasp4fntesting.asciidoc_add-tests-of-the-handlers">Add Tests of the Handlers</a></li>
+<li><a href="#oasp4fntesting.asciidoc_add-an-after-hook">Add an after Hook</a></li>
+<li><a href="#oasp4fntesting.asciidoc_final-result">Final Result</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="OASP4FnTesting.asciidoc" class="sect0">Testing of OASP4Fn Applications</h1>
+<div class="paragraph">
+<p>In this chapter we are going to learn how to tests applications in OASP4Fn using the <a href="http://mochajs.org/">mocha</a> framework and the <a href="http://chaijs.com/">chai</a> assertion library.</p>
+</div>
+<div class="sect1">
+<h2 id="oasp4fntesting.asciidoc_install-global-dependencies">Install Global Dependencies</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As the title says in this section we&#8217;re going to specify the global dependencies that we need to run our tests, that only are the test framework and the typescript interpreter:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>yarn global add mocha
+yarn global add ts-node</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>No more dependencies are needed, because we start our project with the oasp4fn application template and the local part of the test dependencies are specified as dev-dependencies at the <em>package.json</em>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="oasp4fntesting.asciidoc_writing-the-tests">Writing the Tests</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Once we have all the dependencies installed, it&#8217;s time to put hands on the tests.</p>
+</div>
+<div class="sect2">
+<h3 id="oasp4fntesting.asciidoc_setting-up-file">Setting up File</h3>
+<div class="paragraph">
+<p>First of all we are going to import all the handlers we are going to test in our file/s (in our case only in test/Http/Post.ts), our typings and the every time useful <em>lodash</em> package, so the head of our test file will look like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">import { HttpEvent, Context, Code } from '../../handlers/types';
+import { register } from '../../handlers/Http/POST/register-handler';
+import { search } from '../../handlers/Http/POST/search-handler';
+import { expect } from 'chai';
+import * as _ from 'lodash';</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Next we are going to define our tests to the <em>register</em> handler, that specify the behavior of our handler, like isn&#8217;t really complex, we are going to specify that should return an object with, and we will have something like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">import { HttpEvent, Context, Code } from '../../handlers/types';
+import { register } from '../../handlers/Http/POST/register-handler';
+import { search } from '../../handlers/Http/POST/search-handler';
+import { expect } from 'chai';
+import * as _ from 'lodash';
+
+describe('register', function () {
+    it('The register should return an object, with the code and dateAndTime properties');
+});</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If we execute this test with <code>yarn test</code> we should see that we only have one test and is in a pending state:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/oasp4fn/3.BuildYourOwn/yarn_test1.PNG" alt="Yarn Test">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="oasp4fntesting.asciidoc_add-tests-of-the-handlers">Add Tests of the Handlers</h3>
+<div class="paragraph">
+<p>Now is time to call the function and check his behavior, first of all execute <code>yarn test:auto</code> to watch for changes and execute the tests automatically, next write your test:</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-important" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Keep in mind that if you don&#8217;t have the instace of the database running, as is specified in <a href="BuildOASP4FnApplication.html#local-database-set-up">this section</a>, the tests won&#8217;t pass.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">import { HttpEvent, Context, Code } from '../../handlers/types';
+import { register } from '../../handlers/Http/POST/register-handler';
+import { search } from '../../handlers/Http/POST/search-handler';
+import { expect } from 'chai';
+import * as _ from 'lodash';
+
+const EVENT = {
+    method: 'POST',
+    path: {},
+    body: {},
+    query: {},
+    headers: {}
+}
+
+let context: Context;
+
+describe('register', function () {
+    this.timeout(6000);
+    it('The register should return an object, with the code and dateAndTime properties', (done: Function) =&gt; {
+        let event =  &lt;HttpEvent&gt;_.assign({ body: { "name": "David", "email": "somenthing@something.com", "phone": "658974145"}}, EVENT);
+        register(event, context, (err: Error, res: Code) =&gt; {
+            try {
+                expect(err).to.be.null;
+                expect(res).to.be.an('object').that.contains.all.keys('code', 'dateAndTime');
+                done();
+            }
+            catch(error){
+                done(error);
+            }
+        })
+    });
+});</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that we declare and instantiate a HttpEvent and only declare the Context, that&#8217;s why we don&#8217;t use the context variable inside our handlers but our event variable yes.</p>
+</div>
+<div class="paragraph">
+<p>Also, realise that we have modified the mocha default timeout (that is 2000ms) to 6000ms, and we change it to match the default AWS lambda timeout. Be careful here, and look that the function passed to the <em>describe</em> is not an arrow function, that&#8217;s because the scope of an arrow function is bounded when it&#8217;s created not when it&#8217;s called, so if that function would been an arrow function we couldn&#8217;t have acces to the mocha methods and properties.</p>
+</div>
+<div class="paragraph">
+<p>Once we have tested the <em>register</em> handler, we have to add tests for the <em>search</em> handler, so you have to repeat the last process until you have something like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">describe('search', function () {
+    this.timeout(6000);
+    it('The search should return an array with the items of the table Queue', (done: Function) =&gt; {
+        search(EVENT, context, (err: Error, res: object[]) =&gt; {
+            try {
+                expect(err).to.be.null;
+                expect(res).to.be.an('Array');
+                res.forEach(obj =&gt; {
+                    expect(obj).to.be.an('object');
+                    expect(obj).to.contain.all.keys(
+                        ['name', 'email', 'phone', 'code', 'dateAndTime']
+                    );
+                })
+                done();
+            }
+            catch(error){
+                done(error);
+            }
+        })
+    });
+});</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="oasp4fntesting.asciidoc_add-an-after-hook">Add an after Hook</h3>
+<div class="paragraph">
+<p>Finally, it&#8217;s worth to point that we are inserting test data into our database, so we should erase them if it&#8217;s necessary after executing the test, for do this, we are going to add a hook that will execute at the end of our tests, and will erase a visitor if we had inserted any, using OASP4Fn, so for that we are going to import OASP4Fn in our file, store the code of the inserted visitor and delete it if it had been inserted successfully, so our hook will look like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">after(async () =&gt; {
+    if(code)
+        await oasp4fn.delete('Queue', code).promise();
+});</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Keep in mind that the variable <em>code</em> is the property code located in the returned object of the handler <em>register</em> that you should store, when his callback return it.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="oasp4fntesting.asciidoc_final-result">Final Result</h3>
+<div class="paragraph">
+<p>So, at the end of the road we have this test file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">import { HttpEvent, Context, Code } from '../../handlers/types';
+import { register } from '../../handlers/Http/POST/register-handler';
+import { search } from '../../handlers/Http/POST/search-handler';
+import { expect } from 'chai';
+import * as _ from 'lodash';
+import oasp4fn from '@oasp/oasp4fn';
+
+const EVENT = {
+    method: 'POST',
+    path: {},
+    body: {},
+    query: {},
+    headers: {}
+}
+
+let context: Context;
+
+let code: string;
+
+describe('register', () =&gt; {
+    it('The register should return an object, with the code and dateAndTime properties', (done: Function) =&gt; {
+        let event =  &lt;HttpEvent&gt;_.assign({}, EVENT, { body: { "name": "David", "email": "somenthing@something.com", "phone": "658974145"}});
+        register(event, context, (err: Error, res: Code) =&gt; {
+            try {
+                expect(err).to.be.null;
+                expect(res).to.be.an('object').that.contains.all.keys('code', 'dateAndTime');
+                code = res.code;
+                done();
+            }
+            catch(error){
+                done(error);
+            }
+        })
+    });
+});
+
+describe('search', () =&gt; {
+    it('The search should return an array with the items of the table Queue', (done: Function) =&gt; {
+        search(EVENT, context, (err: Error, res: object[]) =&gt; {
+            try {
+                expect(err).to.be.null;
+                expect(res).to.be.an('Array');
+                res.forEach(obj =&gt; {
+                    expect(obj).to.be.an('object');
+                    expect(obj).to.contain.all.keys(
+                        ['name', 'email', 'phone', 'code', 'dateAndTime']
+                    );
+                })
+                done();
+            }
+            catch(error){
+                done(error);
+            }
+        })
+    });
+});
+
+after(async () =&gt; {
+    if(code)
+        await oasp4fn.delete('Queue', code).promise();
+});</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And the output console look like this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/oasp4fn/3.BuildYourOwn/yarn_test2.png" alt="Yarn Test">
+</div>
+</div>
+<hr>
+<div class="paragraph">
+<p><strong>Next Chapter</strong>: <a href="#OASP4FnDeployment.asciidoc">Deploy your OASP4Fn App</a></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html#introduction-why-should-i-use-devonfw.asciidoc">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devon4j.asciidoc_architecture.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-ide-support.asciidoc.html#LICENSE.asciidoc">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2021-02-15 07:10:29 UTC
+</sub></div>
+</div>
+</div>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+</body>
+</html>

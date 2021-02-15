@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>devon4j Validations</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#devon4j-validations.asciidoc">devon4j Validations</a>
+<ul class="sectlevel1">
+<li><a href="#devon4j-validations.asciidoc_mythaistar-validations">MyThaiStar Validations</a></li>
+<li><a href="#devon4j-validations.asciidoc_add-your-own-validations">Add your own Validations</a>
+<ul class="sectlevel2">
+<li><a href="#devon4j-validations.asciidoc_name-validation">Name Validation</a></li>
+<li><a href="#devon4j-validations.asciidoc_email-validation">Email Validation</a></li>
+<li><a href="#devon4j-validations.asciidoc_phone-validation">Phone Validation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="devon4j-validations.asciidoc" class="sect0">devon4j Validations</h1>
+<div class="paragraph">
+<p>For validations, <em>devon4j</em> includes the <a href="http://hibernate.org/validator/">Hibernate Validator</a> as one of the available libraries in the <em>pom.xml</em> file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;org.hibernate&lt;/groupId&gt;
+    &lt;artifactId&gt;hibernate-validator&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Hibernate Validator allow us to check received values, by adding annotations to our <em>Java</em> classes.</p>
+</div>
+<div class="sect1">
+<h2 id="devon4j-validations.asciidoc_mythaistar-validations">MyThaiStar Validations</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the <em>MyThaiStar</em> app, we can find validations for some fields that we receive from the client.</p>
+</div>
+<div class="paragraph">
+<p>The main part of client inputs is related to the <em>booking</em> process. The client needs to provide: <code>name</code>, <code>comment</code>, <code>bookingDate</code>, <code>email</code> and <code>assistants</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@NotNull
+private String name;
+
+...
+
+private String comment;
+
+@NotNull
+@Future
+private Timestamp bookingDate;
+
+...
+
+@NotNull
+@EmailExtended
+private String email;
+
+...
+
+@Min(value = 1, message = "Assistants must be greater than 0")
+@Digits(integer = 2, fraction = 0)
+private Integer assistants;</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong><em>@NotNull</em></strong>: Checks that the field is not null before saving in the database.</p>
+</li>
+<li>
+<p><strong><em>@Future</em></strong>: Checks that a provided date is not in the past.</p>
+</li>
+<li>
+<p><strong><em>@Min</em></strong>: Declares a minimum value for an integer.</p>
+</li>
+<li>
+<p><strong><em>@Digits</em></strong>: Checks the format of an integer.</p>
+</li>
+<li>
+<p><strong><em>@Email</em></strong>: Is the standard validator for email addresses. In this case the standard validator is not checking the domain of the email, so for <em>MyThaiStar</em> we added a custom validator called <code>@EmailExtended</code> that is defined in a new <code>general/common/api/validation/EmailExtended.java</code> class. We will see it in more detail in the next section.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devon4j-validations.asciidoc_add-your-own-validations">Add your own Validations</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the <em>JumpTheQueue</em> app, we receive some inputs from the client. So let&#8217;s add some validations for that data, to avoid errors and ensure the consistency of the information, before saving it to the database.</p>
+</div>
+<div class="paragraph">
+<p>When registering a visitor, the client provides the following information:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong><em>username</em></strong>: Must be not null and must match the format <code>&lt;name&gt;@&lt;domain.toplevel&gt;</code>.</p>
+</li>
+<li>
+<p><strong><em>name</em></strong>: Must be not null.</p>
+</li>
+<li>
+<p><strong><em>phoneNumber</em></strong>: Must be not null and must match a sequence of numbers and spaces.</p>
+</li>
+<li>
+<p><strong><em>password</em></strong>: Must be not null.</p>
+</li>
+<li>
+<p><strong><em>acceptedCommercial</em></strong>: Must be not null.</p>
+</li>
+<li>
+<p><strong><em>acceptedTerms</em></strong>: Must be not null.</p>
+</li>
+<li>
+<p><strong><em>userType</em></strong>: Must be not null.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="devon4j-validations.asciidoc_name-validation">Name Validation</h3>
+<div class="paragraph">
+<p>As we have just mentioned, the name of the visitor must be not null. To do so, Hibernate Validator provides us with the already mentioned <code>@NotNull</code> annotation (<em>javax.validation.constraints.NotNull</em>).</p>
+</div>
+<div class="paragraph">
+<p>We are going to add the annotation in the <code>jtqj-core</code> to <code>visitormanagement/dataaccess/api/VisitorEntity.java</code>, just before the field <em>name</em>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">...
+
+  @NotNull
+  private String name;
+
+...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Run the app with Eclipse and&#8201;&#8212;&#8201;using <a href="https://www.getpostman.com/downloads/">Postman</a>&#8201;&#8212;&#8201;call the register resource via <strong>POST</strong>:<br>
+<code><a href="http://localhost:8081/jumpthequeue/services/rest/visitormanagement/v1/visitor" class="bare">http://localhost:8081/jumpthequeue/services/rest/visitormanagement/v1/visitor</a></code></p>
+</div>
+<div class="paragraph">
+<p>In the body, provide a visitor object without a name, like so:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+	"username" : "mary@mail.com",
+	"phoneNumber" : "1234567",
+	"password" : "12345",
+	"acceptedCommercial" : "true",
+	"acceptedTerms" : "true",
+	"userType" : "false"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You will get a <em>ValidationError</em> message regarding the <em>name</em> field:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/7.Validations/jumpthequeue_validation_name.png" alt="JumpTheQueue Name Validation">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devon4j-validations.asciidoc_email-validation">Email Validation</h3>
+<div class="paragraph">
+<p>In the case of the email&#8201;&#8212;&#8201;as already explained in the <em>MyThaiStar</em> section&#8201;&#8212;&#8201;using the <code>@Email</code> annotation for validation, will allow users to enter emails such as <code>something@something</code>. This does not fit our app requirements, so we need to add a custom email validator.</p>
+</div>
+<div class="paragraph">
+<p>In <code>jtqj-core</code>, add a class for our annotation, called <code>EmailExtended.java</code>, in a new <code>general.common.api.validation</code> package:</p>
+</div>
+<div class="listingblock">
+<div class="title">EmailExtended.java</div>
+<div class="content">
+<pre class="highlight"><code class="java language-java">...
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import javax.validation.Constraint;
+import javax.validation.Payload;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Pattern;
+
+@Email
+@Pattern(regexp = ".+@.+\\..+", message = "Email must specify a domain")
+@Target({ ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE })
+@Retention(RetentionPolicy.RUNTIME)
+@Constraint(validatedBy = {})
+@Documented
+public @interface EmailExtended {
+  String message() default "Please provide a valid email address";
+
+  Class&lt;?&gt;[] groups() default {};
+
+  Class&lt;? extends Payload&gt;[] payload() default {};
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This validator extends the <code>@Email</code> validation with an extra <code>@Pattern</code>, that defines a <a href="https://en.wikipedia.org/wiki/Regular_expression">regular expression</a>, which the fields annotated with <code>@EmailExtended</code> must match.</p>
+</div>
+<div class="paragraph">
+<p>Now we can annotate the <em>username</em> field in our <code>VisitorEntity.java</code> with <code>@NotNull</code> and <code>@EmailExtended</code>, to fit the app requirements.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">...
+
+  @NotNull
+  @EmailExtended
+  private String username;
+
+...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then, if we restart the app and try to register a user without an email, we get a <em>ValidationError</em> with the message: "<em>{username=[must not be null]}</em>":</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/7.Validations/jumpthequeue_validation_nullemail.png" alt="JumpTheQueue Null E-Mail Validation">
+</div>
+</div>
+<div class="paragraph">
+<p>And if we provide an email, that does not match the expected format, we get the related <em>ValidationError</em> with the message: "<em>{username=[Email must specify a domain, &#8230;&#8203;]}</em>":</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/7.Validations/jumpthequeue_validation_wrongemail.png" alt="JumpTheQueue Wrong E-Mail Validation">
+</div>
+</div>
+<div class="paragraph">
+<p>Finally, if we provide a valid email, the registration process ends successfully.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devon4j-validations.asciidoc_phone-validation">Phone Validation</h3>
+<div class="paragraph">
+<p>For validating the <em>phone</em>, apart from the <code>@NotNull</code> annotation, we need to use another custom validation, based on the <code>@Pattern</code> annotation and a <em>regular expression</em>.</p>
+</div>
+<div class="paragraph">
+<p>We are going to follow the same approach used for the <em>EmailExtended</em> validation.</p>
+</div>
+<div class="paragraph">
+<p>In <code>jtqj-core</code>, add a class for our annotation, called <code>Phone.java</code> to the <code>general.common.api.validation</code> package. With the <code>@Pattern</code> annotation we can define a regular expression to filter for phone numbers (<em>"consists of sequence of numbers or spaces"</em>):</p>
+</div>
+<div class="listingblock">
+<div class="title">Phone.java</div>
+<div class="content">
+<pre class="highlight"><code class="java language-java">...
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import javax.validation.Constraint;
+import javax.validation.Payload;
+import javax.validation.constraints.Pattern;
+
+@Pattern(regexp = "[ 0-9]{0,14}$", message = "Phone must be valid")
+@Target({ ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE })
+@Retention(RetentionPolicy.RUNTIME)
+@Constraint(validatedBy = {})
+@Documented
+public @interface Phone {
+  String message() default "Phone must be well formed";
+
+  Class&lt;?&gt;[] groups() default {};
+
+  Class&lt;? extends Payload&gt;[] payload() default {};
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then we only need to apply the new validation to our <em>phone</em> field in <code>visitormanagement/dataaccess/api/VisitorEntity.java</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">...
+
+  @NotNull
+  @Phone
+  private String phoneNumber;
+
+...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As a last step, we can now test our new validation. Call the previous service again, defining a wrong phone number. The response should be a <em>ValidationError</em> with the message: "<em>{phoneNumber=[Phone must be valid]}</em>":</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/7.Validations/jumpthequeue_validation_wrongphone.png" alt="JumpTheQueue Wrong Phone Number Validation">
+</div>
+</div>
+<div class="paragraph">
+<p>If we provide a valid phone number, the process should complete successfully.</p>
+</div>
+<div class="paragraph">
+<p>In this chapter, we have seen how easy is to add validations to the server side of our <em>devon4j</em> applications. In the next chapter, we will show you how to test our components using <em>Spring Test</em> and <em>devon4j</em>'s test module.</p>
+</div>
+<hr>
+<div class="paragraph">
+<p><strong>Next Chapter</strong>: <a href="#devon4j-testing.asciidoc">Testing in devon4j</a></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html#introduction-why-should-i-use-devonfw.asciidoc">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devon4j.asciidoc_architecture.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-ide-support.asciidoc.html#LICENSE.asciidoc">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2021-02-15 07:10:49 UTC
+</sub></div>
+</div>
+</div>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+</body>
+</html>

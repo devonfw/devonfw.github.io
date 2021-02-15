@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>devon4j Component Layers</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#devon4j-layers.asciidoc">devon4j Component Layers</a>
+<ul class="sectlevel1">
+<li><a href="#devon4j-layers.asciidoc_layers-implementation">Layers Implementation</a>
+<ul class="sectlevel2">
+<li><a href="#devon4j-layers.asciidoc_communication-between-layers">Communication between Layers</a></li>
+<li><a href="#devon4j-layers.asciidoc_service-layer">Service Layer</a></li>
+<li><a href="#devon4j-layers.asciidoc_logic-layer">Logic Layer</a></li>
+<li><a href="#devon4j-layers.asciidoc_transfer-objects">Transfer Objects</a></li>
+<li><a href="#devon4j-layers.asciidoc_data-access-layer">Data Access Layer</a></li>
+<li><a href="#devon4j-layers.asciidoc_layers-of-the-jumpthequeue-application">Layers of the JumpTheQueue Application</a></li>
+<li><a href="#devon4j-layers.asciidoc_jumpthequeue-running">JumpTheQueue Running</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="devon4j-layers.asciidoc" class="sect0">devon4j Component Layers</h1>
+<div class="paragraph">
+<p>As we already mentioned in the <a href="devon4j-layers.asciidoc_devon4j-overview#devon4j-architecture-overview">introduction to devon4j</a> the components of our <em>Java</em> backend apps will be divided into three layers: <em>service</em>, <em>logic</em> and <em>dataaccess</em>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>service</strong>: The layer that contains the REST services to exchange information with the client applications.</p>
+</li>
+<li>
+<p><strong>logic</strong>: The layer hosting the logic of the application (validations, authorization control, business logic, etc.).</p>
+</li>
+<li>
+<p><strong>dataaccess</strong>: The layer that communicates with the database.</p>
+</li>
+</ul>
+</div>
+<div class="sect1">
+<h2 id="devon4j-layers.asciidoc_layers-implementation">Layers Implementation</h2>
+<div class="sectionbody">
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/5.Layers/dependency_injection.png" alt="Dependency Injection" width="250">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you haven&#8217;t learned about <strong>Dependency Injection</strong> yet, please visit the <a href="https://github.com/devonfw/devon4j/wiki/guide-dependency-injection">devon4j guide to Dependency Injection</a>. Dependency Injection is an important principle in enterprise software development, that enables <a href="https://en.wikipedia.org/wiki/Separation_of_concerns">separation of concerns</a>, decouples <a href="https://en.wikipedia.org/wiki/Application_programming_interface">interfaces</a> from their implementation and allows us to potentially <a href="https://en.wikipedia.org/wiki/Code_reuse">reuse code</a>.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Following the <a href="https://github.com/devonfw/devon4j/wiki/guide-dependency-injection">devon4j recommendations</a> for <em>Dependency Injection</em> in MyThaiStar&#8217;s layers we will find:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Separation of API and implementation: Inside each layer we will separate the elements in different packages: <em>api</em> and <em>impl</em>. The <em>api</em> will store the <em>interface</em> with the methods definition and inside the <em>impl</em> we will store the class that implements the <em>interface</em>:</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/5.Layers/layer_api_impl.png" alt="Layer API Implementation">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Usage of <a href="https://jcp.org/en/jsr/detail?id=330">JSR330</a>: The Java standard set of annotations for <em>Dependency Injection</em> (<code>@Named</code>, <code>@Inject</code>, <code>@PostConstruct</code>, <code>@PreDestroy</code>, etc.) provides us with all the needed annotations to define our beans and inject them:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Named
+public class MyBeanImpl implements MyBean {
+
+  @Inject
+  private MyOtherBean myOtherBean;
+
+  @PostConstruct
+  public void init() {
+    // initialization if required (otherwise omit this method)
+  }
+
+  @PreDestroy
+  public void dispose() {
+    // shutdown bean, free resources if required (otherwise omit this method)
+  }
+}</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devon4j-layers.asciidoc_communication-between-layers">Communication between Layers</h3>
+<div class="paragraph">
+<p>The communication between layers is solved using the described <em>Dependency Injection</em> pattern, based on <em>Spring</em> and the <em>Java</em> standards: <code>java.inject</code> (<a href="https://jcp.org/en/jsr/detail?id=330">JSR330</a>) combined with <a href="https://jcp.org/en/jsr/detail?id=250">JSR250</a>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/5.Layers/layers_impl.png" alt="Layer Implementation">
+</div>
+</div>
+<div class="sect3">
+<h4 id="devon4j-layers.asciidoc_service-layer---logic-layer">Service Layer - Logic Layer</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">import javax.inject.Inject;
+import javax.inject.Named;
+
+import com.devonfw.application.mtsj.bookingmanagement.logic.api.Bookingmanagement;
+
+@Named("BookingmanagementRestService")
+public class BookingmanagementRestServiceImpl implements BookingmanagementRestService {
+
+  @Inject
+  private Bookingmanagement bookingmanagement;
+
+  @Override
+  public BookingCto getBooking(long id) {
+    return this.bookingmanagement.findBooking(id);
+  }
+
+  ...
+
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devon4j-layers.asciidoc_logic-layer---data-access-layer">Logic Layer - Data Access Layer</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">import javax.inject.Inject;
+import javax.inject.Named;
+import javax.transaction.Transactional;
+
+import com.devonfw.application.mtsj.bookingmanagement.dataaccess.api.repo.BookingRepository;
+
+@Named
+@Transactional
+public class BookingmanagementImpl extends AbstractComponentFacade implements Bookingmanagement {
+
+  @Inject
+  private BookingRepository bookingDao;
+
+  @Override
+  public boolean deleteBooking(Long bookingId) {
+
+    BookingEntity booking = this.bookingDao.find(bookingId);
+    this.bookingDao.delete(booking);
+    return true;
+  }
+
+  ...
+
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devon4j-layers.asciidoc_service-layer">Service Layer</h3>
+<div class="paragraph">
+<p>As we mentioned at the beginning, the <em>service</em> layer is where the services of our application (<em>REST</em> or <em>SOAP</em>) will be located.</p>
+</div>
+<div class="paragraph">
+<p>In <em>devon4j</em> applications the default implementation for web services is based on <a href="http://cxf.apache.org/">Apache CXF</a>, a services framework for Java apps that supports web service standards like <em>SOAP</em> (implementing <a href="https://en.wikipedia.org/wiki/Java_API_for_XML_Web_Services">JAX-WS</a>) and <em>REST</em> services (implementing <a href="https://en.wikipedia.org/wiki/Java_API_for_RESTful_Web_Services">JAX-RS</a>).</p>
+</div>
+<div class="paragraph">
+<p>In this tutorial we are going to focus only on the <em>REST</em> implementation of services.</p>
+</div>
+<div class="sect3">
+<h4 id="devon4j-layers.asciidoc_service-definition">Service Definition</h4>
+<div class="paragraph">
+<p>The services definition is done by the <em>service interface</em> located in the <code>service.api.rest</code> package. In the <em>boooking</em> component of MyThaiStar application we can see a service definition statement like the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Path("/bookingmanagement/v1")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+public interface BookingmanagementRestService {
+
+  @GET
+  @Path("/booking/{id}/")
+  public BookingCto getBooking(@PathParam("id") long id);
+
+  ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>JAX-RS annotations:</strong></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong><em>@Path</em></strong>: Defines the common path for all the resources of the service.</p>
+</li>
+<li>
+<p><strong><em>@Consumes</em></strong> and <strong><em>@Produces</em></strong>: Declares the type of data that the service expects to receive from the client and the type of data that will return to the client as a response.</p>
+</li>
+<li>
+<p><strong><em>@GET</em></strong>: Annotation for the <em>HTTP GET</em> method.</p>
+</li>
+<li>
+<p><strong><em>@Path</em></strong>: The path definition for the <em>getBooking</em> resource.</p>
+</li>
+<li>
+<p><strong><em>@PathParam</em></strong>: Annotation to configure the <em>id</em> received in the <em>url</em> as a parameter.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devon4j-layers.asciidoc_service-implementation">Service Implementation</h4>
+<div class="paragraph">
+<p>The service implementation is a class located in the <code>service.impl.rest</code> package that implements the previous defined interface.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Named("BookingmanagementRestService")
+public class BookingmanagementRestServiceImpl implements BookingmanagementRestService {
+
+  @Inject
+  private Bookingmanagement bookingmanagement;
+
+  @Override
+  public BookingCto getBooking(long id) {
+
+    return this.bookingmanagement.findBooking(id);
+  }
+
+  ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As you can see, this layer simply delegates method-calls to the <em>logic</em> layer, in order to resolve business logic requirements of the app.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devon4j-layers.asciidoc_logic-layer">Logic Layer</h3>
+<div class="paragraph">
+<p>In this layer we store all the custom implementations we will need to fulfill the requirements of our application. Including:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>business logic</p>
+</li>
+<li>
+<p>delegation of the <a href="https://en.wikipedia.org/wiki/Business_transaction_management">transaction management</a> to Spring framework</p>
+</li>
+<li>
+<p>object mappings</p>
+</li>
+<li>
+<p>validations</p>
+</li>
+<li>
+<p>authorizations</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Within the <em>logic</em> layer we must avoid including code related to services or data access, we must delegate those tasks to the suitable layers.</p>
+</div>
+<div class="sect3">
+<h4 id="devon4j-layers.asciidoc_logic-layer-definition">Logic Layer Definition</h4>
+<div class="paragraph">
+<p>As in the <em>service</em> layer, the logic implementation will be defined by an interface located in a <code>logic.api</code> package.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public interface Bookingmanagement {
+
+  BookingCto findBooking(Long id);
+  ...
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devon4j-layers.asciidoc_logic-layer-implementation">Logic Layer Implementation</h4>
+<div class="paragraph">
+<p>In a <code>logic.impl</code> package an "<em>&#8230;&#8203;Impl</em>" class will implement the interface defined in the previous section.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Named
+@Transactional
+public class BookingmanagementImpl extends AbstractComponentFacade implements Bookingmanagement {
+
+  // @see #getBookingDao()
+  @Inject
+  private BookingDao bookingDao;
+
+  // The constructor.
+  public BookingmanagementImpl() {
+
+    super();
+  }
+
+  @Override
+  public BookingCto findBooking(Long id) {
+
+    BookingEntity entity = getBookingDao().findOne(id);
+    BookingCto cto = new BookingCto();
+    cto.setBooking(getBeanMapper().map(entity, BookingEto.class));
+    cto.setOrder(getBeanMapper().map(entity.getOrder(), OrderEto.class));
+    cto.setInvitedGuests(getBeanMapper().mapList(entity.getInvitedGuests(), InvitedGuestEto.class));
+    cto.setOrders(getBeanMapper().mapList(entity.getOrders(), OrderEto.class));
+    return cto;
+  }
+
+  public BookingDao getBookingDao() {
+    return this.bookingDao;
+  }
+
+  ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the above <em>MyThaiStar</em> logic layer example we can see:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>business logic and <a href="https://github.com/devonfw/devon4j/wiki/guide-beanmapping">object mappings</a></p>
+</li>
+<li>
+<p>delegation of the transaction management through Spring&#8217;s <code>@Transactional</code> annotation</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devon4j-layers.asciidoc_transfer-objects">Transfer Objects</h3>
+<div class="paragraph">
+<p>In the code examples of the <em>logic</em> layer section you may have seen a <em>BookingCto</em> object. This is one of the <a href="https://github.com/devonfw/devon4j/wiki/guide-transferobject">transfer objects</a> defined in <em>devon4j</em>. It is used to transfer data between the layers.</p>
+</div>
+<div class="paragraph">
+<p>The main benefits of using <em>Transfer Objects</em> are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Avoid inconsistent data (when entities are sent across the app, changes tend to occur in multiple places).</p>
+</li>
+<li>
+<p>Clearly define how much data to transfer (direct relations often lead to the transfer of too much data).</p>
+</li>
+<li>
+<p>Hide internal details.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In <em>devon4j</em> we can find two different <em>Transfer Objects</em> (TOs):</p>
+</div>
+<div class="sect3">
+<h4 id="devon4j-layers.asciidoc_entity-transfer-objects-etos">Entity Transfer Objects (ETOs)</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Have the same data-properties as their underlying entity.</p>
+</li>
+<li>
+<p>Hold no relations to other entities.</p>
+</li>
+<li>
+<p>Provide simple and solid mapping.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devon4j-layers.asciidoc_composite-transfer-objects-ctos">Composite Transfer Objects (CTOs)</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Have no data-properties at all.</p>
+</li>
+<li>
+<p>Only hold relations to other TOs.</p>
+</li>
+<li>
+<p>Either a 1:1 reference or a <a href="https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html">Collection</a> (<a href="https://docs.oracle.com/javase/tutorial/collections/interfaces/list.html">List</a>) of TOs.</p>
+</li>
+<li>
+<p>Are easy to map manually by reusing ETOs or other CTOs.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devon4j-layers.asciidoc_data-access-layer">Data Access Layer</h3>
+<div class="paragraph">
+<p>The third&#8201;&#8212;&#8201;and last&#8201;&#8212;&#8201;layer of the <em>devon4j</em> architecture is the one responsible for storing all the code related to the connection and access of the database.</p>
+</div>
+<div class="paragraph">
+<p>For mapping Java objects to the database, <em>devon4j</em> use the <em>Java Persistence API</em> (<a href="https://www.oracle.com/technetwork/java/javaee/tech/persistence-jsp-140049.html">JPA</a>). Explicitly, the JPA implementation <em>devon4j</em> uses is <a href="http://hibernate.org/orm/">Hibernate</a>.</p>
+</div>
+<div class="paragraph">
+<p>Apart from the <em>Entities</em> of components, we are going to find the same elements, that we saw in other layers, in the <em>dataaccess</em> layer: a definition (i.e. an <em>interface</em>) and an implementation (a class that implements that interface).</p>
+</div>
+<div class="paragraph">
+<p>However, in this layer the implementation is slightly different: The <code>[Target]Repository</code> extends <code>com.devonfw.module.jpa.dataaccess.api.data.DefaultRepository</code>, which provides us with the basic <em>dataaccess</em> methods: <code>save(Entity)</code>, <code>findOne(id)</code>, <code>findAll(ids)</code>, <code>delete(id)</code>, etc.</p>
+</div>
+<div class="paragraph">
+<p>Because of that, in the <code>[Target]Repository</code> implementation of the layer, we only need to add the <em>custom</em> methods that are not implemented yet. Following the <em>MyThaiStar</em> component example (<em>bookingmanagement</em>), we will only find the paginated <em>findBookings</em> implementation here:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">import org.springframework.data.jpa.repository.Query;
+import com.querydsl.jpa.impl.JPAQuery;
+
+...
+
+public interface BookingRepository extends DefaultRepository&lt;BookingEntity&gt; {
+
+  @Query("SELECT booking FROM BookingEntity booking WHERE booking.bookingToken = :token")
+  BookingEntity findBookingByToken(@Param("token") String token);
+
+  default Page&lt;BookingEntity&gt; findBookings(BookingSearchCriteriaTo criteria) {
+
+    BookingEntity alias = newDslAlias();
+    JPAQuery&lt;BookingEntity&gt; query = newDslQuery(alias);
+
+    ...
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The implementation of <em>findBookings</em> uses <a href="https://github.com/devonfw/devon4j/blob/develop/documentation/guide-repository">Spring Data</a> and <a href="http://www.querydsl.com/">QueryDSL</a> to manage dynamic queries.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devon4j-layers.asciidoc_layers-of-the-jumpthequeue-application">Layers of the JumpTheQueue Application</h3>
+<div class="paragraph">
+<p>The sections above describe the main elements of layers of the <em>devon4j</em> components. If you have completed the exercise in the <a href="#devon4j-components.asciidoc">previous chapter</a>, you may have noticed that all those components are already created for us by <em>CobiGen</em>.</p>
+</div>
+<div class="paragraph">
+<p>Take a look to our application structure:</p>
+</div>
+<div class="paragraph">
+<p><strong>Visitor Component Core (without Relations)</strong></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/5.Layers/jumpthequeue_structure_core.png" alt="JumpTheQueue Core Structure" width="350">
+</div>
+</div>
+<div class="paragraph">
+<p>You&#8217;ll see the following components:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Definition for <em>dataaccess</em> layer repository.</p>
+</li>
+<li>
+<p>The entity that we created to be used by <em>CobiGen</em> to generate the component structure.</p>
+</li>
+<li>
+<p>Definition of <em>abstract usecase</em> in the <em>logic</em> layer.</p>
+</li>
+<li>
+<p>Implementation of the <em>usecasefind</em> layer in the <em>logic</em> layer.</p>
+</li>
+<li>
+<p>Implementation of the <em>usecasemanage</em> layer in the <em>logic</em> layer.</p>
+</li>
+<li>
+<p>Implementation of the <em>logic</em> layer.</p>
+</li>
+<li>
+<p>Implementation of the <em>rest service</em>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p><strong>Visitor Component API (without Relations)</strong></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/5.Layers/jumpthequeue_structure_api.png" alt="JumpTheQueue API Structure" width="350">
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>definition for <em>entity</em> in the api layer.</p>
+</li>
+<li>
+<p>Entity Transfer Object located in the api layer.</p>
+</li>
+<li>
+<p>Search Criteria Transfer Object located in the api layer.</p>
+</li>
+<li>
+<p>Definition of <em>usecasefind</em> in the <em>logic</em> layer.</p>
+</li>
+<li>
+<p>Definition of <em>usecasemanage</em> in the <em>logic</em> layer.</p>
+</li>
+<li>
+<p>Definition of the <em>logic</em> layer.</p>
+</li>
+<li>
+<p>Definition of the <em>rest service</em> of the component.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The <em>queue</em> component will have a similar structure. The <em>access code</em> component will also have a similar structure&#8201;&#8212;&#8201;with minor differences&#8201;&#8212;&#8201;since it has some relations with visitor and queue.</p>
+</div>
+<div class="paragraph">
+<p><strong>Access Code Component Core (with Relations)</strong></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/5.Layers/jumpthequeue_structure_core_cto.png" alt="JumpTheQueue Core Structure CTO" width="350">
+</div>
+</div>
+<div class="paragraph">
+<p>Theres only a single difference in the core. If you look closely, you&#8217;ll see that CobiGen didn&#8217;t generate the <em>usecasemanage</em> implementation. This is due to the complexity of entities with relations. In this case CobiGen will leave us to create the <em>save</em> and <em>delete</em> methods, so we can properly adress them.</p>
+</div>
+<div class="paragraph">
+<p><strong>Access Code Component API (with Relations)</strong></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/5.Layers/jumpthequeue_structure_api_cto.png" alt="JumpTheQueue API Structure CTO" width="350">
+</div>
+</div>
+<div class="paragraph">
+<p>Theres <em>two</em> differences here:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>As you can see, CobiGen generated a CTO for our entity with relations.</p>
+</li>
+<li>
+<p>As explained in the core, the <em>usecasemanage</em> definition is missing.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>So, as you can see, our components have all the layers defined and implemented following the <em>devon4j</em> principles.</p>
+</div>
+<div class="paragraph">
+<p>By using <em>CobiGen</em> we have created a complete and functional <em>devon4j</em> application without the necessity of any manual implementation (except for more complex entities which will be explained to the next chapter).</p>
+</div>
+<div class="paragraph">
+<p>Now we&#8217;ll run the application and try to use the REST service to save a new visitor:</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devon4j-layers.asciidoc_jumpthequeue-running">JumpTheQueue Running</h3>
+<div class="paragraph">
+<p>As already mentioned, in this tutorial we will be using <a href="https://www.getpostman.com/">Postman</a> to test our API.</p>
+</div>
+<div class="paragraph">
+<p>First, open your <em>JumpTheQueue</em> project in Eclipse and run the app (right-click <code>SpringBootApp.java &gt; Run as &gt; Java Application</code>.</p>
+</div>
+<div class="sect3">
+<h4 id="devon4j-layers.asciidoc_simple-call">Simple Call</h4>
+<div class="paragraph">
+<p>If you remember, we added some <a href="devon4j-layers.asciidoc_devon4j-components#mock-data">mock data</a> previously, to have some visitor info available. Let&#8217;s try to retrieve a visitor&#8217;s information by using our <em>visitormanagement service</em>.</p>
+</div>
+<div class="paragraph">
+<p>Select the service <strong>GET</strong> and send:<br>
+<code><a href="http://localhost:8081/jumpthequeue/services/rest/visitormanagement/v1/visitor/1/" class="bare">http://localhost:8081/jumpthequeue/services/rest/visitormanagement/v1/visitor/1/</a></code></p>
+</div>
+<div class="paragraph">
+<p>We hope to obtain the data of the visitor with id <code>1</code>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/5.Layers/jumpthequeue_simpeGet1.png" alt="JumpTheQueue Simple GET Request 1">
+</div>
+</div>
+<div class="paragraph">
+<p>Instead we get a response containing the login form. This is because <em>devon4j</em> applications, by default, implement <em>Spring Security</em>. So we would need to login to access this service.</p>
+</div>
+<div class="paragraph">
+<p>To make testing easier, we are going to "open" the application, to avoid the security filter, and we are going to enable the <a href="https://en.wikipedia.org/wiki/Cross-origin_resource_sharing">CORS</a> filter to allow requests from (Angular-) clients.</p>
+</div>
+<div class="paragraph">
+<p>In the file <code>general/service/impl/config/BaseWebSecurityConfig.java</code> edit the <code>configure()</code> method and remove the HTTP request filter. This will authorize every request and allow us access to the app:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Override
+public void configure(HttpSecurity http) throws Exception {
+
+  http.authorizeRequests().anyRequest().permitAll().and().csrf().disable();
+
+  if (this.corsEnabled) {
+    http.addFilterBefore(getCorsFilter(), CsrfFilter.class);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally in the file <code>/jtqj-core/src/main/resources/application.properties</code> set <code>security.cors.enabled</code> to true:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">security.cors.enabled=true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now we run the app again and send the same GET request. We should now be able to obtain the data of our visitor:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/5.Layers/jumpthequeue_simpeGet2.png" alt="JumpTheQueue Simple GET Request 2">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devon4j-layers.asciidoc_paginated-response">Paginated Response</h4>
+<div class="paragraph">
+<p><em>CobiGen</em> has created a complete set of services for us, so we can access a paginated list of visitors without any extra implementation.</p>
+</div>
+<div class="paragraph">
+<p>We are going to use the following service defined in <code>visitormanagement/service/api/rest/VisitormanagementRestService.java</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">	@Path("/visitor/search")
+	@POST
+	public Page&lt;VisitorEto&gt; findVisitors(VisitorSearchCriteriaTo searchCriteriaTo);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The service definition states, that we will need to provide a <em>Search Criteria Transfer Object</em>. This object will work as a filter for the search, as you can see in <code>visitormanagement/dataaccess/api/repo/VisitorRepository.java</code> in the <code>findByCriteria</code> method.</p>
+</div>
+<div class="paragraph">
+<p>If the <em>Search Criteria Transfer Object</em> is empty, we will retrieve all visitors. However, if we pass data with the object, the result will be filtered.</p>
+</div>
+<div class="paragraph">
+<p>Select the service <strong>POST</strong> and enter:<br>
+<code><a href="http://localhost:8081/jumpthequeue/services/rest/visitormanagement/v1/visitor/search" class="bare">http://localhost:8081/jumpthequeue/services/rest/visitormanagement/v1/visitor/search</a></code></p>
+</div>
+<div class="paragraph">
+<p>In the 'Body' tab, below the address bar, we&#8217;ll have to define a <em>SearchCriteria</em> object, which will have a <em>pageable</em> defined (make sure, the 'raw' option is selected):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+	"pageable" : {
+		"pageNumber" : "0",
+		"pageSize": "10",
+		"sort": []
+	}
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the 'Headers' tab we&#8217;ll have to ensure that <code>Content-Type</code> <code>application/json</code> is set, indicating to the server, that it&#8217;ll have to interpret the body as JSON format (otherwise, you may face an 415 unsuported type error).</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You can see the definition of the <em>VisitorSearchCriteriaTo</em> in:
+<code>visitormanagement/logic/api/to/VisitorSearchCriteriaTo.java</code></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The result will appear in the 'Headers' tab and look something like this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/5.Layers/jumpthequeue_paginated1.png" alt="JumpTheQueue Paginated Response 1">
+</div>
+</div>
+<div class="paragraph">
+<p>If we want to filter the results, we can define a <em>criteria</em> object in the body. Instead of the previously empty criteria, we now provide an object like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+	"username": "test1@mail.com",
+	"pageable" : {
+		"pageNumber" : "0",
+		"pageSize": "10",
+		"sort": []
+	}
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will filter the results to find only visitors with username <code>test1@mail.com</code>. If we repeat the request now, the result will be this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/5.Layers/jumpthequeue_paginated2.png" alt="JumpTheQueue Paginated Response 2">
+</div>
+</div>
+<div class="paragraph">
+<p>We could customize this filter by editing the <code>visitormanagement/logic/impl/usecase/UcFindVisitorImpl.java</code> class.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devon4j-layers.asciidoc_saving-a-visitor">Saving a Visitor</h4>
+<div class="paragraph">
+<p>To meet the requirements of the <a href="devon4j-layers.asciidoc_jump-the-queue-design#user-story-register">User Story: Register</a>, we need to register a <em>visitor</em> and return an <em>access code</em>.</p>
+</div>
+<div class="paragraph">
+<p>By default <em>CobiGen</em> has generated the <em>Read</em> operation in the <em>UcFindEntityImpl</em> for us, as well as the rest of the <em>CRUD</em> operations in <em>UcManageEntityImpl</em>. So we are already able to <em>create</em>, <em>read</em>, <em>update</em> and <em>delete</em> visitors in our database, without any extra implementation required.</p>
+</div>
+<div class="paragraph">
+<p>To delegate <em>Spring</em> to manage <em>transactions</em>, we only have to add the <code>@Transactional</code> annotation to our <em>usecase</em>  implementations. Since <em>devonfw 2.2.0</em> CobiGen adds this annotation automatically, so we don&#8217;t have to do it manually. Check your logic implementation classes and add the annotation in case it&#8217;s not present:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Named
+@Validated
+@Transactional
+public class UcManageVisitorImpl extends AbstractVisitorUc implements UcManageVisitor {
+  ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To save a visitor we only need to use the <em>REST</em> resource <code>/services/rest/visitormanagement/v1/visitor</code> and provide the visitor definition for <em>VisitorEto</em> in the body.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You can see the definition for <em>VisitorEto</em> in:
+<code>visitormanagement/logic/api/to/VisitorEto.java</code></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Select the service <strong>POST</strong> and enter:<br>
+<code><a href="http://localhost:8081/jumpthequeue/services/rest/visitormanagement/v1/visitor" class="bare">http://localhost:8081/jumpthequeue/services/rest/visitormanagement/v1/visitor</a></code></p>
+</div>
+<div class="paragraph">
+<p>Provide a <em>Visitor</em> object in the body, such as this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+	"username": "mary@mail.com",
+	"name": "Mary",
+	"phoneNumber": "1234567",
+	"password": "12345",
+	"acceptedCommercial": "true",
+	"acceptedTerms": "true",
+	"userType": "false"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We will get the following result:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/5.Layers/jumpthequeue_saveVisitor.png" alt="JumpTheQueue Save Visitor">
+</div>
+</div>
+<div class="paragraph">
+<p>In the body of the response we can see the default content for a successful service response; the data of the new visitor. This is the default implementation when saving a new <em>entity</em> with <em>devon4j</em> applications. However, the <em>JumpTheQueue</em> design defines, that the response must provide the <em>access code</em> created for the user as well, so we will need to change the logic of our application to fit this requirement.</p>
+</div>
+<div class="paragraph">
+<p>In the next chapter we will learn how to customize the code generated by <em>CobiGen</em> to adapt it to our needs.</p>
+</div>
+<hr>
+<div class="paragraph">
+<p><strong>Next Chapter</strong>: <a href="#devon4j-adding-custom-functionality.asciidoc">Customizing a devon4j Project</a></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html#introduction-why-should-i-use-devonfw.asciidoc">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devon4j.asciidoc_architecture.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-ide-support.asciidoc.html#LICENSE.asciidoc">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2021-02-15 07:10:45 UTC
+</sub></div>
+</div>
+</div>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+</body>
+</html>

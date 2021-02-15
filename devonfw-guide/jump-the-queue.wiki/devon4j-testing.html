@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Testing with devon4j</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#devon4j-testing.asciidoc">Testing with devon4j</a>
+<ul class="sectlevel1">
+<li><a href="#devon4j-testing.asciidoc_mythaistar-testing-example">MyThaiStar Testing Example</a></li>
+<li><a href="#devon4j-testing.asciidoc_testing-our-application">Testing our Application</a>
+<ul class="sectlevel2">
+<li><a href="#devon4j-testing.asciidoc_1.-registration">1. Registration</a></li>
+<li><a href="#devon4j-testing.asciidoc_2.-finding-visitors">2. Finding Visitors</a></li>
+<li><a href="#devon4j-testing.asciidoc_extra-functionalities">Extra Functionalities</a></li>
+</ul>
+</li>
+<li><a href="#devon4j-testing.asciidoc_running-the-tests-with-maven">Running the Tests with Maven</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="devon4j-testing.asciidoc" class="sect0">Testing with devon4j</h1>
+<div class="paragraph">
+<p>Testing our applications is one of the most important parts of the development. The <em>devon4j</em> documentation provides detailed information about the <a href="https://github.com/devonfw/devon4j/wiki/guide-testing">testing principles</a>. In addition to that, you can also find information about the topic in the <a href="https://github.com/devonfw/devonfw-guide">devonfw guide</a>.</p>
+</div>
+<div class="paragraph">
+<p>In this chapter we are going to focus on showing some test examples, and explain briefly how to start testing our <em>devon4j</em> apps.</p>
+</div>
+<div class="sect1">
+<h2 id="devon4j-testing.asciidoc_mythaistar-testing-example">MyThaiStar Testing Example</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In all the <em>devon4j</em> projects (based on <em>Maven</em> and <em>Spring</em>) we are going to find a dedicated package for testing.</p>
+</div>
+<div class="paragraph">
+<p>In addition to this, the testing part of the project also has its own <em>resources</em> package, so we are going to be able to configure the application properties or other resources to create specific test scenarios:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/8.Testing/mythaistar_testing_structure.png" alt="MyThaiStar Testing Structure" width="250">
+</div>
+</div>
+<div class="paragraph">
+<p>We should incorporate <a href="https://en.wikipedia.org/wiki/Unit_testing">unit tests</a> as one of our main efforts during development, even considering approaches like <a href="https://martinfowler.com/bliki/TestDrivenDevelopment.html">test-driven development</a> (TDD).</p>
+</div>
+<div class="paragraph">
+<p>The tests in our applications should cover a significant amount of functionality. However, in this part of the tutorial, we are going to focus on the test of our <em>devon4j</em> components.</p>
+</div>
+<div class="paragraph">
+<p>As you have seen in the previous image, each component of our application should have a dedicated package for testing in the test <em>package</em>. Inside each testing package, we will create the related test classes. They should follow this naming convention:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>[Component]Test.java</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is because we are going to use <em>Maven</em> to launch the tests of our application and <em>Maven</em> will look for test classes that end with the <em>Test</em> keyword.</p>
+</div>
+<div class="paragraph">
+<p>Testing under <em>devon4j</em> means, that we already have <em>Spring Test</em> and the <em>devon4j</em> test module available. This also means, that we will find a significant amount of annotations and implementations, which are going to provide us with all the necessary libraries and tools to create our tests in a really simple way.</p>
+</div>
+<div class="paragraph">
+<p>Focusing on the component tests means, that we are going to test the implementation of the logic layer of our application. Because of this, you can see in our test structure, that our test classes are inside the <code>[component].logic.impl</code> package:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/8.Testing/mythaistar_testing_structure.png" alt="MyThaiStar Testing Structure" width="250">
+</div>
+</div>
+<div class="paragraph">
+<p>If we open one of the test classes we will find something like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">...
+
+@SpringBootTest(classes = SpringBootApp.class)
+public class DishmanagementTest extends ComponentTest {
+
+  @Inject
+  private Dishmanagement dishmanagement;
+
+  @Test
+  public void findAllDishes() {
+
+    DishSearchCriteriaTo criteria = new DishSearchCriteriaTo();
+    List&lt;CategoryEto&gt; categories = new ArrayList&lt;&gt;();
+    criteria.setCategories(categories);
+    PageRequest pageable = PageRequest.of(0, 100, new Sort(Direction.DESC, "price"));
+    criteria.setPageable(pageable);
+    Page&lt;DishCto&gt; result = this.dishmanagement.findDishCtos(criteria);
+    assertThat(result).isNotNull();
+  }
+
+  ...
+
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong><em>@SpringBootTest</em></strong> is the <em>Spring Test</em> annotation to load the context of our application. So we will have the application running like in a <em>real</em> situation.</p>
+</li>
+<li>
+<p>Extending the <em>devon4j</em> test class <code>ComponentTest</code> will inject functionalities like <a href="http://joel-costigliola.github.io/assertj/">assertions</a> into our test class.</p>
+</li>
+<li>
+<p><em>Spring Test</em> gives us the option for dependency injection, so we are going to be able to <code>@Inject</code> our components to test them.</p>
+</li>
+<li>
+<p>Finally with the <code>@Test</code> annotation we can declare a test to be executed during the testing process.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devon4j-testing.asciidoc_testing-our-application">Testing our Application</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now that we have brief overview, we are going to add some tests to our <em>JumpTheQueue</em> application.</p>
+</div>
+<div class="paragraph">
+<p>We have a main component for managing <em>visitors</em>, so we are going to create a dedicated package for testing that component within the <code>com.devonfw.application.jtqj</code> package, called <code>visitormanagement.logic.impl</code>. Inside this new package we are going to add a new test class named <code>VisitormanagementTest.java</code>:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/8.Testing/jumpthequeue_testing_structure.png" alt="JumpTheQuehe Testing Structure" width="300">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You can see that we already have some test packages in the <code>src/test/java/com.devonfw.application.jtqj.general</code> package. Those tests are from the <em>devon4j</em> archetype and we can use them as a model for further tests in our apps.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In the <code>VisitormanagementTest</code> class we are going to add annotations to run our app in the correct context when executing tests, extend the <code>ComponentTest</code> class to obtain assertions, and inject our <code>visitormanagement</code> component:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">...
+
+import javax.inject.Inject;
+
+import org.junit.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.devonfw.application.jtqj.SpringBootApp;
+import com.devonfw.application.jtqj.visitormanagement.logic.api.Visitormanagement;
+import com.devonfw.application.jtqj.visitormanagement.logic.api.to.VisitorEto;
+import com.devonfw.application.jtqj.visitormanagement.logic.api.to.VisitorSearchCriteriaTo;
+import com.devonfw.module.test.common.base.ComponentTest;
+
+@SpringBootTest(classes = SpringBootApp.class)
+public class VisitormanagementTest extends ComponentTest {
+
+  @Inject
+  private Visitormanagement visitormanagement;
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Please note, that the class <code>VisitormanagementTest</code> in the code snippet above, <strong>extends</strong> the class <code>ComponentTest</code>. Make sure, that this is the case in your code too.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Now we can start adding our first test. In <a href="#jump-the-queue-design.asciidoc">JumpTheQueue</a> we have two main functionalities:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Register a visitor, returning an <em>access code</em>.</p>
+</li>
+<li>
+<p>List the current <em>visitors</em>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s add tests to check these functionalities:</p>
+</div>
+<div class="sect2">
+<h3 id="devon4j-testing.asciidoc_1.-registration">1. Registration</h3>
+<div class="paragraph">
+<p>We are going to create a method with a descriptive name; <em>saveVisitorTest</em>, and we are going to add the <code>@Test</code> annotation to it.</p>
+</div>
+<div class="paragraph">
+<p>Inside this test, we are going to verify the registration process of our app. To do so, we only need to call the <em>saveVisitor</em> method of the component and provide a <em>VisitorEto</em> object. After the method is called, we are going to check the response of the method, to verify that the expected business logic has been executed correctly:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">...
+
+@SpringBootTest(classes = SpringBootApp.class)
+public class VisitormanagementTest extends ComponentTest {
+
+  ...
+
+  @Test
+  public void saveVisitorTest() {
+
+    VisitorEto visitorEto = new VisitorEto();
+    visitorEto.setName("Mary");
+    visitorEto.setUsername("mary@mary.com");
+    visitorEto.setPhoneNumber("123456789");
+    visitorEto.setPassword("test");
+    visitorEto.setUserType(false);
+    visitorEto.setAcceptedTerms(true);
+    visitorEto.setAcceptedCommercial(true);
+    VisitorEto visitorEtoResult = this.visitormanagement.saveVisitor(visitorEto);
+
+    assertThat(visitorEtoResult.getId()).isNotNull();
+
+    this.visitormanagement.deleteVisitor(visitorEtoResult.getId());
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>In this <code>saveVisitorTest</code> method, that we give as an example, we can see that theres a <code>deleteVisitor</code> at the end. This would normally only be done, if the tests were run against a production database.If you use a separate database for testing, the last delete is not needed.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Have you noticed, that the <em>mock</em> data of this test is the same data, that we used in previous chapters for the <em>manual</em> verification of our services? Exactly! From now on, this test will allow us to <em>automate</em> the manual verification process.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Now is the time for running the test:</p>
+</div>
+<div class="paragraph">
+<p>We can do this in several ways, but to simplify the example, just right click the test-method and select <code>Run as &gt; JUnit Test</code>:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/8.Testing/jumpthequeue_testing_runtest.png" alt="JumpTheQueue Running Tests">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>We can also debug our tests using the <code>Debug As &gt; JUnit Test</code> option.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-important" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you get an error-message saying: <code>No tests found with test runner 'JUnit 5'</code>, right-click the test-class, <code>Run As &gt; Run Configurations&#8230;&#8203;</code> and then select <code>JUnit 4</code> as your test runner:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/8.Testing/jumpthequeue_testing_junit5_error.png" alt="JumpTheQueue Running Tests">
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The result of the test will be shown in the <em>JUnit</em> tab of Eclipse:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/8.Testing/jumpthequeue_testing_result.png" alt="JumpTheQueue Test Results 1">
+</div>
+</div>
+<div class="paragraph">
+<p>Seems that everything went ok, our register process passes the test. Let&#8217;s complete the test checking if the just created user is <em>"Mary"</em>.</p>
+</div>
+<div class="paragraph">
+<p>We can do it simply adding more <em>asserts</em> to check the <em>result</em> object</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">assertThat(visitorEtoResult.getName()).isEqualTo("Mary");</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now running again the test we should obtain the expected result</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/8.Testing/jumpthequeue_testing_result2.png" alt="umpTheQueue Test Results 2">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devon4j-testing.asciidoc_2.-finding-visitors">2. Finding Visitors</h3>
+<div class="paragraph">
+<p>For the second functionality (finding visitors) we can add a new test with a very similar approach. The only difference is that in this case we are going to need to declare a <em>Search Criteria</em> object, that will contain a pageable to recover the first page and the first 100 values.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">  @Test
+  public void findVisitorsTest() {
+
+    VisitorSearchCriteriaTo criteria = new VisitorSearchCriteriaTo();
+    Pageable pageable = PageRequest.of(0, 100);
+    criteria.setPageable(pageable);
+    Page&lt;VisitorEto&gt; result = this.visitormanagement.findVisitors(criteria);
+
+    assertThat(result).isNotNull();
+  }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Use <code><strong>import</strong> org.springframework.data.domain</code> to solve the errors.
+To run both tests (all the tests included in the class) we only need to do right click in any part of the class and select <em>Run As &gt; JUnit Test</em>. All the methods annotated with <code>@Test</code> will be checked.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/8.Testing/jumpthequeue_testing_result3.png" alt="umpTheQueue Test Results 3">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devon4j-testing.asciidoc_extra-functionalities">Extra Functionalities</h3>
+<div class="paragraph">
+<p>The <em>devon4j</em> test module provide us with some extra functionalities that we can use to create tests in an easier way.</p>
+</div>
+<div class="paragraph">
+<p>Extending <em>ComponentTest</em> class we also have available the <em>doSetUp()</em> and <em>doTearDown()</em> methods, that we can use to initialize and release resources in our test classes.</p>
+</div>
+<div class="paragraph">
+<p>In our <em>JumpTheQueue</em> test class we could declare the <em>visitor</em> object in the <em>doSetUp</em> method, so we can use this resource in several test methods instead of declaring it again and again.</p>
+</div>
+<div class="paragraph">
+<p>Doing this our test class would be as follows</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@SpringBootTest(classes = SpringBootApp.class)
+public class VisitormanagementTest extends ComponentTest{
+
+	private VisitorEto visitorEto = new VisitorEto();
+
+	@Inject
+	private Visitormanagement visitormanagement;
+
+
+	@Override
+	protected void doSetUp() {
+		visitorEto.setName("Mary");
+		visitorEto.setUsername("mary@mary.com");
+		visitorEto.setPhoneNumber("123456789");
+		visitorEto.setPassword("test");
+		visitorEto.setUserType(false);
+		visitorEto.setAcceptedTerms(true);
+		visitorEto.setAcceptedCommercial(true);
+	}
+
+
+  @Test
+  public void saveVisitorTest() {
+
+    VisitorEto visitorEtoResult = this.visitormanagement.saveVisitor(visitorEto);
+
+    assertThat(visitorEtoResult.getId()).isNotNull();
+    assertThat(visitorEtoResult.getName()).isEqualTo("Mary");
+
+    this.visitormanagement.deleteVisitor(visitorEtoResult.getId());
+  }
+
+  @Test
+  public void findVisitorsTest() {
+
+    VisitorSearchCriteriaTo criteria = new VisitorSearchCriteriaTo();
+    Pageable pageable = PageRequest.of(0, 100);
+    criteria.setPageable(pageable);
+    Page&lt;VisitorEto&gt; result = this.visitormanagement.findVisitors(criteria);
+
+    assertThat(result).isNotNull();
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devon4j-testing.asciidoc_running-the-tests-with-maven">Running the Tests with Maven</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We can use <em>Maven</em> to automate the testing of our project. To do so, just open a command prompt with access to <em>Maven</em> (in our devonfw project folder we can simply right click and select <code>Open Devon CMD shell here</code>). Now enter and run:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>C:\...\workspaces\main\jump-the-queue\java\jtqj&gt; mvn clean test</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><em>Maven</em> will now scan for classes containing the word "Test" and execute all methods annotated with <code>@Test</code> in those classes. The result will look similar to this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/8.Testing/jumpthequeue_testing_maven.png" alt="JumpTheQueue Maven Testing">
+</div>
+</div>
+<div class="paragraph">
+<p>Even though the test we made finished correctly, there are more tests&#8201;&#8212;&#8201;that devon4j generated automatically&#8201;&#8212;&#8201;which are going to contain one error related to role assignment. In this tutorial we are only going to implement the visitor side, so we won&#8217;t implement role restrictions. We encourage you to add the code for this functionality yourself, after finishing this tutorial.</p>
+</div>
+<div class="paragraph">
+<p>After we have demonstrated how to create tests in <em>devonfw</em>, we are going to show you how to package and deploy your project in the next chapter.</p>
+</div>
+<hr>
+<div class="paragraph">
+<p><strong>Next Chapter</strong>: <a href="#devon4j-deployment.asciidoc">Deployment with devonfw</a></p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html#introduction-why-should-i-use-devonfw.asciidoc">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devon4j.asciidoc_architecture.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-ide-support.asciidoc.html#LICENSE.asciidoc">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2021-02-15 07:10:47 UTC
+</sub></div>
+</div>
+</div>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+</body>
+</html>

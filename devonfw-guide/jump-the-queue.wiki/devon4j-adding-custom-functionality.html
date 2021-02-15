@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>devon4j adding Custom Functionality</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#devon4j-adding-custom-functionality.asciidoc">devon4j adding Custom Functionality</a>
+<ul class="sectlevel1">
+<li><a href="#devon4j-adding-custom-functionality.asciidoc_return-the-access-code">Return the Access Code</a>
+<ul class="sectlevel2">
+<li><a href="#devon4j-adding-custom-functionality.asciidoc_adding-methods-to-the-_queue_-component">Adding Methods to the <em>Queue</em> Component</a></li>
+<li><a href="#devon4j-adding-custom-functionality.asciidoc_creating-the-usecasemanage-for-the-accesscode">Creating the usecasemanage for the AccessCode</a></li>
+<li><a href="#devon4j-adding-custom-functionality.asciidoc_adding-to-the-logic">Adding to the Logic</a></li>
+<li><a href="#devon4j-adding-custom-functionality.asciidoc_adding-to-the-service">Adding to the Service</a></li>
+<li><a href="#devon4j-adding-custom-functionality.asciidoc_testing-the-changes">Testing the Changes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="devon4j-adding-custom-functionality.asciidoc" class="sect0">devon4j adding Custom Functionality</h1>
+<div class="paragraph">
+<p>In the <a href="#devon4j-adding-custom-functionality.asciidoc_devon4j-layers">previous chapter</a> we have seen that, using <em>CobiGen</em>, we can generate all the structure and functionality of a <em>devon4j</em> component in a few clicks.</p>
+</div>
+<div class="paragraph">
+<p>In this chapter we are going to show how to add custom functionalities to our projects, that are out of the scope of code, that <em>CobiGen</em> is able to generate.</p>
+</div>
+<div class="sect1">
+<h2 id="devon4j-adding-custom-functionality.asciidoc_return-the-access-code">Return the Access Code</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <em>JumpTheQueue</em> design defines a <a href="devon4j-adding-custom-functionality.asciidoc_jump-the-queue-design#user-story-register">User Story</a> in which a visitor can register into an event and obtain an access code to avoid a queue.</p>
+</div>
+<div class="paragraph">
+<p>In our <em>standard</em> implementation of the <em>JumpTheQueue</em> app we have used <em>CobiGen</em> to generate the components, so we have a default implementation of the services. Since the <em>AccessCode</em> component is more complex and requires the use of <em>CTOs</em>, we need to create our own <em>usecasemanage</em> and the methods <em>save</em> and <em>delete</em>.</p>
+</div>
+<div class="paragraph">
+<p>We also have to add some methods to the <em>Queue</em> component, since when saving/deleting an <code>AccessCode</code>, the amount of customers in the <code>Queue</code> needs to increase/decrease.</p>
+</div>
+<div class="sect2">
+<h3 id="devon4j-adding-custom-functionality.asciidoc_adding-methods-to-the-_queue_-component">Adding Methods to the <em>Queue</em> Component</h3>
+<div class="paragraph">
+<p>In our case, two new methods are going to be needed; <code>decreaseQueueCustomer</code> and <code>increaseQueueCustomer</code>. In order to add those methods to the queuemanagement, we need to follow these three steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Modify the corresponding <code>usecase</code> interface, adding the methods.</p>
+</li>
+<li>
+<p>Implement the methods in the <code>usecaseimpl</code>.</p>
+</li>
+<li>
+<p>Modify the management implementation <code>managementimpl</code>.</p>
+</li>
+</ol>
+</div>
+<div class="sect3">
+<h4 id="devon4j-adding-custom-functionality.asciidoc_1.-modifying-_ucmanagequeue_">1. Modifying <em>UcManageQueue</em></h4>
+<div class="paragraph">
+<p>Inside <code>jtqj-api/queuemanagement/logic/api/usecase/UcManageQueue</code> the declarations of the two methods are going to be added:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">...
+
+public interface UcManageQueue {
+
+	...
+
+	/**
+	 * Decrease number of customers of the queue and update the queue.
+	 *
+	 * @param queueId id of the queue to decrease customer.
+	 */
+	void decreaseQueueCustomer(long queueId);
+
+	/**
+	 * Increase number of customers of the queue and update the queue.
+	 *
+	 * @param queueId id of the queue to increase customer.
+	 */
+	void increaseQueueCustomer(long queueId);
+
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devon4j-adding-custom-functionality.asciidoc_2.-implementing-the-methods-in-_ucmanagequeueimpl_">2. Implementing the Methods in <em>UcManageQueueImpl</em></h4>
+<div class="paragraph">
+<p>In <code>jtqj-core/src/main/java/queuemanagement/logic/impl/usecase/UcManageQueueImpl</code> the implementation of the methods, that were just added in the interface, are going to be added:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">...
+
+public class UcManageQueueImpl extends AbstractQueueUc implements UcManageQueue {
+
+  ...
+
+  @Override
+  public void decreaseQueueCustomer(long queueId) {
+
+    // the queue is found by using the repository find method and queueId parameter
+    QueueEntity queueEntity = getQueueRepository().find(queueId);
+
+    // the customers gets reduced by one
+    queueEntity.setCustomers(queueEntity.getCustomers() - 1);
+
+    // Based on Hibernate, the command save(Entity) is not strictly required, but it improves readability.
+    // the queueEntity gets saved
+    getQueueRepository().save(queueEntity);
+  }
+
+  @Override
+  public void increaseQueueCustomer(long queueId) {
+
+    // the queue is found by using the repository find method and queueId paremeter
+    QueueEntity queueEntity = getQueueRepository().find(queueId);
+
+    // the customers gets increased by one
+    queueEntity.setCustomers(queueEntity.getCustomers() + 1);
+
+    // Based on Hibernate, the command save(Entity) is not strictly required, but it improves readability.
+    // the queueEntity gets saved
+    getQueueRepository().save(queueEntity);
+  }
+
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devon4j-adding-custom-functionality.asciidoc_3.-modify-the-management-implementation-_queuemanagementimpl_">3. Modify the Management Implementation <em>QueuemanagementImpl</em></h4>
+<div class="paragraph">
+<p>Since the <code>Queuemanagement</code> extends the usecase <code>UcManageQueue</code> the methods from the previous step need to be added in the <code>QueuemanagementImpl</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">...
+
+public class QueuemanagementImpl extends AbstractComponentFacade implements Queuemanagement {
+
+  ...
+
+  @Override
+  public void decreaseQueueCustomer(long queueId) {
+
+    this.ucManageQueue.decreaseQueueCustomer(queueId);
+  }
+
+  @Override
+  public void increaseQueueCustomer(long queueId) {
+
+    this.ucManageQueue.increaseQueueCustomer(queueId);
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>These methods are simply going to call the <code>ucManageQueue</code> methods that were just added.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devon4j-adding-custom-functionality.asciidoc_creating-the-usecasemanage-for-the-accesscode">Creating the usecasemanage for the AccessCode</h3>
+<div class="sect3">
+<h4 id="devon4j-adding-custom-functionality.asciidoc_adding-method-to-the-accesscode-_usecasefind_">Adding method to the AccessCode <em>usecasefind</em></h4>
+<div class="paragraph">
+<p>Before creating the usecasemanage, a method needs to be added to the usecasefind, that will recover our <code>AccessCodeEto</code>. In <code>jtqj-api</code>, inside the package <code>accesscodemanagement/logic/api/usecase/</code>, the file <code>UcFindAccessCode</code> is going to be modified, adding the new method to the interface:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">...
+
+import com.devonfw.application.jtqj.accesscodemanagement.logic.api.to.AccessCodeEto;
+
+...
+
+public interface UcFindAccessCode {
+
+  ...
+
+  /**
+   * Returns a paginated list of AccessCodeEto matching the search criteria.
+   *
+   * @param criteria the {@link AccessCodeSearchCriteriaTo}.
+   * @return the {@link List} of matching {@link AccessCodeEto}s.
+   */
+  Page&lt;AccessCodeEto&gt; findAccessCodeEtos(AccessCodeSearchCriteriaTo criteria);
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once that is finished, we will see that an error is going to appear in <code>UcFindAccessCodeImpl</code> and <code>AccesscodemanagementImpl</code>. The second error will be solved in later steps. To solve the first error, in <code>jtqj-core</code> the <code>accesscodemanagement/logic/impl/usecase/UcFindAccessCodeImpl</code> class needs to implement another method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">...
+
+public class UcFindAccessCodeImpl extends AbstractAccessCodeUc implements UcFindAccessCode {
+
+  ...
+
+  @Override
+  public Page&lt;AccessCodeEto&gt; findAccessCodeEtos(AccessCodeSearchCriteriaTo criteria) {
+
+    Page&lt;AccessCodeEntity&gt; accessCodes = getAccessCodeRepository().findByCriteria(criteria);
+
+    return mapPaginatedEntityList(accessCodes, AccessCodeEto.class);
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This method uses a <code>AcessCodeSearchCriteriaTo</code> to find a page of entities&#8201;&#8212;&#8201;<code>AccessCodeEntity</code>&#8201;&#8212;&#8201;using the repository. After that, it changes the mapping of the list from <code>AccessCodeEntity</code> to <code>AccessCodeEto</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devon4j-adding-custom-functionality.asciidoc_creating-the-_usecasemanage_">Creating the <em>usecasemanage</em></h4>
+<div class="paragraph">
+<p>In <code>jtqj-api</code>, inside the package <code>accesscodemanagement/logic/api/usecase/</code>, we are going to create a new interface called <code>UcManageAccessCode</code>, where we will define the save and delete methods:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">...
+
+import com.devonfw.application.jtqj.accesscodemanagement.logic.api.to.AccessCodeEto;
+
+public interface UcManageAccessCode {
+
+  /**
+   * Deletes an accessCode from the database by its ID 'accessCodeId'. Decreases the count of customers of the queue
+   * assigned to the access code by one.
+   *
+   * @param queueId Id of the queue to delete
+   */
+  void deleteAccessCode(long accessCodeId);
+
+  /**
+   * Saves a queue and stores it in the database. Increases the count of customers of the queue assigned to the access
+   * code by one.
+   *
+   * @param queue the {@link AccessCodeEto} to create.
+   * @return the new {@link AccessCodeEto} that has been saved with ID and version.
+   */
+  AccessCodeEto saveAccessCode(AccessCodeEto accessCodeEto);
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then <code>jtqj-core</code>, inside the package <code>accesscodemanagement/logic/impl/usecase</code>, we are going to create a class called <code>UcManageAccessCodeImpl</code>, implementing the definition we just made and extending <code>AbstractAccessCodeUc</code>. This will allow us to have access to the repository.</p>
+</div>
+<div class="paragraph">
+<p>Also, here is the part where we will use the methods that we created in the <code>Queue</code> component:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">...
+
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.List;
+import java.util.Objects;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+
+import com.devonfw.application.jtqj.accesscodemanagement.dataaccess.api.AccessCodeEntity;
+import com.devonfw.application.jtqj.accesscodemanagement.logic.api.to.AccessCodeCto;
+import com.devonfw.application.jtqj.accesscodemanagement.logic.api.to.AccessCodeEto;
+import com.devonfw.application.jtqj.accesscodemanagement.logic.api.to.AccessCodeSearchCriteriaTo;
+import com.devonfw.application.jtqj.accesscodemanagement.logic.api.usecase.UcFindAccessCode;
+import com.devonfw.application.jtqj.accesscodemanagement.logic.api.usecase.UcManageAccessCode;
+import com.devonfw.application.jtqj.accesscodemanagement.logic.base.usecase.AbstractAccessCodeUc;
+import com.devonfw.application.jtqj.queuemanagement.dataaccess.api.QueueEntity;
+import com.devonfw.application.jtqj.queuemanagement.logic.api.Queuemanagement;
+import com.devonfw.application.jtqj.queuemanagement.logic.api.to.QueueEto;
+import com.devonfw.application.jtqj.queuemanagement.logic.impl.usecase.UcManageQueueImpl;
+
+@Named
+@Validated
+@Transactional
+public class UcManageAccessCodeImpl extends AbstractAccessCodeUc implements UcManageAccessCode {
+
+  @Inject
+  private Queuemanagement queuemanagement;
+
+  @Inject
+  private Accesscodemanagement accesscodemanagement;
+
+  /** Logger instance. */
+  private static final Logger LOG = LoggerFactory.getLogger(UcManageQueueImpl.class);
+
+  @Override
+  public void deleteAccessCode(long accessCodeId) {
+
+    // we get the queueId using the AccessCodeRepository
+    long queueId = getAccessCodeRepository().find(accessCodeId).getQueueId();
+
+    /**
+     * Using the method getQueuemanagement() gives access to the methods that were created earlier in the usecasemanage
+     * (inside the queue component). This is done so each component takes care of its own modifications.
+     */
+    this.queuemanagement.decreaseQueueCustomer(queueId);
+
+    LOG.debug("The queue with id '{}' has decreased its customers.", queueId);
+
+    // then we delete the accesscode
+    getAccessCodeRepository().deleteById(accessCodeId);
+    LOG.debug("The accesscode with id '{}' has been deleted.", accessCodeId);
+
+  }
+
+  @Override
+  public AccessCodeEto saveAccessCode(AccessCodeEto accessCodeEto) {
+
+    // make sure the object is not null
+    Objects.requireNonNull(accessCodeEto, "UcManageAccessImpl accessCode null");
+
+    AccessCodeEntity accessCodeEntity = getBeanMapper().map(accessCodeEto, AccessCodeEntity.class);
+
+    long queueEntityId = accessCodeEntity.getQueueId();
+
+    AccessCodeSearchCriteriaTo accessCodeSearchCriteriaTo = new AccessCodeSearchCriteriaTo();
+    accessCodeSearchCriteriaTo.setQueueId(queueEntityId);
+    Pageable pageable = PageRequest.of(0, 1000);
+    accessCodeSearchCriteriaTo.setPageable(pageable);
+
+    /**
+     * Calling the parent with the method getAccesscodemanagement() we use the method findAccessCodeEtos() that will
+     * call the implementation of the method inside (UcFindAccessCodeImpl) through the interface. This allows us to use
+     * the {@link UcFindAccessCodeImpl}.
+     */
+    List&lt;AccessCodeEto&gt; accessCodeEtosInQueue = getAccesscodemanagement().findAccessCodeEtos(accessCodeSearchCriteriaTo)
+        .getContent();
+
+    // if there are no ETOs, we set the ticket to the first code
+    // else we get the digit of the last ticket in the list and generate a new code for the ticket
+    if (accessCodeEtosInQueue.isEmpty()) {
+      accessCodeEntity.setTicketNumber("Q000");
+    } else {
+      AccessCodeEto lastAccessCode = accessCodeEtosInQueue.get(accessCodeEtosInQueue.size() - 1);
+      int lastTicketDigit = Integer.parseInt(lastAccessCode.getTicketNumber().substring(1));
+      accessCodeEntity.setTicketNumber(generateTicketCode(lastTicketDigit));
+    }
+
+    // set the creation time, startTime and endTime
+    accessCodeEntity.setCreationTime(Timestamp.from(Instant.now()));
+    accessCodeEntity.setStartTime(null);
+    accessCodeEntity.setEndTime(null);
+
+    // save the AccessCode
+    AccessCodeEntity accessCodeEntitySaved = getAccessCodeRepository().save(accessCodeEntity);
+    LOG.debug("The accesscode with id '{}' has been saved.", accessCodeEntitySaved.getId());
+
+    /**
+     * Using the method getQueuemanagement() gives access to the methods that were created earlier in the usecasemanage
+     * (inside the queue component). This is done so each component takes care of its own modifications.
+     */
+    getQueuemanagement().increaseQueueCustomer(accessCodeEntitySaved.getQueueId());
+
+    LOG.debug("The queue with id '{}' has increased its customers.", accessCodeEntitySaved.getQueueId());
+
+    return getBeanMapper().map(accessCodeEntitySaved, AccessCodeEto.class);
+  }
+
+  /**
+   * Generates a new ticked code using the ticket digit of the last codeaccess created.
+   *
+   * @param lastTicketDigit the int of the last codeaccess created.
+   * @return the String with the new ticket code (example: 'Q005').
+   */
+  public String generateTicketCode(int lastTicketDigit) {
+
+    int newTicketDigit = lastTicketDigit + 1;
+    String newTicketCode = "";
+    if (newTicketDigit == 1000) {
+      newTicketCode = "Q000";
+    } else {
+      StringBuilder stringBuilder = new StringBuilder();
+      stringBuilder.append(newTicketDigit);
+      while (stringBuilder.length() &lt; 3) {
+        stringBuilder.insert(0, "0");
+      }
+      stringBuilder.insert(0, "Q");
+      newTicketCode = stringBuilder.toString();
+    }
+    return newTicketCode;
+  }
+
+  public Queuemanagement getQueuemanagement() {
+
+    return this.queuemanagement;
+  }
+
+  public Accesscodemanagement getAccesscodemanagement() {
+
+    return this.accesscodemanagement;
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Taking a closer look at the code, we can see that, in order to use the methods from the <code>UcFindAccessCodeImpl</code>, we need to use the parent (<code>Accesscodemanagement</code>) instead of the class directly. Also, following the <code>devon4j</code> structure, each component needs to take care of its own. In this case, by using the method <code>getQueuemanagement()</code>, we get access to the <code>Queuemanagement</code> injection that will allow the use of the methods we created earlier in the use cases in the queue component.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devon4j-adding-custom-functionality.asciidoc_adding-to-the-logic">Adding to the Logic</h3>
+<div class="paragraph">
+<p>Inside <code>jtqj-api</code>, in the class <code>accesscodemanagement/logic/api/Accesscodemanagement</code> we are going to extend the <code>UcManageAccessCode</code> that we just defined:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">...
+
+import com.devonfw.application.jtqj.accesscodemanagement.logic.api.usecase.UcFindAccessCode;
+import com.devonfw.application.jtqj.accesscodemanagement.logic.api.usecase.UcManageAccessCode;
+
+/**
+ * Interface for Accesscodemanagement component.
+ */
+public interface Accesscodemanagement extends UcFindAccessCode, UcManageAccessCode {
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After that, in <code>jtqj-core</code>, in the class <code>accesscodemanagement/logic/impl/AccesscodemanagementImpl</code>, we will see that an error has appeared because the methods
+from the extended interfaces are missing. We add the unimplemented methods and inject the <code>usecasemanage</code> solving the error:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">...
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.springframework.data.domain.Page;
+
+import com.devonfw.application.jtqj.accesscodemanagement.logic.api.Accesscodemanagement;
+import com.devonfw.application.jtqj.accesscodemanagement.logic.api.to.AccessCodeCto;
+import com.devonfw.application.jtqj.accesscodemanagement.logic.api.to.AccessCodeEto;
+import com.devonfw.application.jtqj.accesscodemanagement.logic.api.to.AccessCodeSearchCriteriaTo;
+import com.devonfw.application.jtqj.accesscodemanagement.logic.api.usecase.UcFindAccessCode;
+import com.devonfw.application.jtqj.accesscodemanagement.logic.api.usecase.UcManageAccessCode;
+import com.devonfw.application.jtqj.general.logic.base.AbstractComponentFacade;
+
+/**
+ * Implementation of component interface of Accesscodemanagement.
+ */
+@Named
+public class AccesscodemanagementImpl extends AbstractComponentFacade implements Accesscodemanagement {
+
+  @Inject
+  private UcFindAccessCode ucFindAccessCode;
+
+  @Inject
+  private UcManageAccessCode ucManageAccessCode;
+
+  @Override
+  public AccessCodeCto findAccessCodeCto(long id) {
+
+    return this.ucFindAccessCode.findAccessCodeCto(id);
+  }
+
+  @Override
+  public Page&lt;AccessCodeCto&gt; findAccessCodeCtos(AccessCodeSearchCriteriaTo criteria) {
+
+    return this.ucFindAccessCode.findAccessCodeCtos(criteria);
+  }
+
+  @Override
+  public void deleteAccessCode(long accessCodeId) {
+
+    this.ucManageAccessCode.deleteAccessCode(accessCodeId);
+  }
+
+  @Override
+  public AccessCodeEto saveAccessCode(AccessCodeEto accessCodeEto) {
+
+    return this.ucManageAccessCode.saveAccessCode(accessCodeEto);
+  }
+
+  @Override
+  public Page&lt;AccessCodeEto&gt; findAccessCodeEtos(AccessCodeSearchCriteriaTo criteria) {
+
+    return this.ucFindAccessCode.findAccessCodeEtos(criteria);
+  }
+
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devon4j-adding-custom-functionality.asciidoc_adding-to-the-service">Adding to the Service</h3>
+<div class="paragraph">
+<p>To add the new service, we need to add its definition to the <code>jtqj-api</code> in <code>accesscodemanagement/service/api/rest/AccesscodemanagementRestService.java</code>. We are going to create a new <code>/accessCode</code> REST resource bound to three methods, one called <em>findAccessCodeEtos</em>, another one called <em>saveAccessCode</em> and yet another one called <em>deleteAccessCode</em>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">...
+
+public interface AccesscodemanagementRestService {
+
+  ...
+
+  /**
+   * Delegates to {@link Accesscodemanagement#findAccessCodeEtos}.
+   *
+   * @param searchCriteriaTo the pagination and search criteria to be used for finding accesscodes.
+   * @return the {@link Page list} of matching {@link AccessCodeEto}s.
+   */
+  @POST
+  @Path("/accesscode/search")
+  public Page&lt;AccessCodeEto&gt; findAccessCodeEtos(AccessCodeSearchCriteriaTo searchCriteriaTo);
+
+  /**
+   * Delegates to {@link Accesscodemanagement#saveAccessCode}.
+   *
+   * @param accessCodeEto queue the {@link AccessCodeEto} to be saved.
+   * @return the recently created {@link AccessCodeEto}.
+   */
+  @POST
+  @Path("/accesscode/")
+  public AccessCodeEto saveAccessCode(AccessCodeEto accessCodeEto);
+
+  /**
+   * Delegates to {@link Accesscodemanagement#deleteAccessCode}.
+   *
+   * @param id of the {@link AccessCodeEto} to be deleted.
+   */
+  @DELETE
+  @Path("/accesscode/{id}/")
+  public void deleteAccessCode(@PathParam("id") long id);
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then we need to implement the new methods in the <code>accesscodemanagement/service/impl/rest/AccesscodemanagementRestServiceImpl.java</code> class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">...
+
+public class AccesscodemanagementRestServiceImpl implements AccesscodemanagementRestService {
+
+  ...
+
+  @Override
+  public AccessCodeEto saveAccessCode(AccessCodeEto accessCodeEto) {
+
+    return this.accesscodemanagement.saveAccessCode(accessCodeEto);
+  }
+
+  @Override
+  public void deleteAccessCode(long id) {
+
+    this.accesscodemanagement.deleteAccessCode(id);
+  }
+
+  @Override
+  public Page&lt;AccessCodeEto&gt; findAccessCodeEtos(AccessCodeSearchCriteriaTo searchCriteriaTo) {
+
+    return this.accesscodemanagement.findAccessCodeEtos(searchCriteriaTo);
+  }
+
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devon4j-adding-custom-functionality.asciidoc_testing-the-changes">Testing the Changes</h3>
+<div class="paragraph">
+<p>Now run the app again via Eclipse and use Postman to call the new save service via <strong>POST</strong>:<br>
+<code><a href="http://localhost:8081/jumpthequeue/services/rest/accesscodemanagement/v1/accesscode/" class="bare">http://localhost:8081/jumpthequeue/services/rest/accesscodemanagement/v1/accesscode/</a></code></p>
+</div>
+<div class="paragraph">
+<p>In the body, provide an AccessCode object with the following required parameters:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+  "queueId" : "1",
+  "visitorId" : "1000000"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The result should be something similar to this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/6.Customizations/jumpthequeue_accesscode.png" alt="JumpTheQueue AccessCode">
+</div>
+</div>
+<div class="paragraph">
+<p>In order to know, if the new codeaccess has been succesfully created, we can search all the CTOs, like we did in the previous steps. The new accesscode should be on the bottom:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/6.Customizations/jumpthequeue_listwithcode.png" alt="JumpTheQueue List with Code">
+</div>
+</div>
+<div class="paragraph">
+<p>To test the delete, you can send a <strong>DELETE</strong> to this URL:
+<code><a href="http://localhost:8081/jumpthequeue/services/rest/accesscodemanagement/v1/accesscode/{id}" class="bare">http://localhost:8081/jumpthequeue/services/rest/accesscodemanagement/v1/accesscode/{id}</a></code>
+Pass the <em>AccessCode</em> ID of the new entry, which can be found in the returned result of the save or the search operation.</p>
+</div>
+<div class="paragraph">
+<p>In this chapter we learned, how easy it is to extend a <em>devon4j</em> application. With only a few steps you can add new services to your backend, to fit the functional requirements of your project, or edit services to adapt the default implementation to your needs.</p>
+</div>
+<div class="paragraph">
+<p>In the next chapter we will show how to add validations for the data, that we receive from the client.</p>
+</div>
+<hr>
+<div class="paragraph">
+<p><strong>Next Chapter</strong>: <a href="#devon4j-validations.asciidoc">Validations in devon4j</a></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html#introduction-why-should-i-use-devonfw.asciidoc">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devon4j.asciidoc_architecture.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-ide-support.asciidoc.html#LICENSE.asciidoc">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2021-02-15 07:10:36 UTC
+</sub></div>
+</div>
+</div>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+</body>
+</html>

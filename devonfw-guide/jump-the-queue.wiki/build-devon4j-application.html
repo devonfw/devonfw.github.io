@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Build your own devon4j Application</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">RESOURCES</a></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+<li>
+<p><a href="/website/pages/community/community.html">COMMUNITY</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#build-devon4j-application.asciidoc">Build your own devon4j Application</a>
+<ul class="sectlevel1">
+<li><a href="#build-devon4j-application.asciidoc_setting-up-a-devonfw-work-environment">Setting up a devonfw Work Environment</a></li>
+<li><a href="#build-devon4j-application.asciidoc_creating-the-project">Creating the Project</a></li>
+<li><a href="#build-devon4j-application.asciidoc_importing-the-application-in-eclipse">Importing the Application in Eclipse</a></li>
+<li><a href="#build-devon4j-application.asciidoc_preparing-the-backend-for-an-initial-launch">Preparing the Backend for an Initial Launch</a></li>
+<li><a href="#build-devon4j-application.asciidoc_launching-the-backend">Launching the Backend</a></li>
+<li><a href="#build-devon4j-application.asciidoc_structure-of-the-app-template">Structure of the App Template</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="build-devon4j-application.asciidoc" class="sect0">Build your own devon4j Application</h1>
+<div class="paragraph">
+<p>In this step we are going to create our work environment and establish the first part of our backend. Like most <strong>devonfw</strong> projects, our backend will be build in Java and thus utilize the tools, libraries and frameworks provided by the <a href="https://github.com/devonfw/devon4j">devon4j</a> stack.</p>
+</div>
+<div class="sect1">
+<h2 id="build-devon4j-application.asciidoc_setting-up-a-devonfw-work-environment">Setting up a devonfw Work Environment</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Follow the setup instructions listed <a href="https://github.com/devonfw/devon-ide/blob/master/documentation/setup">here</a>.<br>
+After you have done so, your working directroy should look like this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/3.BuildYourOwn/after_setup.png" alt="After Setup" width="250">
+</div>
+</div>
+<div class="paragraph">
+<p>Press "Shift + Right Click" and select "Open Devon CMD shell here".<br>
+Your shell should now show the message:</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>devon-ide environment variables have been set for C:\... in workspace main</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>Navigate into workspace "main" by entering:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>C:\...&gt; cd workspaces\main</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="build-devon4j-application.asciidoc_creating-the-project">Creating the Project</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now we are going to create the folder structure for our backend by running the following commands:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>C:\...\workspaces\main&gt;                 mkdir jumpthequeue
+C:\...\workspaces\main&gt;                 cd jumpthequeue
+C:\...\workspaces\main\jumpthequeue&gt;    mkdir java
+C:\...\workspaces\main\jumpthequeue&gt;    cd java
+C:\...\workspaces\main\jumpthequeue\java&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here we are going to generate our devon4j application template as a starting point for our backend:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>C:\...\workspaces\main\jumpthequeue\java&gt;
+    devon java create com.devonfw.application.jtqj com.devonfw.java.jtqj -Dversion=0.0.1</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>We are using the <code>java</code> <a href="https://github.com/devonfw/devon-ide/blob/master/documentation/java">commandlet</a> of the devon-ide. After the command <code>create</code> we are passing the arguments <code>package</code>, <code>groupId</code> and <code>version</code> in this case.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Be sure that you are using devonfw CMD or bash, as the command is not working properly with devonfw PowerShell.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/3.BuildYourOwn/build_successful.png" alt="Build Success" width="800">
+</div>
+</div>
+<div class="paragraph">
+<p>Once you see the <code>BUILD SUCCESS</code> message, the new app template has been created and can now be expanded.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="build-devon4j-application.asciidoc_importing-the-application-in-eclipse">Importing the Application in Eclipse</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>First we have to launch our project-specific Eclipse instance by executing the <code>eclipse-main.bat</code> script in the root folder. Now we can import our application into Eclipse:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/3.BuildYourOwn/eclipse_import_1.png" alt="Eclipse Maven Import 1" width="350">
+</div>
+</div>
+<div class="paragraph">
+<p>Select <code>Import projects&#8230;&#8203;</code> from the Package Explorer (or optionally <code>Import&#8230;&#8203;</code> via the <code>File</code> menu).</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/3.BuildYourOwn/eclipse_import_2.png" alt="Eclipse Maven Import 2" width="450">
+</div>
+</div>
+<div class="paragraph">
+<p>Select <code>Existing Maven Projects</code> and click <code>Next &gt;</code>.<br>
+Now click <code>Browse</code> and select the <code>java</code> folder inside our <code>jumpthequeue</code> project.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/3.BuildYourOwn/eclipse_import_3.png" alt="Eclipse Maven Import 3" width="550"></span>
+<span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/3.BuildYourOwn/eclipse_import_4.png" alt="Eclipse Maven Import 4" width="550"></span></p>
+</div>
+<div class="paragraph">
+<p>Eclipse will detect the pre-generated Maven project structure inside our project by looking for <code>pom.xml</code> files.<br>
+In our case it should find the <code>api</code>, <code>core</code> and <code>server</code> packages.<br>
+Finally click <code>Finish</code> and wait for the import to complete.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="build-devon4j-application.asciidoc_preparing-the-backend-for-an-initial-launch">Preparing the Backend for an Initial Launch</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Before test-launching our backend we have to change the <em>server context path</em> of our application. Via the Eclipse Package Explorer navigate to:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>/jtqj-core/src/main/resources/config/</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now open <code>application.properties</code> and update the following line of code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>server.servlet.context-path=/jumpthequeue</pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-tip" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>For a more manageable view of the package structure inside the Eclipse Package Explorer select <code>Package Presentation &gt; Hierarchical</code> from the small <span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/3.BuildYourOwn/small_dropdown.png" alt="Dropdown Icon" width="20"></span> dropdown-menu.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/3.BuildYourOwn/hierarchical_view.png" alt="Hierarchical View" width="550">
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="build-devon4j-application.asciidoc_launching-the-backend">Launching the Backend</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Finally, using <em>Spring Boot</em> (which provides us with an embedded <em>Tomcat</em> server), we can run the backend of our app in one easy step. Navigate to:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>/jtqj-core/src/main/java/com.devonfw.application.jtqj/</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now right click <code>SpringBootApp.java</code> select <code>Run As &gt; Java Application</code>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/3.BuildYourOwn/run_java_app.png" alt="Run as Java Application" width="650">
+</div>
+</div>
+<div class="paragraph">
+<p>If you did everything right up until now the console should show a message like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (vX.X.X.RELEASE)
+
+.
+.
+.
+... c.d.application.jtqj.SpringBootApp       : Starting SpringBootApp on XXXXXXX with PID XXXX
+... o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8081 (http) with context path '/jumpthequeue'
+... c.d.application.jtqj.SpringBootApp       : Started SpringBootApp in XX.XXX seconds (JVM running for XX.XXX)</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The backend is now accessible via <a href="http://localhost:8081/jumpthequeue">localhost:8081/jumpthequeue</a>.<br>
+You can view the exposed services by logging in with these credentials:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Username:   admin
+Password:   admin</pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/devon4j/3.BuildYourOwn/rest_services.png" alt="RESTful Services" width="550">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You are redirected to a login screen because&#8201;&#8212;&#8201;by default&#8201;&#8212;&#8201;a new <em>devon4j</em> applications provides a basic security setup.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="build-devon4j-application.asciidoc_structure-of-the-app-template">Structure of the App Template</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When creating <em>devon4j</em> based apps this way, we get the following features <em>out-of-the-box</em>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>Maven</em> project with <em>api</em> project, <em>core</em> project and <em>server</em> project:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><em>api</em> project for the common API</p>
+</li>
+<li>
+<p><em>core</em> project for the app implementation</p>
+</li>
+<li>
+<p><em>server</em> project ready to package the app for deployment</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Data base ready environment with an <em>h2</em> instance, including:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Data model schema</p>
+</li>
+<li>
+<p>Mock data schema</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Database version control with <em>Flyway</em></p>
+</li>
+<li>
+<p><em>Bean Mapper</em> ready</p>
+</li>
+<li>
+<p>Basic security enabled (based on <em>Spring Security</em>)</p>
+</li>
+<li>
+<p>Unit test support and model</p>
+</li>
+</ul>
+</div>
+<hr>
+<div class="paragraph">
+<p><strong>Next Chapter</strong>: <a href="#devon4j-components.asciidoc">Add a Component to your App</a></p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html#introduction-why-should-i-use-devonfw.asciidoc">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devon4j.asciidoc_architecture.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-ide-support.asciidoc.html#LICENSE.asciidoc">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2021-02-15 07:10:32 UTC
+</sub></div>
+</div>
+</div>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+</body>
+</html>
