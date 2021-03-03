@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2021-03-01 09:01:46 UTC">
+<meta name="author" content="Updated at 2021-03-03 14:10:27 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -517,7 +517,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2021-03-01 09:02:08 UTC</span><br>
+<span id="author" class="author">Updated at 2021-03-03 14:10:49 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -732,7 +732,7 @@ export abstract class Store&lt;T&gt; implements OnDestroy {
 <div class="title">Note</div>
 </td>
 <td class="content">
-At the moment of this writing Angular 10.0.4, Electron 9.1.1 and Electron-builder 22.7.0 were the versions available.
+At the moment of this writing Angular 11.2.0, Electron 11.2.3 and Electron-builder 22.9.1 were the versions available.
 </td>
 </tr>
 </tbody></table>
@@ -774,8 +774,8 @@ Please remember if the project has a <code>package-lock.json</code> or <code>yar
 <div class="content">
 <pre class="highlight"><code class="language-json" data-lang="json">&quot;devDependencies&quot;: {
 ...
-    &quot;electron&quot;: &quot;^9.1.1&quot;,
-    &quot;electron-builder&quot;: &quot;^22.7.0&quot;,
+    &quot;electron&quot;: &quot;^11.2.3&quot;,
+    &quot;electron-builder&quot;: &quot;^22.9.1&quot;,
 ...
 },</code></pre>
 </div>
@@ -1116,13 +1116,13 @@ try {
 <pre class="highlight"><code class="language-json" data-lang="json">{
   ....
   &quot;main&quot;: &quot;electron-main.js&quot;,
-  &quot;scripts&quot;: {
+  &quot;scripts&quot;: {...}
   ....
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>scripts</code> section in the <code>package.json</code> can be improved to avoid running too verbose commands. As a very complete example we can take a look to the My Thai Star&#x2019;s <code>scripts</code> section and copy the lines useful in your project.</p>
+<p>The <code>scripts</code> section in the <code>package.json</code> can be improved to avoid running too verbose commands. As a very complete example we can take a look to the My Thai Star&#x2019;s <code>scripts</code> section and copy the lines useful in your project. In any case, at least we recommend to add the following lines:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1133,13 +1133,35 @@ try {
     &quot;test&quot;: &quot;ng test&quot;,
     &quot;lint&quot;: &quot;ng lint&quot;,
     &quot;e2e&quot;: &quot;ng e2e&quot;,
-    &quot;electron:serve&quot;: &quot;ng build --base-href ./ &amp;&amp; npx electron .&quot;,
-    &quot;electron:serve-tsc&quot;: &quot;tsc -p tsconfig.serve.json&quot;,
-    &quot;electron:pack&quot;: &quot;electron-builder --dir --config electron-builder.json&quot;,
-    &quot;electron:build&quot;: &quot;electron-builder --config electron-builder.json build&quot;,
-    &quot;electron:start&quot;: &quot;npm run electron:serve-tsc &amp;&amp; npm run electron:serve&quot;
+    &quot;electron:tsc&quot;: &quot;tsc -p tsconfig.serve.json&quot;,
+    &quot;electron:run&quot;: &quot;npm run electron:tsc &amp;&amp; ng build --base-href ./ &amp;&amp; npx electron .&quot;,
+    &quot;electron:serve&quot;: &quot;npm run electron:tsc &amp;&amp; npx electron . --serve&quot;,
+    &quot;electron:pack&quot;: &quot;npm run electron:tsc &amp;&amp; electron-builder --dir --config electron-builder.json&quot;,
+    &quot;electron:build&quot;: &quot;npm run electron:tsc &amp;&amp; electron-builder --config electron-builder.json build&quot;
   },</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>The <code>electron:</code> scripts do the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>electron:tsc</code>: Compiles electron TS files.</p>
+</li>
+<li>
+<p><code>electron:run</code>: Serves Angular app and runs electron.</p>
+</li>
+<li>
+<p><code>electron:serve</code>: Serves electron with an already running angular app (i.e. a <code>ng serve</code> command running on another terminal).</p>
+</li>
+<li>
+<p><code>electron:pack</code>: Packs electron app.</p>
+</li>
+<li>
+<p><code>electron:build</code>: Builds electron app.</p>
+</li>
+</ul>
 </div>
 <!-- toc disabled -->
 </div>
@@ -1622,12 +1644,9 @@ cy.request({
 <div class="title">Listing 92. commands.ts</div>
 <div class="content">
 <pre class="highlight"><code class="language-TypeScript" data-lang="TypeScript">Cypress.Commands.add(&apos;checkPlaceholder&apos;, (name) =&gt; {
-  cy.get(`[name=${name}]`)
-    .click()
-    .then(()=&gt;{
-      cy.get(`[name=${name}]`).should(&apos;have&apos;,&apos;class&apos;,&apos;mat-focused&apos;);
-    })
-})</code></pre>
+  cy.get(`[name=&apos;${name}&apos;]`).click();
+  cy.get(&apos;mat-form-field.mat-focused&apos;).should(&apos;exist&apos;);
+});</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2234,7 +2253,7 @@ $ ng new --collection=@angular-eslint/schematics</code></pre>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-03-01 08:59:34 UTC
+Last updated 2021-03-03 14:08:19 UTC
 </sub></div>
 
 

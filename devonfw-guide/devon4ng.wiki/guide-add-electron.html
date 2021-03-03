@@ -125,7 +125,7 @@
 <i class="icon-note" title=""></i>
 </td>
 <td class="content">
-At the moment of this writing Angular 10.0.4, Electron 9.1.1 and Electron-builder 22.7.0 were the versions available.
+At the moment of this writing Angular 11.2.0, Electron 11.2.3 and Electron-builder 22.9.1 were the versions available.
 </td>
 </tr>
 </table>
@@ -167,8 +167,8 @@ Please remember if the project has a <code>package-lock.json</code> or <code>yar
 <div class="content">
 <pre class="highlight"><code class="json language-json">"devDependencies": {
 ...
-    "electron": "^9.1.1",
-    "electron-builder": "^22.7.0",
+    "electron": "^11.2.3",
+    "electron-builder": "^22.9.1",
 ...
 },</code></pre>
 </div>
@@ -509,13 +509,13 @@ try {
 <pre class="highlight"><code class="json language-json">{
   ....
   "main": "electron-main.js",
-  "scripts": {
+  "scripts": {...}
   ....
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>scripts</code> section in the <code>package.json</code> can be improved to avoid running too verbose commands. As a very complete example we can take a look to the My Thai Star&#8217;s <code>scripts</code> section and copy the lines useful in your project.</p>
+<p>The <code>scripts</code> section in the <code>package.json</code> can be improved to avoid running too verbose commands. As a very complete example we can take a look to the My Thai Star&#8217;s <code>scripts</code> section and copy the lines useful in your project. In any case, at least we recommend to add the following lines:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -526,13 +526,35 @@ try {
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "electron:serve": "ng build --base-href ./ &amp;&amp; npx electron .",
-    "electron:serve-tsc": "tsc -p tsconfig.serve.json",
-    "electron:pack": "electron-builder --dir --config electron-builder.json",
-    "electron:build": "electron-builder --config electron-builder.json build",
-    "electron:start": "npm run electron:serve-tsc &amp;&amp; npm run electron:serve"
+    "electron:tsc": "tsc -p tsconfig.serve.json",
+    "electron:run": "npm run electron:tsc &amp;&amp; ng build --base-href ./ &amp;&amp; npx electron .",
+    "electron:serve": "npm run electron:tsc &amp;&amp; npx electron . --serve",
+    "electron:pack": "npm run electron:tsc &amp;&amp; electron-builder --dir --config electron-builder.json",
+    "electron:build": "npm run electron:tsc &amp;&amp; electron-builder --config electron-builder.json build"
   },</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>The <code>electron:</code> scripts do the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>electron:tsc</code>: Compiles electron TS files.</p>
+</li>
+<li>
+<p><code>electron:run</code>: Serves Angular app and runs electron.</p>
+</li>
+<li>
+<p><code>electron:serve</code>: Serves electron with an already running angular app (i.e. a <code>ng serve</code> command running on another terminal).</p>
+</li>
+<li>
+<p><code>electron:pack</code>: Packs electron app.</p>
+</li>
+<li>
+<p><code>electron:build</code>: Builds electron app.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -674,7 +696,7 @@ try {
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-03-01 08:57:30 UTC
+Last updated 2021-03-03 14:06:19 UTC
 </sub></div>
 </div>
 </div>
