@@ -1,0 +1,24 @@
+name: Dispcher event on update of devonfw-guide
+env:
+  BUILD_USER: ${{ secrets.BUILD_USER }}
+  BUILD_USER_EMAIL:  ${{ secrets.BUILD_USER_EMAIL }}
+on:
+  repository_dispatch:
+    types: [dispatch-update-website]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout devonfw-guide
+        uses: actions/checkout@v2
+        with:
+          repository: devonfw/devonfw-guide
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v7
+        with:
+          author_name: ${{ secrets.BUILD_USER }}
+          author_email: ${{ secrets.BUILD_USER_EMAIL }}
+          message: '[DocUpdate]'
+          cwd: './devonfw-guide/'
+          
