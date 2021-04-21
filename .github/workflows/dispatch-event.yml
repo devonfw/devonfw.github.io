@@ -1,0 +1,23 @@
+name: Dispcher event on update of devonfw guide
+on:
+  repository_dispatch:
+    types: [dispatch-update-website]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: update latest changes of devonfw-guide
+        run: |
+          git clone https://github.com/devonfw/devonfw.github.io.git
+          cd devonfw.github.io/
+          git branch
+          git submodule update --init --recursive
+          cd devonfw-guide/
+          git fetch
+          git branch
+          git merge origin/master
+          cd ..
+          git add devonfw-guide
+          git commit -m "[DocUpdate]"
+          git push origin develop
