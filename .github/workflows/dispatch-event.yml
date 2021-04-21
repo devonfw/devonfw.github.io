@@ -7,16 +7,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout website
-        uses: actions/checkout@v2
-      - name: Checkout submodules
-        uses: textbook/git-checkout-submodule-action@master
-        with:
-          remote: true
       - name: update latest changes of devonfw-guide
         run: |
+          git clone https://github.com/devonfw/devonfw.github.io.git
+          cd devonfw.github.io/
+          git branch
+          git submodule update --init --recursive
           cd devonfw-guide/
           git fetch
+          git branch
           git merge origin/master
           cd ..
           git add devonfw-guide
