@@ -9,6 +9,15 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Starting RubyGem Maven Proxy
+        run: |
+          # mvn org.apache.maven.plugins:maven-dependency-plugin:3.0.2:copy -Dartifact=de.saumya.mojo:rubygems:0.2.3:war -DoutputDirectory=.
+          git clone https://github.com/maybeec/rubygems-servlets.git
+          cd rubygems-servlets
+          mvn package -DskipTests
+          java -jar target/rubygems-0.2.4-SNAPSHOT.war &
+          cd ..
+          
       - name: Clone
         uses: actions/checkout@v1
         with:
@@ -18,15 +27,6 @@ jobs:
         uses: actions/setup-ruby@v1
         with:
           ruby-version: "2.x"
-          
-      - name: Starting RubyGem Maven Proxy
-        run: |
-          # mvn org.apache.maven.plugins:maven-dependency-plugin:3.0.2:copy -Dartifact=de.saumya.mojo:rubygems:0.2.3:war -DoutputDirectory=.
-          git clone https://github.com/maybeec/rubygems-servlets.git
-          cd rubygems-servlets
-          mvn package -DskipTests
-          java -jar target/rubygems-0.2.4-SNAPSHOT.war &
-          cd ..
 
       - name: Setup Node
         uses: actions/setup-node@v1
