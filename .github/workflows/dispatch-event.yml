@@ -1,0 +1,30 @@
+name: Dispcher event on update of devonfw guide
+env:
+  BUILD_USER: ${{ secrets.BUILD_USER }}
+  BUILD_USER_EMAIL:  ${{ secrets.BUILD_USER_EMAIL }}
+on:
+  repository_dispatch:
+    types: [dispatch-update-website]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: setup git user
+        run: |
+          git config --global user.email ${BUILD_USER_EMAIL}
+          git config --global user.name ${BUILD_USER}
+      - name: update latest changes of devonfw-guide
+        run: |
+          git clone https://github.com/devonfw/devonfw.github.io.git
+          cd devonfw.github.io/
+          git branch
+          git submodule update --init --recursive
+          cd devonfw-guide/
+          git fetch
+          git branch
+          git merge origin/master
+          cd ..
+          git add devonfw-guide
+          git commit -m "[DocUpdate]"
+          git push origin develop

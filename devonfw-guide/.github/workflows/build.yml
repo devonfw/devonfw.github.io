@@ -1,3 +1,4 @@
+
 env:
   REPO_CONSOLIDATE: "devonfw-guide"
   BUILD_USER: ${{ secrets.BUILD_USER }}
@@ -6,16 +7,16 @@ env:
 on:
   push:
     branches:
-
       - master
 name: Generate PDF and Update Website
 jobs:
   build:
-    if: ${{github.repository == 'devonfw/devonfw-guide'}} && "!startsWith(github.event.head_commit.message, 'PDF devonfw guide')"
+    if: ${{ github.repository == 'devonfw/devonfw-guide'}}
     runs-on: ubuntu-latest
     steps:
       - name: setup variable
         run: |
+          echo "REPO=$(echo '${{ github.event.pull_request.head.repo.full_name }}' | awk -F '/' '{print $1}')" >> $GITHUB_ENV
           echo "ORG=$(echo '${{ github.repository }}' | awk -F '/' '{print $1}')" >> $GITHUB_ENV
         shell: bash
       - name: setup git user
@@ -42,20 +43,28 @@ jobs:
         run: |
           mvn clean package -Ddocgen.images.dir=images,documentation -Doutput.format=pdf
           mv ./target/generated-docs/master.pdf ./devonfw_guide.pdf
-      - name: Commit and push new devonfw guide
-        run: |
-          git add ./devonfw_guide.pdf
-          git commit -m "PDF devonfw guide | GitHub Actions $GITHUB_WORKFLOW $GITHUB_RUN_NUMBER"
-          git remote add origin-pdf "https://${BUILD_USER}:${BUILD_USER_PASSWD}@github.com/${ORG}/${REPO_CONSOLIDATE}.git"
-          git push origin-pdf master
-      - name: Update Website on success
-        run: |
-          git clone https://${BUILD_USER}:${BUILD_USER_PASSWD}@github.com/${ORG}/devonfw.github.io.git --recurse-submodules
-          cd devonfw.github.io/${REPO_CONSOLIDATE}
-          git checkout master
-          git pull
-          cd ..
-          git add ${REPO_CONSOLIDATE}
-          git commit -m "[DocUpdate]"
-          git push origin HEAD:main
-          
+      - name: Draft GitHub release
+        uses: actions/create-release@v1
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name:  "Build# ${{ github.run_number }}"
+          release_name: "Release #${{ github.run_number }}"
+          draft: true
+      - name: Upload the pdf guide to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./devonfw_guide.pdf
+          asset_name: devonfw_guide.pdf
+          asset_content_type: application/pdf
+      - name: Triger Update Website on success
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.GHA_TOKEN }}
+          repository: devonfw/devonfw.github.io
+          event-type: dispatch-update-website
+

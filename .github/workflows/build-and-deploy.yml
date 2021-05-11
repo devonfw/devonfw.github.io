@@ -8,7 +8,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    steps:
+    steps:     
       - name: Clone
         uses: actions/checkout@v1
         with:
@@ -33,11 +33,7 @@ jobs:
           cd ..
 
       - name: Build
-        run: |
-          mvn org.apache.maven.plugins:maven-dependency-plugin:3.0.2:copy -Dartifact=de.saumya.mojo:rubygems:0.2.3:war -DoutputDirectory=.
-          java -jar rubygems-0.2.3.war &
-          sleep 30
-          mvn -s ./.m2/settings-local-rubygems-proxy.xml clean package
+        run: mvn -s ./.m2/unblock-rubygem-proxy-settings.xml clean package
 
       - name: SplitHtml
         run: |
