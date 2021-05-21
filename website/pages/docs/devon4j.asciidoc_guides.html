@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2021-05-12 13:43:04 UTC">
+<meta name="author" content="Updated at 2021-05-21 05:29:47 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -517,7 +517,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2021-05-12 13:43:12 UTC</span><br>
+<span id="author" class="author">Updated at 2021-05-21 05:29:55 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -1003,31 +1003,65 @@ The following properties files are used in every devonfw application:</p>
 <h5 id="guide-configuration.asciidoc_password-encryption">Password Encryption</h5>
 <div class="paragraph">
 <p>A simple but reasonable approach is to configure the passwords encrypted with a master-password. The master-password should be a strong secret that is specific for each environment. It must never be committed to version-control.
-In order to support encrypted passwords in spring-boot <code>application.properties</code> all you need to do is to add <a href="https://github.com/ulisesbocchio/jasypt-spring-boot#jasypt-spring-boot">jasypt-spring-boot</a> as dependency in your <code>pom.xml</code>(please check for recent version):</p>
+In order to support encrypted passwords in spring-boot <code>application.properties</code> all you need to do is to add <a href="https://github.com/ulisesbocchio/jasypt-spring-boot#jasypt-spring-boot">jasypt-spring-boot</a> as dependency in your <code>pom.xml</code> (please check for recent version <a href="https://mvnrepository.com/artifact/com.github.ulisesbocchio/jasypt-spring-boot-starter">here</a>):</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;com.github.ulisesbocchio&lt;/groupId&gt;
   &lt;artifactId&gt;jasypt-spring-boot-starter&lt;/artifactId&gt;
-  &lt;version&gt;1.17&lt;/version&gt;
+  &lt;version&gt;3.0.3&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>This will smoothly integrate <a href="http://jasypt.org/">jasypt</a> into your <a href="https://projects.spring.io/spring-boot/">spring-boot</a> application. Read this <a href="https://apereo.atlassian.net/wiki/spaces/CASUM/pages/103261428/HOWTO+Use+Jasypt+to+encrypt+passwords+in+configuration+files">HOWTO</a> to learn how to encrypt and decrypt passwords using jasypt. Here is a simple example output of an encrypted password (of course you have to use strong passwords instead of <code>secret</code> and <code>postgres</code> - this is only an example):</p>
+<p>This will smoothly integrate <a href="http://jasypt.org/">jasypt</a> into your <a href="https://projects.spring.io/spring-boot/">spring-boot</a> application. Read this <a href="https://apereo.atlassian.net/wiki/spaces/CASUM/pages/103261428/HOWTO+Use+Jasypt+to+encrypt+passwords+in+configuration+files">HOWTO</a> to learn how to encrypt and decrypt passwords using jasypt.</p>
+</div>
+<div class="paragraph">
+<p>Next, we give a simple example how to encypt and configure a secret value.
+We use the algorithm <code>PBEWITHHMACSHA512ANDAES_256</code> that provides strong encryption and is the default of <code>jasypt-spring-boot-starter</code>.
+However, different algorithms can be used if perferred (e.g. <code>PBEWITHMD5ANDTRIPLEDES</code>).</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">----ARGUMENTS-------------------
+<pre>java -cp ${M2_REPO}/org/jasypt/jasypt/1.9.3/jasypt-1.9.3.jar org.jasypt.intf.cli.JasyptPBEStringEncryptionCLI password=masterpassword algorithm=PBEWITHHMACSHA512ANDAES_256 input=secret ivGeneratorClassName=org.jasypt.iv.RandomIvGenerator
 
-input: postgres
-password: secret
+----ENVIRONMENT-----------------
+
+Runtime: AdoptOpenJDK OpenJDK 64-Bit Server VM 11.0.5+10
+
+
+
+----ARGUMENTS-------------------
+
+input: secret
+password: masterpassword
+ivGeneratorClassName: org.jasypt.iv.RandomIvGenerator
+algorithm: PBEWITHHMACSHA512ANDAES_256
+
+
 
 ----OUTPUT----------------------
 
-jd5ZREpBqxuN9ok0IhnXabgw7V3EoG2p</code></pre>
+PoUxkNjY2juQMCyPu6ic5KJy1XfK+bX9vu2/mPj3pmcO4iydG6mhgZRZSw50z/oC</pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Of course the master-password (<code>masterpassword</code>) and the actual password to encrypt (<code>secret</code>) are just examples.
+Please replace them with reasonable strong passwords for your environment.
+Further, if you are using <a href="https://github.com/devonfw/ide">devonfw-ide</a> you can make your life much easier and just type:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>devon jasypt encrypt</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>See <a href="https://github.com/devonfw/ide/blob/master/documentation/jasypt">jasypt commandlet</a> for details.</p>
+</div>
+<div class="paragraph">
+<p>Now the entire line after the <code>OUTPUT</code> block is your encrypted secret.
+It even contains some random salt so that multiple encryption invocations with the same parameters (<code>ARGUMENTS</code>) will produce a different <code>OUTPUT</code>.</p>
 </div>
 <div class="paragraph">
 <p>The master-password can be configured on your target environment via the property <code>jasypt.encryptor.password</code>. As system properties given on the command-line are visible in the process list, we recommend to use an <code>config/application.yml</code> file only for this purpose (as we recommended to use <code>application.properties</code> for regular configs):</p>
@@ -1036,29 +1070,32 @@ jd5ZREpBqxuN9ok0IhnXabgw7V3EoG2p</code></pre>
 <div class="content">
 <pre class="highlight"><code>jasypt:
     encryptor:
-        password: secret</code></pre>
+        password: masterpassword</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>(of course you will replace <code>secret</code> with a strong password). In case you happen to have multiple apps on the same machine, you can symlink the <code>application.yml</code> from a central place.
-Now you are able to put encrypted passwords into your <code>application.properties</code></p>
+<p>Again <code>masterpassword</code> is just an example that your replace with your actual master password.
+Now you are able to put encrypted passwords into your <code>application.properties</code> and specify the algorithm.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>spring.datasource.password=ENC(jd5ZREpBqxuN9ok0IhnXabgw7V3EoG2p)</code></pre>
+<pre class="highlight"><code>spring.datasource.password=ENC(PoUxkNjY2juQMCyPu6ic5KJy1XfK+bX9vu2/mPj3pmcO4iydG6mhgZRZSw50z/oC)
+jasypt.encryptor.algorithm=PBEWITHHMACSHA512ANDAES_256</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>To prevent jasypt to throw an exception in dev or test scenarios simply put this in your local config (<code>src/main/config/application.properties</code> and same for <code>test</code>, see above for details):</p>
+<p>This <code>application.properties</code> file can be version controlled (git-opts) and without knowing the masterpassword nobody is able to decrypt this to get the actual secret back.</p>
+</div>
+<div class="paragraph">
+<p>To prevent jasypt to throw an exception in dev or test scenarios you can simply put this in your local config (<code>src/main/config/application.properties</code> and same for <code>test</code>, see above for details):</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>jasypt.encryptor.password=none</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Is this Security by Obscurity?</p>
-</div>
+<div class="sect5">
+<h6 id="guide-configuration.asciidoc_is-this-security-by-obscurity">Is this Security by Obscurity?</h6>
 <div class="ulist">
 <ul>
 <li>
@@ -1070,6 +1107,7 @@ Now you are able to put encrypted passwords into your <code>application.properti
 </ul>
 </div>
 <!-- toc disabled -->
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -1877,7 +1915,23 @@ spring.jpa.properties.hibernate.format_sql=true</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Via the parameter <code>userInput</code> an attacker can inject SQL (JPQL) and execute arbitrary statements in the database causing extreme damage. In order to prevent such injections you have to strictly follow our rules for <a href="#guide-jpa.asciidoc_queries">queries</a>: Use named queries for static queries and QueryDSL for dynamic queries. Please also consult the <a href="https://www.owasp.org/index.php/SQL_Injection_Prevention_Cheat_Sheet">SQL Injection Prevention Cheat Sheet</a>.</p>
+<p>Via the parameter <code>userInput</code> an attacker can inject SQL (JPQL) and execute arbitrary statements in the database causing extreme damage.</p>
+</div>
+<div class="paragraph">
+<p>In order to prevent such injections you have to strictly follow our rules for <a href="#guide-jpa.asciidoc_queries">queries</a>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Use named queries for <a href="guide-jpa-query.html#static-queries">static queries</a>.</p>
+</li>
+<li>
+<p>Use QueryDSL for <a href="guide-jpa-query.html#dynamic-queries">dynamic queries</a>.</p>
+</li>
+<li>
+<p>Please also consult the <a href="https://www.owasp.org/index.php/SQL_Injection_Prevention_Cheat_Sheet">SQL Injection Prevention Cheat Sheet</a>.</p>
+</li>
+</ul>
 </div>
 </div>
 <div class="sect4">
@@ -2552,12 +2606,6 @@ CREATE CACHED TABLE PUBLIC.&lt;TABLE_NAME&gt;_AUD(
 <p>All SQL-Keywords in UPPER CASE</p>
 </li>
 <li>
-<p>Table names in upper CamelCase (e.g. <code>RestaurantOrder</code>)</p>
-</li>
-<li>
-<p>Column names in CamelCase (e.g. <code>drinkState</code>)</p>
-</li>
-<li>
 <p>Indentation should be 2 spaces as suggested by devonfw for every format.</p>
 </li>
 </ul>
@@ -2565,13 +2613,11 @@ CREATE CACHED TABLE PUBLIC.&lt;TABLE_NAME&gt;_AUD(
 <div class="sect4">
 <h5 id="guide-sql.asciidoc_ddl">DDL</h5>
 <div class="paragraph">
-<p>For DDLs follow these additional guidelines:</p>
+<p>The naming conventions for database constructs (tables, columns, triggers, constraints, etc.) should be aligned with your database product and their operators.
+However, when you have the freedom of choice and a modern case-sensitive database, you can simply use your code conventions also for database constructs to avoid explicitly mapping each and every property (e.g. <code>RestaurantTable</code> vs. <code>RESTAURANT_TABLE</code>).</p>
 </div>
 <div class="ulist">
 <ul>
-<li>
-<p>ID column names without underscore (e.g. <code>tableId</code>)</p>
-</li>
 <li>
 <p>Define columns and constraints inline in the statement to create the table</p>
 </li>
@@ -2583,22 +2629,22 @@ CREATE CACHED TABLE PUBLIC.&lt;TABLE_NAME&gt;_AUD(
 <div class="ulist">
 <ul>
 <li>
-<p><code>PK_{table}</code> for primary key (name optional here as PK constraint are fundamental)</p>
+<p><code>PK_&#xAB;table&#xBB;</code> for primary key (name optional here as PK constraint are fundamental)</p>
 </li>
 <li>
-<p><code>FK_{table}_{property}</code> for foreign keys (<code>{table}</code> and <code>{property}</code> are both on the source where the foreign key is defined)</p>
+<p><code>FK_&#xAB;table&#xBB;_&#xAB;property&#xBB;</code> for foreign keys (<code>&#xAB;table&#xBB;</code> and <code>&#xAB;property&#xBB;</code> are both on the source where the foreign key is defined)</p>
 </li>
 <li>
-<p><code>UC_{table}_{property}[_{propertyN}]*</code> for unique constraints</p>
+<p><code>UC_&#xAB;table&#xBB;_&#xAB;property&#xBB;[_&#xAB;propertyN&#xBB;]*</code> for unique constraints</p>
 </li>
 <li>
-<p><code>CK_{table}_{check}</code> for check constraints (<code>{check}</code> describes the check, if it is defined on a single property it should start with the property).</p>
+<p><code>CK_&#xAB;table&#xBB;_&#xAB;check&#xBB;</code> for check constraints (<code>&#xAB;check&#xBB;</code> describes the check, if it is defined on a single property it should start with the property).</p>
 </li>
 </ul>
 </div>
 </li>
 <li>
-<p>Databases have hard limitations for names (e.g. 30 characters). If you have to shorten names try to define common abbreviations in your project for according (business) terms. Especially do not just truncate the names at the limit.</p>
+<p>Old RDBMS had hard limitations for names (e.g. 30 characters). Please note that recent databases have overcome this very low length limitations. However, keep your names short but precise and try to define common abbreviations in your project for according (business) terms. Especially do not just truncate the names at the limit.</p>
 </li>
 <li>
 <p>If possible add comments on table and columns to help DBAs understanding your schema. This is also honored by many tools (not only DBA-tools).</p>
@@ -2613,34 +2659,31 @@ CREATE CACHED TABLE PUBLIC.&lt;TABLE_NAME&gt;_AUD(
 <pre class="highlight"><code class="language-sql" data-lang="sql">CREATE SEQUENCE HIBERNATE_SEQUENCE START WITH 1000000;
 
 -- *** Table ***
-CREATE TABLE Table (
-  id BIGINT NOT NULL AUTO_INCREMENT,
-  modificationCounter INTEGER NOT NULL,
-  seatsNumber INTEGER NOT NULL,
-  CONSTRAINT PK_Table PRIMARY KEY(id)
+CREATE TABLE RESTAURANT_TABLE (
+  ID                   NUMBER(19) NOT NULL,
+  MODIFICATION_COUNTER INTEGER NOT NULL,
+  SEATS                INTEGER NOT NULL,
+  CONSTRAINT PK_TABLE PRIMARY KEY(ID)
 );
-
--- *** UserRole ***
-CREATE TABLE UserRole (
-  id BIGINT NOT NULL AUTO_INCREMENT,
-  modificationCounter INTEGER NOT NULL,
-  name VARCHAR (255),
-  active BOOLEAN,
-  CONSTRAINT PK_UserRole PRIMARY KEY(id)
--- *** User ***
-CREATE TABLE User (
-  id BIGINT NOT NULL AUTO_INCREMENT,
-  modificationCounter INTEGER NOT NULL,
-  username VARCHAR (255) NULL,
-  password VARCHAR (255) NULL,
-  email VARCHAR (120) NULL,
-  idRole BIGINT NOT NULL,
-  CONSTRAINT PK_User PRIMARY KEY(id),
-  CONSTRAINT PK_User_idRole FOREIGN KEY(idRole) REFERENCES UserRole(id) NOCHECK
+COMMENT ON TABLE RESTAURANT_TABLE IS &apos;The physical tables inside the restaurant.&apos;;
+-- *** Order ***
+CREATE TABLE RESTAURANT_ORDER (
+  ID                   NUMBER(19) NOT NULL,
+  MODIFICATION_COUNTER INTEGER NOT NULL,
+  TABLE_ID             NUMBER(19) NOT NULL,
+  TOTAL                DECIMAL(5, 2) NOT NULL,
+  CREATION_DATE        TIMESTAMP NOT NULL,
+  PAYMENT_DATE         TIMESTAMP,
+  STATUS               VARCHAR2(10 CHAR) NOT NULL,
+  CONSTRAINT PK_ORDER PRIMARY KEY(ID),
+  CONSTRAINT FK_ORDER_TABLE_ID FOREIGN KEY(TABLE_ID) REFERENCES RESTAURANT_TABLE(ID)
 );
-COMMENT ON TABLE User is &apos;The users of the restaurant site&apos;;
+COMMENT ON TABLE RESTAURANT_ORDER IS &apos;An order and bill at the restaurant.&apos;;
 ...</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>ATTENTION: Please note that <code>TABLE</code> and <code>ORDER</code> are reserved keywords in SQL and you should avoid using such keywords to avoid problems.</p>
 </div>
 </div>
 <div class="sect4">
@@ -2654,33 +2697,28 @@ COMMENT ON TABLE User is &apos;The users of the restaurant site&apos;;
 <p>Inserts always with the same order of columns in blocks for each table.</p>
 </li>
 <li>
-<p>Insert column values always starting with id, modificationCounter, [dtype, ] &#x2026;&#x200B;</p>
+<p>Insert column values always starting with ID, MODIFICATION_COUNTER, [DTYPE, ] &#x2026;&#x200B;</p>
 </li>
 <li>
 <p>List columns with fixed length values (boolean, number, enums, etc.) before columns with free text to support alignment of multiple insert statements</p>
 </li>
 <li>
-<p>Pro Tip: Get familiar with column mode of <code>notepad++</code> when editing large blocks of similar insert statements.</p>
+<p>Pro Tip: Get familiar with column mode of advanced editors such as <code>notepad++</code> when editing large blocks of similar insert statements.</p>
 </li>
 </ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>INSERT INTO UserRole(id, modificationCounter, name, active) VALUES (0, 1, &apos;Customer&apos;, true);
-INSERT INTO UserRole(id, modificationCounter, name, active) VALUES (1, 1, &apos;Waiter&apos;, true);
-INSERT INTO User(id, modificationCounter, username, password, email, idRole) VALUES (0, 1, &apos;user0&apos;, &apos;password&apos;, &apos;user0@mail.com&apos;, 0);
-INSERT INTO User(id, modificationCounter, username, password, email, idRole) VALUES (1, 1, &apos;waiter&apos;, &apos;waiter&apos;, &apos;waiter@mail.com&apos;, 1);
-
-INSERT INTO Table(id, modificationCounter, seatsNumber) VALUES (0, 1, 4);
-INSERT INTO Table(id, modificationCounter, seatsNumber) VALUES (1, 1, 4);
-INSERT INTO Table(id, modificationCounter, seatsNumber) VALUES (2, 1, 4);
-INSERT INTO Table(id, modificationCounter, seatsNumber) VALUES (3, 1, 4);
-INSERT INTO Table(id, modificationCounter, seatsNumber) VALUES (4, 1, 6);
-INSERT INTO Table(id, modificationCounter, seatsNumber) VALUES (5, 1, 6);
-INSERT INTO Table(id, modificationCounter, seatsNumber) VALUES (6, 1, 6);
-INSERT INTO Table(id, modificationCounter, seatsNumber) VALUES (7, 1, 8);
-INSERT INTO Table(id, modificationCounter, seatsNumber) VALUES (8, 1, 8);
-...</pre>
+<pre class="highlight"><code class="language-sql" data-lang="sql">INSERT INTO RESTAURANT_TABLE(ID, MODIFICATION_COUNTER, SEATS) VALUES (0, 1, 4);
+INSERT INTO RESTAURANT_TABLE(ID, MODIFICATION_COUNTER, SEATS) VALUES (1, 1, 4);
+INSERT INTO RESTAURANT_TABLE(ID, MODIFICATION_COUNTER, SEATS) VALUES (2, 1, 4);
+INSERT INTO RESTAURANT_TABLE(ID, MODIFICATION_COUNTER, SEATS) VALUES (3, 1, 4);
+INSERT INTO RESTAURANT_TABLE(ID, MODIFICATION_COUNTER, SEATS) VALUES (4, 1, 6);
+INSERT INTO RESTAURANT_TABLE(ID, MODIFICATION_COUNTER, SEATS) VALUES (5, 1, 6);
+INSERT INTO RESTAURANT_TABLE(ID, MODIFICATION_COUNTER, SEATS) VALUES (6, 1, 6);
+INSERT INTO RESTAURANT_TABLE(ID, MODIFICATION_COUNTER, SEATS) VALUES (7, 1, 8);
+INSERT INTO RESTAURANT_TABLE(ID, MODIFICATION_COUNTER, SEATS) VALUES (8, 1, 8);
+...</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2870,7 +2908,7 @@ V&lt;version&gt;__&lt;description&gt; (e.g.: V12345__Add_new_table.sql).</p>
 <p>We use a common understanding of the log-levels as illustrated by the following table. This helps for better maintenance and operation of the systems by combining both views.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 27. Log-levels</caption>
+<caption class="title">Table 28. Log-levels</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -2958,7 +2996,7 @@ V&lt;version&gt;__&lt;description&gt; (e.g.: V12345__Add_new_table.sql).</p>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 28. Segments of Logfilename</caption>
+<caption class="title">Table 29. Segments of Logfilename</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -3116,7 +3154,7 @@ In that case it might be useful to log customs field to the produced JSON. This 
 We address these common threats individually in <em>security</em> sections of our technological guides as a concrete solution to prevent an attack typically depends on the according technology. The following table illustrates common threats and contains links to the solutions and protection-mechanisms provided by the devonfw:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 29. Security threats and protection-mechanisms</caption>
+<caption class="title">Table 30. Security threats and protection-mechanisms</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -3188,7 +3226,7 @@ We address these common threats individually in <em>security</em> sections of ou
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://owasp.org/www-community/attacks/csrf">Cross-Site Request Forgery (CSRF)</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">secure mutable service operations with an explicit CSRF security token sent in HTTP header and verified on the server</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="guide-service-layer.html#csrf">service-layer security</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="devon4j.asciidoc_guides.html#guide-csrf.asciidoc">CSRF guide</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.owasp.org/index.php/Log_Forging">Log-Forging</a></p></td>
@@ -3409,7 +3447,7 @@ http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);</code>
 <p>For clarification we also want to give a common understanding of related terms that have no unique definition and consistent usage in the wild.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 30. Security terms related to authorization</caption>
+<caption class="title">Table 31. Security terms related to authorization</caption>
 <colgroup>
 <col style="width: 15%;">
 <col style="width: 85%;">
@@ -3497,7 +3535,7 @@ http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);</code>
 <p>The segments are defined by the following table:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 31. Segments of Access Control Permission ID</caption>
+<caption class="title">Table 32. Segments of Access Control Permission ID</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -3645,7 +3683,7 @@ public class UcSafeOfferImpl extends ApplicationUc implements UcSafeOffer {
 <p>The file <code>access-control-schema.xml</code> is used to define the mapping from groups to permissions (see <a href="https://github.com/devonfw/my-thai-star/blob/develop/java/mtsj/core/src/main/resources/config/app/security/access-control-schema.xml">example from sample app</a>). The general terms discussed above can be mapped to the implementation as follows:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 32. General security terms related to devon4j access control schema</caption>
+<caption class="title">Table 33. General security terms related to devon4j access control schema</caption>
 <colgroup>
 <col style="width: 15%;">
 <col style="width: 15%;">
@@ -4696,7 +4734,7 @@ org.springframework.*</code></pre>
 <p>The following errors may occur in any devon application:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 33. Common Exceptions</caption>
+<caption class="title">Table 34. Common Exceptions</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -5037,7 +5075,7 @@ As the devonfw has a string focus on usual business applications it proposes a m
 <p>On the next table we compare the main differences between the &quot;canonical&quot; REST approach (or RESTful) and the devonfw proposal.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 34. Usage of HTTP methods</caption>
+<caption class="title">Table 35. Usage of HTTP methods</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -5102,7 +5140,7 @@ As the devonfw has a string focus on usual business applications it proposes a m
 <p>Further we define how to use the HTTP status codes for REST services properly. In general the 4xx codes correspond to an error on the client side and the 5xx codes to an error on the server side.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 35. Usage of HTTP status codes</caption>
+<caption class="title">Table 36. Usage of HTTP status codes</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -7114,7 +7152,7 @@ Therefore you should simply treat such code just like any other 3rd party compon
 The following table gives you the required hints to make your software work even with such classes / modules removed from the JDK (please note that the specified version is just a suggestion that worked, feel free to pick a more recent or more appropriate version):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 36. Dependencies for classes removed from Java 8 since 9+</caption>
+<caption class="title">Table 37. Dependencies for classes removed from Java 8 since 9+</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -7193,7 +7231,7 @@ Some 3rd party libraries were parsing the Java version in a very naive way makin
 <p>Therefore the following table gives an overview of common 3rd party libraries that have been affected by such breaking changes and need to be updated to at least the specified version:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 37. Minimum recommended versions of common 3rd party for Java 9+</caption>
+<caption class="title">Table 38. Minimum recommended versions of common 3rd party for Java 9+</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -7269,7 +7307,7 @@ For maven the new solution is <a href="https://spotbugs.github.io/spotbugs-maven
 <div class="sect5">
 <h6 id="guide-jdk.asciidoc_test-frameworks">Test Frameworks</h6>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 38. Minimum recommended versions of common 3rd party test frameworks for Java 9+</caption>
+<caption class="title">Table 39. Minimum recommended versions of common 3rd party test frameworks for Java 9+</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -7297,7 +7335,7 @@ For maven the new solution is <a href="https://spotbugs.github.io/spotbugs-maven
 <div class="sect5">
 <h6 id="guide-jdk.asciidoc_maven-plugins">Maven Plugins</h6>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 39. Minimum recommended versions of common maven plugins for Java 9+</caption>
+<caption class="title">Table 40. Minimum recommended versions of common maven plugins for Java 9+</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -8956,7 +8994,7 @@ To configure this you may use the healthcheck of the service to find out if the 
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-05-12 13:40:19 UTC
+Last updated 2021-05-21 05:27:01 UTC
 </sub></div>
 
 

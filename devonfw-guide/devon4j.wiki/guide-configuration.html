@@ -390,31 +390,65 @@ The following properties files are used in every devonfw application:</p>
 <h3 id="guide-configuration.asciidoc_password-encryption">Password Encryption</h3>
 <div class="paragraph">
 <p>A simple but reasonable approach is to configure the passwords encrypted with a master-password. The master-password should be a strong secret that is specific for each environment. It must never be committed to version-control.
-In order to support encrypted passwords in spring-boot <code>application.properties</code> all you need to do is to add <a href="https://github.com/ulisesbocchio/jasypt-spring-boot#jasypt-spring-boot">jasypt-spring-boot</a> as dependency in your <code>pom.xml</code>(please check for recent version):</p>
+In order to support encrypted passwords in spring-boot <code>application.properties</code> all you need to do is to add <a href="https://github.com/ulisesbocchio/jasypt-spring-boot#jasypt-spring-boot">jasypt-spring-boot</a> as dependency in your <code>pom.xml</code> (please check for recent version <a href="https://mvnrepository.com/artifact/com.github.ulisesbocchio/jasypt-spring-boot-starter">here</a>):</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="xml language-xml">&lt;dependency&gt;
   &lt;groupId&gt;com.github.ulisesbocchio&lt;/groupId&gt;
   &lt;artifactId&gt;jasypt-spring-boot-starter&lt;/artifactId&gt;
-  &lt;version&gt;1.17&lt;/version&gt;
+  &lt;version&gt;3.0.3&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>This will smoothly integrate <a href="http://jasypt.org/">jasypt</a> into your <a href="https://projects.spring.io/spring-boot/">spring-boot</a> application. Read this <a href="https://apereo.atlassian.net/wiki/spaces/CASUM/pages/103261428/HOWTO+Use+Jasypt+to+encrypt+passwords+in+configuration+files">HOWTO</a> to learn how to encrypt and decrypt passwords using jasypt. Here is a simple example output of an encrypted password (of course you have to use strong passwords instead of <code>secret</code> and <code>postgres</code> - this is only an example):</p>
+<p>This will smoothly integrate <a href="http://jasypt.org/">jasypt</a> into your <a href="https://projects.spring.io/spring-boot/">spring-boot</a> application. Read this <a href="https://apereo.atlassian.net/wiki/spaces/CASUM/pages/103261428/HOWTO+Use+Jasypt+to+encrypt+passwords+in+configuration+files">HOWTO</a> to learn how to encrypt and decrypt passwords using jasypt.</p>
+</div>
+<div class="paragraph">
+<p>Next, we give a simple example how to encypt and configure a secret value.
+We use the algorithm <code>PBEWITHHMACSHA512ANDAES_256</code> that provides strong encryption and is the default of <code>jasypt-spring-boot-starter</code>.
+However, different algorithms can be used if perferred (e.g. <code>PBEWITHMD5ANDTRIPLEDES</code>).</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="bash language-bash">----ARGUMENTS-------------------
+<pre>java -cp ${M2_REPO}/org/jasypt/jasypt/1.9.3/jasypt-1.9.3.jar org.jasypt.intf.cli.JasyptPBEStringEncryptionCLI password=masterpassword algorithm=PBEWITHHMACSHA512ANDAES_256 input=secret ivGeneratorClassName=org.jasypt.iv.RandomIvGenerator
 
-input: postgres
-password: secret
+----ENVIRONMENT-----------------
+
+Runtime: AdoptOpenJDK OpenJDK 64-Bit Server VM 11.0.5+10
+
+
+
+----ARGUMENTS-------------------
+
+input: secret
+password: masterpassword
+ivGeneratorClassName: org.jasypt.iv.RandomIvGenerator
+algorithm: PBEWITHHMACSHA512ANDAES_256
+
+
 
 ----OUTPUT----------------------
 
-jd5ZREpBqxuN9ok0IhnXabgw7V3EoG2p</code></pre>
+PoUxkNjY2juQMCyPu6ic5KJy1XfK+bX9vu2/mPj3pmcO4iydG6mhgZRZSw50z/oC</pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Of course the master-password (<code>masterpassword</code>) and the actual password to encrypt (<code>secret</code>) are just examples.
+Please replace them with reasonable strong passwords for your environment.
+Further, if you are using <a href="https://github.com/devonfw/ide">devonfw-ide</a> you can make your life much easier and just type:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>devon jasypt encrypt</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>See <a href="https://github.com/devonfw/ide/blob/master/documentation/jasypt">jasypt commandlet</a> for details.</p>
+</div>
+<div class="paragraph">
+<p>Now the entire line after the <code>OUTPUT</code> block is your encrypted secret.
+It even contains some random salt so that multiple encryption invocations with the same parameters (<code>ARGUMENTS</code>) will produce a different <code>OUTPUT</code>.</p>
 </div>
 <div class="paragraph">
 <p>The master-password can be configured on your target environment via the property <code>jasypt.encryptor.password</code>. As system properties given on the command-line are visible in the process list, we recommend to use an <code>config/application.yml</code> file only for this purpose (as we recommended to use <code>application.properties</code> for regular configs):</p>
@@ -423,29 +457,32 @@ jd5ZREpBqxuN9ok0IhnXabgw7V3EoG2p</code></pre>
 <div class="content">
 <pre class="highlight"><code>jasypt:
     encryptor:
-        password: secret</code></pre>
+        password: masterpassword</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>(of course you will replace <code>secret</code> with a strong password). In case you happen to have multiple apps on the same machine, you can symlink the <code>application.yml</code> from a central place.
-Now you are able to put encrypted passwords into your <code>application.properties</code></p>
+<p>Again <code>masterpassword</code> is just an example that your replace with your actual master password.
+Now you are able to put encrypted passwords into your <code>application.properties</code> and specify the algorithm.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>spring.datasource.password=ENC(jd5ZREpBqxuN9ok0IhnXabgw7V3EoG2p)</code></pre>
+<pre class="highlight"><code>spring.datasource.password=ENC(PoUxkNjY2juQMCyPu6ic5KJy1XfK+bX9vu2/mPj3pmcO4iydG6mhgZRZSw50z/oC)
+jasypt.encryptor.algorithm=PBEWITHHMACSHA512ANDAES_256</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>To prevent jasypt to throw an exception in dev or test scenarios simply put this in your local config (<code>src/main/config/application.properties</code> and same for <code>test</code>, see above for details):</p>
+<p>This <code>application.properties</code> file can be version controlled (git-opts) and without knowing the masterpassword nobody is able to decrypt this to get the actual secret back.</p>
+</div>
+<div class="paragraph">
+<p>To prevent jasypt to throw an exception in dev or test scenarios you can simply put this in your local config (<code>src/main/config/application.properties</code> and same for <code>test</code>, see above for details):</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>jasypt.encryptor.password=none</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Is this Security by Obscurity?</p>
-</div>
+<div class="sect3">
+<h4 id="guide-configuration.asciidoc_is-this-security-by-obscurity">Is this Security by Obscurity?</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -455,6 +492,7 @@ Now you are able to put encrypted passwords into your <code>application.properti
 <p>No, if someone only gets the configuration file. So all your developers might have access to the version-control where the config is stored. Others might have access to the software releases that include this configs. But without the master-password that should only be known to specific operators none else can decrypt the password (except with brute-force what will take a very long time, see jasypt for details).</p>
 </li>
 </ul>
+</div>
 </div>
 </div>
 </div>
@@ -596,7 +634,7 @@ Now you are able to put encrypted passwords into your <code>application.properti
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-05-12 13:36:51 UTC
+Last updated 2021-05-21 05:23:24 UTC
 </sub></div>
 </div>
 </div>

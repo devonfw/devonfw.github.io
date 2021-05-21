@@ -119,30 +119,28 @@
 <h2 id="guide-service-layer.asciidoc_types-of-services">Types of Services</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>We distinguish between the following types of services:</p>
+<p>Before you start creating your services you should consider some general design aspects:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>External Services</strong><br>
-are used for communication between different companies, vendors, or partners.</p>
+<p>Do you want to create a <a href="https://en.wikipedia.org/wiki/Remote_procedure_call">RPC</a> service?</p>
 </li>
 <li>
-<p><strong>Internal Services</strong><br>
-are used for communication between different applications in the same application landscape of the same vendor.</p>
+<p>Or is your problem better addressed by messaging or eventing?</p>
+</li>
+<li>
+<p>Who will consume your service?</p>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Back-end Services</strong><br>
-are internal services between Java back-end components typically with different release and deployment cycles (if not Java consider this as an external service).</p>
+<p>Do you have one or multiple consumers?</p>
 </li>
 <li>
-<p><strong>JS-Client Services</strong><br>
-are internal services provided by the Java back-end for JavaScript clients (GUI).</p>
+<p>Do web-browsers have to use your service?</p>
 </li>
 <li>
-<p><strong>Java-Client Services</strong><br>
-are internal services provided by the Java back-end for a native Java client (JavaFx, EclipseRcp, etc.).</p>
+<p>Will apps from other vendors or parties have to consume your service that you can not influence if the service may have to change or be extended?</p>
 </li>
 </ul>
 </div>
@@ -150,57 +148,18 @@ are internal services provided by the Java back-end for a native Java client (Ja
 </ul>
 </div>
 <div class="paragraph">
-<p>The choices for technology and protocols will depend on the type of service. The following table gives a guideline for aspects according to the service types.</p>
+<p>For RPC a common choice is <a href="#guide-rest.asciidoc">REST</a> but there are also interesting alternatives like <a href="https://grpc.io/">gRPC</a>. We also have a guide for <a href="#guide-soap.asciidoc">SOAP</a> but this technology should rather be considered as legacy and is not recommended for new services.</p>
 </div>
-<table class="tableblock frame-all grid-all" style="width: 100%;">
-<caption class="title">Table 1. Aspects according to service-type</caption>
-<colgroup>
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-<col style="width: 20%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top"><strong>Aspect</strong></th>
-<th class="tableblock halign-left valign-top"><strong>External Service</strong></th>
-<th class="tableblock halign-left valign-top"><strong>Back-end Service</strong></th>
-<th class="tableblock halign-left valign-top"><strong>JS-Client Service</strong></th>
-<th class="tableblock halign-left valign-top"><strong>Java-Client Service</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#guide-service-layer.asciidoc_versioning"><strong>Versioning</strong></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">required</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">required</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">not required</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">not required</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#guide-service-layer.asciidoc_interoperability"><strong>Interoperability</strong></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">mandatory</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">not required</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">implicit</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">not required</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#guide-service-layer.asciidoc_protocol">Recommended <strong>Protocol</strong></a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#guide-soap.asciidoc">SOAP</a> or <a href="#guide-rest.asciidoc">REST</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#guide-rest.asciidoc">REST</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#guide-rest.asciidoc">REST</a>+JSON</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#guide-rest.asciidoc">REST</a></p></td>
-</tr>
-</tbody>
-</table>
+<div class="paragraph">
+<p>When it comes to messaging in Java the typical answer will be <a href="#guide-jms.asciidoc">JMS</a>. However, a very promising alternative is <a href="#guide-kafka.asciidoc">Kafka</a>.</p>
+</div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="guide-service-layer.asciidoc_versioning">Versioning</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>For services consumed by other applications we use versioning to prevent incompatibilities between applications when deploying updates. This is done by the following conventions:</p>
+<p>For RPC services consumed by other applications we use versioning to prevent incompatibilities between applications when deploying updates. This is done by the following conventions:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -419,7 +378,7 @@ Avoid polymorphism, RPC methods with unique name per signature and no overloadin
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-05-12 13:37:15 UTC
+Last updated 2021-05-21 05:23:47 UTC
 </sub></div>
 </div>
 </div>

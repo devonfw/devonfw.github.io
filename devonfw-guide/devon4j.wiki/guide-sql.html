@@ -128,12 +128,6 @@
 <p>All SQL-Keywords in UPPER CASE</p>
 </li>
 <li>
-<p>Table names in upper CamelCase (e.g. <code>RestaurantOrder</code>)</p>
-</li>
-<li>
-<p>Column names in CamelCase (e.g. <code>drinkState</code>)</p>
-</li>
-<li>
 <p>Indentation should be 2 spaces as suggested by devonfw for every format.</p>
 </li>
 </ul>
@@ -141,13 +135,11 @@
 <div class="sect2">
 <h3 id="guide-sql.asciidoc_ddl">DDL</h3>
 <div class="paragraph">
-<p>For DDLs follow these additional guidelines:</p>
+<p>The naming conventions for database constructs (tables, columns, triggers, constraints, etc.) should be aligned with your database product and their operators.
+However, when you have the freedom of choice and a modern case-sensitive database, you can simply use your code conventions also for database constructs to avoid explicitly mapping each and every property (e.g. <code>RestaurantTable</code> vs. <code>RESTAURANT_TABLE</code>).</p>
 </div>
 <div class="ulist">
 <ul>
-<li>
-<p>ID column names without underscore (e.g. <code>tableId</code>)</p>
-</li>
 <li>
 <p>Define columns and constraints inline in the statement to create the table</p>
 </li>
@@ -159,22 +151,22 @@
 <div class="ulist">
 <ul>
 <li>
-<p><code>PK_{table}</code> for primary key (name optional here as PK constraint are fundamental)</p>
+<p><code>PK_«table»</code> for primary key (name optional here as PK constraint are fundamental)</p>
 </li>
 <li>
-<p><code>FK_{table}_{property}</code> for foreign keys (<code>{table}</code> and <code>{property}</code> are both on the source where the foreign key is defined)</p>
+<p><code>FK_«table»_«property»</code> for foreign keys (<code>«table»</code> and <code>«property»</code> are both on the source where the foreign key is defined)</p>
 </li>
 <li>
-<p><code>UC_{table}_{property}[_{propertyN}]*</code> for unique constraints</p>
+<p><code>UC_«table»_«property»[_«propertyN»]*</code> for unique constraints</p>
 </li>
 <li>
-<p><code>CK_{table}_{check}</code> for check constraints (<code>{check}</code> describes the check, if it is defined on a single property it should start with the property).</p>
+<p><code>CK_«table»_«check»</code> for check constraints (<code>«check»</code> describes the check, if it is defined on a single property it should start with the property).</p>
 </li>
 </ul>
 </div>
 </li>
 <li>
-<p>Databases have hard limitations for names (e.g. 30 characters). If you have to shorten names try to define common abbreviations in your project for according (business) terms. Especially do not just truncate the names at the limit.</p>
+<p>Old RDBMS had hard limitations for names (e.g. 30 characters). Please note that recent databases have overcome this very low length limitations. However, keep your names short but precise and try to define common abbreviations in your project for according (business) terms. Especially do not just truncate the names at the limit.</p>
 </li>
 <li>
 <p>If possible add comments on table and columns to help DBAs understanding your schema. This is also honored by many tools (not only DBA-tools).</p>
@@ -189,34 +181,31 @@
 <pre class="highlight"><code class="sql language-sql">CREATE SEQUENCE HIBERNATE_SEQUENCE START WITH 1000000;
 
 -- *** Table ***
-CREATE TABLE Table (
-  id BIGINT NOT NULL AUTO_INCREMENT,
-  modificationCounter INTEGER NOT NULL,
-  seatsNumber INTEGER NOT NULL,
-  CONSTRAINT PK_Table PRIMARY KEY(id)
+CREATE TABLE RESTAURANT_TABLE (
+  ID                   NUMBER(19) NOT NULL,
+  MODIFICATION_COUNTER INTEGER NOT NULL,
+  SEATS                INTEGER NOT NULL,
+  CONSTRAINT PK_TABLE PRIMARY KEY(ID)
 );
-
--- *** UserRole ***
-CREATE TABLE UserRole (
-  id BIGINT NOT NULL AUTO_INCREMENT,
-  modificationCounter INTEGER NOT NULL,
-  name VARCHAR (255),
-  active BOOLEAN,
-  CONSTRAINT PK_UserRole PRIMARY KEY(id)
--- *** User ***
-CREATE TABLE User (
-  id BIGINT NOT NULL AUTO_INCREMENT,
-  modificationCounter INTEGER NOT NULL,
-  username VARCHAR (255) NULL,
-  password VARCHAR (255) NULL,
-  email VARCHAR (120) NULL,
-  idRole BIGINT NOT NULL,
-  CONSTRAINT PK_User PRIMARY KEY(id),
-  CONSTRAINT PK_User_idRole FOREIGN KEY(idRole) REFERENCES UserRole(id) NOCHECK
+COMMENT ON TABLE RESTAURANT_TABLE IS 'The physical tables inside the restaurant.';
+-- *** Order ***
+CREATE TABLE RESTAURANT_ORDER (
+  ID                   NUMBER(19) NOT NULL,
+  MODIFICATION_COUNTER INTEGER NOT NULL,
+  TABLE_ID             NUMBER(19) NOT NULL,
+  TOTAL                DECIMAL(5, 2) NOT NULL,
+  CREATION_DATE        TIMESTAMP NOT NULL,
+  PAYMENT_DATE         TIMESTAMP,
+  STATUS               VARCHAR2(10 CHAR) NOT NULL,
+  CONSTRAINT PK_ORDER PRIMARY KEY(ID),
+  CONSTRAINT FK_ORDER_TABLE_ID FOREIGN KEY(TABLE_ID) REFERENCES RESTAURANT_TABLE(ID)
 );
-COMMENT ON TABLE User is 'The users of the restaurant site';
+COMMENT ON TABLE RESTAURANT_ORDER IS 'An order and bill at the restaurant.';
 ...</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>ATTENTION: Please note that <code>TABLE</code> and <code>ORDER</code> are reserved keywords in SQL and you should avoid using such keywords to avoid problems.</p>
 </div>
 </div>
 <div class="sect2">
@@ -230,33 +219,28 @@ COMMENT ON TABLE User is 'The users of the restaurant site';
 <p>Inserts always with the same order of columns in blocks for each table.</p>
 </li>
 <li>
-<p>Insert column values always starting with id, modificationCounter, [dtype, ] &#8230;&#8203;</p>
+<p>Insert column values always starting with ID, MODIFICATION_COUNTER, [DTYPE, ] &#8230;&#8203;</p>
 </li>
 <li>
 <p>List columns with fixed length values (boolean, number, enums, etc.) before columns with free text to support alignment of multiple insert statements</p>
 </li>
 <li>
-<p>Pro Tip: Get familiar with column mode of <code>notepad++</code> when editing large blocks of similar insert statements.</p>
+<p>Pro Tip: Get familiar with column mode of advanced editors such as <code>notepad++</code> when editing large blocks of similar insert statements.</p>
 </li>
 </ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>INSERT INTO UserRole(id, modificationCounter, name, active) VALUES (0, 1, 'Customer', true);
-INSERT INTO UserRole(id, modificationCounter, name, active) VALUES (1, 1, 'Waiter', true);
-INSERT INTO User(id, modificationCounter, username, password, email, idRole) VALUES (0, 1, 'user0', 'password', 'user0@mail.com', 0);
-INSERT INTO User(id, modificationCounter, username, password, email, idRole) VALUES (1, 1, 'waiter', 'waiter', 'waiter@mail.com', 1);
-
-INSERT INTO Table(id, modificationCounter, seatsNumber) VALUES (0, 1, 4);
-INSERT INTO Table(id, modificationCounter, seatsNumber) VALUES (1, 1, 4);
-INSERT INTO Table(id, modificationCounter, seatsNumber) VALUES (2, 1, 4);
-INSERT INTO Table(id, modificationCounter, seatsNumber) VALUES (3, 1, 4);
-INSERT INTO Table(id, modificationCounter, seatsNumber) VALUES (4, 1, 6);
-INSERT INTO Table(id, modificationCounter, seatsNumber) VALUES (5, 1, 6);
-INSERT INTO Table(id, modificationCounter, seatsNumber) VALUES (6, 1, 6);
-INSERT INTO Table(id, modificationCounter, seatsNumber) VALUES (7, 1, 8);
-INSERT INTO Table(id, modificationCounter, seatsNumber) VALUES (8, 1, 8);
-...</pre>
+<pre class="highlight"><code class="sql language-sql">INSERT INTO RESTAURANT_TABLE(ID, MODIFICATION_COUNTER, SEATS) VALUES (0, 1, 4);
+INSERT INTO RESTAURANT_TABLE(ID, MODIFICATION_COUNTER, SEATS) VALUES (1, 1, 4);
+INSERT INTO RESTAURANT_TABLE(ID, MODIFICATION_COUNTER, SEATS) VALUES (2, 1, 4);
+INSERT INTO RESTAURANT_TABLE(ID, MODIFICATION_COUNTER, SEATS) VALUES (3, 1, 4);
+INSERT INTO RESTAURANT_TABLE(ID, MODIFICATION_COUNTER, SEATS) VALUES (4, 1, 6);
+INSERT INTO RESTAURANT_TABLE(ID, MODIFICATION_COUNTER, SEATS) VALUES (5, 1, 6);
+INSERT INTO RESTAURANT_TABLE(ID, MODIFICATION_COUNTER, SEATS) VALUES (6, 1, 6);
+INSERT INTO RESTAURANT_TABLE(ID, MODIFICATION_COUNTER, SEATS) VALUES (7, 1, 8);
+INSERT INTO RESTAURANT_TABLE(ID, MODIFICATION_COUNTER, SEATS) VALUES (8, 1, 8);
+...</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -402,7 +386,7 @@ INSERT INTO Table(id, modificationCounter, seatsNumber) VALUES (8, 1, 8);
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-05-12 13:37:16 UTC
+Last updated 2021-05-21 05:23:49 UTC
 </sub></div>
 </div>
 </div>

@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2021-05-12 13:43:04 UTC">
+<meta name="author" content="Updated at 2021-05-21 05:29:47 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -517,7 +517,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2021-05-12 13:43:12 UTC</span><br>
+<span id="author" class="author">Updated at 2021-05-21 05:29:55 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -599,6 +599,9 @@ In case you want to administrate <code>devonfw-ide</code> settings for your proj
 You only need the settings URL from your <code>devonfw-ide</code> <a href="devonfw-ide-usage.asciidoc.html#usage.asciidoc_admin">admin</a>.
 Experienced developers can directly call <code>setup &#xAB;settings-URL&#xBB;</code>.
 Otherwise if you just call <code>setup</code> (e.g. by double-clicking it), you can enter it when you are prompted for <code>Settings URL</code> (using copy&amp;paste to avoid typos).</p>
+</div>
+<div class="paragraph">
+<p>Note: devonfw-ide supports autocompletion (since <code>2021.04.001</code>). Currently this only works in bash (on windows use git bash). Simply type <code>devon</code> and hit <code>[Tab]</code> to get completion.</p>
 </div>
 <div class="sect4">
 <h5 id="usage.asciidoc_update">Update</h5>
@@ -885,13 +888,18 @@ Please note that we are trying to minimize any potential side-effect from <code>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEVON_IDE_TOOLS</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>java mvn eclipse vscode node npm ng ionic</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(java mvn node npm)</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">List of tools that should be installed and upgraded by default for your current IDE.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEVON_IDE_CUSTOM_TOOLS</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>-</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">List of custom tools that should be installed additionally. See <a href="software.html#custom">software</a> for further details.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>DEVON_CREATE_START_SCRIPTS</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>(eclipse vscode)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List of IDEs that shall be used by developers in the project and therefore start-scripts are created on setup.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong><code>DEVON_OLD_PATH</code></strong></p></td>
@@ -1011,8 +1019,32 @@ devonfw-ide has environment variables have been set for /projects/my-project in 
 <p><code>devon &#xAB;commandlet&#xBB; [&#xAB;arg&#xBB;]*</code></p>
 </div>
 <div class="paragraph">
-<p>Technically, a commandlet is a bash script located in <code>$DEVON_IDE_HOME/scripts/command</code>. So if you want to integrate another tool with <code>devonfw-ide</code> we are awaiting your pull-request.</p>
+<p>Technically, a commandlet is a bash script located in <code>$DEVON_IDE_HOME/scripts/command</code>. So if you want to integrate another tool with <code>devonfw-ide</code> we are awaiting your pull-request.
+Every commandlet takes the following generic arguments:</p>
 </div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Generic arguments of every commandlet</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Argument(s)</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Meaning</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-b</code> or <code>--batch</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">run in non-interactive mode (do not ask any questions).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-q</code> or <code>--quiet</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">be quiet and avoid output.</p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
 <p>The following commandlets are currently available:</p>
 </div>
@@ -1041,6 +1073,9 @@ devonfw-ide has environment variables have been set for /projects/my-project in 
 </li>
 <li>
 <p><a href="devonfw-ide-usage.asciidoc.html#ionic.asciidoc">ionic</a></p>
+</li>
+<li>
+<p><a href="devonfw-ide-usage.asciidoc.html#jasypt.asciidoc">jasypt</a></p>
 </li>
 <li>
 <p><a href="devonfw-ide-usage.asciidoc.html#java.asciidoc">java</a></p>
@@ -1104,7 +1139,7 @@ To launch Eclipse for your current workspace and devonfw-ide installation simply
 <p>You may also supply additional arguments as <code>devon eclipse &#xAB;args&#xBB;</code>. These are explained by the following table:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 2. Usage of <code>devon eclipse</code></caption>
+<caption class="title">Table 3. Usage of <code>devon eclipse</code></caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1158,7 +1193,7 @@ To launch Eclipse for your current workspace and devonfw-ide installation simply
 <p>There are variables that can be used for Eclipse. These are explained by the following table:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 3. Variables of devonfw-ide for Eclipse</caption>
+<caption class="title">Table 4. Variables of devonfw-ide for Eclipse</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1291,7 +1326,7 @@ Here we collect a list of such dictionaries that you can download and merge into
 <p>The arguments (<code>devon gradle &#xAB;args&#xBB;</code>) are explained by the following table:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 4. Usage of <code>devon gradle</code></caption>
+<caption class="title">Table 5. Usage of <code>devon gradle</code></caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1321,7 +1356,7 @@ Here we collect a list of such dictionaries that you can download and merge into
 <p>The <code>help</code> commandlet provides help for the <a href="devonfw-ide-usage.asciidoc.html#cli.asciidoc">CLI</a>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 5. Usage of <code>devon help</code></caption>
+<caption class="title">Table 6. Usage of <code>devon help</code></caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1355,7 +1390,7 @@ Here we collect a list of such dictionaries that you can download and merge into
 You need to supply additional arguments as <code>devon ide &#xAB;args&#xBB;</code>. These are explained by the following table:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 6. Usage of <code>devon ide</code></caption>
+<caption class="title">Table 7. Usage of <code>devon ide</code></caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1482,7 +1517,7 @@ To launch IntelliJ for your current workspace and <code>devonfw-ide</code> insta
 <p>You may also supply additional arguments as <code>devon intellij &#xAB;args&#xBB;</code>. These are explained by the following table:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 7. Usage of <code>devon intellij</code></caption>
+<caption class="title">Table 8. Usage of <code>devon intellij</code></caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1532,7 +1567,7 @@ To launch IntelliJ for your current workspace and <code>devonfw-ide</code> insta
 <p>There are variables that can be used for IntelliJ. These are explained by the following table:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 8. Variables of devonfw-ide for intelliJ</caption>
+<caption class="title">Table 9. Variables of devonfw-ide for intelliJ</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -1569,7 +1604,7 @@ To launch IntelliJ for your current workspace and <code>devonfw-ide</code> insta
 <p>The arguments (<code>devon ionic &#xAB;args&#xBB;</code>) are explained by the following table:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. Usage of <code>devon ionic</code></caption>
+<caption class="title">Table 10. Usage of <code>devon ionic</code></caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1602,13 +1637,102 @@ To launch IntelliJ for your current workspace and <code>devonfw-ide</code> insta
 <!-- toc disabled -->
 </div>
 <div class="sect3">
-<h4 id="java.asciidoc">5.4.10. java</h4>
+<h4 id="jasypt.asciidoc">5.4.10. jasypt</h4>
+<div class="paragraph">
+<p>The <code>jasypt</code> commandlet allows to install <a href="http://www.jasypt.org/">jasypt</a> and encrypt or decrept secrets using strong encryption given a secure masterpassword. See also <a href="https://github.com/devonfw/devon4j/blob/master/documentation/guide-configuration#password-encryption">devon4j password encryption guide</a> for further details.</p>
+</div>
+<div class="paragraph">
+<p>The arguments (<code>devon jasypt &#xAB;args&#xBB;</code>) are explained by the following table:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 11. Usage of <code>devon mvn</code></caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Argument(s)</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Meaning</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">setup jasypt (install and verify), <a href="devonfw-ide-usage.asciidoc.html#configuration.asciidoc">configurable</a> via <code>JASYPT_VERSION</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>encrypt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Encrypt a secret with a masterpassword</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>decrypt</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Decrypt an encrypted secret with a masterpassword</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect4">
+<h5 id="jasypt.asciidoc_example">example</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>devon jasypt encrypt
+Enter masterpassword: master
+Enter secret to encrypt/decrypt: secret
+
+----ENVIRONMENT-----------------
+
+Runtime: AdoptOpenJDK OpenJDK 64-Bit Server VM 11.0.9.1+1
+
+
+
+----ARGUMENTS-------------------
+
+input: secret
+password: master
+ivGeneratorClassName: org.jasypt.iv.RandomIvGenerator
+algorithm: PBEWITHHMACSHA512ANDAES_256
+
+
+
+----OUTPUT----------------------
+
+fQPbaDd8wq0h0qOZw/AEKp2TD4Y07Y//M5PzaLgF3qL7YnBQjiGLtW8s5XkP3Ly9
+
+devon jasypt decrypt
+Enter masterpassword: master
+Enter secret to encrypt/decrypt: fQPbaDd8wq0h0qOZw/AEKp2TD4Y07Y//M5PzaLgF3qL7YnBQjiGLtW8s5XkP3Ly9
+
+----ENVIRONMENT-----------------
+
+Runtime: AdoptOpenJDK OpenJDK 64-Bit Server VM 11.0.9.1+1
+
+
+
+----ARGUMENTS-------------------
+
+input: fQPbaDd8wq0h0qOZw/AEKp2TD4Y07Y//M5PzaLgF3qL7YnBQjiGLtW8s5XkP3Ly9
+password: master
+ivGeneratorClassName: org.jasypt.iv.RandomIvGenerator
+algorithm: PBEWITHHMACSHA512ANDAES_256
+
+
+
+----OUTPUT----------------------
+
+secret</code></pre>
+</div>
+</div>
+<!-- toc disabled -->
+</div>
+</div>
+<div class="sect3">
+<h4 id="java.asciidoc">5.4.11. java</h4>
 <div class="paragraph">
 <p>The <code>java</code> commandlet allows to install and setup <a href="https://openjdk.java.net/">Java</a>. Also it supports <a href="https://github.com/devonfw/devon4j">devon4j</a>.
 The arguments (<code>devon java &#xAB;args&#xBB;</code>) are explained by the following table:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. Usage of <code>devon java</code></caption>
+<caption class="title">Table 12. Usage of <code>devon java</code></caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1709,12 +1833,12 @@ The arguments (<code>devon java &#xAB;args&#xBB;</code>) are explained by the fo
 </div>
 </div>
 <div class="sect3">
-<h4 id="jenkins.asciidoc">5.4.11. jenkins</h4>
+<h4 id="jenkins.asciidoc">5.4.12. jenkins</h4>
 <div class="paragraph">
 <p>The <code>jenkins</code> commandlet allows to install, configure, and launch <a href="https://jenkins.io/">Jenkins</a>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. Usage of <code>devon jenkins</code></caption>
+<caption class="title">Table 13. Usage of <code>devon jenkins</code></caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1747,7 +1871,7 @@ The arguments (<code>devon java &#xAB;args&#xBB;</code>) are explained by the fo
 <!-- toc disabled -->
 </div>
 <div class="sect3">
-<h4 id="mvn.asciidoc">5.4.12. mvn</h4>
+<h4 id="mvn.asciidoc">5.4.13. mvn</h4>
 <div class="paragraph">
 <p>The <code>mvn</code> commandlet allows to install, configure, and launch <a href="https://maven.apache.org/">maven</a>. It is similar to <a href="https://github.com/takari/maven-wrapper">maven-wrapper</a> and <a href="https://github.com/dansomething/mdub">mdub</a>. So calling <code>devon mvn &#xAB;args&#xBB;</code> is more or less the same as calling <code>mvn &#xAB;args&#xBB;</code> but with the benefit that the version of maven preferred by your project is used (and will be installed if not yet available).</p>
 </div>
@@ -1755,7 +1879,7 @@ The arguments (<code>devon java &#xAB;args&#xBB;</code>) are explained by the fo
 <p>The arguments (<code>devon mvn &#xAB;args&#xBB;</code>) are explained by the following table:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. Usage of <code>devon mvn</code></caption>
+<caption class="title">Table 14. Usage of <code>devon mvn</code></caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1804,7 +1928,7 @@ The arguments (<code>devon java &#xAB;args&#xBB;</code>) are explained by the fo
 <!-- toc disabled -->
 </div>
 <div class="sect3">
-<h4 id="ng.asciidoc">5.4.13. ng</h4>
+<h4 id="ng.asciidoc">5.4.14. ng</h4>
 <div class="paragraph">
 <p>The <code>ng</code> commandlet allows to install, configure, and launch <a href="https://cli.angular.io/">ng</a> (angular-cli). Calling <code>devon ng &#xAB;args&#xBB;</code> is more or less the same as calling <code>ng &#xAB;args&#xBB;</code> but with some advanced features and ensuring that <code>ng</code> is properly set up for your project.</p>
 </div>
@@ -1812,7 +1936,7 @@ The arguments (<code>devon java &#xAB;args&#xBB;</code>) are explained by the fo
 <p>The arguments (<code>devon ng &#xAB;args&#xBB;</code>) are explained by the following table:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. Usage of <code>devon ng</code></caption>
+<caption class="title">Table 15. Usage of <code>devon ng</code></caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1845,13 +1969,13 @@ The arguments (<code>devon java &#xAB;args&#xBB;</code>) are explained by the fo
 <!-- toc disabled -->
 </div>
 <div class="sect3">
-<h4 id="node.asciidoc">5.4.14. node</h4>
+<h4 id="node.asciidoc">5.4.15. node</h4>
 <div class="paragraph">
 <p>The <code>node</code> commandlet allows to install and setup <a href="https://nodejs.org/">node.js</a>.
 The arguments (<code>devon node &#xAB;args&#xBB;</code>) are explained by the following table:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. Usage of <code>devon node</code></caption>
+<caption class="title">Table 16. Usage of <code>devon node</code></caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1892,7 +2016,7 @@ The arguments (<code>devon node &#xAB;args&#xBB;</code>) are explained by the fo
 <!-- toc disabled -->
 </div>
 <div class="sect3">
-<h4 id="npm.asciidoc">5.4.15. npm</h4>
+<h4 id="npm.asciidoc">5.4.16. npm</h4>
 <div class="paragraph">
 <p>The <code>npm</code> commandlet allows to install, configure, and launch <a href="https://www.npmjs.com/">npm</a>. Calling <code>devon npm &#xAB;args&#xBB;</code> is more or less the same as calling <code>npm &#xAB;args&#xBB;</code> but with the benefit that the version of npm preferred by your project is used (and will be installed if not yet available).</p>
 </div>
@@ -1900,7 +2024,7 @@ The arguments (<code>devon node &#xAB;args&#xBB;</code>) are explained by the fo
 <p>The arguments (<code>devon npm &#xAB;args&#xBB;</code>) are explained by the following table:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. Usage of <code>devon npm</code></caption>
+<caption class="title">Table 17. Usage of <code>devon npm</code></caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1945,7 +2069,7 @@ The arguments (<code>devon node &#xAB;args&#xBB;</code>) are explained by the fo
 <!-- toc disabled -->
 </div>
 <div class="sect3">
-<h4 id="release.asciidoc">5.4.16. release</h4>
+<h4 id="release.asciidoc">5.4.17. release</h4>
 <div class="paragraph">
 <p>Create a release in a standardized way including the following steps:</p>
 </div>
@@ -1987,7 +2111,7 @@ The arguments (<code>devon node &#xAB;args&#xBB;</code>) are explained by the fo
 </ul>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. Usage of <code>devon java</code></caption>
+<caption class="title">Table 18. Usage of <code>devon java</code></caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -2030,12 +2154,12 @@ Further, sticking to the defaults and follow the devonfw standard to name the pr
 </div>
 </div>
 <div class="sect3">
-<h4 id="sonar.asciidoc">5.4.17. sonar</h4>
+<h4 id="sonar.asciidoc">5.4.18. sonar</h4>
 <div class="paragraph">
 <p>The <code>sonar</code> commandlet allows to install, configure, and launch <a href="https://www.sonarqube.org">SonarQube</a>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 17. Usage of <code>devon sonar</code></caption>
+<caption class="title">Table 19. Usage of <code>devon sonar</code></caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -2068,7 +2192,7 @@ Further, sticking to the defaults and follow the devonfw standard to name the pr
 <!-- toc disabled -->
 </div>
 <div class="sect3">
-<h4 id="vscode.asciidoc">5.4.18. vscode</h4>
+<h4 id="vscode.asciidoc">5.4.19. vscode</h4>
 <div class="paragraph">
 <p>The <code>vscode</code> commandlet allows to install, configure, and launch <a href="https://code.visualstudio.com/">Visual Studio Code</a>.
 To launch VSCode for your current workspace and <code>devonfw-ide</code> installation, simply run:
@@ -2078,7 +2202,7 @@ To launch VSCode for your current workspace and <code>devonfw-ide</code> install
 <p>You may also supply additional arguments as <code>devon vscode &#xAB;args&#xBB;</code>. These are explained by the following table:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 18. Usage of <code>devon vscode</code></caption>
+<caption class="title">Table 20. Usage of <code>devon vscode</code></caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -2174,7 +2298,7 @@ plugin_active=true</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="yarn.asciidoc">5.4.19. yarn</h4>
+<h4 id="yarn.asciidoc">5.4.20. yarn</h4>
 <div class="paragraph">
 <p>The <code>yarn</code> commandlet allows to install, configure, and launch <a href="https://www.npmjs.com/">npm</a>. Calling <code>devon yarn &#xAB;args&#xBB;</code> is more or less the same as calling <code>yarn &#xAB;args&#xBB;</code> but with the benefit that the version of npm preferred by your project is used (and will be installed if not yet available).</p>
 </div>
@@ -2182,7 +2306,7 @@ plugin_active=true</code></pre>
 <p>The arguments (<code>devon yarn &#xAB;args&#xBB;</code>) are explained by the following table:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 19. Usage of <code>devon yarn</code></caption>
+<caption class="title">Table 21. Usage of <code>devon yarn</code></caption>
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -2283,7 +2407,7 @@ Further, there are two configuration files for maven:</p>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://maven.apache.org/settings.html">settings.xml</a> initialized from a template from your <code>devonfw-ide</code> <a href="#conf.asciidoc_conf.asciidoc_settings">settings</a>. You may customize this to your needs (configuring HTTP proxies, credentials, or other user-specific settings).</p>
+<p><a href="https://maven.apache.org/settings.html">settings.xml</a> initialized from a template from your <code>devonfw-ide</code> <a href="#conf.asciidoc_conf.asciidoc_settings">settings</a>. You may customize this to your needs (configuring HTTP proxies, credentials, or other user-specific settings). Secrets can be specified as <code>$[&#xAB;variable.name&#xBB;]</code> and will be prompted, encrypted and replaced automatically during the setup (unless in <a href="cli.html#commandlets">batch mode</a>). In case your credentials have changed or you made a typo, you can simply redo this step by first moving your <code>${DEVON_IDE_HOME}/conf/.m2/settings.xml</code> file to a temporary folder and then calling <code>devon mvn setup</code>.</p>
 </li>
 <li>
 <p><a href="https://maven.apache.org/guides/mini/guide-encryption.html">settings-security.xml</a> is auto-generated for you by <code>devonfw-ide</code> with a random password. This should make it easier for <code>devonfw-ide</code> users to use <a href="https://maven.apache.org/guides/mini/guide-encryption.html">password encryption</a> and never add passwords in plain text for better security.</p>
@@ -2402,7 +2526,7 @@ Therefore simply follow the <a href="usage.html#admin">admin usage guide</a>.</p
 <div class="paragraph">
 <p>As you can see, the <code>settings</code> folder contains sub-folders for tools of the IDE.
 So the <code>devon</code> folder contains <code>devon.properties</code> files for the <a href="devonfw-ide-usage.asciidoc.html#configuration.asciidoc">configuration</a> of your environment.
-Further, for the IDEs such as <a href="devonfw-ide-usage.asciidoc.html#eclipse.asciidoc">eclipse</a> or <a href="devonfw-ide-usage.asciidoc.html#vscode.asciidoc">vscode</a>,, the according folders contain the templates to manage the workspace via our <a href="#configurator.asciidoc">configurator</a>.</p>
+Further, for the IDEs such as <a href="devonfw-ide-usage.asciidoc.html#eclipse.asciidoc">eclipse</a> or <a href="devonfw-ide-usage.asciidoc.html#vscode.asciidoc">vscode</a>, the according folders contain the templates to manage the workspace via our <a href="#configurator.asciidoc">configurator</a>.</p>
 </div>
 </div>
 <div class="sect4">
@@ -2639,7 +2763,7 @@ active=true</pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 20. Variables of project import</caption>
+<caption class="title">Table 22. Variables of project import</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -2840,7 +2964,7 @@ active=true</pre>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-05-12 13:40:19 UTC
+Last updated 2021-05-21 05:27:01 UTC
 </sub></div>
 
 
