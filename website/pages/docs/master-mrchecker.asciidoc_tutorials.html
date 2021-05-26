@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2021-05-21 09:13:01 UTC">
+<meta name="author" content="Updated at 2021-05-26 06:25:02 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -517,7 +517,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2021-05-21 09:13:11 UTC</span><br>
+<span id="author" class="author">Updated at 2021-05-26 06:25:10 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -2720,7 +2720,416 @@ public class DynamicContentTest extends TheInternetBaseTest {
 <p>In the test method, during differences verification, the goal is to compare every element from the first and second list and find first diversity.</p>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in mrchecker.wiki/master-mrchecker.asciidoc - include::Who-Is-MrChecker/Tutorials/Basic-Tutorials/Basic-Tests/Example-10-Dynamically-loaded-elemets.asciidoc[leveloffset=4]</p>
+<p>This example shows how to test a page with dynamically loading content. Some elements don&#x2019;t load during page loading, but  during JavaScript execution.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/example23.png" alt="example23">
+</div>
+</div>
+<div class="paragraph">
+<p>Go to Example 1:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/example24.png" alt="example24">
+</div>
+</div>
+<div class="paragraph">
+<p>Click &quot;start&quot; and see what happens:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/example25.png" alt="example25">
+</div>
+</div>
+<div class="paragraph">
+<p>When loading ends, you should see the following message:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/example26.png" alt="example26">
+</div>
+</div>
+<div class="paragraph">
+<p>In the developer mode, you can see that the element with the &quot;Hello World!&quot; message exists in page DOM but it&#x2019;s not displayed. However, the loading bar does not exist there - it&#x2019;s created by JavaScript. The script is also visible in developer mode:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/example27.png" alt="example27">
+</div>
+</div>
+<div class="paragraph">
+<p>After clicking the &quot;Start&quot; button, the element &quot;Loading&quot; is created by the script, and the &quot;Start&quot; button becomes invisible. When loading ends, &quot;Hello World&quot; message is  displayed and the loading bar is hidden. Follow the changes the in developer mode:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/example28.png" alt="example28">
+</div>
+</div>
+<div class="paragraph">
+<p>Go to example 2:
+From a user perspective, there is no difference in page functioning. However, in this case the element with the &quot;Hello World!&quot; message does not exist on the page before clicking &quot;Start&quot;. It&#x2019;s created by the script.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/example29.png" alt="example29">
+</div>
+</div>
+<div class="paragraph">
+<p>After clicking &quot;Start&quot;, the element with the loading bar is been created.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/example30.png" alt="example30">
+</div>
+</div>
+<div class="paragraph">
+<p>After a certain time, the loading bar becomes invisible, and then the script creates &quot;Hello World!&quot; element and displays it.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/example31.png" alt="example31">
+</div>
+</div>
+</div>
+<div class="sect8">
+<h9 id="example-10-dynamically-loaded-elements.asciidoc_page-class">Page Class</h9>
+<div class="listingblock">
+<div class="content">
+<pre>public class DynamicLoadingPage extends BasePage {
+
+    private static final By selectorExampleOneLink     =
+            By.cssSelector(&quot;a[href*=&apos;dynamic_loading/1&apos;]&quot;);
+    private static final By selectorExampleTwoLink     =
+            By.cssSelector(&quot;a[href*=&apos;dynamic_loading/2&apos;]&quot;);
+    private static final By selectorDynamicLoadingText = By.cssSelector(&quot;div#content h3&quot;);
+    private static final By selectorStartButton        = By.cssSelector(&quot;div#start button&quot;);
+    private static final By selectorLoadingBar         = By.cssSelector(&quot;div#loading&quot;);
+    private static final By selectorExampleText        = By.cssSelector(&quot;div#finish h4&quot;);
+
+    @Override
+    public boolean isLoaded() {
+        getDriver().waitForPageLoaded();
+        return getDriver().getCurrentUrl()
+                .contains(PageSubURLsProjectYEnum.DYNAMIC_LOADING.getValue());
+    }
+
+    @Override
+    public void load() {
+        BFLogger.logDebug(&quot;Load &apos;Dynamically Loaded Page Elements&apos; page.&quot;);
+        getDriver().get(GetEnvironmentParam.THE_INTERNET_MAIN_PAGE.getValue() +
+                PageSubURLsProjectYEnum.DYNAMIC_LOADING.getValue());
+        getDriver().waitForPageLoaded();
+    }
+
+    @Override
+    public String pageTitle() {
+        return getActualPageTitle();
+    }
+
+    /**
+     * Returns information if dynamic loading message is visible or not.
+     *
+     * @return true if dynamic loading message was found on web page.
+     */
+    public boolean isDynamicLoadingMessageVisible() {
+        return getDriver().findElementDynamic(selectorDynamicLoadingText)
+                .isDisplayed();
+    }
+
+    /**
+     * Clicks Example 1 link.
+     */
+    public void clickExampleOneLink() {
+        getDriver().findElementDynamic(selectorExampleOneLink)
+                .click();
+    }
+
+    /**
+     * Clicks Example 2 link.
+     */
+    public void clickExampleTwoLink() {
+        getDriver().findElementDynamic(selectorExampleTwoLink)
+                .click();
+    }
+
+    /**
+     * Returns information if Start button is visible or not.
+     *
+     * @return true if Start button was found on web page.
+     */
+    public boolean isStartButtonVisible() {
+        return getDriver().findElementDynamic(selectorStartButton)
+                .isDisplayed();
+    }
+
+    /**
+     * Clicks Start button.
+     */
+    public void clickStartButton() {
+        getDriver().findElementDynamic(selectorStartButton)
+                .click();
+    }
+
+    /**
+     * Waits until WebElement representing waiting bar disappears and returns example text.
+     *
+     * @param waitTime The amount of time designated for waiting until waiting bar disappears.
+     * @return String representing example&apos;s text.
+     */
+    public String getExampleOneDynamicText(int waitTime) {
+        WebDriverWait wait = new WebDriverWait(getDriver(), waitTime);
+        wait.until((Function&lt;? super WebDriver, Boolean&gt;)
+                ExpectedConditions.invisibilityOfElementLocated(selectorLoadingBar));
+        return getDriver().findElementDynamic(selectorExampleText)
+                .getText();
+    }
+
+    /**
+     * Returns example text.
+     * &lt;p&gt;
+     * Waits until WebElement representing waiting bar disappear. Then waits until example text
+     * shows up.
+     * And after that returns example text.
+     * &lt;/p&gt;
+     *
+     * @param waitTime The amount of time designated for waiting until waiting bar disappears and
+     * example text shows.
+     * @return String representing example&apos;s text.
+     */
+    public String getExampleTwoDynamicText(int waitTime) {
+        WebDriverWait wait = new WebDriverWait(getDriver(), waitTime);
+        wait.until((Function&lt;? super WebDriver, Boolean&gt;)
+                ExpectedConditions.invisibilityOfElementLocated(selectorLoadingBar));
+        wait.until((Function&lt;? super WebDriver, WebElement&gt;)
+                ExpectedConditions.visibilityOfElementLocated(selectorExampleText));
+        return getDriver().findElementDynamic(selectorExampleText)
+                .getText();
+    }
+
+}</pre>
+</div>
+</div>
+</div>
+<div class="sect8">
+<h9 id="example-10-dynamically-loaded-elements.asciidoc_webdriverwait">WebDriverWait</h9>
+<div class="paragraph">
+<p>This class performs waiting for actions using Selenium Web Driver:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>WebDriverWait(WebDriver driver, long timeOutInSeconds) - constructor, first parameter takes WebDriver, in a second you can specify a timeout in seconds.
+FluentWait method:</p>
+</li>
+<li>
+<p>until(Function&lt;? super T, V&gt; isTrue) - waits until condition function given as parameter returns expected value. If waiting time reaches timeout, it throws timeoutException.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>MrChecker implements various condition functions in the ExpectedConditions class :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>visibilityOfElementLocated(By selector) - returns WebElement if it&#x2019;s visible</p>
+</li>
+<li>
+<p>invisibilityOfElementLocated(By selector) - returns true if Element under given selector is invisible</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>WebDriver also has methods which wait for some conditions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>waitForElement(By selector)</p>
+</li>
+<li>
+<p>waitForElementVisible(By selector)</p>
+</li>
+<li>
+<p>waitUntilElementClickable(By selector)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>It&#x2019;s possible to write your own condition function e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>  public static ExpectedCondition&lt;Boolean&gt; invisibilityOfElementLocated(final By locator) {
+    return new ExpectedCondition&lt;Boolean&gt;() {
+      @Override
+      public Boolean apply(WebDriver driver) {
+        try {
+          return !(findElement(locator, driver).isDisplayed());
+        } catch (NoSuchElementException e) {
+          return true;
+        } catch (StaleElementReferenceException e) {
+          return true;
+        }
+      }
+    };
+  }</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or as a lambda expression:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>        WebDriverWait wait = new WebDriverWait(getDriver(), waitTime);
+        wait.until((WebDriver driver) -&gt; {
+            try {
+                return !(driver.findElement(selectorExampleText)
+                        .isDisplayed());
+            } catch (NoSuchElementException e) {
+                return true;
+            } catch (StaleElementReferenceException e) {
+                return true;
+            }
+        });</pre>
+</div>
+</div>
+</div>
+<div class="sect8">
+<h9 id="example-10-dynamically-loaded-elements.asciidoc_test-class">Test Class</h9>
+<div class="paragraph">
+<p>Case 1 steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Open The Internet Main Page</p>
+</li>
+<li>
+<p>Click Dynamic Loading link and go to a subpage with examples</p>
+</li>
+<li>
+<p>Check if the page is loaded and &quot;Dynamically Loaded Page Elements&quot; header is visible</p>
+</li>
+<li>
+<p>Click Example 1 link and load site</p>
+</li>
+<li>
+<p>Verify if the &quot;Start&quot; button is visible</p>
+</li>
+<li>
+<p>Click &quot;Start&quot;</p>
+</li>
+<li>
+<p>Wait for the loading bar to disappear and check if the displayed message is as it should be</p>
+</li>
+<li>
+<p>Go back to Dynamic Loading page</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Case 2 steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Check if the page is loaded and &quot;Dynamically Loaded Page Elements&quot; header is visible</p>
+</li>
+<li>
+<p>Click Example 2 link and load site</p>
+</li>
+<li>
+<p>Verify if the &quot;Start&quot; button is visible</p>
+</li>
+<li>
+<p>Click &quot;Start&quot;</p>
+</li>
+<li>
+<p>Wait for the loading bar to disappear</p>
+</li>
+<li>
+<p>Wait for the message to appear and check if it is as it should be</p>
+</li>
+<li>
+<p>Go back to Dynamic Loading page</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>@Category({ TestsSelenium.class, TestsChrome.class, TestsFirefox.class, TestsIE.class })
+public class DynamicLoadingTest extends TheInternetBaseTest {
+
+    private static final int    EXAMPLE_WAITING_TIME = 30;
+    private static final String EXAMPLE_TEXT         = &quot;Hello World!&quot;;
+
+    private static DynamicLoadingPage dynamicLoadingPage;
+
+    @BeforeClass
+    public static void setUpBeforeClass() {
+        dynamicLoadingPage = shouldTheInternetPageBeOpened().clickDynamicLoadingLink();
+    }
+
+    @Override
+    public void setUp() {
+
+        logStep(&quot;Verify if Dynamic Loading page is opened&quot;);
+        assertTrue(&quot;Unable to open Dynamic Loading page&quot;, dynamicLoadingPage.isLoaded());
+
+        logStep(&quot;Verify if dynamic loading message is visible&quot;);
+        assertTrue(&quot;Dynamic loading message is invisible&quot;,
+                dynamicLoadingPage.isDynamicLoadingMessageVisible());
+    }
+
+    @Test
+    public void shouldExampleTextBeDisplayedAterRunExampleOne() {
+        logStep(&quot;Click Example 1 link&quot;);
+        dynamicLoadingPage.clickExampleOneLink();
+
+        logStep(&quot;Verify if Example 1 link opened content&quot;);
+        assertTrue(&quot;Fail to load Example 1 content&quot;, dynamicLoadingPage.isStartButtonVisible());
+
+        logStep(&quot;Click Start button&quot;);
+        dynamicLoadingPage.clickStartButton();
+
+        logStep(&quot;Verify if expected text is displayed on the screen&quot;);
+        assertEquals(&quot;Fail to display example text&quot;, EXAMPLE_TEXT,
+                dynamicLoadingPage.getExampleOneDynamicText(EXAMPLE_WAITING_TIME));
+    }
+
+    @Test
+    public void shouldExampleTextBeDisplayedAterRunExampleTwo() {
+        logStep(&quot;Click Example 2 link&quot;);
+        dynamicLoadingPage.clickExampleTwoLink();
+
+        logStep(&quot;Verify if Example 2 link opened content&quot;);
+        assertTrue(&quot;Fail to load Example 2 content&quot;, dynamicLoadingPage.isStartButtonVisible());
+
+        logStep(&quot;Click Start button&quot;);
+        dynamicLoadingPage.clickStartButton();
+
+        logStep(&quot;Verify if expected text is displayed on the screen&quot;);
+        assertEquals(&quot;Fail to display example text&quot;, EXAMPLE_TEXT,
+                dynamicLoadingPage.getExampleTwoDynamicText(EXAMPLE_WAITING_TIME));
+    }
+
+    @Override
+    public void tearDown() {
+        logStep(&quot;Click back to reset Dynamic Loading page&quot;);
+        BasePage.navigateBack();
+    }
+
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Perform both cases running Test Class as JUnit Test.</p>
+</div>
+<div class="paragraph">
+<p><strong>WARNING:</strong> In this example, there is a visible loading bar signalizing that content is loading.On many websites elements are created by scripts without clear communique. This may cause problems with test stability. When your tests aren&#x2019;t finding page elements, try to add wait functions with a short timeout.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -5150,8 +5559,60 @@ public class StatusCodeTest extends TheInternetBaseTest {
 </div>
 <div class="sect3">
 <h4 id="master-mrchecker.asciidoc_first-steps">80.2.2. First Steps</h4>
+<div class="sect5">
+<h6 id="page-object.asciidoc_page-object">Page Object</h6>
 <div class="paragraph">
-<p>Unresolved directive in mrchecker.wiki/master-mrchecker.asciidoc - include::Who-Is-MrChecker/Tutorials/Basic-Tutorials/First-Steps/Page-objects.asciidoc[leveloffset=4]</p>
+<p>Your Product Under Test will be the following website: <a href="http://the-internet.herokuapp.com/" class="bare">http://the-internet.herokuapp.com/</a></p>
+</div>
+<div class="paragraph">
+<p>At first, create an Object to represent The Internet Main Page:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>public class TheInternetPage extends BasePage</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Each class which extends BasePage class must override three methods:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>public boolean isLoaded()</code> - returns true if the page is loaded and false if not</p>
+</li>
+<li>
+<p><code>public void load()</code> - loads the page</p>
+</li>
+<li>
+<p><code>public String pageTitle()</code> - returns page title</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>public class TheInternetPage extends BasePage {
+
+    @Override
+    public boolean isLoaded() {
+        BFLogger.logDebug(&quot;The internet page is loaded: &quot; + getDriver().getCurrentUrl());
+        return getDriver().getCurrentUrl()
+                .equals(GetEnvironmentParam.THE_INTERNET_MAIN_PAGE.getValue());
+    }
+
+    @Override
+    public void load() {
+        BFLogger.logDebug(&quot;Load &apos;The internet&apos; page.&quot;);
+        getDriver().get(GetEnvironmentParam.THE_INTERNET_MAIN_PAGE.getValue());
+        getDriver().waitForPageLoaded();
+    }
+
+    @Override
+    public String pageTitle() {
+        return getActualPageTitle();
+    }
+}</pre>
+</div>
+</div>
 </div>
 <div class="sect5">
 <h6 id="environment-variables.asciidoc_environment-variables">Environment Variables</h6>
@@ -6167,7 +6628,7 @@ public void Test_BookTableAndCheckConfirmation() {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-05-21 09:09:37 UTC
+Last updated 2021-05-26 06:22:21 UTC
 </sub></div>
 
 
