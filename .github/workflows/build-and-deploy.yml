@@ -33,6 +33,17 @@ jobs:
           node renamer.js ../devonfw-guide/ Home .asciidoc
           cd ..
 
+      - name: Copy pom files for architectures
+        run: |
+          architectures/scripts/copyPomFiles.sh
+
+      - name: Compile sass for architectures
+        run: |
+          cd architectures/scripts
+          npm install
+          node-sass ../index.scss ../index.css
+          cd ../../
+
       - name: Build
         run: mvn -s ./.m2/unblock-rubygem-proxy-settings.xml clean package
 
@@ -52,6 +63,14 @@ jobs:
           node rereferencer/rereference.js ../../target/asciidoc/devonfw-guide/ ../../target/generated-docs/website/pages/docs/
           node highlight-current.js ../target/generated-docs/website
           cd ..
+
+      - name: Create output for architectures
+        run: |
+          architectures/scripts/createOutput.sh
+
+      - name: Copy output of architectures
+        run: |
+          cp -avr architectures/target/generated-docs/ target/generated-docs/website/pages/architectures/
 
       - name: Reindex
         run: |
