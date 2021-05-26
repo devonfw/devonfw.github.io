@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  repository_dispatch:
+    types: [dispatch-katacoda-scenarios]
+    
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: choose random polling time
+        id: randompoll
+        uses: ddradar/choose-random-action@v1.0.5
+        with:
+          contents: |
+            1
+            3
+            5
+            9
+            13
+            
+      - name: Wait for parallel workflows to finish
+        uses: softprops/turnstyle@v0.1.5
+        with:
+          poll-interval-seconds: ${{ steps.randompoll.outputs.selected }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Checkout tutorial-compiler
+        uses: actions/checkout@v2
+        with:
+          repository: devonfw-tutorials/tutorial-compiler
+      
+      - name: Checkout playbooks
+        uses: actions/checkout@v2
+        with:
+          repository: devonfw-tutorials/tutorials
+          path: playbooks
+      
+      - uses: actions/setup-node@v2-beta
+      
+      - name: install TS
+        run: npm install typescript
+      
+      - name: npm install
+        run: npm install
+
+      - name: run buildRun.sh
+        run: sh buildRun.sh -e katacoda -p ${{ github.event.client_payload.tutorial }}
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          path: repo
+          
+      - name: publish tutorials
+        run: bash repo/publishTutorials.sh

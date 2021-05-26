@@ -10,6 +10,10 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:     
+      - name: Configure git
+        run: |
+          git config --global fetch.parallel 20
+
       - name: Clone
         uses: actions/checkout@v1
         with:
@@ -23,7 +27,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v1
 
-      - name: InstallAsciidoctorGem
+      - name: Install asciidoctor Gem
         run: gem install asciidoctor -v 1.5.7.1
 
       - name: RenameHomeFiles
@@ -32,6 +36,28 @@ jobs:
           npm install
           node renamer.js ../devonfw-guide/ Home .asciidoc
           cd ..
+
+      - name: Copy pom files for architectures
+        run: |
+          chmod +x architectures/scripts/copyPomFiles.sh
+          architectures/scripts/copyPomFiles.sh
+
+      - name: npm install for architectures
+        run: |
+          cd architectures/scripts
+          npm install
+          cd ../../
+
+      - name: Compile sass for architectures
+        uses: gha-utilities/sass-build@v0.4.2
+        with:
+          source: architectures/index.scss
+          destination: architectures/index.css
+
+      - name: Remove files that are breaking the build
+        run: |
+          rm architectures/READDME.md || true
+          rm architectures/index.scss || true
 
       - name: Build
         run: mvn -s ./.m2/unblock-rubygem-proxy-settings.xml clean package
@@ -52,6 +78,15 @@ jobs:
           node rereferencer/rereference.js ../../target/asciidoc/devonfw-guide/ ../../target/generated-docs/website/pages/docs/
           node highlight-current.js ../target/generated-docs/website
           cd ..
+
+      - name: Create output for architectures
+        run: |
+          chmod +x architectures/scripts/createOutput.sh
+          architectures/scripts/createOutput.sh
+
+      - name: Copy output of architectures
+        run: |
+          cp -avr architectures/target/generated-docs/ target/generated-docs/website/pages/architectures/
 
       - name: Reindex
         run: |

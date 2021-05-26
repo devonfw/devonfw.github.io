@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  
+  workflow_dispatch:
+jobs:
+  nightly_build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout tutorial-compiler
+        uses: actions/checkout@v2
+        with:
+          repository: devonfw-tutorials/tutorial-compiler
+      
+      - name: Checkout playbooks
+        uses: actions/checkout@v2
+        with:
+          repository: devonfw-tutorials/tutorials
+          path: playbooks
+      
+      - uses: actions/setup-node@v2-beta
+      
+      - name: install TS
+        run: npm install typescript
+      
+      - name: npm install
+        run: npm install
+
+      - name: run buildRun.sh
+        run: sh buildRun.sh
