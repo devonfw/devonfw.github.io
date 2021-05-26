@@ -38,12 +38,17 @@ jobs:
           chmod +x architectures/scripts/copyPomFiles.sh
           architectures/scripts/copyPomFiles.sh
 
-      - name: Compile sass for architectures
+      - name: npm install for architectures
         run: |
           cd architectures/scripts
           npm install
-          node-sass ../index.scss ../index.css
           cd ../../
+
+      - name: Compile sass for architectures
+        uses: gha-utilities/sass-build@v0.4.2
+        with:
+          source: architectures/index.scss
+          destination: architectures/index.css
 
       - name: Build
         run: mvn -s ./.m2/unblock-rubygem-proxy-settings.xml clean package
