@@ -12,4 +12,80 @@
     <version>dev-SNAPSHOT</version>
   </parent>
 
+  <properties>
+    <docgen.docsource>index.asciidoc</docgen.docsource>
+    <asciidoctor.templateDir>${basedir}/../../../asciidoctor-backend/erb/html5/</asciidoctor.templateDir>
+    <stylesheet.target.dir>${basedir}/../../../asciidoctor-stylesheet/target/stylesheets/</stylesheet.target.dir>
+    <asciidoctor.attributes>toc=false</asciidoctor.attributes>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>3.0.0-M1</version>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.1.0</version>
+        <executions>
+          <execution>
+            <id>copy-website-includes</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <useDefaultDelimiters>true</useDefaultDelimiters>
+              <outputDirectory>${project.build.directory}/generated-docs/website/_includes/</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${basedir}/../../../website/target/generated-docs/components/</directory>
+                  <filtering>false</filtering>
+                  <includes>
+                    <include>**/*.html</include>
+                    <include>**/*.css</include>
+                    <include>**/*.js</include>
+                    <include>**/*.jpg</include>
+                    <include>**/*.jpeg</include>
+                    <include>**/*.png</include>
+                    <include>**/*.svg</include>
+                    <include>**/*.gif</include>
+                    <include>**/*.ico</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-css</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <useDefaultDelimiters>true</useDefaultDelimiters>
+              <outputDirectory>${project.build.directory}/generated-docs/</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${stylesheet.target.dir}</directory>
+                  <filtering>false</filtering>
+                  <includes>
+                    <include>devonfw.css</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>
