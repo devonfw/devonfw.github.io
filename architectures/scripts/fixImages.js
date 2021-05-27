@@ -20,6 +20,13 @@ function main(solutionsDir) {
                         indexHtml(this).attr("src", normalizedSrc);
                         fs.writeFileSync(indexHtmlPath, indexHtml.html());
                     }
+                    else if(src.includes("/generated-docs/")){
+                        var basename = path.basename(src);
+                        if (fs.existsSync(path.join("./", item, basename))) {
+                            indexHtml(this).attr("src", basename);
+                            fs.writeFileSync(indexHtmlPath, indexHtml.html());
+                        }
+                    }
                 });
             }
         }
