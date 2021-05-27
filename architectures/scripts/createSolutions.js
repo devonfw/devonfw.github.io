@@ -20,7 +20,7 @@ function main(solutionsDir, outputFile) {
                 solutions[dirItem] = {
                     headline: headline,
                     path: `solutions/${dirItem}`,
-                    image: `solutions/${imagePath}`,
+                    image: `./solutions/${dirItem}/${imagePath}`,
                     snippet: snippet
                 }
             }
