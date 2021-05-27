@@ -14,9 +14,9 @@ function main(solutionsDir, outputFile) {
             var indexHtmlPath = path.join("./", item, "index.html");
             if (fs.existsSync(indexHtmlPath)) {
                 var indexHtml = cheerio.load(fs.readFileSync(indexHtmlPath));
-                var headline = indexHtml("h1").first().text() || indexHtml("h2").first().text() || indexHtml("h3").first().text();
-                var imagePath = indexHtml("img").attr("src");
-                var snippet = indexHtml(".paragraph").text();
+                var headline = indexHtml("h1").first().text() || indexHtml("h2").first().text() || indexHtml("h3").first().text() || indexHtml("title").first().text();
+                var imagePath = indexHtml("#content img").attr("src");
+                var snippet = indexHtml("#content .paragraph").text();
                 solutions[dirItem] = {
                     headline: headline,
                     path: `solutions/${dirItem}`,
