@@ -20,6 +20,8 @@ head='</head>'
 headRep='<link rel="stylesheet" href="index.css"></head>';
 sed -i "s#$head#$headRep#" "target/generated-docs/index.html";
 
+node scripts/fixImages.js target/generated-docs/solutions
+
 node scripts/createSolutions.js target/generated-docs/solutions target/generated-docs/solutions.json
 node scripts/createTags.js solutions target/generated-docs/tags.json
 node scripts/createIndex.js target/generated-docs/solutions target/generated-docs/index.json
