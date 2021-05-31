@@ -1,7 +1,7 @@
 The next step is to add some description lines below the title. The description has to be surrounded by `====`.
 
 
-Switch to the IDE and open the file 'tutorials/myTutorial/index.asciidoc'.
+Switch to the editor and open the file 'tutorials/myTutorial/index.asciidoc'.
 
 `tutorials/myTutorial/index.asciidoc`{{open}}
 

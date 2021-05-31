@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2021-05-28 07:10:09 UTC">
+<meta name="author" content="Updated at 2021-05-31 05:43:25 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -517,7 +517,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2021-05-28 07:10:27 UTC</span><br>
+<span id="author" class="author">Updated at 2021-05-31 05:43:43 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -556,17 +556,17 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="master-cobigen.asciidoc_how-to.html"><span class="toc-current">75. How to</span></a>
 <ul class="sectlevel2">
-<li><a href="master-cobigen.asciidoc_how-to.html#howto_angular-client-generation.asciidoc">75.1. Angular 8 Client Generation</a>
+<li><a href="master-cobigen.asciidoc_how-to.html#howto_EA-client-generation.asciidoc">75.1. Enterprise Architect client generation</a>
 </li>
-<li><a href="master-cobigen.asciidoc_how-to.html#howto_ionic-client-generation.asciidoc">75.2. Ionic client generation</a>
+<li><a href="master-cobigen.asciidoc_how-to.html#howto_angular-client-generation.asciidoc">75.2. Angular 8 Client Generation</a>
 </li>
-<li><a href="master-cobigen.asciidoc_how-to.html#howto_create-a-new-plugin.asciidoc">75.3. Implementing a new Plug-in</a>
+<li><a href="master-cobigen.asciidoc_how-to.html#howto_ionic-client-generation.asciidoc">75.3. Ionic client generation</a>
 </li>
-<li><a href="master-cobigen.asciidoc_how-to.html#howto_create-external-plugin.asciidoc">75.4. Introduction to CobiGen external plug-ins</a>
+<li><a href="master-cobigen.asciidoc_how-to.html#howto_create-a-new-plugin.asciidoc">75.4. Implementing a new Plug-in</a>
 </li>
-<li><a href="master-cobigen.asciidoc_how-to.html#howto_update_CobiGen.asciidoc">75.5. How to update CobiGen</a>
+<li><a href="master-cobigen.asciidoc_how-to.html#howto_create-external-plugin.asciidoc">75.5. Introduction to CobiGen external plug-ins</a>
 </li>
-<li><a href="master-cobigen.asciidoc_how-to.html#howto_Release-creation.asciidoc">75.6. CobiGen Release creation</a>
+<li><a href="master-cobigen.asciidoc_how-to.html#howto_update_CobiGen.asciidoc">75.6. How to update CobiGen</a>
 </li>
 <li><a href="master-cobigen.asciidoc_how-to.html#howto_enable_composite_primary_keys_in_entity.asciidoc">75.7. Enable Composite Primary Keys in Entity</a>
 </li>
@@ -596,7 +596,84 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sectionbody">
 <!-- toc disabled -->
 <div class="sect2">
-<h3 id="howto_angular-client-generation.asciidoc">75.1. Angular 8 Client Generation</h3>
+<h3 id="howto_EA-client-generation.asciidoc">75.1. Enterprise Architect client generation</h3>
+<div class="paragraph">
+<p>We are going to show you <strong>how to</strong> generate source code from an <a href="http://sparxsystems.com/products/ea/">Enterprise Architect</a> diagram
+using CobiGen.</p>
+</div>
+<div class="sect3">
+<h4 id="howto_ea-client-generation.asciidoc_prerequisites">75.1.1. Prerequisites</h4>
+<div class="paragraph">
+<p>If <em>CobiGen_Templates</em> is not already imported into your workspace, follow the next steps:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Click on the Eclipse&#x2019;s menu <em>File &gt; Import &gt; Existing Projects into Workspace</em> and browse to select the <code>workspaces/main/CobiGen_Templates</code> directory.</p>
+</li>
+<li>
+<p>Click <em>Finish</em> and you should have the <em>CobiGen_Templates</em> as a new project in Eclipse&#x2019;s workspace.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Also verify that you have the <strong>latest templates of CobiGen</strong>. Your templates folder must contain the <code>crud_java_ea_uml</code> folder.
+If you do not see it, please follow the next steps:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Download the <a href="https://e-3d.capgemini.com/sites/ESC113658/proj13658/Lists/REF_release/Attachments/2/win_accumulative_patch_22062018.zip">accumulative patch</a>.</p>
+</li>
+<li>
+<p>Open the zip file and extract its content inside the root folder of your Devonfw distribution <strong>Devon-dist_2.4.0/</strong></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>After following those steps correctly, you should have the latest version of the templates ready to use.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="howto_ea-client-generation.asciidoc_generation">75.1.2. Generation</h4>
+<div class="paragraph">
+<p>In this tutorial, we are going to generate the entity infrastructure using as input a class diagram, modelled with <a href="http://sparxsystems.com/products/ea/">Enterprise Architect</a> (EA). First, create a class diagram, an example is shown on figure below:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/howtos/EA-gen/classdiagram.png"><img src="images/howtos/EA-gen/classdiagram.png" alt="Eclipse CobiGen generation" width="500"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>When you are finished, you will have to export that UML diagram into an XMI version 2.1 file. This is the file format that CobiGen understands. See below a figure showing this process:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/howtos/EA-gen/exporting.png"><img src="images/howtos/EA-gen/exporting.png" alt="Eclipse CobiGen generation" width="500"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>To open that window, see <a href="http://sparxsystems.com/enterprise_architect_user_guide/13.5/model_publishing/exporttoxmi.html">this</a> tutorial.</p>
+</div>
+<div class="paragraph">
+<p>After having that exported file, change its extension from <code>xmi</code> to <code>xml</code>. Then create an <a href="https://github.com/devonfw/devon4j/wiki/tutorial-newapp">devon4j project</a> and import the exported file into the <code>core</code> of your devon4j project.</p>
+</div>
+<div class="paragraph">
+<p>Now we are going to start the generation, right-click your exported file and select  <em>CobiGen &gt; Generate</em>, finally select the entity infrastructure increment:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<a class="image" href="images/howtos/EA-gen/generating.png"><img src="images/howtos/EA-gen/generating.png" alt="Eclipse CobiGen generation" width="500"></a>
+</div>
+</div>
+<div class="paragraph">
+<p>After following all these steps, your generated files should be inside <code>src\main\java</code> folder. If you want an XMI example, you will find it <a href="https://github.com/devonfw/cobigen/blob/master/cobigen/cobigen-xmlplugin/src/test/resources/testdata/integrationtest/uml-classdiag/completeUmlXmi.xml">here</a>.</p>
+</div>
+<!-- toc disabled -->
+</div>
+</div>
+<div class="sect2">
+<h3 id="howto_angular-client-generation.asciidoc">75.2. Angular 8 Client Generation</h3>
 <div class="paragraph">
 <p>The generation can create a full Angular 8 client using the devon4ng-application-template package located at workspaces/examples folder of the distribution. For more details about this package, please refer <a href="https://github.com/devonfw/devon4ng-application-template">here</a>.</p>
 </div>
@@ -622,7 +699,7 @@ This is a short introduction to the Angular generation. For a deeper tutorial in
 </tbody></table>
 </div>
 <div class="sect3">
-<h4 id="howto_angular-client-generation.asciidoc_requisites">75.1.1. Requisites</h4>
+<h4 id="howto_angular-client-generation.asciidoc_requisites">75.2.1. Requisites</h4>
 <div class="paragraph">
 <p>Install yarn globally:</p>
 </div>
@@ -633,7 +710,7 @@ This is a short introduction to the Angular generation. For a deeper tutorial in
 </div>
 </div>
 <div class="sect3">
-<h4 id="howto_angular-client-generation.asciidoc_angular-8-workspace">75.1.2. Angular 8 workspace</h4>
+<h4 id="howto_angular-client-generation.asciidoc_angular-8-workspace">75.2.2. Angular 8 workspace</h4>
 <div class="paragraph">
 <p>The output location of the generation can be defined editing the <strong><em>cobigen.properties</em></strong> file located at <strong><em>crud_angular_client_app/templates</em></strong> folder of the <strong><em>CobiGen_Templates</em></strong> project.</p>
 </div>
@@ -678,7 +755,7 @@ This is a short introduction to the Angular generation. For a deeper tutorial in
 </div>
 </div>
 <div class="sect3">
-<h4 id="howto_angular-client-generation.asciidoc_install-node-dependencies">75.1.3. Install Node dependencies</h4>
+<h4 id="howto_angular-client-generation.asciidoc_install-node-dependencies">75.2.3. Install Node dependencies</h4>
 <div class="paragraph">
 <p>Open a terminal into devon4ng-application-template copied and just run the command:</p>
 </div>
@@ -692,7 +769,7 @@ This is a short introduction to the Angular generation. For a deeper tutorial in
 </div>
 </div>
 <div class="sect3">
-<h4 id="howto_angular-client-generation.asciidoc_generating">75.1.4. Generating</h4>
+<h4 id="howto_angular-client-generation.asciidoc_generating">75.2.4. Generating</h4>
 <div class="paragraph">
 <p>From an Eto object, right click, CobiGen &#x2192; Generate will show the CobiGen wizard relative to client generation:</p>
 </div>
@@ -728,7 +805,7 @@ This is a short introduction to the Angular generation. For a deeper tutorial in
 </div>
 </div>
 <div class="sect3">
-<h4 id="howto_angular-client-generation.asciidoc_routing">75.1.5. Routing</h4>
+<h4 id="howto_angular-client-generation.asciidoc_routing">75.2.5. Routing</h4>
 <div class="paragraph">
 <p>Due to the nature of the TypeScript merger, currently is not possible to merge properly the array of paths objects of the routings at app.routing.ts file so, this modification should be done by hand on this file. However, the import related to the new component generated is added.</p>
 </div>
@@ -826,7 +903,7 @@ export const routing = RouterModule.forRoot(appRoutes);</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="howto_angular-client-generation.asciidoc_jwt-authentication">75.1.6. JWT Authentication</h4>
+<h4 id="howto_angular-client-generation.asciidoc_jwt-authentication">75.2.6. JWT Authentication</h4>
 <div class="paragraph">
 <p>If you are using a back end server with JWT Authentication (there is a sample in workspaces/folder called <strong>sampleJwt</strong>) you have to specify the Angular application to use this kind of authentication.</p>
 </div>
@@ -835,7 +912,7 @@ export const routing = RouterModule.forRoot(appRoutes);</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="howto_angular-client-generation.asciidoc_running">75.1.7. Running</h4>
+<h4 id="howto_angular-client-generation.asciidoc_running">75.2.7. Running</h4>
 <div class="paragraph">
 <p>First of all, run your devon4j java server by right clicking over SpringBootApp.java Run As &#x2192; Java Application. This will start to run the SpringBoot server. Once you see the Started SpringBoot in XX seconds, the backend is running.</p>
 </div>
@@ -872,7 +949,7 @@ export const routing = RouterModule.forRoot(appRoutes);</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="howto_ionic-client-generation.asciidoc">75.2. Ionic client generation</h3>
+<h3 id="howto_ionic-client-generation.asciidoc">75.3. Ionic client generation</h3>
 <div class="paragraph">
 <p>We are going to show you <strong>how to</strong> generate a CRUD Ionic application from an <strong>ETO</strong>
 using CobiGen.</p>
@@ -890,7 +967,7 @@ This is a short introduction to the Ionic generation. For a deeper tutorial incl
 </tbody></table>
 </div>
 <div class="sect3">
-<h4 id="howto_ionic-client-generation.asciidoc_prerequisites">75.2.1. Prerequisites</h4>
+<h4 id="howto_ionic-client-generation.asciidoc_prerequisites">75.3.1. Prerequisites</h4>
 <div class="paragraph">
 <p>Before starting, make sure you already have in your computer:</p>
 </div>
@@ -933,7 +1010,7 @@ It includes installing:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="howto_ionic-client-generation.asciidoc_generation">75.2.2. Generation</h4>
+<h4 id="howto_ionic-client-generation.asciidoc_generation">75.3.2. Generation</h4>
 <div class="paragraph">
 <p>We are going to generate the CRUD into a <strong>sample application</strong> that we have developed for
 testing this functionality. It is present on your <code>workspaces/examples</code> folder (devon4ng-ionic-application-template). If you do not see it, you can clone or download it from <a href="https://github.com/devonfw/devon4ng-ionic-application-template">here</a>.</p>
@@ -1041,7 +1118,7 @@ This happens because the merger of CobiGen prefers to duplicate rather than to d
 </div>
 </div>
 <div class="sect3">
-<h4 id="howto_ionic-client-generation.asciidoc_running-it-on-android">75.2.3. Running it on Android</h4>
+<h4 id="howto_ionic-client-generation.asciidoc_running-it-on-android">75.3.3. Running it on Android</h4>
 <div class="paragraph">
 <p>To run the application in an android emulated device, it is necessary to have Android Studio and Android SDK. After its installation, the following commands have to be run on your console:</p>
 </div>
@@ -1109,7 +1186,7 @@ This happens because the merger of CobiGen prefers to duplicate rather than to d
 </div>
 </div>
 <div class="sect2">
-<h3 id="howto_create-a-new-plugin.asciidoc">75.3. Implementing a new Plug-in</h3>
+<h3 id="howto_create-a-new-plugin.asciidoc">75.4. Implementing a new Plug-in</h3>
 <div class="paragraph">
 <p>New plug-ins can implement an input reader, a merger, a matcher, a trigger interpreter, and/or a template engine as explained <a href="cobigen-core_development.html#extension-mechanism">here</a>.</p>
 </div>
@@ -1128,7 +1205,7 @@ This happens because the merger of CobiGen prefers to duplicate rather than to d
 </tbody></table>
 </div>
 <div class="sect3">
-<h4 id="howto_create-a-new-plugin.asciidoc_plugin-activator">75.3.1. Plugin Activator</h4>
+<h4 id="howto_create-a-new-plugin.asciidoc_plugin-activator">75.4.1. Plugin Activator</h4>
 <div class="paragraph">
 <p>Each plug-in has to have an plug-in activator class implementing the interface <code>GeneratorPluginActivator</code> from the core-api. This class will be used to load the plug-in using the PluginRegistry as explained <a href="cobigen-core_development.html#loadplugin">here</a>. This class implements two methods:</p>
 </div>
@@ -1147,13 +1224,13 @@ This happens because the merger of CobiGen prefers to duplicate rather than to d
 </div>
 </div>
 <div class="sect3">
-<h4 id="howto_create-a-new-plugin.asciidoc_adding-triggerinterpreter">75.3.2. Adding TriggerInterpreter</h4>
+<h4 id="howto_create-a-new-plugin.asciidoc_adding-triggerinterpreter">75.4.2. Adding TriggerInterpreter</h4>
 <div class="paragraph">
 <p>The trigger interpreter has to implement the TriggerInterpreter interface from the core. The trigger interpreter defines the type for the new plugin and creates new InputReader and new Matcher objects.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="howto_create-a-new-plugin.asciidoc_adding-inputreader">75.3.3. Adding InputReader</h4>
+<h4 id="howto_create-a-new-plugin.asciidoc_adding-inputreader">75.4.3. Adding InputReader</h4>
 <div class="paragraph">
 <p>The input reader is responsible of read the input object and parse it into
  FreeMarker models. The input reader must be implemented for the type of the
@@ -1241,7 +1318,7 @@ have variables to use them at the <code>.ftl</code> template file. Refer to <a h
 </div>
 </div>
 <div class="sect3">
-<h4 id="howto_create-a-new-plugin.asciidoc_adding-matcher">75.3.4. Adding Matcher</h4>
+<h4 id="howto_create-a-new-plugin.asciidoc_adding-matcher">75.4.4. Adding Matcher</h4>
 <div class="paragraph">
 <p>The matcher implements the MatcherInterpreter interface from the core-api.
 Should be implemented for providing a new input matcher. Input matcher are
@@ -1284,7 +1361,7 @@ by the defined matcher.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="howto_create-a-new-plugin.asciidoc_adding-merger">75.3.5. Adding Merger</h4>
+<h4 id="howto_create-a-new-plugin.asciidoc_adding-merger">75.4.5. Adding Merger</h4>
 <div class="paragraph">
 <p>The merger is responsible to perform merge action between new output with the
 existent data at the file if it already exists. Must implement the Merger
@@ -1322,7 +1399,7 @@ The implementation of the Merge interface must override the following methods:</
 </div>
 </div>
 <div class="sect3">
-<h4 id="howto_create-a-new-plugin.asciidoc_changes-since-eclipse--maven-3.x">75.3.6. Changes since Eclipse / Maven 3.x</h4>
+<h4 id="howto_create-a-new-plugin.asciidoc_changes-since-eclipse--maven-3.x">75.4.6. Changes since Eclipse / Maven 3.x</h4>
 <div class="paragraph">
 <p>Since version 3.x the Eclipse and Maven plugins of CobiGen utilize the Java <code>ServiceLoader</code> mechanic to find and register plugins at runtime. To enable a new plugin to be discovered by this mechanic the following steps are needed:</p>
 </div>
@@ -1457,7 +1534,7 @@ mvn deploy -Pp2-build-mars,p2-build-experimental -Dp2.upload=experimental</code>
 </div>
 </div>
 <div class="sect2">
-<h3 id="howto_create-external-plugin.asciidoc">75.4. Introduction to CobiGen external plug-ins</h3>
+<h3 id="howto_create-external-plugin.asciidoc">75.5. Introduction to CobiGen external plug-ins</h3>
 <div class="paragraph">
 <p>Since September of 2019, a major change on CobiGen has taken place. CobiGen is written in Java code and previously, it was very hard for developers to create new plug-ins in other languages.</p>
 </div>
@@ -1481,7 +1558,7 @@ mvn deploy -Pp2-build-mars,p2-build-experimental -Dp2.upload=experimental</code>
 <p>For the Java plug-in it was relatively easy. As you are inside the Java world, you can use multiple utilities or libraries in order to get the <a href="https://en.wikipedia.org/wiki/Abstract_syntax_tree">AST</a> or to merge Java code. With this new feature, we wanted that behaviour to be possible for any programming language.</p>
 </div>
 <div class="sect3">
-<h4 id="howto_create-external-plugin.asciidoc_general-intuition">75.4.1. General intuition</h4>
+<h4 id="howto_create-external-plugin.asciidoc_general-intuition">75.5.1. General intuition</h4>
 <div class="paragraph">
 <p>Below you will find a very high level description of how CobiGen worked in previous versions:</p>
 </div>
@@ -1509,7 +1586,7 @@ mvn deploy -Pp2-build-mars,p2-build-experimental -Dp2.upload=experimental</code>
 </div>
 </div>
 <div class="sect3">
-<h4 id="howto_create-external-plugin.asciidoc_how-to-create-new-external-plug-in">75.4.2. How to create new external plug-in</h4>
+<h4 id="howto_create-external-plugin.asciidoc_how-to-create-new-external-plug-in">75.5.2. How to create new external plug-in</h4>
 <div class="paragraph">
 <p>The creation of a new plug-in consists mainly in three steps:</p>
 </div>
@@ -1720,7 +1797,7 @@ We recommend you to select all the checkboxes
 </div>
 </div>
 <div class="sect3">
-<h4 id="howto_create-external-plugin.asciidoc_testing-phase">75.4.3. Testing phase</h4>
+<h4 id="howto_create-external-plugin.asciidoc_testing-phase">75.5.3. Testing phase</h4>
 <div class="paragraph">
 <p>Now that you have finished with the implementation of the server and the creation of a new CobiGen plug-in, we are going to explain how you can test that everything works fine:</p>
 </div>
@@ -1757,7 +1834,7 @@ We recommend you to select all the checkboxes
 </div>
 </div>
 <div class="sect3">
-<h4 id="howto_create-external-plugin.asciidoc_releasing">75.4.4. Releasing</h4>
+<h4 id="howto_create-external-plugin.asciidoc_releasing">75.5.4. Releasing</h4>
 <div class="paragraph">
 <p>Now that you have already tested that everything works fine, we are going to explain how to release the server and the plug-in.</p>
 </div>
@@ -1887,7 +1964,7 @@ To release Linux and MacOS versions of your plug-in, just add the suffix into th
 </div>
 </div>
 <div class="sect3">
-<h4 id="howto_create-external-plugin.asciidoc_templates-creation">75.4.5. Templates creation</h4>
+<h4 id="howto_create-external-plugin.asciidoc_templates-creation">75.5.5. Templates creation</h4>
 <div class="paragraph">
 <p>After following above steps, we now have a CobiGen plug-in that connects to a server (external process) which reads your input files, returns a model and is able to merge files.</p>
 </div>
@@ -2054,7 +2131,7 @@ We always recommend using the devonfw console, which already contains a working 
 </div>
 </div>
 <div class="sect3">
-<h4 id="howto_devon4net.asciidoc_navydevon4net-cobigen-guide">75.4.6. <span class="navy">devon4net Cobigen Guide</span></h4>
+<h4 id="howto_devon4net.asciidoc_navydevon4net-cobigen-guide">75.5.6. <span class="navy">devon4net Cobigen Guide</span></h4>
 <div class="sect4">
 <h5 id="howto_devon4net.asciidoc_navyoverview"><span class="navy">Overview</span></h5>
 <div class="paragraph">
@@ -2219,7 +2296,7 @@ We always recommend using the devonfw console, which already contains a working 
 </div>
 </div>
 <div class="sect2">
-<h3 id="howto_update_CobiGen.asciidoc">75.5. How to update CobiGen</h3>
+<h3 id="howto_update_CobiGen.asciidoc">75.6. How to update CobiGen</h3>
 <div class="paragraph">
 <p>In order to update CobiGen from our devonfw distribution, we have two options:</p>
 </div>
@@ -2290,7 +2367,7 @@ We always recommend using the devonfw console, which already contains a working 
 <p>After the update process finishes, remember to restart Eclipse.</p>
 </div>
 <div class="sect3">
-<h4 id="howto_update_cobigen.asciidoc_updating-templates">75.5.1. Updating templates:</h4>
+<h4 id="howto_update_cobigen.asciidoc_updating-templates">75.6.1. Updating templates:</h4>
 <div class="paragraph">
 <p>To update your CobiGen templates to the latest version, you just need to do one step:</p>
 </div>
@@ -2309,43 +2386,8 @@ We always recommend using the devonfw console, which already contains a working 
 <div class="paragraph">
 <p>Now you will have the latest templates ready!</p>
 </div>
-<!-- toc disabled -->
-</div>
-</div>
-<div class="sect2">
-<h3 id="howto_Release-creation.asciidoc">75.6. CobiGen Release creation</h3>
 <div class="paragraph">
-<p>In this guide we explain how to create CobiGen related releases, i.e. release of a new core version using our useful release automation <a href="https://github.com/devonfw/cobigen/tree/master/scripts">script</a>.</p>
-</div>
-<div class="sect3">
-<h4 id="howto_release-creation.asciidoc_usage">75.6.1. Usage</h4>
-<div class="paragraph">
-<p>Fire up a command prompt from the CobiGen IDE environment (using <code>console.bat</code> for example). Then, you will need to execute the following command:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">python &quot;&lt;path_to_release_script_parent_folder&gt;/create_release.py&quot; -d -g devonfw/cobigen -r &quot;&lt;path_of_your_just_cloned_fork&gt;&quot; -k &quot;yourcapgemini@mail.com&quot; -c</code></pre>
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tbody><tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The CobiGen development environment comes with all required python packages needed for the release script. However, if you encounter errors like <code>no module named xyz found</code> you might want to consider running the following command:
-</td>
-</tr>
-</tbody></table>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-bash" data-lang="bash">python -m pip install -r &quot;&lt;path_to_release_script_parent_folder&gt;/requirements.txt&quot;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Unresolved directive in cobigen.wiki/master-cobigen.asciidoc - include::howto-devonfw-ide-CobiGen-PoC-E2E.asciidoc[leveloffset=2]</p>
+<p>Unresolved directive in cobigen.wiki/master-cobigen.asciidoc - include::howto-Cobigen-CLI-generation.asciidoc[leveloffset=2]</p>
 </div>
 <!-- toc disabled -->
 </div>
@@ -2564,7 +2606,7 @@ public class EmployeeEntity implements PersistenceEntity&lt;CompositeEmployeeKey
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-05-28 07:07:18 UTC
+Last updated 2021-05-31 05:40:38 UTC
 </sub></div>
 
 

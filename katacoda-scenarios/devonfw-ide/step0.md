@@ -5,14 +5,14 @@ Follow the below steps to setup your devonfw development environment.
 
 
 
-Create the directory where the devonfw ide will be installed.
+Create the directory where the devonfw IDE will be installed.
 
 `mkdir devonfw`{{execute T1}}
 
 `cd devonfw`{{execute T1}}
 
 
-To install devonfw execute the following commands. More information about setting up your ide on https://devonfw.com/website/pages/docs/devonfw-ide-introduction.asciidoc.html#setup.asciidoc
+To install devonfw execute the following commands. More information about setting up your IDE on https://devonfw.com/website/pages/docs/devonfw-ide-introduction.asciidoc.html#setup.asciidoc
 
 First you have do download and extract the installation files.
 
@@ -27,7 +27,11 @@ The installation process may take a while.
 Accept the licence agreements.
 `yes`{{execute T1}}
 
-The devonfw ide is now installed. To use the new 'devon' commands you have the open a new terminal or use the following command:
+
+The installer will ask you if you want to enter secrets for your maven repository. You can simply skip this by pressing 'Enter'.
+ 
+
+The devonfw IDE is now installed. To use the new 'devon' commands you have the open a new terminal or use the following command:
 
 `. ~/.bashrc`{{execute T1}}
 

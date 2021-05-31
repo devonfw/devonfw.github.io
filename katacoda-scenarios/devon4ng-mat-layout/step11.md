@@ -1,7 +1,7 @@
 Let us finally create the sidenav. To implement the sidenav we need to use 3 Angular Material components: `mat-sidenav-container`, `mat-sidenav` and `mat-sidenav-content`. The `mat-sidenav-container`, as the name suggests, acts as a container for the `sidenav` and the associated content. So it is the parent element, and `mat-sidenav` and `mat-sidenav-content` are the children sibling elements. `mat-sidenav` represents the sidenav. We can put any content we want, though it is usually used to conatain a list of navigational links. The `mat-sidenav-content` element is for conataining our main page content. Since we need the `sidenav` application-wide, we will put it in the `app.component.html`
 
 
-Switch to the IDE and open the file 'devonfw/workspaces/main/devon4ng-mat-layout/src/app/app.component.html'.
+Switch to the editor and open the file 'devonfw/workspaces/main/devon4ng-mat-layout/src/app/app.component.html'.
 
 `devonfw/workspaces/main/devon4ng-mat-layout/src/app/app.component.html`{{open}}
 
@@ -45,7 +45,7 @@ Click on 'Copy to Editor' to change it automatically.
 
 
 
-Switch to the IDE and open the file 'devonfw/workspaces/main/devon4ng-mat-layout/src/app/app.component.scss'.
+Switch to the editor and open the file 'devonfw/workspaces/main/devon4ng-mat-layout/src/app/app.component.scss'.
 
 `devonfw/workspaces/main/devon4ng-mat-layout/src/app/app.component.scss`{{open}}
 

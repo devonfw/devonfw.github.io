@@ -1,7 +1,7 @@
 The sidenav’s width will be corrected when we add the navigational links to it. That is the only thing remaining to be done. Lets implement it now:
 
 
-Switch to the IDE and open the file 'devonfw/workspaces/main/devon4ng-mat-layout/src/app/app.component.html'.
+Switch to the editor and open the file 'devonfw/workspaces/main/devon4ng-mat-layout/src/app/app.component.html'.
 
 `devonfw/workspaces/main/devon4ng-mat-layout/src/app/app.component.html`{{open}}
 
@@ -69,7 +69,7 @@ Click on 'Copy to Editor' to change it automatically.
 
 
 
-Switch to the IDE and open the file 'devonfw/workspaces/main/devon4ng-mat-layout/src/app/app.component.scss'.
+Switch to the editor and open the file 'devonfw/workspaces/main/devon4ng-mat-layout/src/app/app.component.scss'.
 
 `devonfw/workspaces/main/devon4ng-mat-layout/src/app/app.component.scss`{{open}}
 

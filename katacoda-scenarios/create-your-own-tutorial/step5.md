@@ -3,7 +3,7 @@ The syntax in which the tutorial is written can be found at https://github.com/d
 At first we will add a title to the first line of the file.
 
 
-Switch to the IDE and open the file 'tutorials/myTutorial/index.asciidoc'.
+Switch to the editor and open the file 'tutorials/myTutorial/index.asciidoc'.
 
 `tutorials/myTutorial/index.asciidoc`{{open}}
 

@@ -9,7 +9,7 @@ If the parent directories aren't already in the project, 'mkdir -p' will create 
 
 `mkdir -p /root/tutorials/myTutorial`{{execute T1}}
 
-Switch to the IDE and click 'Copy to Editor'. 
+Switch to the editor and click 'Copy to Editor'. 
 
 'index.asciidoc' will be created automatically inside the newly created folder.
 

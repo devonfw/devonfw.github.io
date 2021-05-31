@@ -1,7 +1,7 @@
 We need to provide a hook where the components will be loaded when their respective URLs are loaded. We do that by using the `router-outlet` directive in the `app.component.html`:
 
 
-Switch to the IDE and open the file 'devonfw/workspaces/main/devon4ng-mat-layout/src/app/app.component.html'.
+Switch to the editor and open the file 'devonfw/workspaces/main/devon4ng-mat-layout/src/app/app.component.html'.
 
 `devonfw/workspaces/main/devon4ng-mat-layout/src/app/app.component.html`{{open}}
 

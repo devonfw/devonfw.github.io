@@ -5,7 +5,7 @@ If the parent directories aren't already in the project, 'mkdir -p' will create 
 
 `mkdir -p /root/devonfw/workspaces/main/devon4ng-mat-layout/src/app/pages/home`{{execute T1}}
 
-Switch to the IDE and click 'Copy to Editor'. 
+Switch to the editor and click 'Copy to Editor'. 
 
 'home.component.html' will be created automatically inside the newly created folder.
 
@@ -20,7 +20,7 @@ If the parent directories aren't already in the project, 'mkdir -p' will create 
 
 `mkdir -p /root/devonfw/workspaces/main/devon4ng-mat-layout/src/app/pages/home`{{execute T1}}
 
-Switch to the IDE and click 'Copy to Editor'. 
+Switch to the editor and click 'Copy to Editor'. 
 
 'home.component.scss' will be created automatically inside the newly created folder.
 
@@ -37,7 +37,7 @@ If the parent directories aren't already in the project, 'mkdir -p' will create 
 
 `mkdir -p /root/devonfw/workspaces/main/devon4ng-mat-layout/src/app/pages/home`{{execute T1}}
 
-Switch to the IDE and click 'Copy to Editor'. 
+Switch to the editor and click 'Copy to Editor'. 
 
 'home.component.ts' will be created automatically inside the newly created folder.
 
@@ -66,7 +66,7 @@ If the parent directories aren't already in the project, 'mkdir -p' will create 
 
 `mkdir -p /root/devonfw/workspaces/main/devon4ng-mat-layout/src/app/pages/data`{{execute T1}}
 
-Switch to the IDE and click 'Copy to Editor'. 
+Switch to the editor and click 'Copy to Editor'. 
 
 'data.component.html' will be created automatically inside the newly created folder.
 
@@ -81,7 +81,7 @@ If the parent directories aren't already in the project, 'mkdir -p' will create 
 
 `mkdir -p /root/devonfw/workspaces/main/devon4ng-mat-layout/src/app/pages/data`{{execute T1}}
 
-Switch to the IDE and click 'Copy to Editor'. 
+Switch to the editor and click 'Copy to Editor'. 
 
 'data.component.scss' will be created automatically inside the newly created folder.
 
@@ -98,7 +98,7 @@ If the parent directories aren't already in the project, 'mkdir -p' will create 
 
 `mkdir -p /root/devonfw/workspaces/main/devon4ng-mat-layout/src/app/pages/data`{{execute T1}}
 
-Switch to the IDE and click 'Copy to Editor'. 
+Switch to the editor and click 'Copy to Editor'. 
 
 'data.component.ts' will be created automatically inside the newly created folder.
 
@@ -123,7 +123,7 @@ export class DataComponent implements OnInit {
 
 
 
-Switch to the IDE and open the file 'devonfw/workspaces/main/devon4ng-mat-layout/src/app/app.module.ts'.
+Switch to the editor and open the file 'devonfw/workspaces/main/devon4ng-mat-layout/src/app/app.module.ts'.
 
 `devonfw/workspaces/main/devon4ng-mat-layout/src/app/app.module.ts`{{open}}
 

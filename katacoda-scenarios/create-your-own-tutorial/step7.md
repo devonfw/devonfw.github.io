@@ -9,7 +9,7 @@ Each step consists of
 In this tutorial we will add a simple step which creates a new file.
 
 
-Switch to the IDE and open the file 'tutorials/myTutorial/index.asciidoc'.
+Switch to the editor and open the file 'tutorials/myTutorial/index.asciidoc'.
 
 `tutorials/myTutorial/index.asciidoc`{{open}}
 

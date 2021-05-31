@@ -9,4 +9,4 @@ echo "you accepted the devonfw-ide License.https://github.com/devonfw/ide/blob/m
 
 wget -c https://bit.ly/2BCkFa9 -O - | tar -xz
 
-bash setup /root/devonfw-settings/settings.git
+bash setup --batch /root/devonfw-settings/settings.git
