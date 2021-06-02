@@ -434,7 +434,7 @@ If the creation of the backup fails, you will be asked to continue or to abort.<
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-06-02 07:09:47 UTC
+Last updated 2021-06-02 11:56:34 UTC
 </sub></div>
 </div>
 </div>
@@ -450,9 +450,13 @@ Last updated 2021-06-02 07:09:47 UTC
     internalUrls.forEach((internalUrl, index) => {
       $.ajax({url: internalUrl + $(this).text() + "/index.html" })
       .then(r => {
-        var leftDiv = $('<div class="info"><span class="infoText">Internal</span><img class="infoImage" src="' + internalUrl + 'logo.png"/></div>')
-        var rightDiv = $('<div class="content"></div>')
-        rightDiv.html(r);
+        var leftDiv = $('<div class="info"><span class="infoText">Internal</span><img class="infoImage" src="' + internalUrl + 'logo.png"/></div>');
+        var rightFirstDiv = $('<div class="message">This is only visible inside of the corporate network.</div>');
+        var rightLastDiv = $('<div class="content"></div>');
+        rightLastDiv.html(r);
+        var rightDiv = $('<div class="right"></div>');
+        rightDiv.append(rightFirstDiv);
+        rightDiv.append(rightLastDiv);
         $(this).html(leftDiv);
         $(this).append(rightDiv);
         $(this).addClass("internal-active");
