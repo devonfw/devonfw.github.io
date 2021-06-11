@@ -1,4 +1,4 @@
-The sidenav’s width will be corrected when we add the navigational links to it. That is the only thing remaining to be done. Lets implement it now:
+The sidenav’s width will be corrected when you add the navigational links to it. That is the only thing remaining to be done. Lets implement it now:
 
 
 Switch to the editor and open the file 'devonfw/workspaces/main/devon4ng-mat-layout/src/app/app.component.html'.

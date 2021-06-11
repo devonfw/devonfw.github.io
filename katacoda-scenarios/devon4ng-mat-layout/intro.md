@@ -1,17 +1,16 @@
-The purpose of this tutorial is to get a basic understanding of creating layouts using Angular Material in a devon4ng application. We will create an application with a header containing some menu links and a sidenav with some navigation links.
+The purpose of this tutorial is to get a basic understanding of creating layouts using Angular Material in a devon4ng application. You will create an application with a header containing some menu links and a sidenav with some navigation links.
 
 ## Prerequisites
-* devonfw-ide installed
 * Basic Angular knowledge
 
 ## Learning goals
-In this tutorial we will learn how to:
+In this tutorial you will learn how to:
 * create an Angular application using the devon command
 * add Angular Material to the application
-* import Angular Material components into our modules
+* import Angular Material components into your modules
 * use Material icons in the application
 * use a prebulit theme to style the application
-* create layout (conataining a header with menu along with a sidenav with navigational links) with the Angular Material components
+* create layout (containing a header with menu along with a sidenav with navigational links) with the Angular Material components
 
 
 

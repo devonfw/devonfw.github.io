@@ -1,4 +1,4 @@
-Next we will add Angular Material to our application.
+Next you will add Angular Material to your application.
 
 
 Please change the folder to &#39;devon4ng-mat-layout&#39;.

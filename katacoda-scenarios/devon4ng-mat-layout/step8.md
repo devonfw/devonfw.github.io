@@ -1,4 +1,4 @@
-Next, we will create a sidenav. But before that lets create a couple of components to navigate between, the links of which we will add to the sidenav. You can use the `ng generate component` (or `ng g c` command for short) to create Home and Data components. But here, we will create them manually. We nest them in the `pages` sub-directory since they represent our pages. And we will also add the new components to our AppModule.
+Next, you will create a sidenav. But before that lets create a couple of components to navigate between, the links of which you will add to the sidenav. You can use the `ng generate component` (or `ng g c` command for short) to create Home and Data components. But here, you will create them manually. You nest them in the `pages` sub-directory since they represent your pages. And you will also add the new components to your AppModule.
 
 
 If the parent directories aren't already in the project, 'mkdir -p' will create them for you. 

@@ -1,4 +1,4 @@
-We want to keep the sidenav toggling menu button on the left and move the rest to the right to make it look better. To do this lets add the following style to the `menu` class in `app.component.scss`:
+You want to keep the sidenav toggling menu button on the left and move the rest to the right to make it look better. To do this add the following style to the `menu` class in `app.component.scss`:
 
 
 Switch to the editor and open the file 'devonfw/workspaces/main/devon4ng-mat-layout/src/app/app.component.scss'.

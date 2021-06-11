@@ -1,5 +1,5 @@
-Once the dependencies are installed, we need to import the BrowserAnimationsModule in our AppModule for animations support.
-Also, Angular Material provides a host of components for designing our application. All the components are well structured into NgModules. For each component from the Angular Material library that we want to use, we have to import the respective NgModule.
+Once the dependencies are installed, you need to import the BrowserAnimationsModule in your AppModule for animations support.
+Also, Angular Material provides a host of components for designing your application. All the components are well structured into NgModules. For each component from the Angular Material library that you want to use, you have to import the respective NgModule.
 
 
 Switch to the editor and open the file 'devonfw/workspaces/main/devon4ng-mat-layout/src/app/app.module.ts'.

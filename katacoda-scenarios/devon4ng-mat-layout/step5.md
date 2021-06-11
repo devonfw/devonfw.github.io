@@ -1,4 +1,4 @@
-Now that we have all the Angular Material related dependencies set up in our project, we can start coding. Let’s begin by adding a suitable `margin` and `font` to the body element of our single page application. We will add it in the `src/styles.scss` file to apply it globally.
+Now that you have all the Angular Material related dependencies set up in your project, you can start coding. Let’s begin by adding a suitable `margin` and `font` to the body element of your single page application. You will add it in the `src/styles.scss` file to apply it globally.
 
 
 Switch to the editor and open the file 'devonfw/workspaces/main/devon4ng-mat-layout/src/styles.scss'.
