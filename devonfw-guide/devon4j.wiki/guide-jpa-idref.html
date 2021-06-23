@@ -21,7 +21,7 @@
 <!-- ************************************* -->
 
 
-<title>Why should I use devonfw?</title>
+<title>IdRef</title>
 <!-- devonfw website stylesheet -->
 <link rel="stylesheet" type="text/css" href="/devonfw.css">
 <!-- Lunr -->
@@ -101,159 +101,171 @@
 <div class="toc2">
 <div class="title">Table of Contents</div>
 <ul class="sectlevel0">
-<li><a href="#introduction-why-should-i-use-devonfw.asciidoc">Why should I use devonfw?</a>
+<li><a href="#guide-jpa-idref.asciidoc">IdRef</a>
 <ul class="sectlevel1">
-<li><a href="#introduction-why-should-i-use-devonfw.asciidoc_objectives">Objectives</a>
+<li><a href="#guide-jpa-idref.asciidoc_motivation">Motivation</a></li>
+<li><a href="#guide-jpa-idref.asciidoc_idref-and-mapping">IdRef and Mapping</a></li>
+<li><a href="#guide-jpa-idref.asciidoc_jpahelper-and-entitymanager-access">JpaHelper and EntityManager access</a>
 <ul class="sectlevel2">
-<li><a href="#introduction-why-should-i-use-devonfw.asciidoc_standardization">Standardization</a></li>
-<li><a href="#introduction-why-should-i-use-devonfw.asciidoc_industrialization-of-innovative-technologies--digital">Industrialization of Innovative Technologies &amp; “Digital”</a></li>
-<li><a href="#introduction-why-should-i-use-devonfw.asciidoc_deliver--improve-business-value">Deliver &amp; Improve Business Value</a></li>
-<li><a href="#introduction-why-should-i-use-devonfw.asciidoc_efficiency">Efficiency</a></li>
-<li><a href="#introduction-why-should-i-use-devonfw.asciidoc_quality">Quality</a></li>
-<li><a href="#introduction-why-should-i-use-devonfw.asciidoc_agility">Agility</a></li>
-</ul>
-</li>
-<li><a href="#introduction-why-should-i-use-devonfw.asciidoc_features">Features</a>
-<ul class="sectlevel2">
-<li><a href="#introduction-why-should-i-use-devonfw.asciidoc_everything-in-a-single-zip">Everything in a Single ZIP</a></li>
-<li><a href="#introduction-why-should-i-use-devonfw.asciidoc_devonfw----the-package">devonfw&#8201;&#8212;&#8201;The Package</a></li>
+<li><a href="#guide-jpa-idref.asciidoc_jpahelper-and-spring-test">JpaHelper and spring-test</a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
-<h1 id="introduction-why-should-i-use-devonfw.asciidoc" class="sect0">Why should I use devonfw?</h1>
-<div class="openblock partintro">
-<div class="content">
-devonfw aims to provide a framework for the development of web applications based on the Java EE programming model. It uses the Spring framework as its Java EE default implementation.
-</div>
+<h1 id="guide-jpa-idref.asciidoc" class="sect0">IdRef</h1>
+<div class="paragraph">
+<p>IdRef can be used to reference other entities in TOs in order to make them type-safe and semantically more expressive.
+It is an optional concept in devon4j for more complex applications that make intensive use of relations and foreign keys.</p>
 </div>
 <div class="sect1">
-<h2 id="introduction-why-should-i-use-devonfw.asciidoc_objectives">Objectives</h2>
+<h2 id="guide-jpa-idref.asciidoc_motivation">Motivation</h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="introduction-why-should-i-use-devonfw.asciidoc_standardization">Standardization</h3>
 <div class="paragraph">
-<p>We don&#8217;t want to keep reinventing the wheel for thousands of projects, for hundreds of customers, across dozens of countries. For this reason, we aim to rationalize, harmonize and standardize the development assets for software projects and industrialize the software development process.</p>
+<p>Assuming you have a method signature like the following:</p>
 </div>
-</div>
-<div class="sect2">
-<h3 id="introduction-why-should-i-use-devonfw.asciidoc_industrialization-of-innovative-technologies--digital">Industrialization of Innovative Technologies &amp; “Digital”</h3>
-<div class="paragraph">
-<p>devonfw&#8217;s goal is to standardize &amp; industrialize. But this applies not only to large volume, “traditional” custom software development projects. devonfw also aims to offer a standardized platform which contains a range of state-of-the-art methodologies and technology stacks. devonfw supports agile development by small teams utilizing the latest technologies for projects related to Mobile, IoT and the Cloud.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="introduction-why-should-i-use-devonfw.asciidoc_deliver--improve-business-value">Deliver &amp; Improve Business Value</h3>
-<div class="imageblock">
+<div class="listingblock">
 <div class="content">
-<a class="image" href="images/introduction/devon_quality_agility.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/introduction/devon_quality_agility.png" alt="devon quality agility" width="300"></a>
+<pre class="highlight"><code class="java language-java">Long approve(Long cId, Long cuId);</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>So what are the paremeters? What is returned?</p>
 </div>
-<div class="sect2">
-<h3 id="introduction-why-should-i-use-devonfw.asciidoc_efficiency">Efficiency</h3>
-<div class="ulist">
-<ul>
-<li>
-<p>Up to 20% reduction in time to market, with faster delivery due to automation and reuse.</p>
-</li>
-<li>
-<p>Up to 25% less implementation efforts due to code generation and reuse.</p>
-</li>
-<li>
-<p>Flat pyramid and rightshore, ready for junior developers.</p>
-</li>
-</ul>
+<div class="paragraph">
+<p><code>IdRef</code> is just a wrapper for a Long used as foreign key. This makes our signature much more expressive and self-explanatory:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">IdRef&lt;Contract&gt; approve(IdRef&lt;Contract&gt; cId, IdRef&lt;Customer&gt; cuId);</code></pre>
 </div>
 </div>
-<div class="sect2">
-<h3 id="introduction-why-should-i-use-devonfw.asciidoc_quality">Quality</h3>
-<div class="ulist">
-<ul>
-<li>
-<p>State-of-the-art architecture and design.</p>
-</li>
-<li>
-<p>Lower cost on maintenance and warranty.</p>
-</li>
-<li>
-<p>Technical debt reduction by reuse.</p>
-</li>
-<li>
-<p>Risk reduction due to continuous improvement of individual assets.</p>
-</li>
-<li>
-<p>Standardized, automated quality checks.</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="introduction-why-should-i-use-devonfw.asciidoc_agility">Agility</h3>
-<div class="ulist">
-<ul>
-<li>
-<p>Focus on business functionality, not on technicalities.</p>
-</li>
-<li>
-<p>Shorter release cycles.</p>
-</li>
-<li>
-<p>DevOps by design&#8201;&#8212;&#8201;Infrastructure as Code.</p>
-</li>
-<li>
-<p>Continuous Delivery pipeline.</p>
-</li>
-<li>
-<p>On- and off-premise flexibility.</p>
-</li>
-<li>
-<p>PoCs and prototypes in days not months.</p>
-</li>
-</ul>
-</div>
+<div class="paragraph">
+<p>Now we can easily see, that the result and the parameters are foreign-keys and which entity they are referring to via their generic type.
+We can read the javadoc of these entities from the generic type and understand the context.
+Finally, when passing <code>IdRef</code> objects to such methods, we get compile errors in case we accidentally place parameters in the wrong order.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="introduction-why-should-i-use-devonfw.asciidoc_features">Features</h2>
+<h2 id="guide-jpa-idref.asciidoc_idref-and-mapping">IdRef and Mapping</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>In order to easily map relations from entities to <a href="#guide-transferobject.asciidoc">transfer-objects</a> and back, we can easily also put according getters and setters into our entities:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public class ContractEntity extends ApplicationPersistenceEntity implements Contract {
+
+  private CustomerEntity customer;
+
+  ...
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "CUSTOMER_ID")
+  public CustomerEntity getCustomer() {
+    return this.customer;
+  }
+
+  public void setCustomer(CustomerEntity customer) {
+    this.customer = customer;
+  }
+
+  @Transient
+  public IdRef&lt;Customer&gt; getCustomerId() {
+    return IdRef.of(this.customer);
+  }
+
+  public void setCustomerId(IdRef&lt;Customer&gt; customerId) {
+    this.customer = JpaHelper.asEntity(customerId, CustomerEntity.class);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now, ensure that you have the same getters and setters for <code>customerId</code> in your <code>Eto</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public class ContractEto extends AbstractEto implements Contract {
+
+  private IdRef&lt;Customer&gt; customerId;
+
+  ...
+
+  public IdRef&lt;Customer&gt; getCustomerId() {
+    return this.customerId;
+  }
+
+  public void setCustomerId(IdRef&lt;Customer&gt; customerId) {
+    this.customerId = customerId;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This way the bean-mapper can automatically map from your entity (<code>ContractEntity</code>) to your Eto (<code>ContractEto</code>) and vice-versa.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-jpa-idref.asciidoc_jpahelper-and-entitymanager-access">JpaHelper and EntityManager access</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the above example we used <code>JpaHelper.asEntity</code> to convert the foreign key (<code>IdRef&lt;Customer&gt;</code>) to the according entity (<code>CustomerEntity</code>).
+This will internally use <code>EntityManager.getReference</code> to properly create a JPA entity.
+The alternative "solution" that may be used with <code>Long</code> instead of <code>IdRef</code> is typically:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">  public void setCustomerId(IdRef&lt;Customer&gt; customerId) {
+    Long id = null;
+    if (customerId != null) {
+      id = customerId.getId();
+    }
+    if (id == null) {
+      this.customer = null;
+    } else {
+      this.customer = new CustomerEntity();
+      this.customer.setId(id);
+    }
+  }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>While this "solution" works is most cases, we discovered some more complex cases, where it fails with very strange hibernate exceptions.
+When cleanly creating the entity via <code>EntityManager.getReference</code> instead it is working in all cases.
+So how can <code>JpaHelper.asEntity</code> as a static method access the <code>EntityManager</code>?
+Therefore we need to initialize this as otherwise you may see this exception:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>java.lang.IllegalStateException: EntityManager has not yet been initialized!
+	at com.devonfw.module.jpa.dataaccess.api.JpaEntityManagerAccess.getEntityManager(JpaEntityManagerAccess.java:38)
+	at com.devonfw.module.jpa.dataaccess.api.JpaHelper.asEntity(JpaHelper.java:49)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For main usage in your application we assume that there is only one instance of <code>EntityManager</code>.
+Therefore we can initialize this instance during the spring boot setup.
+This is what we provide for you in <a href="https://github.com/devonfw/devon4j/blob/master/modules/jpa-basic/src/main/java/com/devonfw/module/jpa/dataaccess/api/JpaInitializer.java">JpaInitializer</a> for you
+when <a href="#tutorial-newapp.asciidoc">creating a devon4j app</a>.</p>
+</div>
 <div class="sect2">
-<h3 id="introduction-why-should-i-use-devonfw.asciidoc_everything-in-a-single-zip">Everything in a Single ZIP</h3>
+<h3 id="guide-jpa-idref.asciidoc_jpahelper-and-spring-test">JpaHelper and spring-test</h3>
 <div class="paragraph">
-<p>The devonfw distributions is packaged in a ZIP file that includes all the custom tools, software and configurations.</p>
-</div>
-<div class="paragraph">
-<p>Having all the dependencies self-contained in the distribution&#8217;s ZIP file, users don&#8217;t need to install or configure anything. Just extracting the ZIP content is enough to have a fully functional <em>devonfw</em>.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="introduction-why-should-i-use-devonfw.asciidoc_devonfw----the-package">devonfw&#8201;&#8212;&#8201;The Package</h3>
-<div class="paragraph">
-<p>The devonfw platform provides:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Implementation blueprints for a modern cloud-ready server and a choice on JS-Client technologies (either open source Angular or a very rich and impressive solution based on commercial Sencha UI).</p>
-</li>
-<li>
-<p>Quality documentation and step-by-step quick start guides.</p>
-</li>
-<li>
-<p>Highly integrated and packaged development environment based around Eclipse and Jenkins. You will be ready to start implementing your first customer-specific use case in 2h time.</p>
-</li>
-<li>
-<p>Iterative eclipse-based code-generator that understands "Java" and works on higher architectural concepts than Java-classes.</p>
-</li>
-<li>
-<p>An example application as a reference implementation.</p>
-</li>
-<li>
-<p>Support through a large community + industrialization services (Standard Platform as a Service) available in the iProd service catalog.</p>
-</li>
-</ul>
+<p>Further, you also want your code to work in integration tests.
+Spring-test provides a lot of magic under the hood to make integration testing easy for you.
+To boost the performance when running multiple tests, spring is smart and avoids creating the same spring-context multiple times.
+Therefore it stores these contexts so that if a test-case is executed with a specific spring-configuration that has already been setup before,
+the same spring-context can be reused instead of creating it again.
+However, your tests may have multiple spring configurations leading to multiple spring-contexts.
+Even worse these tests can run in any order leading to switching between spring-contexts forth and back.
+Therefore, a static initializer during the spring boot setup can lead to strange errors as you can get the wrong <code>EntityManager</code> instance.
+In order to fix such problems, we provide a solution pattern via <a href="https://github.com/devonfw/devon4j/blob/master/modules/test-jpa/src/main/java/com/devonfw/module/test/common/base/DbTest.java#L32">DbTest</a> ensuring for every test,
+that the proper instance of <code>EntityManager</code> is initialized.
+Therefore you should derive directly or indirectly (e.g. via <code>ComponentDbTest</code> and <code>SubsystemDbTest</code>) from <code>DbTesT</code> or adopt your own way to apply this pattern to your tests, when using <code>JpaHelper</code>.
+This already happens if you are extending <code>ApplicationComponentTest</code> or <code>ApplicationSubsystemTest</code>.</p>
 </div>
 </div>
 </div>
@@ -395,7 +407,7 @@ devonfw aims to provide a framework for the development of web applications base
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-06-23 04:42:37 UTC
+Last updated 2021-06-23 04:40:19 UTC
 </sub></div>
 </div>
 </div>
