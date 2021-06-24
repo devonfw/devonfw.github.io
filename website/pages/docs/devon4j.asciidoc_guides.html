@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2021-06-23 11:47:31 UTC">
+<meta name="author" content="Updated at 2021-06-24 10:50:16 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -517,7 +517,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2021-06-23 11:47:56 UTC</span><br>
+<span id="author" class="author">Updated at 2021-06-24 10:50:40 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -1614,7 +1614,7 @@ By default, nothing is done in these situations. This can be changed by using th
 <h5 id="guide-jpa.asciidoc_typesafe-foreign-keys-using-idref">Typesafe Foreign Keys using IdRef</h5>
 <div class="paragraph">
 <p>For simple usage you can use <code>Long</code> for all your foreign keys.
-However, as an optional pattern for advanced and type-safe usage, we offer <a href="#guide-jpa-idref.asciidoc">IdRef</a>.</p>
+However, as an optional pattern for advanced and type-safe usage, we offer <a href="devon4j.asciidoc_guides.html#guide-jpa-idref.asciidoc">IdRef</a>.</p>
 </div>
 </div>
 </div>
@@ -2465,8 +2465,162 @@ Now <code>findDishById</code> caused 1 initial query statement and for any numbe
 <div class="paragraph">
 <p>There are many advanced topics such as creating database indexes or calculating statistics for the query optimizer to get the best performance. For such advanced topics we recommend to have a database expert in your team that cares about such things. However, understanding the <em>N+1 Problem</em> and its solutions is something that every Java developer in the team needs to understand.</p>
 </div>
+<!-- toc disabled -->
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-jpa-idref.asciidoc">12.3.15. IdRef</h4>
+<div class="paragraph">
+<p>IdRef can be used to reference other entities in TOs in order to make them type-safe and semantically more expressive.
+It is an optional concept in devon4j for more complex applications that make intensive use of relations and foreign keys.</p>
+</div>
+<div class="sect4">
+<h5 id="guide-jpa-idref.asciidoc_motivation">Motivation</h5>
+<div class="paragraph">
+<p>Assuming you have a method signature like the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Long approve(Long cId, Long cuId);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>So what are the paremeters? What is returned?</p>
+</div>
+<div class="paragraph">
+<p><code>IdRef</code> is just a wrapper for a Long used as foreign key. This makes our signature much more expressive and self-explanatory:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">IdRef&lt;Contract&gt; approve(IdRef&lt;Contract&gt; cId, IdRef&lt;Customer&gt; cuId);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now we can easily see, that the result and the parameters are foreign-keys and which entity they are referring to via their generic type.
+We can read the javadoc of these entities from the generic type and understand the context.
+Finally, when passing <code>IdRef</code> objects to such methods, we get compile errors in case we accidentally place parameters in the wrong order.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guide-jpa-idref.asciidoc_idref-and-mapping">IdRef and Mapping</h5>
+<div class="paragraph">
+<p>In order to easily map relations from entities to <a href="devon4j.asciidoc_guides.html#guide-transferobject.asciidoc">transfer-objects</a> and back, we can easily also put according getters and setters into our entities:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class ContractEntity extends ApplicationPersistenceEntity implements Contract {
+
+  private CustomerEntity customer;
+
+  ...
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = &quot;CUSTOMER_ID&quot;)
+  public CustomerEntity getCustomer() {
+    return this.customer;
+  }
+
+  public void setCustomer(CustomerEntity customer) {
+    this.customer = customer;
+  }
+
+  @Transient
+  public IdRef&lt;Customer&gt; getCustomerId() {
+    return IdRef.of(this.customer);
+  }
+
+  public void setCustomerId(IdRef&lt;Customer&gt; customerId) {
+    this.customer = JpaHelper.asEntity(customerId, CustomerEntity.class);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now, ensure that you have the same getters and setters for <code>customerId</code> in your <code>Eto</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class ContractEto extends AbstractEto implements Contract {
+
+  private IdRef&lt;Customer&gt; customerId;
+
+  ...
+
+  public IdRef&lt;Customer&gt; getCustomerId() {
+    return this.customerId;
+  }
+
+  public void setCustomerId(IdRef&lt;Customer&gt; customerId) {
+    this.customerId = customerId;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This way the bean-mapper can automatically map from your entity (<code>ContractEntity</code>) to your Eto (<code>ContractEto</code>) and vice-versa.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guide-jpa-idref.asciidoc_jpahelper-and-entitymanager-access">JpaHelper and EntityManager access</h5>
+<div class="paragraph">
+<p>In the above example we used <code>JpaHelper.asEntity</code> to convert the foreign key (<code>IdRef&lt;Customer&gt;</code>) to the according entity (<code>CustomerEntity</code>).
+This will internally use <code>EntityManager.getReference</code> to properly create a JPA entity.
+The alternative &quot;solution&quot; that may be used with <code>Long</code> instead of <code>IdRef</code> is typically:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">  public void setCustomerId(IdRef&lt;Customer&gt; customerId) {
+    Long id = null;
+    if (customerId != null) {
+      id = customerId.getId();
+    }
+    if (id == null) {
+      this.customer = null;
+    } else {
+      this.customer = new CustomerEntity();
+      this.customer.setId(id);
+    }
+  }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>While this &quot;solution&quot; works is most cases, we discovered some more complex cases, where it fails with very strange hibernate exceptions.
+When cleanly creating the entity via <code>EntityManager.getReference</code> instead it is working in all cases.
+So how can <code>JpaHelper.asEntity</code> as a static method access the <code>EntityManager</code>?
+Therefore we need to initialize this as otherwise you may see this exception:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>java.lang.IllegalStateException: EntityManager has not yet been initialized!
+	at com.devonfw.module.jpa.dataaccess.api.JpaEntityManagerAccess.getEntityManager(JpaEntityManagerAccess.java:38)
+	at com.devonfw.module.jpa.dataaccess.api.JpaHelper.asEntity(JpaHelper.java:49)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For main usage in your application we assume that there is only one instance of <code>EntityManager</code>.
+Therefore we can initialize this instance during the spring boot setup.
+This is what we provide for you in <a href="https://github.com/devonfw/devon4j/blob/master/modules/jpa-basic/src/main/java/com/devonfw/module/jpa/dataaccess/api/JpaInitializer.java">JpaInitializer</a> for you
+when <a href="devon4j.asciidoc_tutorials.html#tutorial-newapp.asciidoc">creating a devon4j app</a>.</p>
+</div>
+<div class="sect5">
+<h6 id="guide-jpa-idref.asciidoc_jpahelper-and-spring-test">JpaHelper and spring-test</h6>
+<div class="paragraph">
+<p>Further, you also want your code to work in integration tests.
+Spring-test provides a lot of magic under the hood to make integration testing easy for you.
+To boost the performance when running multiple tests, spring is smart and avoids creating the same spring-context multiple times.
+Therefore it stores these contexts so that if a test-case is executed with a specific spring-configuration that has already been setup before,
+the same spring-context can be reused instead of creating it again.
+However, your tests may have multiple spring configurations leading to multiple spring-contexts.
+Even worse these tests can run in any order leading to switching between spring-contexts forth and back.
+Therefore, a static initializer during the spring boot setup can lead to strange errors as you can get the wrong <code>EntityManager</code> instance.
+In order to fix such problems, we provide a solution pattern via <a href="https://github.com/devonfw/devon4j/blob/master/modules/test-jpa/src/main/java/com/devonfw/module/test/common/base/DbTest.java#L32">DbTest</a> ensuring for every test,
+that the proper instance of <code>EntityManager</code> is initialized.
+Therefore you should derive directly or indirectly (e.g. via <code>ComponentDbTest</code> and <code>SubsystemDbTest</code>) from <code>DbTesT</code> or adopt your own way to apply this pattern to your tests, when using <code>JpaHelper</code>.
+This already happens if you are extending <code>ApplicationComponentTest</code> or <code>ApplicationSubsystemTest</code>.</p>
+</div>
 <div style="page-break-after: always;"></div>
 <!-- toc disabled -->
+</div>
 </div>
 </div>
 </div>
@@ -8991,7 +9145,7 @@ To configure this you may use the healthcheck of the service to find out if the 
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-06-23 11:45:15 UTC
+Last updated 2021-06-24 10:47:16 UTC
 </sub></div>
 
 

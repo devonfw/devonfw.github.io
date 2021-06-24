@@ -1,8 +1,11 @@
+const { map, add } = require('cheerio/lib/api/traversing');
 const fs = require('fs');
 const path = require('path');
 
 function main(solutionsDir, outputFile) {
     var tags = {};
+    var frequence = new Map();
+    var tagsWithoutDup = [];
     
     let dirContent = fs.readdirSync(solutionsDir);
     dirContent.forEach(function (dirItem) {
@@ -17,15 +20,19 @@ function main(solutionsDir, outputFile) {
                 var line = lines[i];
                 if(line.startsWith("//")){
                     var parts = line.replace("//","").split("=", 2);
+                    var duplicatePos = compareTags(tagsWithoutDup, parts[0]);
+                    parts[0] = addFrequence(duplicatePos, parts[0], frequence, tagsWithoutDup);
                     if(parts.length == 2){
                         var tagValues = parts[1].split(";");
                         tagValues.forEach(tagValue => {
+                            duplicatePos = compareTags(tagsWithoutDup, tagValue);
+                            tagValue = addFrequence(duplicatePos, tagValue.trim(), frequence, tagsWithoutDup);
                             if(!tags[parts[0]]){
                                 tags[parts[0]] = {};
                             }
                             if(!tags[parts[0]][tagValue.trim()]){
                                 tags[parts[0]][tagValue.trim()] = [];
-                            }
+                            } 
                             tags[parts[0]][tagValue.trim()].push(dirItem);
                         });
                     }
@@ -36,8 +43,58 @@ function main(solutionsDir, outputFile) {
             }
         }
     });
+    for(tag in tags){
+        selectTag(tags, tag, 0 , frequence);  
+    }
+    for(t in tags){
+        for (tag in (tags[t])){
+            selectTag(tags[t], tag, 0, frequence);
+    }
+}
+
     console.log(tags);
     fs.writeFileSync(path.join("./", outputFile), JSON.stringify(tags));
+}
+
+function compareTags(arr, tag){
+    return arr.indexOf(tag.toLowerCase().replace(/\s+/g,""));
+}
+
+function addFrequence(duplicatePos, tag, frequenceArr, compareArr){
+    if(duplicatePos > -1){
+        if(!frequenceArr.has(tag)){
+            frequenceArr.set(tag,1)
+            tag = tag.toLowerCase().replace(/\s+/g,"");
+        }
+        else{
+            frequenceArr.set(tag,frequenceArr.get(tag) + 1);
+            tag = tag.toLowerCase().replace(/\s+/g,"");
+        }
+    }
+    else{
+        frequenceArr.set(tag,1);
+        compareArr.push(tag.toLowerCase().replace(/\s+/g,""));
+        tag = tag.toLowerCase().replace(/\s+/g,"");       
+    }
+
+    return tag;
+}
+
+function selectTag(tags, tag, maxFrequence, frequenceArr){
+    var finalTag; 
+    
+    for (k of frequenceArr.keys()){
+        if(k.toLowerCase().replace(/\s+/g,"") == tag){
+            if(maxFrequence < frequenceArr.get(k)){
+                maxFrequence = frequenceArr.get(k);
+                finalTag = k;
+            } 
+        }
+     }
+     tags[finalTag] = tags[tag];
+     if(finalTag != tag)
+     delete tags[tag];
+ 
 }
 
 if (process.argv.length > 3) {
