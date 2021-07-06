@@ -6,11 +6,12 @@ const cheerio = require('cheerio');
 let visitedExploreDocs = [];
 let id = 0;
 
-function getLunrDoc(docsDirname, exploreDirname, katacodaDirname, extension) {
+function getLunrDoc(docsDirname, exploreDirname, katacodaDirname, solutionDirname, extension) {
   let docs = getDocumentsFromDocs(docsDirname, extension);
   docs = docs.concat(getDocumentsFromExplore(exploreDirname, extension));
   docs = docs.concat(getDocumentsFromKatacoda(katacodaDirname, extension));
-
+  docs = docs.concat(getDocumentsFromSolution(solutionDirname, extension));
+  
   generateIndexJson(docs);
 }
 
@@ -100,6 +101,20 @@ function getDocumentsFromExploreFile(dirname, file, parenthash) {
   return docs;
 }
 
+function getDocumentsFromSolution(dirname, extension) {
+  let files = getFilesFromSolution(dirname, extension);
+
+  let docs = [];
+  let processing = {
+    preprocessing: [getContent],
+    postprocessing: [removeHtml, removeTooMuchSpaces],
+  };
+
+  files.forEach((file) => docs = docs.concat(readFromSolution(file, processing)));
+
+  return docs;
+}
+
 function normalize(path) {
   return path
     .replace('\\/', '/')
@@ -140,6 +155,28 @@ function getFilesFromDir(dirname, extension) {
     if (fileStats.isFile() && path.extname(item) === extension) {
       result = result.concat([normalize(item)]);
     }
+  });
+
+  return result;
+}
+
+function getFilesFromSolution(dirname, extension){
+  let dirContent = fs.readdirSync(path.join(__dirname, dirname));
+  let fileStats;
+  let item;
+  let result = [];
+
+  dirContent.forEach(function (dirItem) {
+    item = `${dirname}/${dirItem}`;
+    fileStats = fs.lstatSync(item);
+
+    if (fileStats.isDirectory()) {
+      if(fs.existsSync(`${item}/index.html`)){
+        result = result.concat([normalize(`${item}/index.html`)]);
+      }
+      result = result.concat(getFilesFromSolution(item, extension));
+    }
+
   });
 
   return result;
@@ -197,6 +234,43 @@ function readFromFilename(
   return docs;
 }
 
+function readFromSolution(
+file,
+processing = { preprocessing: [], postprocessing: [] },
+){
+  let chapterRegex = /<h[1-4].+?id="(?<id>[^"].+?)".*?>((([0-9]+\.\s?)+\s)?(?<title>[^<]+))<\/h[1-4]>(?<content>.+?)(?=((<h[1-4].+?id="([^"].+?)".*?>)|$))/isg;
+  let docs = [];
+  let fileContent = fs.readFileSync(file, 'utf-8');
+  
+  const preprocessing = processing.preprocessing;
+  if (preprocessing) {
+    for (let i = 0; i < preprocessing.length; i++) {
+      fileContent = preprocessing[i](fileContent);
+    }
+  }
+
+  let doc = {};
+  while ((regexMatch = chapterRegex.exec(fileContent)) !== null) {
+    let doc = {
+      id: id++,
+      path: file + '#' + regexMatch.groups.id,
+      type: 'solution',
+      title: regexMatch.groups.title,
+      body: regexMatch[0],
+    };
+    const postprocessing = processing.postprocessing;
+    if (postprocessing) {
+      for (let i = 0; i < postprocessing.length; i++) {
+        doc.title = postprocessing[i](doc.title);
+        doc.body = postprocessing[i](doc.body);
+      }
+    }
+    docs.push(doc);
+  }
+
+  return docs;
+}
+
 function generateIndexJson(documents) {
   let idx = lunr(function () {
     this.ref('id');
@@ -219,5 +293,5 @@ function generateIndexJson(documents) {
 }
 
 if (process.argv.length > 5) {
-  getLunrDoc(process.argv[2], process.argv[3], process.argv[4], process.argv[5]);
+  getLunrDoc(process.argv[2], process.argv[3], process.argv[4], process.argv[5], process.argv[6]);
 }
