@@ -103,7 +103,7 @@ function getDocumentsFromExploreFile(dirname, file, parenthash) {
 
 function getDocumentsFromSolution(dirname, extension) {
   let files = getFilesFromSolution(dirname, extension);
-
+  
   let docs = [];
   let processing = {
     preprocessing: [getContent],
@@ -136,6 +136,16 @@ function getContent(htmlStr) {
   let $ = cheerio.load(htmlStr);
   let content = $('div#content');
   return content.html() || '';
+}
+
+function getSolutionTitle(htmlStr) {
+  let $ = cheerio.load(htmlStr);
+  let title = $('h1').first().text();
+
+  if(title.length == 0){
+    title = $('h2').first().text();
+  }
+  return title;
 }
 
 function getFilesFromDir(dirname, extension) {
@@ -238,8 +248,6 @@ function readFromSolution(
 file,
 processing = { preprocessing: [], postprocessing: [] },
 ){
-  let chapterRegex = /<h[1-4].+?id="(?<id>[^"].+?)".*?>((([0-9]+\.\s?)+\s)?(?<title>[^<]+))<\/h[1-4]>(?<content>.+?)(?=((<h[1-4].+?id="([^"].+?)".*?>)|$))/isg;
-  let docs = [];
   let fileContent = fs.readFileSync(file, 'utf-8');
   
   const preprocessing = processing.preprocessing;
@@ -248,15 +256,12 @@ processing = { preprocessing: [], postprocessing: [] },
       fileContent = preprocessing[i](fileContent);
     }
   }
-
-  let doc = {};
-  while ((regexMatch = chapterRegex.exec(fileContent)) !== null) {
-    let doc = {
+  let doc = {
       id: id++,
-      path: file + '#' + regexMatch.groups.id,
+      path: file,
       type: 'solution',
-      title: regexMatch.groups.title,
-      body: regexMatch[0],
+      title: getSolutionTitle(fileContent),
+      body: fileContent,
     };
     const postprocessing = processing.postprocessing;
     if (postprocessing) {
@@ -265,10 +270,8 @@ processing = { preprocessing: [], postprocessing: [] },
         doc.body = postprocessing[i](doc.body);
       }
     }
-    docs.push(doc);
-  }
 
-  return docs;
+  return doc;
 }
 
 function generateIndexJson(documents) {
