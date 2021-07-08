@@ -1,15 +1,31 @@
-To create devon4j service Client. First, You need to create a sample devon4j project.
+Now, you will create VisitormanagementRestServiceImpl, the implementation class of VisitormanagementRestService using JAX-RS standard.
 
 
+If the parent directories aren't already in the project, 'mkdir -p' will create them for you. 
 
-## Setting up your Java project
+`mkdir -p /root/devonfw/workspaces/main/httprestserver/core/src/main/java/com/example/application/httprestserver/visitormanagement/service/impl/rest`{{execute T1}}
 
-Please change the folder to &#39;..&#39;.
+Switch to the editor and click 'Copy to Editor'. 
 
-`cd ..`{{execute T1}}
+'VisitormanagementRestServiceImpl.java' will be created automatically inside the newly created folder.
 
-Now you can use devonfw to setup a Java project for you by executing the following 'devon' command.
+<pre class="file" data-filename="devonfw/workspaces/main/httprestserver/core/src/main/java/com/example/application/httprestserver/visitormanagement/service/impl/rest/VisitormanagementRestServiceImpl.java">
+package com.example.application.httprestserver.visitormanagement.service.impl.rest;
 
-`devon java create com.sample.application.httprestclient`{{execute T1}}
+import javax.inject.Inject;
+import javax.inject.Named;
 
-Then, You need to add required dependency to your application. 
+import com.example.application.httprestserver.visitormanagement.service.api.rest.VisitormanagementRestService;
+
+@Named(&#34;VisitormanagementRestService&#34;)
+public class VisitormanagementRestServiceImpl implements VisitormanagementRestService {
+
+  @Override
+  public String returnResponseToClient() {
+   String args = &#34;welcome to rest api&#34;;
+   return args;
+  }
+}
+</pre>
+
+Here , you can see &#34;VisitormanagementRestServiceImpl.java&#34; is annotated with @Named to make it a spring-bean. To get return response to client &#34;returnResponseToClient()&#34; can be accessed via HTTP GET under the URL path &#34;/visitormanagement/v1/clientrequest&#34;. It will return its result (String) as JSON (see @Produces in VisitormanagementRestService).

@@ -1,45 +1,33 @@
-You have successfully built the REST-server. Now, you have to start the build and then, start the server as mentioned below.
+Now, you will create VisitormanagementRestService to provide functionality using JAX-RS standard.
 
 
-Please change the folder to &#39;httprestserver&#39;.
+If the parent directories aren't already in the project, 'mkdir -p' will create them for you. 
 
-`cd httprestserver`{{execute T1}}
- 
-Use the following devon command to build the Java project.
+`mkdir -p /root/devonfw/workspaces/main/httprestserver/api/src/main/java/com/example/application/httprestserver/visitormanagement/service/api/rest`{{execute T1}}
 
-`devon mvn clean install -Dmaven.test.skip=true`{{execute T1}}
+Switch to the editor and click 'Copy to Editor'. 
 
-The maven command 'clean' will clear the target directory beforehand. 
+'VisitormanagementRestService.java' will be created automatically inside the newly created folder.
 
-We do not need to execute the test cases, so we can skip them by using the option '-Dmaven.test.skip=true'.
+<pre class="file" data-filename="devonfw/workspaces/main/httprestserver/api/src/main/java/com/example/application/httprestserver/visitormanagement/service/api/rest/VisitormanagementRestService.java">
+package com.example.application.httprestserver.visitormanagement.service.api.rest;
 
-
-
-
-Now you have to open another terminal. Click on the cd command twice and you will change to &#39;devonfw/workspaces/main/httprestserver/server&#39; in terminal 2 automatically. The first click will open a new terminal and the second one will change the directory. Alternatively you can click on the &#39;+&#39;, choose the option &#39;Open New Terminal&#39; and run the cd command afterwards. 
-
-
-`cd devonfw/workspaces/main/httprestserver/server`{{execute T2}}
-
-Start the server in terminal 2 by running the 'maven' command 'mvn spring-boot:run'.
-
-Because this terminal runs the server we will not use it for any other command.
- 
-
-`devon mvn spring-boot:run`{{execute T2 }}
-
-This will take some time.
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 
+@Path(&#34;/visitormanagement&#34;)
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+public interface VisitormanagementRestService {
 
-Once, Java server starts running. To test REST-server follow below steps:
-* Click on &#34;+&#34; next to terminal tab
-* Select &#34;select port to view host&#34;
-* Enter the port number &#34;8080&#34; 
-* Enter username as &#34;admin&#34; and password as &#34;admin&#34;
-* In the url, append &#34;/httprestserver/services/rest/visitormanagement/clientrequest&#34;
-* You will be able to see response &#34;Welcome to rest api&#34;
+  @GET
+  @Path(&#34;/clientrequest&#34;)
+  public String returnResponseToClient();
 
+}
+</pre>
 
-
-In next step, You have to create devon4j service Client.
