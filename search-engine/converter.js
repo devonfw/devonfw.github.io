@@ -295,6 +295,6 @@ function generateIndexJson(documents) {
   return idxJson;
 }
 
-if (process.argv.length > 5) {
+if (process.argv.length > 6) {
   getLunrDoc(process.argv[2], process.argv[3], process.argv[4], process.argv[5], process.argv[6]);
 }
