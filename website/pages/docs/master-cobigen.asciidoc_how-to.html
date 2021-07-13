@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2021-07-13 11:00:56 UTC">
+<meta name="author" content="Updated at 2021-07-13 16:34:51 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -511,7 +511,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2021-07-13 11:01:26 UTC</span><br>
+<span id="author" class="author">Updated at 2021-07-13 16:35:22 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -566,7 +566,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="master-cobigen.asciidoc_how-to.html#howto-devonfw-CobiGen-OpenAPI.asciidoc">75.8. End to End POC Code generation using OpenAPI</a>
 </li>
-<li><a href="master-cobigen.asciidoc_how-to.html#howto_enable_composite_primary_keys_in_entity.asciidoc">75.9. Enable Composite Primary Keys in Entity</a>
+<li><a href="master-cobigen.asciidoc_how-to.html#howto-devonfw-adapt_template.asciidoc">75.9. Adapt Templates from Cobigen</a>
+</li>
+<li><a href="master-cobigen.asciidoc_how-to.html#howto_enable_composite_primary_keys_in_entity.asciidoc">75.10. Enable Composite Primary Keys in Entity</a>
 </li>
 </ul>
 </li>
@@ -2390,7 +2392,7 @@ We always recommend using the devonfw console, which already contains a working 
 <!-- toc disabled -->
 </div>
 </div>
-<div class="sect2 text-center">
+<div class="sect2">
 <h3 id="howto-devonfw-ide-CobiGen-PoC-E2E.asciidoc">75.7. End to End POC Code generation using Entity class</h3>
 <div class="paragraph">
 <p>This article helps to create a sample application using cobigen.</p>
@@ -2417,7 +2419,7 @@ We always recommend using the devonfw console, which already contains a working 
 </ol>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image9.png" alt="cobigen ionic code genartion"></span></p>
+<p><span class="image"><img src="images/howtos/e2e_gen/image63.png" alt="cobigen code-first genartion"></span></p>
 </div>
 <div class="paragraph">
 <p>So, ready to go! We&#x2019;re going to start from the BE part &#x2026;</p>
@@ -2425,13 +2427,15 @@ We always recommend using the devonfw console, which already contains a working 
 <div class="sect4">
 <h5 id="howto-devonfw-ide-cobigen-poc-e2e.asciidoc_back-end">Back End</h5>
 <div class="paragraph">
-<p>run \devonfw-ide-scripts-3.2.4\eclipse-main.bat</p>
+<p>Under your path installation of DevonFW, you can find the <em>eclipe-main.bat</em> script and you can run it:<br>
+run <em>installation_path</em>\eclipse-main.bat</p>
 </div>
 <div class="paragraph">
 <p>It will open eclipse</p>
 </div>
 <div class="paragraph">
-<p>create a project using below command from the command prompt</p>
+<p>Create a project using below command from the command prompt.<br>
+To made it, it&#x2019;s necessary to open a CMD and open the folder where it&#x2019;s installed DevonFW and launch this command under the path <em>workspaces/main</em></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2452,14 +2456,10 @@ We always recommend using the devonfw console, which already contains a working 
 <p><span class="image"><img src="images/howtos/e2e_gen/image15.png" alt="eclipse package explorer"></span></p>
 </div>
 <div class="paragraph">
-<p><strong>BEFORE to start to create an Entity class, remember to create the tables !</strong></p>
+<p><strong>BEFORE to start to create an Entity class, remember to create the tables, for this POC it&#x2019;s used an H2 Database!</strong></p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="7">
-<li>
-<p>Create a new <strong>SQL</strong> <strong>file</strong> (i.e: V0005<em>CreateTables-ItaPoc.sql) inside </em>myapp-__core and insert the following script:</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>Create a new <strong>SQL</strong> <strong>file</strong> (i.e: V0002__CreateTables_myapp.sql) inside <em>myapp-core</em> , under the folder path <em>/myapp-core/src/main/resources/db/migration/1.0</em> and insert the following script:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2474,50 +2474,42 @@ PRIMARY KEY (employeeid)
 </div>
 </div>
 <div class="paragraph">
-<p><strong><em>WARNING</em></strong>: please note that there are 2 underscore in the name !</p>
+<p><strong><em>WARNING 1</em></strong>: please note that there in that folder is present only one file, 0001, and you have to add the other files in progressive number order (i.e. 0002)!<br>
+<strong><em>WARNING 2</em></strong>: please note that there are 2 underscore in the name!</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image16.png" alt="sql file"></span></p>
-</div>
-<div class="olist arabic">
-<ol class="arabic" start="8">
-<li>
-<p>Now create another SQL file (i.e: V0006__PopulateTables-ItaPoc.sql) and add following script about the INSERT in order to populate the table created before</p>
-</li>
-</ol>
+<p><span class="image"><img src="images/howtos/e2e_gen/image64.png" alt="sql file"></span></p>
 </div>
 <div class="paragraph">
-<p><strong><em>WARNING</em></strong>: please note that there are 2 underscore in the name !</p>
+<p>Now create another SQL file (i.e: V0003__PopulateTables-myapp.sql) and add following script about the INSERT in order to populate the table created before.
+The script must be inserted at the same path used before: <em>/myapp-core/src/main/resources/db/migration/1.0</em></p>
+</div>
+<div class="paragraph">
+<p><strong><em>WARNING 1</em></strong>: please note that there in that folder is present only one file, 0001, and you have to add the other files in progressive number order (i.e. 0003)!<br>
+<strong><em>WARNING 2</em></strong>: please note that there are 2 underscore in the name!</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-sql" data-lang="sql">INSERT INTO EMPLOYEE (id, modificationCounter, employeeid, name, surname,email) VALUES (1, 1, 1, &apos;Albert&apos;,&apos;Miller&apos;,&apos;albert.miller@example.com&apos;);
-INSERT INTO  EMPLOYEE (id, modificationCounter, employeeid, name, surname,email) VALUES (2, 2, 2, &apos;Wills&apos;,&apos;Smith&apos;, &apos;wills.smith@example.com&apos;);
-INSERT INTO EMPLOYEE (id, modificationCounter, employeeid, name, surname,email) VALUES (3, 3, 3, &apos;Jaime&apos;,&apos;Thomas&apos;, &apos;jaime.thomas@example.com&apos;);</code></pre>
+<pre class="highlight"><code class="language-sql" data-lang="sql">INSERT INTO EMPLOYEE (id, modificationCounter, employeeid, name, surname,email) VALUES (1, 1, 1, &apos;John&apos;,&apos;Doe&apos;,&apos;john.doe@example.com&apos;);
+INSERT INTO EMPLOYEE (id, modificationCounter, employeeid, name, surname,email) VALUES (2, 2, 2, &apos;Tom&apos;,&apos;Smith&apos;, &apos;tom.smith@example.com&apos;);
+INSERT INTO EMPLOYEE (id, modificationCounter, employeeid, name, surname,email) VALUES (3, 3, 3, &apos;Joe&apos;,&apos;Schmoe&apos;, &apos;joe.schmoe@example.com&apos;);</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image17.png" alt="sql insert"></span></p>
+<p><span class="image"><img src="images/howtos/e2e_gen/image65.png" alt="sql insert"></span></p>
 </div>
 <div class="paragraph">
 <p><strong>Let&#x2019;s create the Entity Class for the code generation</strong></p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="9">
-<li>
-<p>Create a package <strong>employeemanagement.dataaccess.api</strong> under the folder myapp-core. Note: It is important to follow this naming convention for CobiGen to work properly.</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>Create a package <strong>employeemanagement.dataaccess.api</strong> under the folder <em>myapp-core</em>.<br>
+Note: It is important to follow this naming convention for CobiGen to work properly.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/poc-entity-package.png" alt="package"></span></p>
+<p><span class="image"><img src="images/howtos/e2e_gen/image66.png" alt="package"></span></p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
+<div class="paragraph">
 <p>Now create a JPA Entity class in this package</p>
-</li>
-</ol>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2541,17 +2533,17 @@ public class EmployeeEntity {
 </div>
 </div>
 <div class="paragraph">
-<p>then generate getters and setters  for all attributes &#x2026;</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic" start="10">
-<li>
-<p>Use Cobigen to generate code. Right click on EmployeeEntity. CobiGen &#x2192; Generate</p>
-</li>
-</ol>
+<p>then generate getters and setters for all attribute, as you can see in the image below:</p>
 </div>
 <div class="paragraph">
-<p>It will ask you to download the templates, click on <em>update</em>:</p>
+<p><span class="image"><img src="images/howtos/e2e_gen/image67.png" alt="getter &amp; setter"></span>
+<span class="image"><img src="images/howtos/e2e_gen/image68.png" alt="getter &amp; setter"></span></p>
+</div>
+<div class="paragraph">
+<p>Use Cobigen to generate code. Right click on EmployeeEntity. CobiGen &#x2192; Generate</p>
+</div>
+<div class="paragraph">
+<p>If it will ask you to download the templates, click on <em>update</em>:</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image19.png" alt="cobigen generate"></span></p>
@@ -2560,24 +2552,16 @@ public class EmployeeEntity {
 <p>It will automatically download the latest version of <em>CobiGen_Templates</em>.</p>
 </div>
 <div class="paragraph">
-<p><strong>Attention:</strong> If you want to adapt the CobiGen_Templates, (normally this is not neccessary), you will find at the end of this document a tutorial on how to import them and adapt them!</p>
+<p><strong>Attention:</strong> If you want to adapt the CobiGen_Templates, (normally this is not neccessary), you will find at the end of this document (in a separate chapter) a tutorial on how to import them and adapt them!</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="11">
-<li>
+<div class="paragraph">
 <p>Click on all the option selected as below:</p>
-</li>
-</ol>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image20.png" alt="cobigen option selection"></span></p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="12">
-<li>
+<div class="paragraph">
 <p>Click on finish. Below Screen would be seen. Click on continue</p>
-</li>
-</ol>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image21.png" alt="cobigen finish"></span></p>
@@ -2598,16 +2582,68 @@ public class EmployeeEntity {
 <p><span class="image"><img src="images/howtos/e2e_gen/image23.png" alt="core folder"></span></p>
 </div>
 <div class="paragraph">
+<p>The last step is to add the Cross Domain process, because when you are developing Javascript client and server application separately, you have to deal with cross domain issues.</p>
+</div>
+<div class="paragraph">
+<p>So, we need to prepare server side to accept request from other domains. We need to cover the following points:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Accept request from other domains.</p>
+</li>
+<li>
+<p>Accept devonfw used headers like X-CSRF-TOKEN or correlationId.</p>
+</li>
+<li>
+<p>Be prepared to receive secured request (cookies).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To do this it&#x2019;s necessary to add two kind of dependecies in the pom.xml of the <em>myapp-core</em> folder, at the end of the list of dependecies:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">    &lt;dependency&gt;
+      &lt;groupId&gt;com.devonfw.java.starters&lt;/groupId&gt;
+      &lt;artifactId&gt;devon4j-starter-security-cors&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;com.devonfw.java.starters&lt;/groupId&gt;
+      &lt;artifactId&gt;devon4j-starter-security-csrf&lt;/artifactId&gt;
+    &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="images/howtos/e2e_gen/image70.png" alt="pom xml"></span></p>
+</div>
+<div class="paragraph">
+<p>Next step is to add some prperties under your <em>application.properties</em> file, in the myapp-core folder in the <em>resources/config</em>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">security.cors.spring.allowCredentials=true
+security.cors.spring.allowedOriginPatterns=*
+security.cors.spring.allowedHeaders=*
+security.cors.spring.allowedMethods=OPTIONS,HEAD,GET,PUT,POST,DELETE,PATCH
+security.cors.pathPattern=/**</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="images/howtos/e2e_gen/image71.png" alt="application properties"></span></p>
+</div>
+<div class="paragraph">
 <p><strong>BEFORE to generate the FE</strong>, please start the Tomcat server to check that BE Layer has been generated properly.</p>
 </div>
 <div class="paragraph">
-<p>To start a server you just have to right click on <em>SpringBootApp.java</em> &#x2192; <em>run as &#x2192; Spring Boot app</em></p>
+<p>To start a server you just have to right click on <em>SpringBootApp.java</em> &#x2192; <em>run as &#x2192; Java Application</em></p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image24.png" alt="Eclipse run as"></span></p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image25.png" alt="Spring boot run"></span></p>
+<p><span class="image"><img src="images/howtos/e2e_gen/image69.png" alt="Spring boot run"></span></p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image26.png" alt="Spring boot run"></span></p>
@@ -2619,7 +2655,7 @@ public class EmployeeEntity {
 <p>Last but not least: We make a quick REST services test !</p>
 </div>
 <div class="paragraph">
-<p>See in the application.properties the TCP Port and the PATH</p>
+<p>See in the <em>application.properties</em> the TCP Port and the PATH</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image27.png" alt="application properties"></span></p>
@@ -2628,7 +2664,7 @@ public class EmployeeEntity {
 <p>Now compose the Rest service URL:</p>
 </div>
 <div class="paragraph">
-<p>service class path&gt;/&lt;service method path&gt;</p>
+<p><strong>service class &lt;path&gt;/&lt;service method path&gt;</strong></p>
 </div>
 <div class="ulist">
 <ul>
@@ -2636,7 +2672,7 @@ public class EmployeeEntity {
 <p>&lt;server&gt; refers to server with port no. (ie: localhost:8081)</p>
 </li>
 <li>
-<p>&lt;app&gt; is in the application.propeeties (empty in our case, see above)</p>
+<p>&lt;app&gt; is in the <em>application.properties</em> (empty in our case, see above)</p>
 </li>
 <li>
 <p>&lt;rest service class path&gt; refers to EmployeemanagementRestService: (i.e: /employeemanagement/v1)</p>
@@ -2653,7 +2689,7 @@ public class EmployeeEntity {
 <p>URL of getEmployee for this example is:</p>
 </div>
 <div class="paragraph">
-<p>for all employees</p>
+<p>For all employees (POST)</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2661,7 +2697,7 @@ public class EmployeeEntity {
 </div>
 </div>
 <div class="paragraph">
-<p>for the specific employee</p>
+<p>For the specific employee (GET)</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2672,28 +2708,33 @@ public class EmployeeEntity {
 <p>Now download <a href="https://www.getpostman.com/apps">Postman</a> to test the rest services.</p>
 </div>
 <div class="paragraph">
-<p>Once done, you have to create a POST Request for the LOGIN and insert in the body the JSON containing the username and password <em>waiter</em></p>
+<p>Once done, you have to create a POST Request for the LOGIN and insert in the body the JSON containing the username and password <em>admin</em></p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image29.png" alt="postman"></span></p>
+<p><span class="image"><img src="images/howtos/e2e_gen/image72.png" alt="postman"></span></p>
 </div>
 <div class="paragraph">
-<p>Once done with success (<strong>Status: 200 OK</strong>) &#x2026;</p>
+<p><strong><em>WARNING</em></strong>: please note that the body of the request must be JSON type!</p>
 </div>
 <div class="paragraph">
-<p>&#x2026; We create a NEW GET Request in order to get one employee</p>
+<p>Once done with success (<strong>Status: 200 OK</strong>) - <em>you can see the status of the response in the top right corner of Postman</em> - we can create a NEW GET Request in order to get one employee.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image30.png" alt="postman"></span></p>
+<p>To do this you have to create a new request in Postman, GET type, and insert the URL specified before:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-URL" data-lang="URL">http://localhost:8081/services/rest/employeemanagement/v1/employee/1</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>Now you can click <span class="image"><img src="images/howtos/e2e_gen/image34.png" alt="postman"></span></p>
+<p>Thenk click on <strong>&quot;SEND&quot;</strong> button&#x2026;&#x200B;</p>
 </div>
 <div class="paragraph">
-<p>Now you &#x2018;ve to check that response has got Status: 200 OK and to see the below Employee</p>
+<p>Now you&#x2018;ve to check that response has got <strong>Status: 200 OK</strong> and to see the below Employee</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image31.png" alt="postman"></span></p>
+<p><span class="image"><img src="images/howtos/e2e_gen/image73.png" alt="postman"></span></p>
 </div>
 <div class="paragraph">
 <p>Now that We have successfully tested the BE is time to go to create the FE !</p>
@@ -2706,86 +2747,154 @@ public class EmployeeEntity {
 </div>
 <div class="sect5">
 <h6 id="howto-devonfw-ide-cobigen-poc-e2e.asciidoc_angular-web-app">Angular Web App</h6>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
+<div class="paragraph">
 <p>To generate angular structure, download or clone <strong>devon4ng-application-template</strong> from</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-URL" data-lang="URL">https://github.com/devonfw/devon4ng-application-template</code></pre>
 </div>
 </div>
-</li>
-</ol>
+<div class="paragraph">
+<p><span class="image"><img src="images/howtos/e2e_gen/image74.png" alt="devon dist folder"></span></p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image36.png" alt="devon dist folder"></span></p>
+<p>IMPORTANT when you download the zip of the source code of your FE application, the name of the app MUST BE <strong>devon4ng-application-template</strong> and you can extract it in youe DevonFW folder, under <em>workspaces/main</em></p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="2">
-<li>
-<p>Once done, right click on EmployeeEto.java  file present under the package <em>com.devonfw.poc.employeemanagement.logic.api.to</em></p>
-</li>
-</ol>
+<div class="paragraph">
+<p>Once downloaded the APP, you can open the application with your favourite IDE (Intellij or Visual Studio Code)</p>
+</div>
+<div class="paragraph">
+<p>Once done, right click on EmployeeEto.java file present under the package <em>com.devonfw.poc.employeemanagement.logic.api.to</em>, in the Back End part.
+Click on the selected options as seen in the screenshot:</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image37.png" alt="eclipse generate"></span></p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="4">
-<li>
+<div class="paragraph">
 <p>Click on Finish</p>
-</li>
-</ol>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image38.png" alt="eclipse"></span></p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="5">
-<li>
+<div class="paragraph">
 <p>The entire ANGULAR structure has been auto generated. The generated code will be merged to the existing.</p>
-</li>
-</ol>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image39.png" alt="angular ee layer"></span></p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="6">
-<li>
-<p>IMPORTANT now you have to add in the <strong><em>app-routing.module.ts</em></strong> file the next content, as a child of HomeComponent, in order to enable the route of the new generated component</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>IMPORTANT now you have to check in the <strong><em>app-routing.module.ts</em></strong> file, if the content corresponding to the code below:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-ts" data-lang="ts">,\{
-path: &apos;employee&apos;,
-component: EmployeeGridComponent,
-canActivate: [AuthGuard],
-},</code></pre>
+<pre class="highlight"><code class="language-ts" data-lang="ts">import { NgModule } from &apos;@angular/core&apos;;
+import { RouterModule, Routes } from &apos;@angular/router&apos;;
+import { AuthGuard } from &apos;./core/security/auth-guard.service&apos;;
+import { NavBarComponent } from &apos;./layout/nav-bar/nav-bar.component&apos;;
+const routes: Routes = [{
+        path: &apos;&apos;,
+        redirectTo: &apos;/login&apos;,
+        pathMatch: &apos;full&apos;
+    },
+    {
+        path: &apos;login&apos;,
+        loadChildren: () =&gt;
+            import(&apos;./auth/auth.module&apos;).then(m =&gt; m.AuthDataModule)
+    },
+    {
+        path: &apos;home&apos;,
+        component: NavBarComponent,
+        canActivateChild: [
+            AuthGuard
+        ],
+        children: [{
+                path: &apos;initial&apos;,
+                loadChildren: () =&gt;
+                    import(&apos;./home/initial-page/initial-page.module&apos;).then(
+                        m =&gt; m.InitialPageModule,
+                    )
+            },
+            {
+                path: &apos;employee&apos;,
+                loadChildren: () =&gt;
+                    import(&apos;./employee/employee.module&apos;).then(
+                        m =&gt; m.EmployeeModule,
+                    )
+            }
+        ]
+    },
+    {
+       path: &apos;**&apos;,
+       redirectTo: &apos;/login&apos;
+    },
+];
+@NgModule({
+    imports: [
+        RouterModule.forRoot(routes)
+    ],
+    exports: [
+        RouterModule
+    ]
+})
+export class AppRoutingModule {
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Following picture explain where to place the above content:</p>
+<p>After that, if you want to make visible the Employee Grid in you FE application, you have to modify the nav-bar.component.html, to add the Employee grid in the section:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;div class=&quot;home-container-outer&quot;&gt;
+  &lt;div class=&quot;home-container-inner&quot;&gt;
+    &lt;mat-toolbar class=&quot;app-header-container&quot; color=&quot;primary&quot;&gt;
+      &lt;app-header (toggle)=&quot;onToggle($event)&quot; [sideNavOpened]=&quot;sideNavOpened&quot;&gt;&lt;/app-header&gt;
+    &lt;/mat-toolbar&gt;
+    &lt;div class=&quot;sidenav-container-outer&quot;&gt;
+      &lt;div class=&quot;sidenav-container-inner&quot;&gt;
+        &lt;mat-sidenav-container&gt;
+          &lt;mat-sidenav [disableClose]=&quot;false&quot; [mode]=&quot;isMobile ? &apos;over&apos; : &apos;side&apos;&quot; [opened]=&quot;!isMobile || sideNavOpened&quot;
+                       #sidenav&gt;
+            &lt;mat-nav-list&gt;
+              &lt;!-- Sidenav links --&gt;
+              &lt;a id=&quot;home&quot; mat-list-item [routerLink]=&quot;[&apos;./initial&apos;]&quot; (click)=&quot;close()&quot;&gt;
+                &lt;mat-icon matListAvatar&gt;
+                  home
+                &lt;/mat-icon&gt;
+                &lt;h3 matLine&gt;{{ &apos;home&apos; | transloco }}&lt;/h3&gt;
+                &lt;p matLine class=&quot;desc&quot;&gt;{{ &apos;description&apos; | transloco }}&lt;/p&gt;&lt;/a&gt;
+              &lt;a id=&quot;employee&quot; mat-list-item [routerLink]=&quot;[&apos;./employee&apos;]&quot; (click)=&quot;close()&quot;&gt;
+                &lt;mat-icon matListAvatar&gt;
+                  grid_on
+                &lt;/mat-icon&gt;
+                &lt;h3 matLine&gt; {{ &apos;employeemanagement.Employee.navData&apos; | transloco }} &lt;/h3&gt;
+                &lt;p matLine class=&quot;desc&quot;&gt; {{ &apos;employeemanagement.Employee.navDataSub&apos; | transloco }} &lt;/p&gt;&lt;/a&gt;
+            &lt;/mat-nav-list&gt;
+          &lt;/mat-sidenav&gt;
+          &lt;mat-sidenav-content&gt;
+            &lt;div class=&quot;content-container-outer&quot;&gt;
+              &lt;div class=&quot;content-container-inner&quot;&gt;
+                &lt;router-outlet&gt;&lt;/router-outlet&gt;
+              &lt;/div&gt;
+              &lt;mat-toolbar class=&quot;public-footer&quot;&gt;
+                &lt;span&gt;devonfw Application&lt;/span&gt;
+                &lt;span&gt;devonfw&lt;/span&gt;
+              &lt;/mat-toolbar&gt;
+            &lt;/div&gt;
+          &lt;/mat-sidenav-content&gt;
+        &lt;/mat-sidenav-container&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image40.png" alt="routes"></span></p>
+<p>Open the command prompt and execute <em>devon npm install</em> from your application folder, which would download all the required libraries.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="7">
-<li>
-<p>Open the command prompt and execute <em>devon yarn install</em> from the base folder, which would download all the required libraries..</p>
-</li>
-</ol>
-</div>
-<div class="olist arabic">
-<ol class="arabic" start="8">
-<li>
+<div class="paragraph">
 <p>Check the file <strong>environment.ts</strong> if the server path is correct. (for production you will have to change also the environment.prod.ts file)</p>
-</li>
-</ol>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image42.png" alt="environment"></span></p>
@@ -2802,132 +2911,137 @@ canActivate: [AuthGuard],
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-ts" data-lang="ts">export const environment = {
-production: false,
-restPathRoot: &apos;http://localhost:8081/&apos;,
-restServiceRoot: &apos;http://localhost:8081/services/rest/&apos;,
-security: &apos;jwt&apos;
+    production: false,
+    restPathRoot: &apos;http://localhost:8081/&apos;,
+    restServiceRoot: &apos;http://localhost:8081/services/rest/&apos;,
+    security: &apos;csrf&apos;
 };</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><strong>Warning</strong>: REMEMBER to set security filed to <strong>jwt</strong> , if it is not configured already.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic" start="9">
-<li>
-<p>Now run the <strong>ng serve -o</strong> command to run the Angular Application.</p>
-</li>
-</ol>
+<p><strong>Warning</strong>: REMEMBER to set security filed to <strong>csrf</strong> , if it is not configured already.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image44.png" alt="image44"></span></p>
+<p>Now run the <strong>devon ng serve -o</strong> command to run the Angular Application, from your application folder, as done before.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="10">
-<li>
+<div class="paragraph">
+<p><span class="image"><img src="images/howtos/e2e_gen/image75.png" alt="ng serve command"></span></p>
+</div>
+<div class="paragraph">
 <p>If the command execution is <strong>successful</strong>, the below screen will <strong>appear</strong> and it would be automatically redirected to the url:</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-URL" data-lang="URL">http://localhost:4200/login</code></pre>
 </div>
 </div>
-</li>
-</ol>
+<div class="paragraph">
+<p><span class="image"><img src="images/howtos/e2e_gen/image77.png" alt="angular web app"></span></p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image45.png" alt="image45"></span></p>
+<p>You can login in the Web Application, with <strong><em>admin</em></strong> user and password.<br>
+Obviosuly, the BackEnd part must be online during this test!</p>
 </div>
 <div class="paragraph">
-<p><strong>WebApp DONE</strong></p>
+<p><strong>ANGULAR WebApp DONE</strong></p>
 </div>
 </div>
 <div class="sect5">
 <h6 id="howto-devonfw-ide-cobigen-poc-e2e.asciidoc_ionic-mobile-app">Ionic Mobile App</h6>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>To generate Ionic structure, download or clone <strong>devon4ng-application-template</strong> from</p>
+<div class="paragraph">
+<p>To generate Ionic structure, download or clone <em>*devon4ng-application-template*</em> from</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-URL" data-lang="URL">https://github.com/devonfw/devon4ng-ionic-application-template</code></pre>
 </div>
 </div>
-</li>
-<li>
-<p>Once done, Right click on the <strong>EmployeeEto</strong> as you already did before in order to use CobiGen.</p>
-</li>
-<li>
-<p>Click on the selected options as seen in the screenshot:</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>Once downloaded the zip (or cloned) the name of the folder used, must be: <em>devon4ng-ionic-application-template</em></p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image46.png" alt="image46"></span></p>
+<p>Once done, Right click on the <strong>EmployeeEto</strong> as you already did before in order to use CobiGen.
+Click on the selected options as seen in the screenshot:</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="4">
-<li>
-<p>Click on Finish</p>
-</li>
-<li>
-<p>The entire ionic structure will be auto generated.</p>
-</li>
-</ol>
+<div class="paragraph">
+<p><span class="image"><img src="images/howtos/e2e_gen/image46.png" alt="cobigen ionic"></span></p>
+</div>
+<div class="paragraph">
+<p>Click on Finish<br>
+The entire ionic structure will be auto generated.</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image47.png" alt="image47"></span></p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="6">
-<li>
-<p>Change the server url (with correct serve url) in environment.ts, environment.prod.ts and environment.android.ts files (i.e: itapoc\devon4ng-ionic-application-template\src\environments\).</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>Change (if necessary) the server url (with correct serve url) in <em>environment.ts</em>, <em>environment.prod.ts</em> and <em>environment.android.ts</em> files (i.e: itapoc\devon4ng-ionic-application-template\src\environments\).</p>
 </div>
 <div class="paragraph">
-<p>The angular.json file inside the project has already a build configuration for android.</p>
+<p>The <em>angular.json</em> file inside the project has already a build configuration for android.</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image48.png" alt="image48"></span></p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="7">
-<li>
-<p>Run npm install in the root folder to download the dependecies</p>
-</li>
-<li>
-<p>Run ionic serve</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>The only <strong>TWO</strong> thing that you have to modify, in this IONIC app is in <em>employee-list.page.html</em> and <em>business-operator.service.ts</em>.y<br></p>
+</div>
+<div class="paragraph">
+<p><strong>1:</strong><br>
+You have to change this line:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;layoutheader Title=&quot;Employee&quot;&gt;&lt;/layoutheader&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>with this line:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;app-layout-header title=&quot;Employee&quot;&gt;&lt;/app-layout-header&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>2:</strong><br>
+You have to change this line:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ts" data-lang="ts">return this.restPath + &apos;/security/v1/csrftoken&apos;;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>with this line:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ts" data-lang="ts">return this.restPath + &apos;csrf/v1/token/&apos;;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once checked if all the files are correct, open a CMD devon CLI on the folder of the ionic template application, under your devonFW workspace.<br>
+In this folder:<br>
+Run the command <em>*devon npm install*</em> in the root folder to download the dependecies.<br>
+Once finished, run the command <em>*devon ionic serve*</em></p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image49.png" alt="image49"></span></p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="11">
-<li>
-<p></p>
 <div class="paragraph">
-<p>Once the execution is successful</p>
-</div>
-</li>
-</ol>
+<p>Once the execution is successful, you can make the LOGIN with admin/admin and&#x2026;&#x200B;</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image50.png" alt="image50"></span></p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>Mobile App DONE*</p>
-</li>
-</ul>
+<div class="paragraph">
+<p><strong>IONIC Mobile App DONE</strong></p>
 </div>
 <div class="paragraph">
-<p>So: well done</p>
+<p>So: <strong>Well Done!!!</strong></p>
 </div>
 <div class="paragraph">
-<p>Starting from an Entity class you&#x2019;ve successfully generated the Back-End layer (REST, SOAP, DTO, Spring services, Hibernate DAO), the Angular Web App and the Ionic mobile App!</p>
+<p><code><strong>Starting from an Entity class you&#x2019;ve successfully generated the Back-End layer (REST, SOAP, DTO, Spring services, Hibernate DAO), the Angular Web App and the Ionic mobile App!</strong></code></p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image51.png" alt="image51"></span></p>
@@ -2953,15 +3067,12 @@ security: &apos;jwt&apos;
 </li>
 </ul>
 </div>
+<div class="paragraph">
+<p>Now, open cmd and type the path where your <em>devon4ng-ionic-application-template</em> project is present.<br>
+Run the following commands:</p>
+</div>
 <div class="olist arabic">
 <ol class="arabic">
-<li>
-<p>Now, open cmd and type the path where your <em>devon4ng-ionic-application-template</em> project is present.</p>
-</li>
-<li>
-<p>Run the following commands:</p>
-<div class="olist loweralpha">
-<ol class="loweralpha" type="a">
 <li>
 <p>npx cap init</p>
 </li>
@@ -2979,11 +3090,8 @@ security: &apos;jwt&apos;
 </li>
 </ol>
 </div>
-</li>
-<li>
+<div class="paragraph">
 <p>Build the APK using Android studio.</p>
-</li>
-</ol>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image52.png" alt="image52"></span>
@@ -2992,70 +3100,16 @@ security: &apos;jwt&apos;
 <span class="image"><img src="images/howtos/e2e_gen/image55.png" alt="image55"></span></p>
 </div>
 <div class="paragraph">
-<p>You can find your apk file in</p>
-</div>
-<div class="paragraph">
-<p>/devon4ng-ionic-application-template/android/app/build/outputs/apk/debug</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="howto-devonfw-ide-cobigen-poc-e2e.asciidoc_adapt-cobigen_templates">75.7.3. Adapt CobiGen_Templates</h4>
-<div class="paragraph">
-<p>After following this tutorial, you will have the CobiGen_Templates downloaded on your local machine. To import these templates you need to do the following:</p>
-</div>
-<div class="paragraph">
-<p>Right click in any part of the package explorer, then click on CobiGen &#x2192; Adapt templates</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image56.png" alt="image56"></span></p>
-</div>
-<div class="paragraph">
-<p>Click <em>Ok</em>:</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image57.png" alt="image57"></span></p>
-</div>
-<div class="paragraph">
-<p>Now the CobiGen_Templates project will be automatically imported into your workspace, as shown on the image below:</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image58.png" alt="image58"></span></p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image59.png" alt="image59"></span></p>
-</div>
-<div class="paragraph">
-<p>Now you just need to change the Java version of the project to JRE 1.8. Right click on the JRE system library, and then on <em>Properties:</em></p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image60.png" alt="image60"></span></p>
-</div>
-<div class="paragraph">
-<p>Now change the version to Java 1.8
-<span class="image"><img src="images/howtos/e2e_gen/image61.png" alt="image61"></span></p>
-</div>
-<div class="paragraph">
-<p>Now you have successfully imported the CobiGen templates. If you want to edit them, you will find them in the folder <em>src/main/templates.</em> For instance, the Java templates are located here:</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image62.png" alt="image62"></span></p>
-</div>
-<div class="paragraph">
-<p>Now you can adapt the templates as much as you want. Documentation about this can be found on:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-URL" data-lang="URL">https://github.com/devonfw/tools-cobigen/wiki/Guide-to-the-Reader</code></pre>
-</div>
+<p>You can find your apk file in:
+<em>/devon4ng-ionic-application-template/android/app/build/outputs/apk/debug</em></p>
 </div>
 <!-- toc disabled -->
-<!-- toc disabled -->
 </div>
 </div>
-<div class="sect2 text-center">
+</div>
+</div>
+</div>
+<div class="sect2">
 <h3 id="howto-devonfw-CobiGen-OpenAPI.asciidoc">75.8. End to End POC Code generation using OpenAPI</h3>
 <div class="paragraph">
 <p>This article helps to create a sample application using cobigen.</p>
@@ -3082,24 +3136,23 @@ security: &apos;jwt&apos;
 </ol>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image9.png" alt="cobigen ionic code genartion"></span></p>
+<p><span class="image"><img src="images/howtos/e2e_gen/image9.png" alt="cobigen contract-first generation"></span></p>
 </div>
 <div class="paragraph">
-<p>So, ready to go! We&#x2019;re going to star</p>
-</div>
-<div class="paragraph">
-<p>t from the BE part &#x2026;</p>
+<p>So, ready to go! We&#x2019;re going to start from the BE part &#x2026;</p>
 </div>
 <div class="sect4">
 <h5 id="howto-devonfw-cobigen-openapi.asciidoc_back-end">Back End</h5>
 <div class="paragraph">
-<p>run \devonfw-ide-scripts-3.2.4\eclipse-main.bat</p>
+<p>Under your path installation of DevonFW, you can find the <em>eclipe-main.bat</em> script and you can run it:<br>
+run <em>installation_path</em>\eclipse-main.bat</p>
 </div>
 <div class="paragraph">
 <p>It will open eclipse</p>
 </div>
 <div class="paragraph">
-<p>create a project using below command from the command prompt</p>
+<p>Create a project using below command from the command prompt.<br>
+To made it, it&#x2019;s necessary to open a CMD and open the folder where it&#x2019;s installed DevonFW and launch this command under the path <em>workspaces/main</em></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3120,19 +3173,15 @@ security: &apos;jwt&apos;
 <p><span class="image"><img src="images/howtos/e2e_gen/image15.png" alt="eclipse package explorer"></span></p>
 </div>
 <div class="paragraph">
-<p><strong>BEFORE to start to create an Entity class, remember to create the tables !</strong></p>
+<p><strong>BEFORE to start to create an Entity class, remember to create the tables, for this POC it&#x2019;s used an H2 Database!</strong></p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="7">
-<li>
-<p>Create a new <strong>SQL</strong> <strong>file</strong> (i.e: V0005<em>CreateTables_ItaPoc.sql) inside </em>jwtsample-__core and insert the following script:</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>Create a new <strong>SQL</strong> <strong>file</strong> (i.e: V0002__CreateTables_myapp.sql) inside <em>myapp-core</em> , under the folder path <em>/myapp-core/src/main/resources/db/migration/1.0</em> and insert the following script:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-sql" data-lang="sql">CREATE TABLE EMPLOYEE (
-id BIGINT auto_increment, modificationCounter *INTEGER* *NOT* *NULL*,
+id BIGINT auto_increment, modificationCounter INTEGER NOT NULL,
 employeeid BIGINT auto_increment,
 name VARCHAR(255),
 surname VARCHAR(255),
@@ -3142,56 +3191,68 @@ PRIMARY KEY (employeeid)
 </div>
 </div>
 <div class="paragraph">
-<p><strong><em>WARNING</em></strong>: please note that there are 2 underscore in the name !</p>
+<p><strong><em>WARNING 1</em></strong>: please note that there in that folder is present only one file, 0001, and you have to add the other files in progressive number order (i.e. 0002)!<br>
+<strong><em>WARNING 2</em></strong>: please note that there are 2 underscore in the name!</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image16.png" alt="sql file"></span></p>
-</div>
-<div class="olist arabic">
-<ol class="arabic" start="8">
-<li>
-<p>Now create another SQL file (i.e: V0006__PopulateTables-ItaPoc.sql) and add following script about the INSERT in order to populate the table created before</p>
-</li>
-</ol>
+<p><span class="image"><img src="images/howtos/e2e_gen/image64.png" alt="sql file"></span></p>
 </div>
 <div class="paragraph">
-<p><strong><em>WARNING</em></strong>: please note that there are 2 underscore in the name !</p>
+<p>Now create another SQL file (i.e: V0003__PopulateTables-myapp.sql) and add following script about the INSERT in order to populate the table created before.
+The script must be inserted at the same path used before: <em>/myapp-core/src/main/resources/db/migration/1.0</em></p>
+</div>
+<div class="paragraph">
+<p><strong><em>WARNING 1</em></strong>: please note that there in that folder is present only one file, 0001, and you have to add the other files in progressive number order (i.e. 0003)!<br>
+<strong><em>WARNING 2</em></strong>: please note that there are 2 underscore in the name!</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-sql" data-lang="sql">INSERT INTO EMPLOYEE (id, modificationCounter, employeeid, name, surname,email) VALUES (1, 1, 1, &apos;Albert&apos;,&apos;Miller&apos;,&apos;albert.miller@example.com&apos;);
-INSERT INTO EMPLOYEE (id, modificationCounter, employeeid, name, surname,email) VALUES (2, 2, 2, &apos;Angelo&apos;,&apos;Gonzalez&apos;, &apos;angelo.gonzalez@example.com&apos;);
-INSERT INTO EMPLOYEE (id, modificationCounter, employeeid, name, surname,email) VALUES (3, 3, 3, &apos;Jaime&apos;,&apos;King&apos;, &apos;jaime.king@example.com&apos;);</code></pre>
+<pre class="highlight"><code class="language-sql" data-lang="sql">INSERT INTO EMPLOYEE (id, modificationCounter, employeeid, name, surname,email) VALUES (1, 1, 1, &apos;John&apos;,&apos;Doe&apos;,&apos;john.doe@example.com&apos;);
+INSERT INTO EMPLOYEE (id, modificationCounter, employeeid, name, surname,email) VALUES (2, 2, 2, &apos;Tom&apos;,&apos;Smith&apos;, &apos;tom.smith@example.com&apos;);
+INSERT INTO EMPLOYEE (id, modificationCounter, employeeid, name, surname,email) VALUES (3, 3, 3, &apos;Joe&apos;,&apos;Schmoe&apos;, &apos;joe.schmoe@example.com&apos;);</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image17.png" alt="sql insert"></span></p>
+<p><span class="image"><img src="images/howtos/e2e_gen/image65.png" alt="sql insert"></span></p>
 </div>
 <div class="paragraph">
 <p><strong>Let&#x2019;s create the yml file for the code generation</strong></p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="9">
-<li>
+<div class="paragraph">
 <p>Now create a new file <em>devonfw.yml</em> in the root of your core folder. This will be our OpenAPI contract, like shown below. Then, copy the contents of <a href="https://github.com/devonfw/tools-cobigen/blob/master/documentation/files/devonfw_employee.yml">this file</a> into your OpenAPI. It defines some REST service endpoints and a <em>EmployeeEntity</em> with its properties defined.</p>
-</li>
-</ol>
 </div>
 <div class="paragraph">
-<p><strong>Important:</strong> if you want to know how to write an OpenAPI contract compatible with CobiGen, please read <a href="https://devonfw.com/website/pages/docs/master-cobigen.asciidoc_cobigen.html#cobigen-openapiplugin.asciidoc_usage">this tutorial</a>.</p>
+<p><strong>Important 1:</strong> Please pay attention to the content of the <em>devonfw.yml</em> file.<br>
+The section <em>x-rootpackage</em> it must be filled with the same package used when you have created the java application.<br>
+So i.e. if you have creaated the BE Java Application with:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">devon java create com.example.domain.myapp</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You have to populate the <em>devonfw.yml</em> in this way:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yml" data-lang="yml">x-rootpackage: com.example.domain.myapp</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="images/howtos/e2e_gen/image76.png" alt="package corresponding"></span></p>
+</div>
+<div class="paragraph">
+<p><strong>Important 2:</strong> if you want to know how to write an OpenAPI contract compatible with CobiGen, please read <a href="https://devonfw.com/website/pages/docs/master-cobigen.asciidoc_cobigen.html#cobigen-openapiplugin.asciidoc_usage">this tutorial</a>.</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image18.png" alt="Swagger at OASP4J Project"></span></p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="10">
-<li>
-<p>Right click <em>devonfw.yml</em>. CobiGen &#x2192; Generate</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>Use Cobigen to generate code. Right click <em>devonfw.yml</em>. CobiGen &#x2192; Generate</p>
 </div>
 <div class="paragraph">
-<p>It will ask you to download the templates, click on <em>update</em>:</p>
+<p>If it will ask you to download the templates, click on <em>update</em>:</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image19.png" alt="cobigen generate"></span></p>
@@ -3200,24 +3261,16 @@ INSERT INTO EMPLOYEE (id, modificationCounter, employeeid, name, surname,email) 
 <p>It will automatically download the latest version of <em>CobiGen_Templates</em>.</p>
 </div>
 <div class="paragraph">
-<p><strong>Attention:</strong> If you want to adapt the CobiGen_Templates, (normally this is not neccessary), you will find at the end of this document a tutorial on how to import them and adapt them!</p>
+<p><strong>Attention:</strong> If you want to adapt the CobiGen_Templates, (normally this is not neccessary), you will find at the end of this document (in a separate chapter) a tutorial on how to import them and adapt them!</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="11">
-<li>
+<div class="paragraph">
 <p>Click on all the option selected as below:</p>
-</li>
-</ol>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image20.png" alt="cobigen option selection"></span></p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="12">
-<li>
+<div class="paragraph">
 <p>Click on finish. Below Screen would be seen. Click on continue</p>
-</li>
-</ol>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image21.png" alt="cobigen finish"></span></p>
@@ -3226,28 +3279,80 @@ INSERT INTO EMPLOYEE (id, modificationCounter, employeeid, name, surname,email) 
 <p><strong>The entire <span class="underline">BE layer</span> structure having CRUD operation methods will be auto generated.</strong></p>
 </div>
 <div class="paragraph">
-<p>Some classes will be generated on the api part (<em>jwtsample-api)</em>, normally it will be interfaces, as shown below:</p>
+<p>Some classes will be generated on the api part (<em>myapp-api)</em>, normally it will be interfaces, as shown below:</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image22.png" alt="be layer"></span></p>
 </div>
 <div class="paragraph">
-<p>Some other classes will be generated on the core part (<em>jwtsample-core)</em>, normally it will be implementations as shown below:</p>
+<p>Some other classes will be generated on the core part (<em>myapp-core)</em>, normally it will be implementations as shown below:</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image23.png" alt="core folder"></span></p>
 </div>
 <div class="paragraph">
+<p>The last step is to add the Cross Domain process, because when you are developing Javascript client and server application separately, you have to deal with cross domain issues.</p>
+</div>
+<div class="paragraph">
+<p>So, we need to prepare server side to accept request from other domains. We need to cover the following points:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Accept request from other domains.</p>
+</li>
+<li>
+<p>Accept devonfw used headers like X-CSRF-TOKEN or correlationId.</p>
+</li>
+<li>
+<p>Be prepared to receive secured request (cookies).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To do this it&#x2019;s necessary to add two kind of dependecies in the pom.xml of the <em>myapp-core</em> folder, at the end of the list of dependecies:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">    &lt;dependency&gt;
+      &lt;groupId&gt;com.devonfw.java.starters&lt;/groupId&gt;
+      &lt;artifactId&gt;devon4j-starter-security-cors&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;com.devonfw.java.starters&lt;/groupId&gt;
+      &lt;artifactId&gt;devon4j-starter-security-csrf&lt;/artifactId&gt;
+    &lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="images/howtos/e2e_gen/image70.png" alt="pom xml"></span></p>
+</div>
+<div class="paragraph">
+<p>Next step is to add some prperties under your <em>application.properties</em> file, in the myapp-core folder in the <em>resources/config</em>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">security.cors.spring.allowCredentials=true
+security.cors.spring.allowedOriginPatterns=*
+security.cors.spring.allowedHeaders=*
+security.cors.spring.allowedMethods=OPTIONS,HEAD,GET,PUT,POST,DELETE,PATCH
+security.cors.pathPattern=/**</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="images/howtos/e2e_gen/image71.png" alt="application properties"></span></p>
+</div>
+<div class="paragraph">
 <p><strong>BEFORE to generate the FE</strong>, please start the Tomcat server to check that BE Layer has been generated properly.</p>
 </div>
 <div class="paragraph">
-<p>To start a server you just have to right click on <em>SpringBootApp.java</em> &#x2192; <em>run as &#x2192; Spring Boot app</em></p>
+<p>To start a server you just have to right click on <em>SpringBootApp.java</em> &#x2192; <em>run as &#x2192; Java Application</em></p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image24.png" alt="Eclipse run as"></span></p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image25.png" alt="Spring boot run"></span></p>
+<p><span class="image"><img src="images/howtos/e2e_gen/image69.png" alt="Spring boot run"></span></p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image26.png" alt="Spring boot run"></span></p>
@@ -3259,7 +3364,7 @@ INSERT INTO EMPLOYEE (id, modificationCounter, employeeid, name, surname,email) 
 <p>Last but not least: We make a quick REST services test !</p>
 </div>
 <div class="paragraph">
-<p>See in the application.properties the TCP Port and the PATH</p>
+<p>See in the <em>application.properties</em> the TCP Port and the PATH</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image27.png" alt="application properties"></span></p>
@@ -3268,7 +3373,7 @@ INSERT INTO EMPLOYEE (id, modificationCounter, employeeid, name, surname,email) 
 <p>Now compose the Rest service URL:</p>
 </div>
 <div class="paragraph">
-<p>service class path&gt;/&lt;service method path&gt;</p>
+<p><strong>service class &lt;path&gt;/&lt;service method path&gt;</strong></p>
 </div>
 <div class="ulist">
 <ul>
@@ -3276,7 +3381,7 @@ INSERT INTO EMPLOYEE (id, modificationCounter, employeeid, name, surname,email) 
 <p>&lt;server&gt; refers to server with port no. (ie: localhost:8081)</p>
 </li>
 <li>
-<p>&lt;app&gt; is in the application.propeeties (empty in our case, see above)</p>
+<p>&lt;app&gt; is in the <em>application.properties</em> (empty in our case, see above)</p>
 </li>
 <li>
 <p>&lt;rest service class path&gt; refers to EmployeemanagementRestService: (i.e: /employeemanagement/v1)</p>
@@ -3293,7 +3398,7 @@ INSERT INTO EMPLOYEE (id, modificationCounter, employeeid, name, surname,email) 
 <p>URL of getEmployee for this example is:</p>
 </div>
 <div class="paragraph">
-<p>For all employees</p>
+<p>For all employees (POST)</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3301,7 +3406,7 @@ INSERT INTO EMPLOYEE (id, modificationCounter, employeeid, name, surname,email) 
 </div>
 </div>
 <div class="paragraph">
-<p>For the specific employee</p>
+<p>For the specific employee (GET)</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3312,40 +3417,33 @@ INSERT INTO EMPLOYEE (id, modificationCounter, employeeid, name, surname,email) 
 <p>Now download <a href="https://www.getpostman.com/apps">Postman</a> to test the rest services.</p>
 </div>
 <div class="paragraph">
-<p>Once done, you have to create a POST Request for the LOGIN and insert in the body the JSON containing the username and password <em>waiter</em></p>
+<p>Once done, you have to create a POST Request for the LOGIN and insert in the body the JSON containing the username and password <em>admin</em></p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image29.png" alt="postman"></span></p>
+<p><span class="image"><img src="images/howtos/e2e_gen/image72.png" alt="postman"></span></p>
 </div>
 <div class="paragraph">
-<p>Once done with success (<strong>Status: 200 OK</strong>) &#x2026;</p>
+<p><strong><em>WARNING</em></strong>: please note that the body of the request must be JSON type!</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image30.png" alt="postman"></span></p>
+<p>Once done with success (<strong>Status: 200 OK</strong>) - <em>you can see the status of the response in the top right corner of Postman</em> - we can create a NEW GET Request in order to get one employee.</p>
 </div>
 <div class="paragraph">
-<p>&#x2026; We create a NEW POST Request and We copy the Authorization Bearer field (see above) and We paste it in the Token field (see below)</p>
+<p>To do this you have to create a new request in Postman, GET type, and insert the URL specified before:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-URL" data-lang="URL">http://localhost:8081/services/rest/employeemanagement/v1/employee/1</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image31.png" alt="postman"></span></p>
+<p>Thenk click on <strong>&quot;SEND&quot;</strong> button&#x2026;&#x200B;</p>
 </div>
 <div class="paragraph">
-<p>and specific the JSON parameters for the pagination of the Request that We&#x2019;re going to send:</p>
+<p>Now you&#x2018;ve to check that response has got <strong>Status: 200 OK</strong> and to see the below Employee</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image32.png" alt="postman"></span></p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image33.png" alt="postman"></span></p>
-</div>
-<div class="paragraph">
-<p>Now you can click <span class="image"><img src="images/howtos/e2e_gen/image34.png" alt="postman"></span></p>
-</div>
-<div class="paragraph">
-<p>Now you &#x2018;ve to check that response has got <strong>Status: 200 OK</strong> and to see the below list of Employee</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image35.png" alt="postman"></span></p>
+<p><span class="image"><img src="images/howtos/e2e_gen/image73.png" alt="postman"></span></p>
 </div>
 <div class="paragraph">
 <p>Now that We have successfully tested the BE is time to go to create the FE !</p>
@@ -3358,89 +3456,154 @@ INSERT INTO EMPLOYEE (id, modificationCounter, employeeid, name, surname,email) 
 </div>
 <div class="sect5">
 <h6 id="howto-devonfw-cobigen-openapi.asciidoc_angular-web-app">Angular Web App</h6>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>To generate angular structure, download or clone <em>*devon4ng-application-template*</em> from</p>
+<div class="paragraph">
+<p>To generate angular structure, download or clone <strong>devon4ng-application-template</strong> from</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-URL" data-lang="URL">https://github.com/devonfw/devon4ng-application-template</code></pre>
 </div>
 </div>
-</li>
-</ol>
+<div class="paragraph">
+<p><span class="image"><img src="images/howtos/e2e_gen/image74.png" alt="devon dist folder"></span></p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image36.png" alt="devon dist folder"></span></p>
+<p>IMPORTANT when you download the zip of the source code of your FE application, the name of the app MUST BE <strong>devon4ng-application-template</strong> and you can extract it in youe DevonFW folder, under <em>workspaces/main</em></p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="2">
-<li>
-<p>Once done, right click on <em>devonfw.yml</em> again (the OpenAPI contract). CobiGen &#x2192; Generate</p>
-</li>
-<li>
-<p>Click on the selected options as seen in the screenshot:</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>Once downloaded the APP, you can open the application with your favourite IDE (Intellij or Visual Studio Code)</p>
+</div>
+<div class="paragraph">
+<p>Once done, Right click on the <strong><em>devonfw.yml</em></strong> in order to use CobiGen.
+Click on the selected options as seen in the screenshot:</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image37.png" alt="eclipse generate"></span></p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="4">
-<li>
+<div class="paragraph">
 <p>Click on Finish</p>
-</li>
-</ol>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image38.png" alt="eclipse"></span></p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="5">
-<li>
+<div class="paragraph">
 <p>The entire ANGULAR structure has been auto generated. The generated code will be merged to the existing.</p>
-</li>
-</ol>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image39.png" alt="angular ee layer"></span></p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="6">
-<li>
-<p>IMPORTANT now you have to add in the <strong><em>app-routing.module.ts</em></strong> file the next content, as a child of HomeComponent, in order to enable the route of the new generated component</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>IMPORTANT now you have to check in the <strong><em>app-routing.module.ts</em></strong> file, if the content corresponding to the code below:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-ts" data-lang="ts">,\{
-path: &apos;employee&apos;,
-component: EmployeeGridComponent,
-canActivate: [AuthGuard],
-},</code></pre>
+<pre class="highlight"><code class="language-ts" data-lang="ts">import { NgModule } from &apos;@angular/core&apos;;
+import { RouterModule, Routes } from &apos;@angular/router&apos;;
+import { AuthGuard } from &apos;./core/security/auth-guard.service&apos;;
+import { NavBarComponent } from &apos;./layout/nav-bar/nav-bar.component&apos;;
+const routes: Routes = [{
+        path: &apos;&apos;,
+        redirectTo: &apos;/login&apos;,
+        pathMatch: &apos;full&apos;
+    },
+    {
+        path: &apos;login&apos;,
+        loadChildren: () =&gt;
+            import(&apos;./auth/auth.module&apos;).then(m =&gt; m.AuthDataModule)
+    },
+    {
+        path: &apos;home&apos;,
+        component: NavBarComponent,
+        canActivateChild: [
+            AuthGuard
+        ],
+        children: [{
+                path: &apos;initial&apos;,
+                loadChildren: () =&gt;
+                    import(&apos;./home/initial-page/initial-page.module&apos;).then(
+                        m =&gt; m.InitialPageModule,
+                    )
+            },
+            {
+                path: &apos;employee&apos;,
+                loadChildren: () =&gt;
+                    import(&apos;./employee/employee.module&apos;).then(
+                        m =&gt; m.EmployeeModule,
+                    )
+            }
+        ]
+    },
+    {
+       path: &apos;**&apos;,
+       redirectTo: &apos;/login&apos;
+    },
+];
+@NgModule({
+    imports: [
+        RouterModule.forRoot(routes)
+    ],
+    exports: [
+        RouterModule
+    ]
+})
+export class AppRoutingModule {
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Following picture explain where to place the above content:</p>
+<p>After that, if you want to make visible the Employee Grid in you FE application, you have to modify the nav-bar.component.html, to add the Employee grid in the section:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;div class=&quot;home-container-outer&quot;&gt;
+  &lt;div class=&quot;home-container-inner&quot;&gt;
+    &lt;mat-toolbar class=&quot;app-header-container&quot; color=&quot;primary&quot;&gt;
+      &lt;app-header (toggle)=&quot;onToggle($event)&quot; [sideNavOpened]=&quot;sideNavOpened&quot;&gt;&lt;/app-header&gt;
+    &lt;/mat-toolbar&gt;
+    &lt;div class=&quot;sidenav-container-outer&quot;&gt;
+      &lt;div class=&quot;sidenav-container-inner&quot;&gt;
+        &lt;mat-sidenav-container&gt;
+          &lt;mat-sidenav [disableClose]=&quot;false&quot; [mode]=&quot;isMobile ? &apos;over&apos; : &apos;side&apos;&quot; [opened]=&quot;!isMobile || sideNavOpened&quot;
+                       #sidenav&gt;
+            &lt;mat-nav-list&gt;
+              &lt;!-- Sidenav links --&gt;
+              &lt;a id=&quot;home&quot; mat-list-item [routerLink]=&quot;[&apos;./initial&apos;]&quot; (click)=&quot;close()&quot;&gt;
+                &lt;mat-icon matListAvatar&gt;
+                  home
+                &lt;/mat-icon&gt;
+                &lt;h3 matLine&gt;{{ &apos;home&apos; | transloco }}&lt;/h3&gt;
+                &lt;p matLine class=&quot;desc&quot;&gt;{{ &apos;description&apos; | transloco }}&lt;/p&gt;&lt;/a&gt;
+              &lt;a id=&quot;employee&quot; mat-list-item [routerLink]=&quot;[&apos;./employee&apos;]&quot; (click)=&quot;close()&quot;&gt;
+                &lt;mat-icon matListAvatar&gt;
+                  grid_on
+                &lt;/mat-icon&gt;
+                &lt;h3 matLine&gt; {{ &apos;employeemanagement.Employee.navData&apos; | transloco }} &lt;/h3&gt;
+                &lt;p matLine class=&quot;desc&quot;&gt; {{ &apos;employeemanagement.Employee.navDataSub&apos; | transloco }} &lt;/p&gt;&lt;/a&gt;
+            &lt;/mat-nav-list&gt;
+          &lt;/mat-sidenav&gt;
+          &lt;mat-sidenav-content&gt;
+            &lt;div class=&quot;content-container-outer&quot;&gt;
+              &lt;div class=&quot;content-container-inner&quot;&gt;
+                &lt;router-outlet&gt;&lt;/router-outlet&gt;
+              &lt;/div&gt;
+              &lt;mat-toolbar class=&quot;public-footer&quot;&gt;
+                &lt;span&gt;devonfw Application&lt;/span&gt;
+                &lt;span&gt;devonfw&lt;/span&gt;
+              &lt;/mat-toolbar&gt;
+            &lt;/div&gt;
+          &lt;/mat-sidenav-content&gt;
+        &lt;/mat-sidenav-container&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image40.png" alt="routes"></span></p>
+<p>Open the command prompt and execute <em>devon npm install</em> from your application folder, which would download all the required libraries.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="7">
-<li>
-<p>Open the command prompt and execute <em>devon yarn install</em> from the base folder, which would download all the required libraries..</p>
-</li>
-</ol>
-</div>
-<div class="olist arabic">
-<ol class="arabic" start="8">
-<li>
+<div class="paragraph">
 <p>Check the file <strong>environment.ts</strong> if the server path is correct. (for production you will have to change also the environment.prod.ts file)</p>
-</li>
-</ol>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image42.png" alt="environment"></span></p>
@@ -3457,132 +3620,137 @@ canActivate: [AuthGuard],
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-ts" data-lang="ts">export const environment = {
-production: false,
-restPathRoot: &apos;http://localhost:8081/&apos;,
-restServiceRoot: &apos;http://localhost:8081/services/rest/&apos;,
-security: &apos;jwt&apos;
+    production: false,
+    restPathRoot: &apos;http://localhost:8081/&apos;,
+    restServiceRoot: &apos;http://localhost:8081/services/rest/&apos;,
+    security: &apos;csrf&apos;
 };</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><strong>Warning</strong>: REMEMBER to set security filed to <strong>jwt</strong> , if it is not configured already.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic" start="9">
-<li>
-<p>Now run the <em>*ng serve -o*</em> command to run the Angular Application.</p>
-</li>
-</ol>
+<p><strong>Warning</strong>: REMEMBER to set security filed to <strong>csrf</strong> , if it is not configured already.</p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image44.png" alt="image44"></span></p>
+<p>Now run the <strong>devon ng serve -o</strong> command to run the Angular Application, from your application folder, as done before.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="10">
-<li>
+<div class="paragraph">
+<p><span class="image"><img src="images/howtos/e2e_gen/image75.png" alt="ng serve command"></span></p>
+</div>
+<div class="paragraph">
 <p>If the command execution is <strong>successful</strong>, the below screen will <strong>appear</strong> and it would be automatically redirected to the url:</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-URL" data-lang="URL">http://localhost:4200/login</code></pre>
 </div>
 </div>
-</li>
-</ol>
+<div class="paragraph">
+<p><span class="image"><img src="images/howtos/e2e_gen/image77.png" alt="angular web app"></span></p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image45.png" alt="image45"></span></p>
+<p>You can login in the Web Application, with <strong><em>admin</em></strong> user and password.<br>
+Obviosuly, the BackEnd part must be online during this test!</p>
 </div>
 <div class="paragraph">
-<p><strong>WebApp DONE</strong></p>
+<p><strong>ANGULAR WebApp DONE</strong></p>
 </div>
 </div>
 <div class="sect5">
 <h6 id="howto-devonfw-cobigen-openapi.asciidoc_ionic-mobile-app">Ionic Mobile App</h6>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
+<div class="paragraph">
 <p>To generate Ionic structure, download or clone <em>*devon4ng-application-template*</em> from</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-URL" data-lang="URL">https://github.com/devonfw/devon4ng-ionic-application-template</code></pre>
 </div>
 </div>
-</li>
-<li>
-<p>Once done, Right click on the <strong><em>devonfw.yml</em></strong> as you already did before in order to use CobiGen.</p>
-</li>
-<li>
-<p>Click on the selected options as seen in the screenshot:</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>Once downloaded the zip (or cloned) the name of the folder used, must be: <em>devon4ng-ionic-application-template</em></p>
 </div>
 <div class="paragraph">
-<p><span class="image"><img src="images/howtos/e2e_gen/image46.png" alt="image46"></span></p>
+<p>Once done, Right click on the <strong><em>devonfw.yml</em></strong> as you already did before in order to use CobiGen.
+Click on the selected options as seen in the screenshot:</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="4">
-<li>
-<p>Click on Finish</p>
-</li>
-<li>
-<p>The entire ionic structure will be auto generated.</p>
-</li>
-</ol>
+<div class="paragraph">
+<p><span class="image"><img src="images/howtos/e2e_gen/image46.png" alt="cobigen ionic"></span></p>
+</div>
+<div class="paragraph">
+<p>Click on Finish<br>
+The entire ionic structure will be auto generated.</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image47.png" alt="image47"></span></p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="6">
-<li>
-<p>Change the server url (with correct serve url) in environment.ts, environment.prod.ts and environment.android.ts files (i.e: itapoc\devon4ng-ionic-application-template\src\environments\).</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>Change (if necessary) the server url (with correct serve url) in <em>environment.ts</em>, <em>environment.prod.ts</em> and <em>environment.android.ts</em> files (i.e: itapoc\devon4ng-ionic-application-template\src\environments\).</p>
 </div>
 <div class="paragraph">
-<p>The angular.json file inside the project has already a build configuration for android.</p>
+<p>The <em>angular.json</em> file inside the project has already a build configuration for android.</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image48.png" alt="image48"></span></p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="7">
-<li>
-<p>Run npm install in the root folder to download the dependecies</p>
-</li>
-<li>
-<p>Run ionic serve</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>The only <strong>TWO</strong> thing that you have to modify, in this IONIC app is in <em>employee-list.page.html</em> and <em>business-operator.service.ts</em>.y<br></p>
+</div>
+<div class="paragraph">
+<p><strong>1:</strong><br>
+You have to change this line:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;layoutheader Title=&quot;Employee&quot;&gt;&lt;/layoutheader&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>with this line:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;app-layout-header title=&quot;Employee&quot;&gt;&lt;/app-layout-header&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>2:</strong><br>
+You have to change this line:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ts" data-lang="ts">return this.restPath + &apos;/security/v1/csrftoken&apos;;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>with this line:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ts" data-lang="ts">return this.restPath + &apos;csrf/v1/token/&apos;;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once checked if all the files are correct, open a CMD devon CLI on the folder of the ionic template application, under your devonFW workspace.<br>
+In this folder:<br>
+Run the command <em>*devon npm install*</em> in the root folder to download the dependecies.<br>
+Once finished, run the command <em>*devon ionic serve*</em></p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image49.png" alt="image49"></span></p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="11">
-<li>
-<p></p>
 <div class="paragraph">
-<p>Once the execution is successful</p>
-</div>
-</li>
-</ol>
+<p>Once the execution is successful, you can make the LOGIN with admin/admin and&#x2026;&#x200B;</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image50.png" alt="image50"></span></p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>Mobile App DONE*</p>
-</li>
-</ul>
+<div class="paragraph">
+<p><strong>IONIC Mobile App DONE</strong></p>
 </div>
 <div class="paragraph">
-<p>So: well done</p>
+<p>So: <strong>Well Done!!!</strong></p>
 </div>
 <div class="paragraph">
-<p>Starting from an Entity class you&#x2019;ve successfully generated the Back-End layer (REST, SOAP, DTO, Spring services, Hibernate DAO), the Angular Web App and the Ionic mobile App!</p>
+<p><code><strong>Starting from an Entity class you&#x2019;ve successfully generated the Back-End layer (REST, SOAP, DTO, Spring services, Hibernate DAO), the Angular Web App and the Ionic mobile App!</strong></code></p>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image51.png" alt="image51"></span></p>
@@ -3608,15 +3776,12 @@ security: &apos;jwt&apos;
 </li>
 </ul>
 </div>
+<div class="paragraph">
+<p>Now, open cmd and type the path where your <em>devon4ng-ionic-application-template</em> project is present.<br>
+Run the following commands:</p>
+</div>
 <div class="olist arabic">
 <ol class="arabic">
-<li>
-<p>Now, open cmd and type the path where your <em>devon4ng-ionic-application-template</em> project is present.</p>
-</li>
-<li>
-<p>Run the following commands:</p>
-<div class="olist loweralpha">
-<ol class="loweralpha" type="a">
 <li>
 <p>npx cap init</p>
 </li>
@@ -3634,11 +3799,8 @@ security: &apos;jwt&apos;
 </li>
 </ol>
 </div>
-</li>
-<li>
+<div class="paragraph">
 <p>Build the APK using Android studio.</p>
-</li>
-</ol>
 </div>
 <div class="paragraph">
 <p><span class="image"><img src="images/howtos/e2e_gen/image52.png" alt="image52"></span>
@@ -3647,17 +3809,19 @@ security: &apos;jwt&apos;
 <span class="image"><img src="images/howtos/e2e_gen/image55.png" alt="image55"></span></p>
 </div>
 <div class="paragraph">
-<p>You can find your apk file in</p>
+<p>You can find your apk file in:
+<em>/devon4ng-ionic-application-template/android/app/build/outputs/apk/debug</em></p>
 </div>
-<div class="paragraph">
-<p>/devon4ng-ionic-application-template/android/app/build/outputs/apk/debug</p>
-</div>
-</div>
+<!-- toc disabled -->
 </div>
 </div>
 </div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="howto-devonfw-adapt_template.asciidoc">75.9. Adapt Templates from Cobigen</h3>
 <div class="sect3">
-<h4 id="howto-devonfw-cobigen-openapi.asciidoc_adapt-cobigen_templates">75.8.3. Adapt CobiGen_Templates</h4>
+<h4 id="howto-devonfw-adapt_template.asciidoc_adapt-cobigen_templates">75.9.1. Adapt CobiGen_Templates</h4>
 <div class="paragraph">
 <p>After following this tutorial, you will have the CobiGen_Templates downloaded on your local machine. To import these templates you need to do the following:</p>
 </div>
@@ -3710,7 +3874,7 @@ security: &apos;jwt&apos;
 </div>
 </div>
 <div class="sect2">
-<h3 id="howto_enable_composite_primary_keys_in_entity.asciidoc">75.9. Enable Composite Primary Keys in Entity</h3>
+<h3 id="howto_enable_composite_primary_keys_in_entity.asciidoc">75.10. Enable Composite Primary Keys in Entity</h3>
 <div class="paragraph">
 <p>In order to enable Composite Primary Keys in entity in CobiGen, the below approach is suggested</p>
 </div>
@@ -3923,7 +4087,7 @@ public class EmployeeEntity implements PersistenceEntity&lt;CompositeEmployeeKey
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-07-13 10:58:12 UTC
+Last updated 2021-07-13 16:32:00 UTC
 </sub></div>
 
 
