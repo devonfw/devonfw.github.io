@@ -70,7 +70,7 @@ function highlightSelected(){
         var filterValues = parameters.get(filterName);
         for(var i in filterValues){
             var filterValue = filterValues[i];
-            $("#tag_" + filterName+ '_' + filterValue.replace(/[^a-zA-Z0-9]/g,"_")).addClass("selected");
+            $("#tag_" + filterName.replace(/[^a-zA-Z0-9]/g,"_") + '_' + filterValue.replace(/[^a-zA-Z0-9]/g,"_")).addClass("selected");
         }
     }
 }
@@ -103,7 +103,7 @@ async function main() {
             filterpanel.append(filterpanelbody);
             for (const tagValue in tag) {
                 if (Object.hasOwnProperty.call(tag, tagValue)) {
-                    var tagDiv = $('<div class="tag" id="tag_' + filter+ '_' + tagValue.replace(/[^a-zA-Z0-9]/g,"_") +'"></div>');
+                    var tagDiv = $('<div class="tag" id="tag_' + filter.replace(/[^a-zA-Z0-9]/g,"_") + '_' + tagValue.replace(/[^a-zA-Z0-9]/g,"_") +'"></div>');
                     tagDiv.text(tagValue);
                     tagDiv.click((e) => { 
                         if(!parameters.delete(filter, tagValue)){
