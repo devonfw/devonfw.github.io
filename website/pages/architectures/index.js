@@ -53,13 +53,15 @@ function renderSolutions(solutions) {
             solutionHeadlineLink.attr('target', '_blank')
             solutionHeadlineDiv.append(solutionHeadlineLink);
             solutionDiv.append(solutionHeadlineDiv);
+            var solutionBodyDiv = $('<div id="solution_body_' + solutionKey + '" class="solutionbody"></div>');
             if (solution.image != "") {
                 var solutionImage = $('<img id="solution_' + solutionKey + '_image" class="solutionimage" src="' + solution.image + '"></img>');
-                solutionDiv.append(solutionImage);
+                solutionBodyDiv.append(solutionImage);
             }
             var solutionSnippetDiv = $('<div id="solution_' + solutionKey + '_snippet" class="solutionsnippet"></div>');
             solutionSnippetDiv.text(solution.snippet);
-            solutionDiv.append(solutionSnippetDiv);
+            solutionBodyDiv.append(solutionSnippetDiv);
+            solutionDiv.append(solutionBodyDiv);
             filterpanelbody.append(solutionDiv);
         }
     }
