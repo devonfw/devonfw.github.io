@@ -68,13 +68,13 @@ function renderSolutions(solutions) {
 }
 
 function highlightSelected() {
-    $(".tag.selected").removeClass("selected");
+    $(".checkbox").text("check_box_outline_blank");
     var parameters = getParameters();
     for (const filterName of parameters.keys()) {
         var filterValues = parameters.get(filterName);
         for (var i in filterValues) {
             var filterValue = filterValues[i];
-            $("#tag_" + filterName.replace(/[^a-zA-Z0-9]/g, "_") + '_' + filterValue.replace(/[^a-zA-Z0-9]/g, "_")).addClass("selected");
+            $("#tag_" + filterName.replace(/[^a-zA-Z0-9]/g, "_") + '_' + filterValue.replace(/[^a-zA-Z0-9]/g, "_") + "_checkbox").text('check_box');
         }
     }
 }
@@ -91,6 +91,8 @@ async function main() {
     tagsJson = await $.ajax({
         url: "tags.json"
     });
+
+    $("head").append('<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">');
 
     var parameters = getParameters();
 
@@ -109,6 +111,7 @@ async function main() {
                 if (Object.hasOwnProperty.call(tag, tagValue)) {
                     var tagDiv = $('<div class="tag" id="tag_' + filter.replace(/[^a-zA-Z0-9]/g, "_") + '_' + tagValue.replace(/[^a-zA-Z0-9]/g, "_") + '"></div>');
                     tagDiv.text(tagValue);
+                    tagDiv.prepend($('<span id="tag_' + filter.replace(/[^a-zA-Z0-9]/g, "_") + '_' + tagValue.replace(/[^a-zA-Z0-9]/g, "_") + '_checkbox" class="checkbox material-icons-sharp">check_box_outline_blank</span>'))
                     tagDiv.click((e) => {
                         if (!parameters.delete(filter, tagValue)) {
                             parameters.set(filter, tagValue);
