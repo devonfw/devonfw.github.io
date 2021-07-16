@@ -37,6 +37,7 @@ function search() {
     }
     //console.log(solutions);
     renderSolutions(solutions);
+    disableFilters(solutions);
     highlightSelected();
 }
 
@@ -75,6 +76,33 @@ function highlightSelected() {
         for (var i in filterValues) {
             var filterValue = filterValues[i];
             $("#tag_" + filterName.replace(/[^a-zA-Z0-9]/g, "_") + '_' + filterValue.replace(/[^a-zA-Z0-9]/g, "_") + "_checkbox").text('check_box');
+            $("#tag_" + filterName.replace(/[^a-zA-Z0-9]/g, "_") + '_' + filterValue.replace(/[^a-zA-Z0-9]/g, "_")).removeClass('disabled');
+        }
+    }
+}
+
+function disableFilters(solutions) {
+    $(".disabled").removeClass("disabled");
+    for (const filter in tagsJson) {
+        if (Object.hasOwnProperty.call(tagsJson, filter)) {
+            const tag = tagsJson[filter];
+            var activeValues = [];
+            for (const solutionKey in solutions) {
+                if (Object.hasOwnProperty.call(solutions, solutionKey)) {
+                    const solution = solutions[solutionKey];
+                    if (solution["tags"][filter]) {
+                        activeValues = activeValues.concat(solution["tags"][filter]);
+                    }
+                }
+            }
+            for (const tagValue in tag) {
+                if (Object.hasOwnProperty.call(tag, tagValue)) {
+                    console.log(filter + ":" + tagValue);
+                    if (!activeValues.includes(tagValue)) {
+                        $('#tag_' + filter.replace(/[^a-zA-Z0-9]/g, "_") + '_' + tagValue.replace(/[^a-zA-Z0-9]/g, "_")).addClass("disabled");
+                    }
+                }
+            }
         }
     }
 }
@@ -91,6 +119,32 @@ async function main() {
     tagsJson = await $.ajax({
         url: "tags.json"
     });
+
+
+    for (const filter in tagsJson) {
+        if (Object.hasOwnProperty.call(tagsJson, filter)) {
+            const tag = tagsJson[filter];
+            for (const tagValue in tag) {
+                if (Object.hasOwnProperty.call(tag, tagValue)) {
+                    var solutionIds = tag[tagValue];
+                    solutionIds.forEach(solutionId => {
+                        var solution = solutionsJson[solutionId];
+                        if (solution) {
+                            if (!solution["tags"]) {
+                                solution["tags"] = {};
+                            }
+                            if (!solution["tags"][filter]) {
+                                solution["tags"][filter] = [];
+                            }
+                            solution["tags"][filter].push(tagValue);
+                        }
+                    });
+
+                }
+            }
+        }
+    }
+    console.log(solutionsJson);
 
     $("head").append('<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">');
 
@@ -113,11 +167,13 @@ async function main() {
                     tagDiv.text(tagValue);
                     tagDiv.prepend($('<span id="tag_' + filter.replace(/[^a-zA-Z0-9]/g, "_") + '_' + tagValue.replace(/[^a-zA-Z0-9]/g, "_") + '_checkbox" class="checkbox material-icons-sharp">check_box_outline_blank</span>'))
                     tagDiv.click((e) => {
-                        if (!parameters.delete(filter, tagValue)) {
-                            parameters.set(filter, tagValue);
+                        if (!$(e.currentTarget).hasClass("disabled")) {
+                            if (!parameters.delete(filter, tagValue)) {
+                                parameters.set(filter, tagValue);
+                            }
+                            document.location.hash = "#" + parameters.toString()
+                            search();
                         }
-                        document.location.hash = "#" + parameters.toString()
-                        search();
                     });
                     filterpanelbody.append(tagDiv);
                 }
