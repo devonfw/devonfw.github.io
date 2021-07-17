@@ -211,6 +211,7 @@ class MultipageHtml5Converter < Asciidoctor::Converter::Html5Converter
       # Retain any book intro blocks, delete others, and add a list of sections
       # for the book landing page.
       parts_list = Asciidoctor::List.new(node, :ulist)
+      parts_list.style = "toc"
       node.blocks.delete_if do |block|
         if block.context == :section
           part = block
@@ -486,6 +487,7 @@ class MultipageHtml5Converter < Asciidoctor::Converter::Html5Converter
         # Retain any part intro blocks, delete others, and add a list
         # of sections for the part landing page.
         chapters_list = Asciidoctor::List.new(node, :ulist)
+        chapters_list.style = "chapters"
         node.blocks.delete_if do |block|
           if block.context == :section
             chapter = block
