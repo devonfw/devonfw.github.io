@@ -19,7 +19,7 @@ Click on 'Copy to Editor' to change it automatically.
 # If you are running in a servlet container you may add this to lib/config/application.properties in case you do not
 # want to touch the WAR file.
 
-server.port=8080
+server.port=8081
 server.servlet.context-path=/httprestserver
 spring.application.name=httprestserver
 
@@ -74,7 +74,7 @@ Click on 'Copy to Editor' to change it automatically.
 # the same container (not recommended by default) you need to ensure the WARs are extracted in webapps folder and locate
 # the config folder inside the WEB-INF/classes folder of the webapplication.
 
-server.port=8080
+server.port=8081
 server.servlet.context-path=/httprestserver
 
 # Datasource for accessing the database

@@ -33,8 +33,8 @@ This will take some time.
 Once, Java server starts running. To test REST-server follow below steps:
 * Click on &#34;+&#34; next to terminal tab
 * Select &#34;select port to view host&#34;
-* Enter the port number &#34;8080&#34; 
-* In the url, append &#34;/httprestserver/services/rest/visitormanagement/clientrequest&#34;
+* Enter the port number &#34;8081&#34; 
+* In the url, append &#34;/httprestserver/services/rest/visitormanagement/v1/clientrequest/&#34;
 * Enter username as &#34;admin&#34; and password as &#34;admin&#34;
-* You will be able to see response &#34;Welcome to rest api&#34;
+* You will be able to see response &#34;Welcome to REST API world&#34;
 In next step, You have to create devon4j service Client.

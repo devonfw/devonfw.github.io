@@ -53,6 +53,8 @@ public abstract class BaseWebSecurityConfig extends WebSecurityConfigurerAdapter
   @Inject
   private WebSecurityConfigurer webSecurityConfigurer;
 
+
+
   /**
    * Configure spring security to enable a simple webform-login + a simple rest login.
    */
@@ -63,11 +65,11 @@ public abstract class BaseWebSecurityConfig extends WebSecurityConfigurerAdapter
     &#34;/services/rest/logout&#34; };
 
     // disable CSRF protection by default, use csrf starter to override.
-    http = http.csrf().disable();
+    http = http.httpBasic().and().csrf().disable();
     // load starters as pluggins.
     http = this.webSecurityConfigurer.configure(http);
 
-    http.httpBasic().and()
+    http
         //
         .userDetailsService(this.userDetailsService)
         // define all urls that are not to be secured
@@ -125,8 +127,7 @@ public abstract class BaseWebSecurityConfig extends WebSecurityConfigurerAdapter
   @SuppressWarnings(&#34;javadoc&#34;)
   @Inject
   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-
-    auth.inMemoryAuthentication().withUser(&#34;admin&#34;).password(this.passwordEncoder.encode(&#34;admin&#34;)).roles(&#34;Admin&#34;);
+    auth.inMemoryAuthentication().withUser(&#34;admin&#34;).password(this.passwordEncoder.encode(&#34;admin&#34;)).authorities(&#34;Admin&#34;);
   }
 
 }

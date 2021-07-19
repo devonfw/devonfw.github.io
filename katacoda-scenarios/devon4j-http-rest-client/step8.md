@@ -1,33 +1,23 @@
-Now, You will create a Java interface VisitormanagementRestService to invoke inside client.
+Modify pom.xml as below:
 
 
-If the parent directories aren't already in the project, 'mkdir -p' will create them for you. 
+Switch to the editor and open the file 'devonfw/workspaces/main/httprestclient/core/pom.xml'.
 
-`mkdir -p /root/devonfw/workspaces/main/httprestclient/api/src/main/java/com/sample/application/httprestclient/general/service/api/rest`{{execute T1}}
-
-Switch to the editor and click 'Copy to Editor'. 
-
-'VisitormanagementRestService.java' will be created automatically inside the newly created folder.
-
-<pre class="file" data-filename="devonfw/workspaces/main/httprestclient/api/src/main/java/com/sample/application/httprestclient/general/service/api/rest/VisitormanagementRestService.java">
-package com.sample.application.httprestclient.general.service.api.rest;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+`devonfw/workspaces/main/httprestclient/core/pom.xml`{{open}}
 
 
-@Path(&#34;/visitormanagement&#34;)
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
-public interface VisitormanagementRestService {
 
-  @GET
-  @Path(&#34;/clientrequest&#34;)
-  public String returnResponseToClient();
 
-}
+Replace the content in the file as it is shown in the following segment of code.
+
+
+Click on 'Copy to Editor' to change it automatically.
+
+<pre class="file" data-filename="devonfw/workspaces/main/httprestclient/core/pom.xml" data-target="insert" data-marker="&lt;dependencies&gt;">
+&lt;dependencies&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;com.devonfw.java.starters&lt;/groupId&gt;
+  &lt;artifactId&gt;devon4j-starter-cxf-client-rest&lt;/artifactId&gt;
+&lt;/dependency&gt; 
 </pre>
 
