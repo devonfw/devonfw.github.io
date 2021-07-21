@@ -11,7 +11,8 @@ const headerModule = (function (window) {
     tutorial: "Tutorials",
     explore: "Explore",
     docs: "Documentation",
-    releasenote: "Release Notes"
+    releasenote: "Release Notes",
+    solution: 'Solutions'
   }
 
   function createSearchResultGroupsTemplate(title, resultHtml) {
@@ -114,7 +115,7 @@ const headerModule = (function (window) {
   }
 
   function linktext(type, href){
-    if(type == 'docs' || type == 'tutorial' || type == 'releasenote'){
+    if(type == 'docs' || type == 'tutorial' || type == 'releasenote' || type == 'solution'){
       return href.split('#')[0];
     }
     if(type == 'explore'){

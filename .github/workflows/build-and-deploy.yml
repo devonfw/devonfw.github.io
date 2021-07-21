@@ -39,7 +39,7 @@ jobs:
           ruby-version: "2.x"
 
       - name: Setup Node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
 
       - name: Install asciidoctor Gem
         run: gem install asciidoctor -v 1.5.7.1
@@ -50,6 +50,13 @@ jobs:
           npm install
           node renamer.js ../devonfw-guide/ Home .asciidoc
           cd ..
+
+      - name: Solutions from Stack repositories
+        run: |
+          cd architectures/scripts
+          npm install 
+          node copySolutionsFromStack.js ../../devonfw-guide
+          cd ../../
 
       - name: Copy pom files for architectures
         run: |
@@ -77,10 +84,24 @@ jobs:
 
       - name: Build
         run: mvn -s ./.m2/unblock-rubygem-proxy-settings.xml clean package
+        
+      - name: Make IDs unique
+        run: |
+          cd general-scripts
+          npm install
+          node correct-ids.js ../target/asciidoc/devonfw-guide/
+          cd ..
+          
+      - name: Remove section numbers
+        run: |
+          cd general-scripts
+          npm install
+          node remove-section-numbers.js ../target/asciidoc/
+          cd ..
 
       - name: SplitHtml
         run: |
-          asciidoctor -r ./asciidoctor-extensions/multipage-html5-converter.rb -b  multipage_html5 ./target/asciidoc/devonfw-guide/master.asciidoc -a toc=left -D ./target/generated-docs/website/pages/docs
+          asciidoctor -r ./asciidoctor-extensions/multipage-html5-converter.rb -b  multipage_html5 ./target/asciidoc/devonfw-guide/master.asciidoc -a toc=left -a toclevels=3 -a multipage-level=2 -D ./target/generated-docs/website/pages/docs
           cp -avr target/generated-docs/images/ target/generated-docs/website/pages/docs/
 
       - name: Postprocessing
@@ -108,7 +129,7 @@ jobs:
         run: |
           cd target/generated-docs/search-engine
           npm install
-          node ./converter.js ../website/pages/docs/ ../website/pages/explore/ ../katacoda-scenarios/ .html
+          node ./converter.js ../website/pages/docs/ ../website/pages/explore/ ../katacoda-scenarios/ ../website/pages/architectures/solutions/ .html
           cp {index.json,docs-json.json} ../website
           cd ../../..
 
