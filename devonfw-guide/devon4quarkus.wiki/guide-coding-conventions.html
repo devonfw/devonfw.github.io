@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>devon4quarkus coding conventions</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-coding-conventions.asciidoc">devon4quarkus coding conventions</a>
+<ul class="sectlevel1">
+<li><a href="#guide-coding-conventions.asciidoc_things-to-discuss">Things to discuss</a></li>
+<li><a href="#guide-coding-conventions.asciidoc_structure">Structure</a>
+<ul class="sectlevel2">
+<li><a href="#guide-coding-conventions.asciidoc_packages">Packages</a></li>
+<li><a href="#guide-coding-conventions.asciidoc_layer">Layer</a></li>
+<li><a href="#guide-coding-conventions.asciidoc_comparison-with-devon4j">Comparison with devon4j</a></li>
+</ul>
+</li>
+<li><a href="#guide-coding-conventions.asciidoc_naming-conventions">Naming conventions</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-coding-conventions.asciidoc" class="sect0">devon4quarkus coding conventions</h1>
+<div class="paragraph">
+<p>This  guide describe the conventions for naming and structure in a devon4quarkus application. In addition to the points mentioned here, the code should follow the general Java conventions (see <a href="http://www.oracle.com/technetwork/java/namingconventions-139351.html">Oracle Naming Conventions</a>, <a href="https://google.github.io/styleguide/javaguide.html">Google Java Style</a>, etc.).</p>
+</div>
+<div class="sect1">
+<h2 id="guide-coding-conventions.asciidoc_things-to-discuss">Things to discuss</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Using CamelCase even for abbreviations. devon4j naming conventions clearly discourage to use CAPITALCASE for abbreviation (<code>XmlUtil</code> instead of <code>XMLUtil</code>, <code>Dao</code> instead of <code>DAO</code>)</p>
+</li>
+<li>
+<p><code>Eto</code> vs. <code>Dto</code> and dropping the <code>Eto</code> and <code>Cto</code> concept</p>
+</li>
+<li>
+<p><code>*RestService</code> vs. <code>*RestController</code>. According to devon4j we should use <code>*RestService</code> that has already been established</p>
+</li>
+<li>
+<p>Spring-data vs. <code>Dao</code> - see <a href="https://github.com/devonfw-forge/devonfw-microservices/issues/37" class="bare">https://github.com/devonfw-forge/devonfw-microservices/issues/37</a></p>
+</li>
+<li>
+<p>Structure of <code>logic</code> layer? - see <a href="https://github.com/devonfw-forge/devonfw-microservices/issues/38" class="bare">https://github.com/devonfw-forge/devonfw-microservices/issues/38</a></p>
+</li>
+<li>
+<p>Bean-Mapping - see <a href="https://github.com/devonfw-forge/devonfw-microservices/issues/8" class="bare">https://github.com/devonfw-forge/devonfw-microservices/issues/8</a></p>
+</li>
+<li>
+<p>Lombok usage - see <a href="https://github.com/devonfw-forge/devonfw-microservices/issues/29" class="bare">https://github.com/devonfw-forge/devonfw-microservices/issues/29</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-coding-conventions.asciidoc_structure">Structure</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="guide-coding-conventions.asciidoc_packages">Packages</h3>
+<div class="paragraph">
+<p>For a devon4quarkus-based application, we recommend using the following Java package scheme:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>«root».«component».«layer»[.«detail»]*</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>See also existing <a href="https://github.com/devonfw/devon4j/blob/master/documentation/coding-conventions#packages">devon4j packaging</a> that we want to simplify and modernize here.</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<caption class="title">Table 1. Segments of package schema</caption>
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Segment</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Description</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Example</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>«root»</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The root package. Typically we suggest to use <code>«group».«artifact»</code> for <code>«root»</code>. However, we will not enforce anything and let you the freedom of choice if the recommendation does not fit for you.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>com.devonfw</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>«group»</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Matches your maven <code>groupId</code> coordinate, basic name-space of the organization or IT project owning the code. Corresponds to domain name reversed.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>com.devonfw</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>«artifact»</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Matches your maven <code>artifact</code> coordinate, converted to java package conventions(e.g. <code>-</code> omitted). Can be further simplified if it does not cause disambiguity(e.g. <code>presales-order-bff</code>&#8594; <code>pobff</code>)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>orderservice</code>, <code>usermgmt</code>..</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>«component»</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Only used if the service serves multiple business components. Most microservices usually address a single business component/domain. In this case it is ommited(its already implied by the artifactid)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>user</code>, <code>order</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>«layer»</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the technical layer (See <a href="#architecture.asciidoc">technical architecture</a>) which is one of the predefined layers (<code>domain</code>, <code>rest</code>, <code>logic</code>) or <code>common</code> for code not assigned to a technical layer (datatypes, cross-cutting concerns). Additional layers can be introduced if they have clear scope e.g. <code>batch</code>, <code>process</code>..</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>rest</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>«detail»</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">You will technically have the freedom of choice to define your sub-packages. Compared to <code>devon4j</code> we neither enforce nor recommend anymore to use the <code>«scope»</code> segment in your packaging. You are still free to do so if you like it. However, we now suggest the <code>«type»</code> segment for furhter classification within <code>«detail»</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dao</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>«type»</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Further division based on common stereotypes based on type of component. Suggested stereotypes for <code>rest</code> layer are [<code>controller</code>, <code>model</code>, <code>mapper</code>, <code>filter</code>..] for <code>domain</code> layer: [<code>model</code>, <code>dao</code>]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dao</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>For a typical backend microservice that provides HTTP API and data persistence via JPA in the business domain <code>serviceorder</code>, the structure would be something like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>«group».«artifact»
+├──.domain
+|  ├──.dao
+|  |  ├──ServiceOrderDAO
+|  |  └──ServiceOrderItemDAO
+|  ├──.model
+|  |  ├──ServiceOrderEntity
+|  |  └──ServiceOrderItemEntity
+├──.logic
+|  ├──NewServiceOrderValidator
+|  └──ServiceOrderEventsEmitter
+└──.rest
+   ├──.controller
+   |  └──ServiceOrderRestController
+   ├──.mapper
+   |  └──ServiceOrderMapper
+   └──.model
+      ├──NewServiceOrderDTO
+      ├──ServiceOrderPageResutltDTO
+      └──ServiceOrderDTO</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-coding-conventions.asciidoc_layer">Layer</h3>
+<div class="sect3">
+<h4 id="guide-coding-conventions.asciidoc_data-access-layer">Data access layer</h4>
+<div class="paragraph">
+<p>When using JPA/Hibernate for data persistence, please use the following subpackages under your domain package:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>dao</code>: For the Data Access Objects (DAOs). The naming should be always <code>«entity»DAO</code></p>
+</li>
+<li>
+<p><code>repo</code>: For repositories, if you use Spring Data for data access</p>
+</li>
+<li>
+<p><code>model</code>: For all entities, views or other objects used to read and write to DB.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-coding-conventions.asciidoc_logic-layer">Logic layer</h4>
+<div class="paragraph">
+<p>Use the layer to provide any microservice-specific business logic and add sub-packages as needed, depending on the type and number of classes required.</p>
+</div>
+<div class="paragraph">
+<p>Before introducing a new service, check whether it is really needed or whether it can be replaced by a standard/framework solution (e.g. validators can be covered by the bean validation specification in 90% of cases by using annotations on models).
+Strive for clear naming, based on the scope of the class, instead of generic names. BAD: <code>OrderService</code>, <code>EmailManagement</code>, BETTER: <code>OrderValidator</code>, <code>EmailSender</code></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-coding-conventions.asciidoc_rest-layer">REST layer</h4>
+<div class="paragraph">
+<p>Depending on the requirements of the project, a service may provide several APIs, e.g. a fixed version, a public API that must remain strictly backward compatible, and a separate non-public API used for internal functions or operations. Often the app needs to provide multiple public API versions.
+If this is the case, we suggest to introduce <code>«version»</code> as an intermediate package:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>└──.rest
+   ├──internal
+   |  ├──.controller
+   |  |  ├──AdminOperationsRestController
+   |  |  └──EventRestController
+   |  ├──.mapper
+   |  |  └──AdminOperationMapper
+   |  └──.model
+   |     ├──EventDTO
+   |     ├──AdminOperationDTO
+   |     └──AdminOperationResultDTO
+   ├──v1
+   |  ├──.controller
+   |  |  └──ServiceOrderRestController
+   |  ├──.mapper
+   |  |  └──ServiceOrderMapper
+   |  └──.model
+   |     ├──NewServiceOrderDTO
+   |     ├──ServiceOrderPageResutltDTO
+   |     └──ServiceOrderDTO
+   └──v2
+      ├──.controller
+      |  ├──ServiceOrderItemRestController
+      |  └──ServiceOrderRestController
+      ├──.mapper
+      |  └──ServiceOrderMapper
+      ├──.filter
+      |   └──CustomPayloadFilter
+      └──.model
+         ├──NewServiceOrderDTO
+         ├──ServiceOrderItemDTO
+         ├──ServiceOrderPageResutltDTO
+         ├──ServiceOrderPatchRequestDTO
+         └──ServiceOrderDTO</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-coding-conventions.asciidoc_comparison-with-devon4j">Comparison with devon4j</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><code>service.[api|impl].[rest|ws]</code> simply becomes <code>rest</code>, <code>ws</code> (in case someone is still using legacy SOAP), <code>grpc</code>, etc. Technically we can still derive that this all implies the <code>service</code> layer.</p>
+</li>
+<li>
+<p><code>dataaccess</code> becomes <code>domain</code>. You are not forced to follow this and architcture validation such as our <code>sonar-devon4j-plugin</code> will in the future support both. However, new CobiGen templates for quarkus/cloud-native will use this new default and would need to adopt them if you want to change. We also suggest to put entities in the <code>model</code> sub-package (see <code>«type»</code>).</p>
+</li>
+<li>
+<p><code>logic</code> remains <code>logic</code></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-coding-conventions.asciidoc_naming-conventions">Naming conventions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In addition to the general Java naming conventions, the following rules should be observed</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Names should be descriptive and concise. Always use short but speaking names (for types, methods, fields, parameters, variables, constants, etc.).</p>
+</li>
+<li>
+<p>Name should indicate the type of object it represents.</p>
+</li>
+<li>
+<p>Strictly avoid special characters in technical names (for files, types, fields, methods, properties, variables, database tables, columns, constraints, etc.). In other words only use Latin alpahnumeric ASCII characters with the common allowed technical separators for the accordign context (e.g. underscore) for technical names (even excluding whitespaces).</p>
+</li>
+<li>
+<p>For package segments and type names prefer singular forms (<code>CustomerEntity</code> instead of <code class="line-through">CustomersEntity</code>). Only use plural forms when there is no singular or it is really semantically required (e.g. for a container that contains multiple of such objects).</p>
+</li>
+<li>
+<p>Avoid having duplicate type names. The name of a class, interface, enum or annotation should be unique within your project unless this is intentionally desired in a special and reasonable situation.</p>
+</li>
+<li>
+<p>All classes in single «type» package should have the same naming structure (e.g. dont mix <code>EntityRepo</code> and <code>OtherEntityDAO</code> inside <code>dao</code> package).</p>
+</li>
+<li>
+<p>Avoid artificial naming constructs such as prefixes (<code>I*</code>) or suffixes (<code>*IF</code>) for interfaces.</p>
+</li>
+<li>
+<p>Avoid property/field names where the second character is upper-case at all (e.g. 'aBc').</p>
+</li>
+<li>
+<p>Names of Generics should be easy to understand. Where suitable follow the common rule <code>E=Element</code>, <code>T=Type</code>, <code>K=Key</code>, <code>V=Value</code> but feel free to use longer names for more specific cases such as <code>ID</code>, <code>DTO</code> or <code>ENTITY</code>. The capitalized naming helps to distinguish a generic type from a regular class.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html#introduction-why-should-i-use-devonfw.asciidoc">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devon4j.asciidoc_architecture.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-ide-support.asciidoc.html#LICENSE.asciidoc">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2021-07-22 08:22:27 UTC
+</sub></div>
+</div>
+</div>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+<script>
+  var internalUrls = ["https://cginternal.devonfw.com/websitesnippets/"];
+  $(".internal").each(function(){
+    internalUrls.forEach((internalUrl, index) => {
+      $.ajax({url: internalUrl + $(this).text() + "/index.html" })
+      .then(r => {
+        var leftDiv = $('<div class="info"><span class="infoText">Internal</span><img class="infoImage" src="' + internalUrl + 'logo.png"/></div>');
+        var rightFirstDiv = $('<div class="message">This is only visible inside of the corporate network.</div>');
+        var rightLastDiv = $('<div class="content"></div>');
+        rightLastDiv.html(r);
+        var rightDiv = $('<div class="right"></div>');
+        rightDiv.append(rightFirstDiv);
+        rightDiv.append(rightLastDiv);
+        $(this).html(leftDiv);
+        $(this).append(rightDiv);
+        $(this).addClass("internal-active");
+        $(this).removeClass("internal");
+      })
+    });
+	});
+</script>
+</body>
+</html>
