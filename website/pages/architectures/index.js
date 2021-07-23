@@ -109,15 +109,15 @@ function disableFilters(solutions) {
 
 async function main() {
     indexJson = await $.ajax({
-        url: "index.json"
+        url: "index.json?r=" + Math.random()*10000
     });
 
     solutionsJson = await $.ajax({
-        url: "solutions.json"
+        url: "solutions.json?r=" + Math.random()*10000
     });
 
     tagsJson = await $.ajax({
-        url: "tags.json"
+        url: "tags.json?r=" + (Math.random()*10000)
     });
 
 
