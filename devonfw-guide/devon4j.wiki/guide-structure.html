@@ -95,49 +95,20 @@
 <div class="toc2">
 <div class="title">Table of Contents</div>
 <ul class="sectlevel0">
-<li><a href="#guide-structure.asciidoc">Project structure</a>
-<ul class="sectlevel1">
-<li><a href="#guide-structure.asciidoc_make-jar-not-war">Make jar not war</a></li>
-<li><a href="#guide-structure.asciidoc_package-structure">Package Structure</a></li>
-</ul>
-</li>
+<li><a href="#guide-structure.asciidoc">Project structure</a></li>
 </ul>
 <h1 id="guide-structure.asciidoc" class="sect0">Project structure</h1>
 <div class="paragraph">
-<p>The structure of a <code>devon4j</code> application is divided into the following modules:</p>
+<p>In devonfw we want to give clear structure and guidance for building applications.
+This also allows tools such as <a href="https://github.com/devonfw/cobigen">CobiGen</a> or <a href="https://github.com/devonfw/sonar-devon4j-plugin/">sonar-devon4j-plugin</a> to "understand" the code.
+Also this helps developers going from one devonfw project to the next one to quickly understand the code-base.
+If every developer knows where to find what, the project gets more efficient.
+A long time ago maven standardized the project structure with <code>src/main/java</code>, etc. and turned chaos into structure.
+With devonfw we experienced the same for the codebase (what is inside <code>src/main/java</code>).</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>api</code>: module containing the API of your application. The API contains the required artifacts to interact with your application via remote services. This can be <a href="guide-rest.html#jax-rs">REST service interfaces</a>, <a href="#guide-transferobject.asciidoc">transfer-objects</a> with their interfaces and <a href="#guide-datatype.asciidoc">datatypes</a> but also <a href="https://www.openapis.org/">OpenAPI</a> or <a href="https://grpc.io/">gRPC</a> contracts.</p>
-</li>
-<li>
-<p><code>core</code>: maven module containing the core of the application with service implementation, as well as entire <a href="#guide-logic-layer.asciidoc">logic layer</a> and <a href="#guide-dataaccess-layer.asciidoc">dataaccess layer</a>.</p>
-</li>
-<li>
-<p><code>batch</code>: optional module for <a href="#guide-batch-layer.asciidoc">batch layer</a></p>
-</li>
-<li>
-<p><code>server</code>: module that bundles the entire app (<code>core</code> with optional <code>batch</code>) typically as a bootified WAR file.</p>
-</li>
-</ul>
-</div>
-<div class="sect1">
-<h2 id="guide-structure.asciidoc_make-jar-not-war">Make jar not war</h2>
-<div class="sectionbody">
 <div class="paragraph">
-<p>First of all it is important to understand that the above defined structure aims to make modules like <code>api</code>, <code>core</code>, and <code>batch</code> reusable maven artifacts, that can be used as a regular maven dependency.
-On the other hand to build and deploy your application you want a final artifact that is containing all required 3rd party libraries. This artifact is not reusable as a maven dependency. That is exactly the purpose of the <code>server</code> module to build and package this final deployment artifact. By default we first build a regular <code>WAR</code> file with maven in your <code>server/target</code> directory (<code>*-server-«version».war</code>) and in a second step create a bootified <code>WAR</code> out of this (<code>*-server-bootified.war</code>). The bootified <code>WAR</code> file can then be started standalone (<code>java -jar «filename».war</code>). However, it is also possible to deploy the same <code>WAR</code> file to a servlet container like <code>tomcat</code> or <code>jetty</code>. As application servers and externally provided servlet containers are not recommendet anymore for various reasons (see <a href="#guide-jee.asciidoc">JEE</a>), you may also want to create a bootified <code>JAR</code> file instead. All you need to do in that case is to change the <code>packaging</code> in your <code>server/pom.xml</code> from <code>war</code> to <code>jar</code>.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="guide-structure.asciidoc_package-structure">Package Structure</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The package structure of your code inside <code>src/main/java</code> (and <code>src/test/java</code>) of your modules is described in our coding conventions in the sections <a href="coding-conventions.html#packages">packages</a> and <a href="coding-conventions.html#architecture-mapping">architecture-mapping</a>.</p>
-</div>
-</div>
+<p>We initially started <code>devon4j</code> based on spring and spring-boot and proposed a <a href="#guide-structure-classic.asciidoc">classic project structure</a>.
+With modern cloud-native trends we added a <a href="#guide-structure-modern.asciidoc">modern project structure</a>, that is more lean and up-to-date with the latest market trends.</p>
 </div>
 </div>
 <div id="footer" class="footer">
@@ -276,7 +247,7 @@ On the other hand to build and deploy your application you want a final artifact
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-07-26 15:34:11 UTC
+Last updated 2021-07-26 16:09:44 UTC
 </sub></div>
 </div>
 </div>

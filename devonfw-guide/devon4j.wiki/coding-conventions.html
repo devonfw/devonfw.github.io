@@ -21,7 +21,7 @@
 <!-- ************************************* -->
 
 
-<title>Naming</title>
+<title>Coding Conventions</title>
 <!-- devonfw website stylesheet -->
 <link rel="stylesheet" type="text/css" href="/devonfw.css">
 <!-- Lunr -->
@@ -94,10 +94,11 @@
 <div id="content" class="mt-4 mt-sm-5">
 <div class="toc2">
 <div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#coding-conventions.asciidoc">Coding Conventions</a>
 <ul class="sectlevel1">
 <li><a href="#coding-conventions.asciidoc_naming">Naming</a></li>
 <li><a href="#coding-conventions.asciidoc_packages">Packages</a></li>
-<li><a href="#coding-conventions.asciidoc_architecture-mapping">Architecture Mapping</a></li>
 <li><a href="#coding-conventions.asciidoc_code-tasks">Code Tasks</a>
 <ul class="sectlevel2">
 <li><a href="#coding-conventions.asciidoc_todo">TODO</a></li>
@@ -109,6 +110,7 @@
 <li><a href="#coding-conventions.asciidoc_code-style">Code-Style</a>
 <ul class="sectlevel2">
 <li><a href="#coding-conventions.asciidoc_blobs">BLOBs</a></li>
+<li><a href="#coding-conventions.asciidoc_stateless-programming">Stateless Programming</a></li>
 <li><a href="#coding-conventions.asciidoc_closing-resources">Closing Resources</a></li>
 <li><a href="#coding-conventions.asciidoc_catching-and-handling-exceptions">Catching and handling Exceptions</a></li>
 <li><a href="#coding-conventions.asciidoc_lambdas-and-streams">Lambdas and Streams</a></li>
@@ -119,6 +121,9 @@
 </ul>
 </li>
 </ul>
+</li>
+</ul>
+<h1 id="coding-conventions.asciidoc" class="sect0">Coding Conventions</h1>
 <div class="paragraph">
 <p>The code should follow general conventions for Java (see <a href="http://www.oracle.com/technetwork/java/namingconventions-139351.html">Oracle Naming Conventions</a>, <a href="https://google.github.io/styleguide/javaguide.html">Google Java Style</a>, etc.).We consider this as common sense and provide configurations for <a href="http://www.sonarqube.org/">SonarQube</a> and related tools such as <a href="http://checkstyle.sourceforge.net/">Checkstyle</a> instead of repeating this here.</p>
 </div>
@@ -169,7 +174,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>«rootpackage».«application».«component».«layer».«scope»[.«detail»]*</code></pre>
+<pre class="highlight"><code>«root».«component».«layer».[.«detail»]*</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -191,14 +196,9 @@
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">«rootpackage»</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Is the basic Java Package name-space of the organization or IT project owning the code following common Java Package conventions. Consists of multiple segments corresponding to the Internet domain of the organization.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">«root»</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Is the basic Java Package name-space of your app. Typically we suggest to use <code>«group».«artifact»</code> where <code>«group»</code> is your maven/gradle <code>groupId</code> corresponding to your organization or IT project owning the code following common Java Package conventions. The segment <code>«artifact»</code> is your maven/gradle <code>artifactId</code> and is typically the technical name of your app.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>com.devonfw.application.mtsj</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">«application»</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the application build in this project.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>devonfw</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">«component»</p></td>
@@ -207,121 +207,23 @@
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">«layer»</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the technical layer (See <a href="#architecture.asciidoc">technical architecture</a>) which is one of the predefined layers (<code>dataaccess</code>, <code>logic</code>, <code>service</code>, <code>batch</code>, <code>gui</code>, <code>client</code>) or <code>common</code> for code not assigned to a technical layer (datatypes, cross-cutting concerns).</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dataaccess</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">«scope»</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The scope which is one of <code>api</code> (official API to be used by other layers or components),<code>base</code> (basic code to be reused by other implementations) and <code>impl</code> (implementation that should never be imported from outside)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>api</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the technical layer (See <a href="#architecture.asciidoc">technical architecture</a>). Details are described for the <a href="guide-structure-modern.html#layers">modern project structure</a> and for the <a href="guide-structure-classic.html#layers">classic project structure</a>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>logic</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">«detail»</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Here you are free to further divide your code into sub-components and other concerns according to the size of your component part.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Here you are free to further divide your code into sub-components and other concerns according to the size of your component part. If you want to strictly separate API from implementation you should start <code>«detail»</code> with <code>«scope»</code> that is explained below.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>dao</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">«scope»</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The scope which is one of <code>api</code> (official API to be used by other layers or components),<code>base</code> (basic code to be reused by other implementations) and <code>impl</code> (implementation that should never be imported from outside). This segment was initially mandatory but due to trends such as microservices, lean, and agile we decided to make it optional and do not force anybody to use it.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>api</code></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Please note that for library modules where we use <code>com.devonfw.module</code> as <code>«basepackage»</code> and the name of the module as <code>«component»</code>. E.g. the API of our <code>beanmapping</code> module can be found in the package <code>com.devonfw.module.beanmapping.common.api</code>.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="coding-conventions.asciidoc_architecture-mapping">Architecture Mapping</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>We combine the above naming and packaging conventions to map the entire architecture to the code.
-This also allows tools such as <a href="https://github.com/devonfw/cobigen">CobiGen</a> or <a href="https://github.com/devonfw/sonar-devon4j-plugin/">sonar-devon4j-plugin</a> to "understand" the code.
-Also this helps developers going from one devon4j project to the next one to quickly understand the code-base.
-If every developer knows where to find what, the project gets more efficient.
-A long time ago maven standardized the project structure with <code>src/main/java</code>, etc. and turned chaos into structure.
-With devonfw we experienced the same for the codebase (what is inside <code>src/main/java</code>).</p>
-</div>
-<div class="listingblock">
-<div class="title">Architecture mapped to code</div>
-<div class="content">
-<pre>«rootpackage».«application»
-├──.<a href="guide-component.html#business-component">«component»</a>
-|  ├──.common
-|  |  ├──.api[.«detail»]
-|  |  |  ├──.<a href="#guide-datatype.asciidoc">datatype</a>
-|  |  |  |  └──.<a href="#guide-datatype.asciidoc">«Datatype»</a> (api)
-|  |  |  └──.<a href="guide-transferobject.html#bo">«BusinessObject»</a> (api)
-|  |  └──.impl[.«detail»]
-|  |     ├──.<a href="guide-configuration-mapping.html#mapping-advanced-configuration">«Aspect»ConfigProperties</a> (core)
-|  |     ├──.<a href="guide-json.html#custom-mapping">«Datatype»JsonSerializer</a> (core)
-|  |     └──.<a href="guide-json.html#custom-mapping">«Datatype»JsonDeserializer</a> (core)
-|  ├──.<a href="#guide-dataaccess-layer.asciidoc">dataaccess</a>
-|  |  ├──.api[.«detail»]
-|  |  |  ├──.<a href="#guide-repository.asciidoc">repo</a>
-|  |  |  |  └──.<a href="guide-repository.html#repository">«BusinessObject»Repository</a> (core)
-|  |  |  ├──.<a href="#guide-dao.asciidoc">dao</a> (core) [alternative to repo]
-|  |  |  |  └──.<a href="guide-dao.html#data-access-object">«BusinessObject»Dao</a> (core) [alternative to Repository]
-|  |  |  └──.<a href="guide-jpa.html#entity">«BusinessObject»Entity</a> (core)
-|  |  └──.impl[.«detail»]
-|  |     ├──.<a href="#guide-dao.asciidoc">dao</a> (core) [alternative to repo]
-|  |     |  └──.<a href="guide-dao.html#data-access-object">«BusinessObject»DaoImpl</a> (core) [alternative to Repository]
-|  |     └──.<a href="guide-jpa.html#entities-and-datatypes">«Datatype»AttributeConverter</a> (core)
-|  ├──.<a href="#guide-logic-layer.asciidoc">logic</a>
-|  |  ├──.api
-|  |  |  ├──.[«detail».]<a href="#guide-transferobject.asciidoc">to</a>
-|  |  |  |   ├──.<a href="guide-transferobject.html#to">«MyCustom»«To</a> (api)
-|  |  |  |   ├──.<a href="guide-jpa.html#embeddable">«DataStructure»Embeddable</a> (api)
-|  |  |  |   ├──.<a href="guide-transferobject.html#eto">«BusinessObject»Eto</a> (api)
-|  |  |  |   └──.<a href="guide-transferobject.html#cto">«BusinessObject»«Subset»Cto</a> (api)
-|  |  |  ├──.[«detail».]<a href="#guide-usecase.asciidoc">usecase</a>
-|  |  |  |   ├──.<a href="guide-usecase.html#find">UcFind«BusinessObject»</a> (core)
-|  |  |  |   ├──.<a href="guide-usecase.html#manage">UcManage«BusinessObject»</a> (core)
-|  |  |  |   └──.<a href="guide-usecase.html#custom">Uc«Operation»«BusinessObject»</a> (core)
-|  |  |  └──.<a href="guide-logic-layer.html#component">«Component»</a> (core)
-|  |  ├──.base
-|  |  |  └──.[«detail».]<a href="#guide-usecase.asciidoc">usecase</a>
-|  |  |     └──.<a href="#guide-usecase.asciidoc">Abstract«BusinessObject»Uc</a> (core)
-|  |  └──.impl
-|  |     ├──.[«detail».]<a href="#guide-usecase.asciidoc">usecase</a>
-|  |     |   ├──.<a href="guide-usecase.html#find">UcFind«BusinessObject»Impl</a> (core)
-|  |     |   ├──.<a href="guide-usecase.html#manage">UcManage«BusinessObject»Impl</a> (core)
-|  |     |   └──.<a href="guide-usecase.html#custom">Uc«Operation»«BusinessObject»Impl</a> (core)
-|  |     └──.<a href="guide-logic-layer.html#component">«Component»Impl</a> (core)
-|  └──.<a href="#guide-service-layer.asciidoc">service</a>
-|     ├──.api[.«detail»]
-|     |  ├──.<a href="#guide-rest.asciidoc">rest</a>
-|     |  |  └──.<a href="guide-rest.html#rest-service-api">«Component»RestService</a> (api)
-|     |  └──.<a href="#guide-soap.asciidoc">ws</a>
-|     |     └──.<a href="guide-soap.html#web-service-api">«Component»WebService</a> (api)
-|     └──.impl[.«detail»]
-|        ├──.<a href="#guide-jms.asciidoc">jms</a>
-|        |  └──.<a href="guide-jms.html#jms-listener">«BusinessObject»JmsListener</a> (core)
-|        ├──.<a href="#guide-rest.asciidoc">rest</a>
-|        |  └──.<a href="guide-rest.html#rest-service-implementation">«Component»RestServiceImpl</a> (core)
-|        └──.<a href="#guide-soap.asciidoc">ws</a>
-|           └──.<a href="guide-soap.html#web-service-implementation">«Component»WebServiceImpl</a> (core)
-├──.<a href="guide-component.html#general-component">general</a>
-│  ├──.common
-│  |  ├──.api
-|  |  |  ├──.to
-|  |  |  |  ├──.AbstractSearchCriteriaTo (api)
-|  |  |  └──.ApplicationEntity
-│  |  ├──.base
-|  |  |  └──.AbstractBeanMapperSupport (core)
-│  |  └──.impl
-│  |     ├──.config
-│  |     |  └──.ApplicationObjectMapperFactory (core)
-│  |     └──.security
-│  |        └──.ApplicationWebSecurityConfig (core)
-│  ├──.dataaccess
-│  |  └──.api
-|  |     └──.ApplicationPersistenceEntity (core)
-│  ├──.logic
-│  |  └──.base
-|  |     ├──.AbstractComponentFacade (core)
-|  |     ├──.AbstractLogic (core)
-|  |     └──.AbstractUc (core)
-|  └──.service
-|     └──...
-└──.SpringBootApp (core)</pre>
-</div>
+<p>Please note that <code>devon4j</code> library modules for spring use <code>com.devonfw.module</code> as <code>«root»</code> and the name of the module as <code>«component»</code>. E.g. the API of our <code>beanmapping</code> module can be found in the package <code>com.devonfw.module.beanmapping.common.api</code>.</p>
 </div>
 </div>
 </div>
@@ -409,6 +311,83 @@ With devonfw we experienced the same for the codebase (what is inside <code>src/
 <h3 id="coding-conventions.asciidoc_blobs">BLOBs</h3>
 <div class="paragraph">
 <p>Avoid using <code>byte[]</code> for BLOBs as this will load them entirely into your memory. This will cause performance issues or out of memory errors. Instead, use streams when dealing with BLOBs. For further details see <a href="#guide-blob-support.asciidoc">BLOB support</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="coding-conventions.asciidoc_stateless-programming">Stateless Programming</h3>
+<div class="paragraph">
+<p>When implementing logic as components or <em>beans</em> of your container using <a href="#guide-dependency-injection.asciidoc">dependency injection</a>, we strongly encourage stateless programming.
+This is not about business objects like an <a href="guide-jpa.html#entity">entity</a> or <a href="#guide-transferobject.asciidoc">transfer-object</a> that are stateful by design.
+Instead this applies to all classes annotated with <code>@Named</code>, <code>@ApplicationScoped</code>, <code>@Stateless</code>, etc. and all their super-classes.
+These classes especially include your <a href="#guide-repository.asciidoc">repositories</a>, <a href="#guide-usecase.asciidoc">use-cases</a>, and <a href="guide-rest.html#jax-rs">REST services</a>.
+Such classes shall never be modified after initialization.
+Methods called at runtime (after initialization via the container) do not assing fields (member variables of your class) or mutate the object stored in a field.
+This allows your component or bean to be stateless and thread-safe.
+Therefore it can be initialized as a singleton so only one instance is created and shared accross all threads of the application.
+Here is an example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@ApplicationScoped
+@Named
+public class UcApproveContractImpl implements UcApproveContract {
+
+  // bad
+  private String contractOwner;
+
+  private MyState state;
+
+  @Overide
+  public void approve(Contract contract) {
+    this.contractOwner = contract.getOwner();
+    this.contractOwner = this.contractOwner.toLowerCase(Locale.US);
+    this.state.setAdmin(this.contractOwner.endsWith("admin"));
+    if (this.state.isAdmin()) {
+      ...
+    } else {
+      ...
+    }
+  }
+
+  // fine
+  @Overide
+  public void approveContract(Contract contract) {
+    String contractOwner = contract.getOwner().toLowerCase(Locale.US);
+    if (contractOwner.endsWith("admin")) {
+      ...
+    } else {
+      ...
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As you can see in the <code>bad</code> code fields of the class are assigned when the method <code>approve</code> is called.
+So in case mutliple users and therefore threads are calling this method concurrently can interfere and override this state causing side-effects on parallel threads.
+This will lead to nasty bugs and errors that are hard to trace down.
+They will not occur in simple tests but for sure in production with real users.
+Therefore <strong>never</strong> do this and implement your functionality stateless.
+That is keeping all state in local variables and strictly avoid modifying fields or their value as illustrated in the <code>fine</code> code.
+If you find yourself ending up, passing many parameters between methods that all represent state, you can easily create a separate class that encapsulates this state.
+However, then you need to create this state object in your method as local variable and pass it between methods as parameter:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@ApplicationScoped
+@Named
+public class UcApproveContractImpl implements UcApproveContract {
+
+  // fine
+  @Overide
+  public void approveContract(Contract contract) {
+    String contractOwner = contract.getOwner().toLowerCase(Locale.US);
+    MyState state = new MyState();
+    state.setAdmin(this.contractOwner.endsWith("admin"));
+    doApproveContract(contract, state);
+  }
+}</code></pre>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -634,13 +613,13 @@ id = Optional.ofNullable(fooCto).map(FooCto::getBar).map(BarCto::getBar).map(Bar
 <div class="ulist">
 <ul>
 <li>
-<p>When you have explicitly decided for an encoding always prefer Unicode (UTF-8 or better). This especially impacts your databases and has to be defined upfront as it typically can not be changed (easily) afterwards.</p>
+<p>Whenever possible prefer unicode (UTF-8 or better) as encoding. This especially impacts your databases and has to be defined upfront as it typically can not be changed (easily) afterwards.</p>
 </li>
 <li>
-<p>Do not cast from <code>byte</code> to <code>char</code> (Unicode characters can be composed of multiple bytes, such cast may only work for ASCII characters)</p>
+<p>Do not cast from <code>byte</code> to <code>char</code> (unicode characters can be composed of multiple bytes, such cast may only work for ASCII characters)</p>
 </li>
 <li>
-<p>Never convert the case of a String using the default locale (esp. when writing generic code like in devonfw). E.g. if you do <code>"HI".toLowerCase()</code> and your system locale is Turkish, then the output will be "hı" instead of "hi", which can lead to wrong assumptions and serious problems. If you want to do a "universal" case conversion always use explicitly an according western locale (e.g. <code>toLowerCase(Locale.US)</code>). Consider using a library (<a href="https://github.com/m-m-m/util/blob/master/core/src/main/java/net/sf/mmm/util/lang/api/BasicHelper.java" class="bare">https://github.com/m-m-m/util/blob/master/core/src/main/java/net/sf/mmm/util/lang/api/BasicHelper.java</a>) or create your own little static utility for that in your project.</p>
+<p>Never convert the case of a String using the default locale (esp. when writing generic code like in devonfw). E.g. if you do <code>"HI".toLowerCase()</code> and your system locale is Turkish, then the output will be "hı" instead of "hi", which can lead to wrong assumptions and serious problems. If you want to do a "universal" case conversion always explicitly use an according western locale (e.g. <code>toLowerCase(Locale.US)</code>). Consider using a helper class (see e.g. <a href="https://github.com/m-m-m/base/blob/master/core/src/main/java/io/github/mmm/base/text/CaseHelper.java">CaseHelper</a>) or create your own little static utility for that in your project.</p>
 </li>
 <li>
 <p>Write your code independent from the default encoding (system property <code>file.encoding</code>) - this will most likely differ in JUnit from production environment</p>
@@ -851,7 +830,7 @@ public boolean isEmpty {
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-07-26 15:33:21 UTC
+Last updated 2021-07-26 16:09:08 UTC
 </sub></div>
 </div>
 </div>

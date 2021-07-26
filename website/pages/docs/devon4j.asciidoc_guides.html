@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2021-07-26 15:42:00 UTC">
+<meta name="author" content="Updated at 2021-07-26 16:14:32 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -511,7 +511,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2021-07-26 15:42:39 UTC</span><br>
+<span id="author" class="author">Updated at 2021-07-26 16:14:58 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -523,10 +523,18 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="devonfw-guide_java.asciidoc.html">Java</a>
 <ul class="sectlevel1">
 <li><a href="devon4j.asciidoc.html">spring</a>
-<ul class="sectlevel2">
-<li><a href="devon4j.asciidoc_architecture.html">Architecture</a>
+<ul class="sectlevel3">
+<li><a href="devon4j.asciidoc.html#architecture.asciidoc_architecture">Architecture</a>
 </li>
-<li><a href="devon4j.asciidoc_coding-conventions.html">Coding Conventions</a>
+<li><a href="devon4j.asciidoc.html#architecture.asciidoc_key-principles">Key Principles</a>
+</li>
+<li><a href="devon4j.asciidoc.html#architecture.asciidoc_architecture-principles">Architecture Principles</a>
+</li>
+<li><a href="devon4j.asciidoc.html#architecture.asciidoc_application-architecture">Application Architecture</a>
+</li>
+<li><a href="devon4j.asciidoc.html#guide-component.asciidoc">Components</a>
+</li>
+<li><a href="coding-conventions.asciidoc.html">Coding Conventions</a>
 </li>
 <li><a href="guide-structure.asciidoc.html">Project structure</a>
 </li>
@@ -659,37 +667,43 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect3">
 <h4 id="guide-dependency-injection.asciidoc">Dependency Injection</h4>
 <div class="paragraph">
-<p>Dependency injection is one of the most important design patterns and is a key principle to a modular and component based architecture. The Java Standard for dependency injection is <a href="http://docs.oracle.com/javaee/6/api/javax/inject/package-summary.html">javax.inject (JSR330)</a> that we use in combination with <a href="http://docs.oracle.com/javaee/5/api/javax/annotation/package-summary.html">JSR250</a>.</p>
+<p>Dependency injection is one of the most important design patterns and is a key principle to a modular and component based architecture.
+The Java Standard for dependency injection is <a href="http://docs.oracle.com/javaee/6/api/javax/inject/package-summary.html">javax.inject (JSR330)</a> that we use in combination with <a href="http://docs.oracle.com/javaee/5/api/javax/annotation/package-summary.html">JSR250</a>.
+Additionally, for scoping you can use CDI (Context and Dependency Injection) from <a href="https://jcp.org/en/jsr/detail?id=365">JSR365</a>.</p>
 </div>
 <div class="paragraph">
-<p>There are many frameworks which support this standard including all recent Java EE application servers. We recommend to use <a href="http://spring.io/">Spring</a> (also known as springframework) that we use in our example application. However, the modules we provide typically just rely on JSR330 and can be used with any compliant container.</p>
+<p>There are many frameworks which support this standard including all recent Java EE application servers.
+Therefore in devonfw we rely on these open standards and can propagate patterns and code examples that work independent from the underlying frameworks.</p>
 </div>
 <div class="sect4">
 <h5 id="guide-dependency-injection.asciidoc_key-principles">Key Principles</h5>
 <div class="paragraph">
-<p>A Bean in CDI (Contexts and Dependency-Injection) or Spring is typically part of a larger component and encapsulates some piece of logic that should in general be replaceable. As an example we can think of a Use-Case, Data-Access-Object (DAO), etc. As best practice we use the following principles:</p>
+<p>Within dependency injection a <em>bean</em> is typically a reusable unit of your application providing an encapsulated functionality.
+This <em>bean</em> can be injected into other beans and it should in general be replaceable.
+As an example we can think of a <a href="devon4j.asciidoc_layers.html#guide-usecase.asciidoc">use-case</a>, a <a href="devon4j.asciidoc_guides.html#guide-repository.asciidoc">repository</a>, etc.
+As best practice we use the following principles:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Separation of API and implementation</strong><br>
-We create a self-contained API documented with JavaDoc. Then we create an implementation of this API that we annotate with <code>@Named</code>. This implementation is treated as secret. Code from other components that wants to use the implementation shall only rely on the API. Therefore we use dependency injection via the interface with the <code>@Inject</code> annotation.</p>
-</li>
-<li>
 <p><strong>Stateless implementation</strong><br>
-By default implementations (CDI-Beans) shall always be stateless. If you store state information in member variables you can easily run into concurrency problems and nasty bugs. This is easy to avoid by using local variables and separate state classes for complex state-information. Try to avoid stateful CDI-Beans wherever possible. Only add state if you are fully aware of what you are doing and properly document this as a warning in your JavaDoc.</p>
+By default such beans shall be implemented <a href="coding-conventions.html#stateless-programming">stateless</a>. If you store state information in member variables you can easily run into concurrency problems and nasty bugs. This is easy to avoid by using local variables and separate state classes for complex state-information. Try to avoid stateful beans wherever possible. Only add state if you are fully aware of what you are doing and properly document this as a warning in your JavaDoc.</p>
 </li>
 <li>
-<p><strong>Usage of JSR330</strong><br>
-We use javax.inject (JSR330) and JSR250 as a common standard that makes our code portable (works in any modern Java EE environment). However, we recommend to use the springframework as container. But we never use proprietary annotations such as <code>@Autowired</code> instead of standardized annotations like <code>@Inject</code>. Generally we avoid proprietary annotations in business code (<code>common</code> and <a href="devon4j.asciidoc_layers.html#guide-logic-layer.asciidoc">logic layer</a>).</p>
+<p><strong>Usage of Java standards</strong><br>
+We use common standards (see above) that makes our code portable. Therefore we use standardized annotations like <code>@Inject</code> (<code>javax.inject.Inject</code>) instead of proprietary annotations such as <code>@Autowired</code>. Generally we avoid proprietary annotations in business code (<a href="devon4j.asciidoc_layers.html#guide-logic-layer.asciidoc">logic layer</a>).</p>
 </li>
 <li>
-<p><strong>Simple Injection-Style</strong><br>
-In general you can choose between constructor, setter or field injection. For simplicity we recommend to do private field injection as it is very compact and easy to maintain. We believe that constructor injection is bad for maintenance especially in case of inheritance (if you change the dependencies you need to refactor all sub-classes). Private field injection and public setter injection are very similar but setter injection is much more verbose (often you are even forced to have javadoc for all public methods). If you are writing re-usable library code setter injection will make sense as it is more flexible. In a business application you typically do not need that and can save a lot of boiler-plate code if you use private field injection instead. Nowadays you are using container infrastructure also for your tests (see <a href="#guide-testing.asciidoc">spring integration tests</a>) so there is no need to inject manually (what would require a public setter).</p>
+<p><strong>Simple injection-style</strong><br>
+In general you can choose between constructor, setter or field injection. For simplicity we recommend to do private field injection as it is very compact and easy to maintain. We believe that constructor injection is bad for maintenance especially in case of inheritance (if you change the dependencies you need to refactor all sub-classes). Private field injection and public setter injection are very similar but setter injection is much more verbose (often you are even forced to have javadoc for all public methods). If you are writing re-usable library code setter injection will make sense as it is more flexible. In a business application you typically do not need that and can save a lot of boiler-plate code if you use private field injection instead. Nowadays you are using container infrastructure also for your tests (see <a href="#guide-testing.asciidoc">testing</a>) so there is no need to inject manually (what would require a public setter).</p>
 </li>
 <li>
 <p><strong>KISS</strong><br>
-To follow the KISS (keep it small and simple) principle we avoid advanced features (e.g. <a href="devon4j.asciidoc_guides.html#guide-aop.asciidoc">AOP</a>, non-singleton beans) and only use them where necessary.</p>
+To follow the KISS (keep it small and simple) principle we avoid advanced features (e.g. custom <a href="devon4j.asciidoc_guides.html#guide-aop.asciidoc">AOP</a>, non-singleton beans) and only use them where necessary.</p>
+</li>
+<li>
+<p><strong>Separation of API and implementation</strong><br>
+For important components we should separate a self-contained API documented with JavaDoc from its implementation. Code from other components that wants to use the implementation shall only rely on the API. However, for things that will never be exchanged no API as interface is required you can skip such separation.</p>
 </li>
 </ul>
 </div>
@@ -697,14 +711,15 @@ To follow the KISS (keep it small and simple) principle we avoid advanced featur
 <div class="sect4">
 <h5 id="guide-dependency-injection.asciidoc_example-bean">Example Bean</h5>
 <div class="paragraph">
-<p>Here you can see the implementation of an example bean using JSR330 and JSR250:</p>
+<p>Here you can see the implementation of an example bean using dependency injection:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Named
-public class MyBeanImpl implements MyBean {
+<pre class="highlight"><code class="language-java" data-lang="java">@ApplicationScoped
+@Named(&quot;MyComponent&quot;)
+public class MyComponentImpl implements MyComponent {
   @Inject
-  private MyOtherBean myOtherBean;
+  private MyOtherComponent myOtherComponent;
 
   @PostConstruct
   public void init() {
@@ -715,14 +730,45 @@ public class MyBeanImpl implements MyBean {
   public void dispose() {
     // shutdown bean, free resources if required (otherwise omit this method)
   }
+
+  ...
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>It depends on <code>MyOtherBean</code> that should be the interface of an other component that is injected into the field because of the <code>@Inject</code> annotation. To make this work there must be exactly one implementation of <code>MyOtherBean</code> in the container (in our case spring). In order to put a Bean into the container we use the <code>@Named</code> annotation so in our example we put <code>MyBeanImpl</code> into the container. Therefore it can be injected into all setters that take the interface <code>MyBean</code> as argument and are annotated with <code>@Inject</code>.</p>
+<p>Here <code>MyComponentImpl</code> depends on <code>MyOtherComponent</code> that is injected into the field <code>myOtherComponent</code> because of the <code>@Inject</code> annotation.
+To make this work there must be exactly one bean in the container (e.g. spring or quarkus) that is an instance of <code>MyOtherComponent</code>.
+In order to put a bean into the container, we can use <code>@ApplicationScoped</code> in case of CDI (required for quarkus) for a stateless bean.
+In spring we can ommit a CDI annotation and the <code>@Named</code> annotation is already sufficient as a bean is stateless by default in spring.
+If we always use <code>@ApplicationScoped</code> we can make this more explicit and more portable accross different frameworks.
+So in our example we put <code>MyComponentImpl</code> into the container.
+That bean will be called <code>MyComponent</code> as we specified in the <code>@Named</code> annotation but we can also omit the name to use the classname as fallback.
+Now our bean can be injected into other beans using <code>@Inject</code> annotation either via <code>MyComponent</code> interface (recommended when interface is present) or even directly via <code>MyComponentImpl</code>.
+In case you omit the interface, you should also omit the <code>Impl</code> suffix or instead use <code>Bean</code> as suffix.</p>
 </div>
+</div>
+<div class="sect4">
+<h5 id="guide-dependency-injection.asciidoc_multiple-bean-implementations">Multiple bean implementations</h5>
 <div class="paragraph">
-<p>In some situations you may have an Interface that defines a kind of &quot;plugin&quot; where you can have multiple implementations in your container and want to have all of them. Then you can request a list with all instances of that interface as in the following example:</p>
+<p>In some cases you might have multiple implementations as beans for the same interface.
+The following sub-sections handle the different scenarios to give you guidance.</p>
+</div>
+<div class="sect5">
+<h6 id="guide-dependency-injection.asciidoc_only-one-implementation-in-container">Only one implementation in container</h6>
+<div class="paragraph">
+<p>In some cases you still have only one implementation active as bean in the container at runtime.
+A typical example is that you have different implemenations for test and main usage.
+This case is easy, as <code>@Inject</code> will always be unique.
+The only thing you need to care about is how to configure your framework (spring, quaruks, etc.) to know which implementation to put in the container depending on specific configuration.
+In spring this can be archived via the proprietary <code>@Profile</code> annotaiton.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="guide-dependency-injection.asciidoc_injecting-all-of-multiple-implementations">Injecting all of multiple implementations</h6>
+<div class="paragraph">
+<p>In some situations you may have an interface that defines a kind of &quot;plugin&quot;.
+You can have multiple implementations in your container and want to have all of them injected.
+Then you can request a list with all the bean implementations via the interface as in the following example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -731,13 +777,171 @@ public class MyBeanImpl implements MyBean {
 </div>
 </div>
 <div class="paragraph">
-<p>Please note that when writing library code instead of annotating implementation with <code>@Named</code> it is better to provide <code>@Configuration</code> classes that choose the implementation via <code>@Bean</code> methods (see <a href="http://docs.spring.io/spring-javaconfig/docs/1.0.0.M4/reference/html/ch02s02.html">@Bean documentation</a>). This way you can better &quot;export&quot; specific features instead of relying library users to do a component-scan to your library code and loose control on upgrades.</p>
+<p>Your code may iterate over all plugins (converters) and apply them sequentially.
+Please note that the injection will fail (at least in spring), when there is no bean available to inject.
+So you do not get an empty list injected but will get an exception on startup.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="guide-dependency-injection.asciidoc_injecting-one-of-multiple-implementations">Injecting one of multiple implementations</h6>
+<div class="paragraph">
+<p>Another scenario is that you have multiple implementations in your container coexisting, but for injection you may want to choose a specific implementation.
+Here you could use the <code>@Named</code> annotation to specify a unique identifier for each implementation what is called qualified injection:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@ApplicationScoped
+@Named(&quot;UserAuthenticator&quot;)
+public class UserAuthenticator implements Authenticator {
+  ...
+}
+@ApplicationScoped
+@Named(&quot;ServiceAuthenticator&quot;)
+public class ServiceAuthenticator implements Authenticator {
+  ...
+}
+public class MyUserComponent {
+  @Inject
+  @Named(&quot;UserAuthenticator&quot;)
+  private Authenticator authenticator;
+  ...
+}
+public class MyServiceComponent {
+  @Inject
+  @Named(&quot;ServiceAuthenticator&quot;)
+  private Authenticator authenticator;
+  ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>However, we discovered that this pattern is not so great:
+The identifiers in the <code>@Named</code> annotation are just strings that could easily break.
+You could use constants instead but still this is not the best solution.</p>
+</div>
+<div class="paragraph">
+<p>In the end you can very much simplify this by just directly injecting the implementation instead:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@ApplicationScoped
+public class UserAuthenticator implements Authenticator {
+  ...
+}
+@ApplicationScoped
+public class ServiceAuthenticator implements Authenticator {
+  ...
+}
+public class MyUserComponent {
+  @Inject
+  private UserAuthenticator authenticator;
+  ...
+}
+public class MyServiceComponent {
+  @Inject
+  private ServiceAuthenticator authenticator;
+  ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In case you want to strictly decouple from implementations, you can still create dedicated interfaces:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public interface UserAuthenticator extends Authenticator {}
+@ApplicationScoped
+public class UserAuthenticatorImpl implements UserAuthenticator {
+  ...
+}
+public interface ServiceAuthenticator extends Authenticator {}
+@ApplicationScoped
+public class ServiceAuthenticatorImpl implements ServiceAuthenticator {
+  ...
+}
+public class MyUserComponent {
+  @Inject
+  private UserAuthenticator authenticator;
+  ...
+}
+public class MyServiceComponent {
+  @Inject
+  private ServiceAuthenticator authenticator;
+  ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>However, as you can see this is again introducing additional boiler-plate code.
+While the principle to separate API and implementation and strictly decouple from implementation is valuable in general,
+you should always consider KISS, lean, and agile in contrast and balance pros and cons instead of blindly following dogmas.</p>
+</div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="guide-dependency-injection.asciidoc_bean-configuration">Bean configuration</h5>
+<h5 id="guide-dependency-injection.asciidoc_imports">Imports</h5>
 <div class="paragraph">
-<p>Wiring and Bean configuration can be found in <a href="devon4j.asciidoc_guides.html#guide-configuration.asciidoc">configuration guide</a>.</p>
+<p>Here are the import statements for the most important annotations for dependency injection</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import javax.inject.Inject;
+import javax.inject.Named;
+import javax.enterprise.context.ApplicationScoped;
+// import javax.enterprise.context.RequestScoped;
+// import javax.enterprise.context.SessionScoped;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guide-dependency-injection.asciidoc_dependencies">Dependencies</h5>
+<div class="paragraph">
+<p>Please note that with <a href="https://jakarta.ee/">Jakarta EE</a> the dependencies have changed.
+When you want to start with Jakarta EE you should use these dependencies to get the annoations for dependency injection:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;!-- Basic injection annotations (JSR-330) --&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;jakarta.inject&lt;/groupId&gt;
+  &lt;artifactId&gt;jakarta.inject-api&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;!-- Basic lifecycle and security annotations (JSR-250)--&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;jakarta.annotation&lt;/groupId&gt;
+  &lt;artifactId&gt;jakarta.annotation-api&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;!-- Context and dependency injection API (JSR-365) --&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;jakarta.enterprise&lt;/groupId&gt;
+  &lt;artifactId&gt;jakarta.enterprise.cdi-api&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Please note that with quarkus you will get them as transitive dependencies out of the box.
+The above Jakarate EE dependencies replace these JEE depdencies:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;!-- Basic injection annotations (JSR-330) --&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;javax.inject&lt;/groupId&gt;
+  &lt;artifactId&gt;javax.inject&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;!-- Basic lifecycle and security annotations (JSR-250)--&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;javax.annotation&lt;/groupId&gt;
+  &lt;artifactId&gt;javax.annotation-api&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;!-- Context and dependency injection API (JSR-365) --&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;jakarta.enterprise&lt;/groupId&gt;
+  &lt;artifactId&gt;jakarta.enterprise.cdi-api&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
 </div>
 <div style="page-break-after: always;"></div>
 <!-- toc disabled -->
@@ -848,7 +1052,7 @@ A basic and secure configuration is provided which can be overridden or extended
 Subclasses must use the <code>@Profile</code> annotation to further discriminate between beans used in production and testing scenarios. See the following example:</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing 7. How to extend <code>BaseWebSecurityConfig</code> for Production and Test</div>
+<div class="title">Listing 6. How to extend <code>BaseWebSecurityConfig</code> for Production and Test</div>
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@Configuration
 @EnableWebSecurity
@@ -3011,7 +3215,7 @@ V&lt;version&gt;__&lt;description&gt; (e.g.: V12345__Add_new_table.sql).</p>
 <p>The provided logback.xml is configured to use variables defined on the config/application.properties file. On our example, the log files path point to ../logs/ in order to log to tomcat log directory when starting tomcat on the bin folder. Change it according to your custom needs.</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing 8. config/application.properties</div>
+<div class="title">Listing 7. config/application.properties</div>
 <div class="content">
 <pre class="highlight"><code class="language-properties" data-lang="properties">log.dir=../logs/</code></pre>
 </div>
@@ -3040,7 +3244,7 @@ V&lt;version&gt;__&lt;description&gt; (e.g.: V12345__Add_new_table.sql).</p>
 <p>We use a common understanding of the log-levels as illustrated by the following table. This helps for better maintenance and operation of the systems by combining both views.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 30. Log-levels</caption>
+<caption class="title">Table 31. Log-levels</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -3128,7 +3332,7 @@ V&lt;version&gt;__&lt;description&gt; (e.g.: V12345__Add_new_table.sql).</p>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 31. Segments of Logfilename</caption>
+<caption class="title">Table 32. Segments of Logfilename</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -3286,7 +3490,7 @@ In that case it might be useful to log customs field to the produced JSON. This 
 We address these common threats individually in <em>security</em> sections of our technological guides as a concrete solution to prevent an attack typically depends on the according technology. The following table illustrates common threats and contains links to the solutions and protection-mechanisms provided by the devonfw:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 32. Security threats and protection-mechanisms</caption>
+<caption class="title">Table 33. Security threats and protection-mechanisms</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -3587,7 +3791,7 @@ http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);</code>
 <p>For clarification we also want to give a common understanding of related terms that have no unique definition and consistent usage in the wild.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 33. Security terms related to authorization</caption>
+<caption class="title">Table 34. Security terms related to authorization</caption>
 <colgroup>
 <col style="width: 15%;">
 <col style="width: 85%;">
@@ -3675,7 +3879,7 @@ http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);</code>
 <p>The segments are defined by the following table:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 34. Segments of Access Control Permission ID</caption>
+<caption class="title">Table 35. Segments of Access Control Permission ID</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -3823,7 +4027,7 @@ public class UcSafeOfferImpl extends ApplicationUc implements UcSafeOffer {
 <p>The file <code>access-control-schema.xml</code> is used to define the mapping from groups to permissions (see <a href="https://github.com/devonfw/my-thai-star/blob/develop/java/mtsj/core/src/main/resources/config/app/security/access-control-schema.xml">example from sample app</a>). The general terms discussed above can be mapped to the implementation as follows:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 35. General security terms related to devon4j access control schema</caption>
+<caption class="title">Table 36. General security terms related to devon4j access control schema</caption>
 <colgroup>
 <col style="width: 15%;">
 <col style="width: 15%;">
@@ -3860,7 +4064,7 @@ public class UcSafeOfferImpl extends ApplicationUc implements UcSafeOffer {
 </tbody>
 </table>
 <div class="listingblock">
-<div class="title">Listing 9. Example access-control-schema.xml</div>
+<div class="title">Listing 8. Example access-control-schema.xml</div>
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;access-control-schema&gt;
@@ -4546,7 +4750,7 @@ public class BookingmanagementRestServiceImpl implements BookingmanagementRestSe
 </div>
 </div>
 <div class="listingblock">
-<div class="title">Listing 10. <strong>BookingEto.java</strong></div>
+<div class="title">Listing 9. <strong>BookingEto.java</strong></div>
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">  @NotNull
   @Future
@@ -4881,7 +5085,7 @@ org.springframework.*</code></pre>
 <p>The following errors may occur in any devon application:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 36. Common Exceptions</caption>
+<caption class="title">Table 37. Common Exceptions</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -5180,9 +5384,8 @@ Therefore we need a customized <a href="https://github.com/FasterXML/jackson-doc
 <h4 id="guide-rest.asciidoc">REST</h4>
 <div class="paragraph">
 <p>REST (<a href="https://en.wikipedia.org/wiki/Representational_state_transfer">REpresentational State Transfer</a>) is an inter-operable protocol for <a href="devon4j.asciidoc_layers.html#guide-service-layer.asciidoc">services</a> that is more lightweight than <a href="devon4j.asciidoc_guides.html#guide-soap.asciidoc">SOAP</a>.
-However, it is no real standard and can cause confusion. Therefore we define best practices here to guide you.
-<strong>ATTENTION:</strong>
-REST and RESTful often implies very strict and specific rules and conventions. However different people will often have different opinions of such rules. We learned that this leads to &quot;religious discussions&quot; (starting from <code>PUT</code> vs. <code>POST</code> and IDs in path vs. payload up to Hypermedia and <a href="https://en.wikipedia.org/wiki/HATEOAS">HATEOAS</a>). These &quot;religious discussions&quot; waste a lot of time and money without adding real value in case of common business applications (if you publish your API on the internet to billions of users this is a different story). Therefore we give best practices that lead to simple, easy and pragmatic &quot;HTTP APIs&quot; (to avoid the term &quot;REST services&quot; and end &quot;religious discussions&quot;). Please also note that we do not want to assault anybody nor force anyone to follow our guidelines. Please read the following best practices carefully and be aware that they might slightly differ from what your first hit on the web will say about REST (see e.g. <a href="http://restcookbook.com/">RESTful cookbook</a>).</p>
+However, it is no real standard and can cause confusion (see <a href="https://github.com/devonfw/devon4j/blob/master/documentation/guide-rest-philosophy">REST philosophy</a>).
+Therefore we define best practices here to guide you.</p>
 </div>
 <div class="sect4">
 <h5 id="guide-rest.asciidoc_urls">URLs</h5>
@@ -5193,92 +5396,60 @@ For operations in REST we distinguish the following types of URLs:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>A <em>collection URL</em> is build from the rest service URL by appending the name of a collection. This is typically the name of an entity. Such URI identifies the entire collection of all elements of this type. Example: <code>https://mydomain.com/myapp/services/rest/mycomponent/v1/myentity</code></p>
+<p>A <em>collection URL</em> is build from the rest service URL by appending the name of a collection. This is typically the name of an entity. Such URL identifies the entire collection of all elements of this type. Example: <code>https://mydomain.com/myapp/services/rest/mycomponent/v1/myentity</code></p>
 </li>
 <li>
 <p>An <em>element URL</em> is build from a collection URL by appending an element ID. It identifies a single element (entity) within the collection. Example: <code>https://mydomain.com/myapp/services/rest/mycomponent/v1/myentity/42</code></p>
 </li>
-<li>
-<p>A <em>search URL</em> is build from a collection URL by appending the segment <code>search</code>. The search criteria is send as <code>POST</code>. Example: <code>https://mydomain.com/myapp/services/rest/mycomponent/v1/myentity/search</code></p>
-</li>
 </ul>
 </div>
 <div class="paragraph">
-<p>This fits perfect for <a href="https://en.wikipedia.org/wiki/Create,_read,_update_and_delete">CRUD</a> operations. For business operations (processing, calculation, etc.) we simply create a collection URL with the name of the business operation instead of the entity name (use a clear naming convention to avoid collisions). Then we can <code>POST</code> the input for the business operation and get the result back.</p>
-</div>
-<div class="paragraph">
-<p>If you want to provide an entity with a different structure do not append further details to an element URL but create a separate collection URL as base.
-So use <code>https://mydomain.com/myapp/services/rest/mycomponent/v1/myentity-with-details/42</code> instead of <code>https://mydomain.com/myapp/services/rest/mycomponent/v1/myentity/42/with-details</code>.
-For offering a <a href="guide-transferobject.html#CTO">CTO</a> simply append <code>-cto</code> to the collection URL (e.g. <code>&#x2026;&#x200B;/myentity-cto/</code>).</p>
+<p>This fits perfect for <a href="https://en.wikipedia.org/wiki/Create,_read,_update_and_delete">CRUD</a> operations.
+For business operations (processing, calculation, advanced search, etc.) we simply append a collection URL with the name of the business operation.
+Then we can <code>POST</code> the input for the business operation and get the result back. Example: <code>https://mydomain.com/myapp/services/rest/mycomponent/v1/myentity/search</code></p>
 </div>
 </div>
 <div class="sect4">
 <h5 id="guide-rest.asciidoc_http-methods">HTTP Methods</h5>
 <div class="paragraph">
-<p>While REST was designed as a pragmatical approach it sometimes leads to &quot;religious discussions&quot; e.g. about using <code>PUT</code> vs. <code>POST</code> (see ATTENTION notice above).
-As the devonfw has a string focus on usual business applications it proposes a more &quot;pragmatic&quot; approach to REST services.</p>
-</div>
-<div class="paragraph">
-<p>On the next table we compare the main differences between the &quot;canonical&quot; REST approach (or RESTful) and the devonfw proposal.</p>
+<p>The following table defines the HTTP methods (verbs) and their meaning:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 37. Usage of HTTP methods</caption>
+<caption class="title">Table 38. Usage of HTTP methods</caption>
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
+<col style="width: 50%;">
+<col style="width: 50%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top"><strong>HTTP Method</strong></th>
-<th class="tableblock halign-left valign-top"><strong>RESTful Meaning</strong></th>
-<th class="tableblock halign-left valign-top"><strong>devonfw</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Meaning</strong></th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>GET</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Read single element.</p>
-<p class="tableblock">Search on an entity (with parametrized url)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Read a single element.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Read data (stateless).</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>PUT</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Replace entity data.</p>
-<p class="tableblock">Replace entire collection (typically not supported)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Not used</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Create or update data.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>POST</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Create a new element in the collection</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Create or update an element in the collection.</p>
-<p class="tableblock">Search on an entity (parametrized post body)</p>
-<p class="tableblock">Bulk deletion.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Process data.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>DELETE</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Delete an entity.</p>
-<p class="tableblock">Delete an entire collection (typically not supported)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Delete an entity.</p>
-<p class="tableblock">Delete an entire collection (typically not supported)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Delete an entity.</p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Please consider these guidelines and rationales:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>We use <code>POST</code> on the collection URL to save an entity (<code>create</code> if no ID provided in payload otherwise <code>update</code>). This avoids pointless discussions in distinctions between <code>PUT</code> and <code>POST</code> and what to do if a <code>create</code> contains an ID in the payload or if an <code>update</code> is missing the ID property or contains a different ID in payload than in URL.</p>
-</li>
-<li>
-<p>Hence, we do NOT use <code>PUT</code> but always use <code>POST</code> for write operations. As we always have a technical ID for each entity, we can simply distinguish create and update by the presence of the ID property.</p>
-</li>
-<li>
 <p>Please also note that for (large) bulk deletions you may be forced to used <code>POST</code> instead of <code>DELETE</code> as according to the HTTP standard <code>DELETE</code> must not have payload and URLs are limited in length.</p>
-</li>
-</ul>
+</div>
+<div class="paragraph">
+<p>For general recommendations on HTTP methods for collection and element URLs see <a href="http://en.wikipedia.org/wiki/Representational_State_Transfer#Applied_to_web_services">REST@wikipedia</a>.</p>
 </div>
 </div>
 <div class="sect4">
@@ -5287,7 +5458,7 @@ As the devonfw has a string focus on usual business applications it proposes a m
 <p>Further we define how to use the HTTP status codes for REST services properly. In general the 4xx codes correspond to an error on the client side and the 5xx codes to an error on the server side.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 38. Usage of HTTP status codes</caption>
+<caption class="title">Table 39. Usage of HTTP status codes</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -5313,7 +5484,7 @@ As the devonfw has a string focus on usual business applications it proposes a m
 <td class="tableblock halign-left valign-top"><p class="tableblock">204</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No Content</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>none</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Result of successful POST, DELETE, or PUT (void return)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Result of successful POST, DELETE, or PUT with empty result (void return)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">400</p></td>
@@ -5324,13 +5495,13 @@ As the devonfw has a string focus on usual business applications it proposes a m
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">401</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Unauthorized</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>none</em> (security)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>none</em></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Authentication failed</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">403</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Forbidden</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>none</em> (security)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>none</em></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Authorization failed</p></td>
 </tr>
 <tr>
@@ -5343,45 +5514,7 @@ As the devonfw has a string focus on usual business applications it proposes a m
 <td class="tableblock halign-left valign-top"><p class="tableblock">500</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Server Error</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">error code, UUID</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Internal server error occurred (used for all technical exceptions)</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="guide-rest.asciidoc_metadata">Metadata</h5>
-<div class="paragraph">
-<p>devonfw has support for the following metadata in REST service invocations:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">Further information</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">X-Correlation-Id</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">HTTP header for a <em>correlation ID</em> that is a unique identifier to associate different requests belonging to the same session / action</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#guide-logging.asciidoc">Logging guide</a></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Validation errors</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Standardized format for a service to communicate validation errors to the client</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Server-side validation is documented in the <a href="devon4j.asciidoc_guides.html#guide-validation.asciidoc">Validation guide</a>.</p>
-<p class="tableblock">The protocol to communicate these validation errors is described in <a href="devon4j.asciidoc_guides.html#guide-rest.asciidoc_rest-exception-handling">REST exception handling</a>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Pagination</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Standardized format for a service to offer paginated access to a list of entities</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Server-side support for pagination is documented in the <a href="guide-repository.html#pagination">Repository Guide</a>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Internal server error occurred, in case of an exception, see <a href="devon4j.asciidoc_guides.html#guide-rest.asciidoc_rest-exception-handling">REST exception handling</a></p></td>
 </tr>
 </tbody>
 </table>
@@ -5389,40 +5522,33 @@ As the devonfw has a string focus on usual business applications it proposes a m
 <div class="sect4">
 <h5 id="guide-rest.asciidoc_jax-rs">JAX-RS</h5>
 <div class="paragraph">
-<p>For implementing REST services we use the <a href="https://jax-rs-spec.java.net/">JAX-RS</a> standard. As an implementation we recommend <a href="http://cxf.apache.org/">CXF</a>. For <a href="devon4j.asciidoc_guides.html#guide-json.asciidoc">JSON</a> bindings we use <a href="http://wiki.fasterxml.com/JacksonHome">Jackson</a> while <a href="devon4j.asciidoc_guides.html#guide-xml.asciidoc">XML</a> binding works out-of-the-box with <a href="http://www.oracle.com/technetwork/articles/javase/index-140168.html">JAXB</a>.
-To implement a service you write an interface with JAX-RS annotations for the API and a regular implementation class annotated with <code>@Named</code> to make it a spring-bean. Here is a simple example:</p>
+<p>For implementing REST services we use the <a href="https://jax-rs-spec.java.net/">JAX-RS</a> standard.
+As payload encoding we recommend <a href="devon4j.asciidoc_guides.html#guide-json.asciidoc">JSON</a> bindings using <a href="http://wiki.fasterxml.com/JacksonHome">Jackson</a>.
+To implement a REST service you simply add JAX-RS annotations.
+Here is a simple example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Path(&quot;/imagemanagement/v1&quot;)
+<pre class="highlight"><code class="language-java" data-lang="java">@ApplicationScoped
+@Path(&quot;/imagemanagement/v1&quot;)
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public interface ImagemanagementRestService {
-
-  @GET
-  @Path(&quot;/image/{id}/&quot;)
-  public ImageEto getImage(@PathParam(&quot;id&quot;) long id);
-
-}
-
-@Named(&quot;ImagemanagementRestService&quot;)
-public class ImagemanagementRestServiceImpl implements ImagemanagementRestService {
+public class ImagemanagementRestService {
 
   @Inject
   private Imagemanagement imagemanagement;
 
-  @Override
-  public ImageEto getImage(long id) {
+  @GET
+  @Path(&quot;/image/{id}/&quot;)
+  public ImageDto getImage(@PathParam(&quot;id&quot;) long id) {
 
     return this.imagemanagement.findImage(id);
   }
-
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Here we can see a REST service for the <a href="architecture.html#business-architecture">business component</a> <code>imagemanagement</code>. The method <code>getImage</code> can be accessed via HTTP GET (see <code>@GET</code>) under the URL path <code>imagemanagement/image/{id}</code> (see <code>@Path</code> annotations) where <code>{id}</code> is the ID of the requested table and will be extracted from the URL and provided as parameter <code>id</code> to the method <code>getImage</code>. It will return its result (<code>ImageEto</code>) as <a href="devon4j.asciidoc_guides.html#guide-json.asciidoc">JSON</a> (see <code>@Produces</code> - should already be defined as defaults in <code>RestService</code> marker interface). As you can see it delegates to the <a href="devon4j.asciidoc_layers.html#guide-logic-layer.asciidoc">logic</a> component <code>imagemanagement</code> that contains the actual business logic while the service itself only exposes this logic via HTTP. The REST service implementation is a regular CDI bean that can use <a href="devon4j.asciidoc_guides.html#guide-dependency-injection.asciidoc">dependency injection</a>.
-The separation of the API as a Java interface allows to use it for <a href="devon4j.asciidoc_guides.html#guide-service-client.asciidoc">service client calls</a>.</p>
+<p>Here we can see a REST service for the <a href="architecture.html#business-architecture">business component</a> <code>imagemanagement</code>. The method <code>getImage</code> can be accessed via HTTP GET (see <code>@GET</code>) under the URL path <code>imagemanagement/image/{id}</code> (see <code>@Path</code> annotations) where <code>{id}</code> is the ID of the requested table and will be extracted from the URL and provided as parameter <code>id</code> to the method <code>getImage</code>. It will return its result (<code>ImageDto</code>) as <a href="devon4j.asciidoc_guides.html#guide-json.asciidoc">JSON</a> (see <code>@Produces</code> annotation - you can also extend <code>RestService</code> marker interface that defines these annotations for JSON). As you can see it delegates to the <a href="devon4j.asciidoc_layers.html#guide-logic-layer.asciidoc">logic</a> component <code>imagemanagement</code> that contains the actual business logic while the service itself only exposes this logic via HTTP. The REST service implementation is a regular CDI bean that can use <a href="devon4j.asciidoc_guides.html#guide-dependency-injection.asciidoc">dependency injection</a>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -5437,6 +5563,37 @@ With JAX-RS it is important to make sure that each service method is annotated w
 </tbody></table>
 </div>
 <div class="sect5">
+<h6 id="guide-rest.asciidoc_service-interface">Service-Interface</h6>
+<div class="paragraph">
+<p>You may also separate API and implementation in case you want to reuse the API for <a href="devon4j.asciidoc_guides.html#guide-service-client.asciidoc">service-client</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Path(&quot;/imagemanagement/v1&quot;)
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+public interface ImagemanagementRestService {
+
+  @GET
+  @Path(&quot;/image/{id}/&quot;)
+  ImageEto getImage(@PathParam(&quot;id&quot;) long id);
+
+}
+
+@Named(&quot;ImagemanagementRestService&quot;)
+public class ImagemanagementRestServiceImpl implements ImagemanagementRestService {
+
+  @Override
+  public ImageEto getImage(long id) {
+
+    return this.imagemanagement.findImage(id);
+  }
+
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
 <h6 id="guide-rest.asciidoc_jax-rs-configuration">JAX-RS Configuration</h6>
 <div class="paragraph">
 <p>Starting from CXF 3.0.0 it is possible to enable the auto-discovery of JAX-RS roots.</p>
@@ -5445,237 +5602,12 @@ With JAX-RS it is important to make sure that each service method is annotated w
 <p>When the jaxrs server is instantiated all the scanned root and provider beans (beans annotated with <code>javax.ws.rs.Path</code> and <code>javax.ws.rs.ext.Provider</code>) are configured.</p>
 </div>
 </div>
-</div>
-<div class="sect4">
-<h5 id="guide-rest.asciidoc_rest-exception-handling">REST Exception Handling</h5>
+<div class="sect5">
+<h6 id="guide-rest.asciidoc_rest-exception-handling">REST Exception Handling</h6>
 <div class="paragraph">
-<p>For exceptions a service needs to have an exception fa&#xE7;ade that catches all exceptions and handles them by writing proper log messages and mapping them to a HTTP response with an according <a href="#http-status-codes.asciidoc">HTTP status code</a>. Therefore the devonfw provides a generic solution via <code>RestServiceExceptionFacade</code>. You need to follow the <a href="devon4j.asciidoc_guides.html#guide-exceptions.asciidoc">exception guide</a> so that it works out of the box because the fa&#xE7;ade needs to be able to distinguish between business and technical exceptions.
+<p>For exceptions a service needs to have an exception fa&#xE7;ade that catches all exceptions and handles them by writing proper log messages and mapping them to a HTTP response with an according <a href="devon4j.asciidoc_guides.html#guide-rest.asciidoc_http-status-codes">HTTP status code</a>. Therefore the devonfw provides a generic solution via <code>RestServiceExceptionFacade</code>. You need to follow the <a href="devon4j.asciidoc_guides.html#guide-exceptions.asciidoc">exception guide</a> so that it works out of the box because the fa&#xE7;ade needs to be able to distinguish between business and technical exceptions.
 Now your service may throw exceptions but the fa&#xE7;ade with automatically handle them for you.</p>
 </div>
-</div>
-<div class="sect4">
-<h5 id="guide-rest.asciidoc_recommendations-for-rest-requests-and-responses">Recommendations for REST requests and responses</h5>
-<div class="paragraph">
-<p>The devonfw proposes, for simplicity, a deviation from the common REST pattern:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Using <code>POST</code> for updates (instead of <code>PUT</code>)</p>
-</li>
-<li>
-<p>Using the payload for addressing resources on POST (instead of identifier on the <code>URL</code>)</p>
-</li>
-<li>
-<p>Using parametrized <code>POST</code> for searches</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>This use of REST will lead to simpler code both on client and on server. We discuss this use on the next points.</p>
-</div>
-<div class="paragraph">
-<p>The following table specifies how to use the HTTP methods (verbs) for collection and element URIs properly (see <a href="http://en.wikipedia.org/wiki/Representational_State_Transfer#Applied_to_web_services">wikipedia</a>).</p>
-</div>
-<div class="sect5">
-<h6 id="guide-rest.asciidoc_unparameterized-loading-of-a-single-resource">Unparameterized loading of a single resource</h6>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>HTTP Method</strong>: <code>GET</code></p>
-</li>
-<li>
-<p><strong>URL example</strong>: <code>/services/rest/productmanagement/v1/product/123</code></p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>For loading of a single resource, embed the <code>identifier</code> (e.g. <code>123</code>) of the resource in the URL.</p>
-</div>
-<div class="paragraph">
-<p>The response contains the resource in JSON format, using a JSON object at the top-level, for example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-javascript" data-lang="javascript">{
-  &quot;id&quot;: 123,
-  &quot;name&quot;: &quot;Steak&quot;,
-  &quot;color&quot;: &quot;brown&quot;
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="guide-rest.asciidoc_unparameterized-loading-of-a-collection-of-resources">Unparameterized loading of a collection of resources</h6>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>HTTP Method</strong>: <code>GET</code></p>
-</li>
-<li>
-<p><strong>URL example</strong>: <code>/services/rest/productmanagement/v1/product</code></p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>For loading of a collection of resources, make sure that the size of the collection can never exceed a reasonable maximum size. For parameterized loading (searching, pagination), see below.</p>
-</div>
-<div class="paragraph">
-<p>The response contains the collection in JSON format, using a JSON object at the top-level, and the actual collection underneath a <code>result</code> key, for example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-javascript" data-lang="javascript">{
-  &quot;result&quot;: [
-    {
-      &quot;id&quot;: 123,
-      &quot;name&quot;: &quot;Steak&quot;,
-      &quot;color&quot;: &quot;brown&quot;
-    },
-    {
-      &quot;id&quot;: 124,
-      &quot;name&quot;: &quot;Broccoli&quot;,
-      &quot;color&quot;: &quot;green&quot;
-    }
-  ]
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="guide-rest.asciidoc_saving-a-resource">Saving a resource</h6>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>HTTP Method</strong>: <code>POST</code></p>
-</li>
-<li>
-<p><strong>URL example</strong>: <code>/services/rest/productmanagement/v1/product</code></p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>The resource will be passed via JSON in the request body. If updating an existing resource, include the resource&#x2019;s <code>identifier</code> in the JSON and not in the URL, in order to avoid ambiguity.</p>
-</div>
-<div class="paragraph">
-<p>If saving was successful, the updated product (e.g. with assigned ID or updated modification counter) is returned.</p>
-</div>
-<div class="paragraph">
-<p>If saving was unsuccessful, refer below for the format to return errors to the client.</p>
-</div>
-</div>
-<div class="sect5">
-<h6 id="guide-rest.asciidoc_parameterized-loading-of-a-resource">Parameterized loading of a resource</h6>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>HTTP Method</strong>: <code>POST</code></p>
-</li>
-<li>
-<p><strong>URL example</strong>: <code>/services/rest/productmanagement/v1/product/search</code></p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>In order to differentiate from an unparameterized load, a special <em>subpath</em> (for example <code>search</code>) is introduced. The parameters are passed via JSON in the request body. An example of a simple, paginated search would be:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-javascript" data-lang="javascript">{
-  &quot;status&quot;: &quot;OPEN&quot;,
-  &quot;pagination&quot;: {
-    &quot;page&quot;: 2,
-    &quot;size&quot;: 25
-  }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The response contains the requested page of the collection in JSON format, using a JSON object at the top-level, the actual page underneath a <code>result</code> key, and additional pagination information underneath a <code>pagination</code> key, for example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-javascript" data-lang="javascript">{
-  &quot;pagination&quot;: {
-    &quot;page&quot;: 2,
-    &quot;size&quot;: 25,
-    &quot;total&quot;: null
-  },
-  &quot;result&quot;: [
-    {
-      &quot;id&quot;: 123,
-      &quot;name&quot;: &quot;Steak&quot;,
-      &quot;color&quot;: &quot;brown&quot;
-    },
-    {
-      &quot;id&quot;: 124,
-      &quot;name&quot;: &quot;Broccoli&quot;,
-      &quot;color&quot;: &quot;green&quot;
-    }
-  ]
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Compare the code needed on server side to accept this request:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">  @Path(&quot;/category/search&quot;)
-  @POST
-  public PaginatedListTo&lt;CategoryEto&gt; findCategorysByPost(CategorySearchCriteriaTo searchCriteriaTo) {
-    return this.dishmanagement.findCategoryEtos(searchCriteriaTo);
- }</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>With the equivalent code required if doing it the RESTful way by issuing a <code>GET</code> request:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java"> @Path(&quot;/category/search&quot;)
-  @POST @Path(&quot;/order&quot;)
-  @GET
-  public PaginatedListTo&lt;CategoryEto&gt; findCategorysByPost( @Context UriInfo info) {
-
-    RequestParameters parameters = RequestParameters.fromQuery(info);
-    CategorySearchCriteriaTo criteria = new CategorySearchCriteriaTo();
-    criteria.setName(parameters.get(&quot;name&quot;, Long.class, false));
-    criteria.setDescription(parameters.get(&quot;description&quot;, OrderState.class, false));
-    criteria.setShowOrder(parameters.get(&quot;showOrder&quot;, OrderState.class, false));
-    return this.dishmanagement.findCategoryEtos(criteria);
-
-  }</code></pre>
-</div>
-</div>
-<div class="sect6">
-<h7 id="guide-rest.asciidoc_pagination-details">Pagination details</h7>
-<div class="paragraph">
-<p>The client can choose to request a count of the total size of the collection, for example to calculate the total number of available pages. It does so, by specifying the <code>pagination.total</code> property with a value of <code>true</code>.</p>
-</div>
-<div class="paragraph">
-<p>The service is free to honour this request. If it chooses to do so, it returns the total count as the <code>pagination.total</code> property in the response.</p>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="guide-rest.asciidoc_deletion-of-a-resource">Deletion of a resource</h6>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>HTTP Method</strong>: <code>DELETE</code></p>
-</li>
-<li>
-<p><strong>URL example</strong>: <code>/services/rest/productmanagement/v1/product/123</code></p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>For deletion of a single resource, embed the <code>identifier</code> of the resource in the URL.</p>
-</div>
-</div>
-<div class="sect5">
-<h6 id="guide-rest.asciidoc_error-results">Error results</h6>
 <div class="paragraph">
 <p>The general format for returning an error to the client is as follows:</p>
 </div>
@@ -5688,31 +5620,40 @@ Now your service may throw exceptions but the fa&#xE7;ade with automatically han
 }</code></pre>
 </div>
 </div>
+</div>
+<div class="sect5">
+<h6 id="guide-rest.asciidoc_pagination-details">Pagination details</h6>
 <div class="paragraph">
-<p>If the error is caused by a failed validation of the entity, the above format is extended to also include the list of individual validation errors:</p>
+<p>We recommend to use <a href="devon4j.asciidoc_guides.html#guide-repository.asciidoc">spring-data repositories</a> for database access that already comes with pagination support.
+Therefore, when performing a search, you can include a <a href="https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/domain/Pageable.html">Pageable</a> object.
+Here is a JSON example for it:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-javascript" data-lang="javascript">{
-  &quot;message&quot;: &quot;A human-readable message describing the error&quot;,
-  &quot;code&quot;: &quot;A code identifying the concrete error&quot;,
-  &quot;uuid&quot;: &quot;An identifier (generally the correlation id) to help identify corresponding requests in logs&quot;,
-  &quot;errors&quot;: {
-    &quot;property failing validation&quot;: [
-       &quot;First error message on this property&quot;,
-       &quot;Second error message on this property&quot;
-    ],
-    // ....
-  }
-}</code></pre>
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">{ &quot;pageSize&quot;: 20, &quot;pageNumber&quot;: 0, &quot;sort&quot;: [] }</code></pre>
 </div>
 </div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="guide-rest.asciidoc_rest-media-types">REST Media Types</h5>
 <div class="paragraph">
-<p>The payload of a REST service can be in any format as REST by itself does not specify this. The most established ones that the devonfw recommends are <a href="devon4j.asciidoc_guides.html#guide-xml.asciidoc">XML</a> and <a href="devon4j.asciidoc_guides.html#guide-json.asciidoc">JSON</a>. Follow these links for further details and guidance how to use them properly. <code>JAX-RS</code> and <code>CXF</code> properly support these formats (<code>MediaType.APPLICATION_JSON</code> and <code>MediaType.APPLICATION_XML</code> can be specified for <code>@Produces</code> or <code>@Consumes</code>). Try to decide for a single format for all services if possible and NEVER mix different formats in a service.</p>
+<p>By increasing the <code>pageNumber</code> the client can browse and page through the hits.</p>
+</div>
+<div class="paragraph">
+<p>As a result you will receive a <a href="https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/domain/Page.html">Page</a>.
+It is a container for your search results just like a <code>Collection</code> but additionally contains pagination information for the client.
+Here is a JSON example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">{ &quot;totalElements&quot;: 1022,
+  pageable: { &quot;pageSize&quot;: 20, &quot;pageNumber&quot;: 0 },
+  content: [ ... ] }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>totalElements</code> property contains the total number of hits.
+This can be used by the client to compute the total number of pages and render the pagination links accordingly.
+Via the <code>pageable</code> property the client gets back the <code>Pageable</code> properties from the search request.
+The actual hits for the current page are returned as array in the <code>content</code> property.</p>
+</div>
 </div>
 </div>
 <div class="sect4">
@@ -6837,7 +6778,7 @@ However, passing persistent entities via <em>call-by-reference</em> across the e
 </div>
 <div class="paragraph">
 <p>In the following sections the different types of transfer-objects are explained.
-You will find all according naming-conventions in the <a href="coding-conventions.html#architecture-mapping">architecture-mapping</a></p>
+You will find all according naming-conventions in the <a href="guide-structure-classic.html#architecture-mapping">architecture-mapping</a></p>
 </div>
 <div class="sect4">
 <h5 id="guide-transferobject.asciidoc_eto">ETO</h5>
@@ -7311,7 +7252,7 @@ Therefore you should simply treat such code just like any other 3rd party compon
 The following table gives you the required hints to make your software work even with such classes / modules removed from the JDK (please note that the specified version is just a suggestion that worked, feel free to pick a more recent or more appropriate version):</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 39. Dependencies for classes removed from Java 8 since 9+</caption>
+<caption class="title">Table 40. Dependencies for classes removed from Java 8 since 9+</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -7390,7 +7331,7 @@ Some 3rd party libraries were parsing the Java version in a very naive way makin
 <p>Therefore the following table gives an overview of common 3rd party libraries that have been affected by such breaking changes and need to be updated to at least the specified version:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 40. Minimum recommended versions of common 3rd party for Java 9+</caption>
+<caption class="title">Table 41. Minimum recommended versions of common 3rd party for Java 9+</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -7466,7 +7407,7 @@ For maven the new solution is <a href="https://spotbugs.github.io/spotbugs-maven
 <div class="sect6">
 <h7 id="guide-jdk.asciidoc_test-frameworks">Test Frameworks</h7>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 41. Minimum recommended versions of common 3rd party test frameworks for Java 9+</caption>
+<caption class="title">Table 42. Minimum recommended versions of common 3rd party test frameworks for Java 9+</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -7494,7 +7435,7 @@ For maven the new solution is <a href="https://spotbugs.github.io/spotbugs-maven
 <div class="sect6">
 <h7 id="guide-jdk.asciidoc_maven-plugins">Maven Plugins</h7>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 42. Minimum recommended versions of common maven plugins for Java 9+</caption>
+<caption class="title">Table 43. Minimum recommended versions of common maven plugins for Java 9+</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -9152,7 +9093,7 @@ To configure this you may use the healthcheck of the service to find out if the 
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-07-26 15:38:27 UTC
+Last updated 2021-07-26 16:12:24 UTC
 </sub></div>
 
 

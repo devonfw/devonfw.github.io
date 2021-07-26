@@ -99,44 +99,58 @@
 <ul class="sectlevel1">
 <li><a href="#guide-dependency-injection.asciidoc_key-principles">Key Principles</a></li>
 <li><a href="#guide-dependency-injection.asciidoc_example-bean">Example Bean</a></li>
-<li><a href="#guide-dependency-injection.asciidoc_bean-configuration">Bean configuration</a></li>
+<li><a href="#guide-dependency-injection.asciidoc_multiple-bean-implementations">Multiple bean implementations</a>
+<ul class="sectlevel2">
+<li><a href="#guide-dependency-injection.asciidoc_only-one-implementation-in-container">Only one implementation in container</a></li>
+<li><a href="#guide-dependency-injection.asciidoc_injecting-all-of-multiple-implementations">Injecting all of multiple implementations</a></li>
+<li><a href="#guide-dependency-injection.asciidoc_injecting-one-of-multiple-implementations">Injecting one of multiple implementations</a></li>
+</ul>
+</li>
+<li><a href="#guide-dependency-injection.asciidoc_imports">Imports</a></li>
+<li><a href="#guide-dependency-injection.asciidoc_dependencies">Dependencies</a></li>
 </ul>
 </li>
 </ul>
 <h1 id="guide-dependency-injection.asciidoc" class="sect0">Dependency Injection</h1>
 <div class="paragraph">
-<p>Dependency injection is one of the most important design patterns and is a key principle to a modular and component based architecture. The Java Standard for dependency injection is <a href="http://docs.oracle.com/javaee/6/api/javax/inject/package-summary.html">javax.inject (JSR330)</a> that we use in combination with <a href="http://docs.oracle.com/javaee/5/api/javax/annotation/package-summary.html">JSR250</a>.</p>
+<p>Dependency injection is one of the most important design patterns and is a key principle to a modular and component based architecture.
+The Java Standard for dependency injection is <a href="http://docs.oracle.com/javaee/6/api/javax/inject/package-summary.html">javax.inject (JSR330)</a> that we use in combination with <a href="http://docs.oracle.com/javaee/5/api/javax/annotation/package-summary.html">JSR250</a>.
+Additionally, for scoping you can use CDI (Context and Dependency Injection) from <a href="https://jcp.org/en/jsr/detail?id=365">JSR365</a>.</p>
 </div>
 <div class="paragraph">
-<p>There are many frameworks which support this standard including all recent Java EE application servers. We recommend to use <a href="http://spring.io/">Spring</a> (also known as springframework) that we use in our example application. However, the modules we provide typically just rely on JSR330 and can be used with any compliant container.</p>
+<p>There are many frameworks which support this standard including all recent Java EE application servers.
+Therefore in devonfw we rely on these open standards and can propagate patterns and code examples that work independent from the underlying frameworks.</p>
 </div>
 <div class="sect1">
 <h2 id="guide-dependency-injection.asciidoc_key-principles">Key Principles</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>A Bean in CDI (Contexts and Dependency-Injection) or Spring is typically part of a larger component and encapsulates some piece of logic that should in general be replaceable. As an example we can think of a Use-Case, Data-Access-Object (DAO), etc. As best practice we use the following principles:</p>
+<p>Within dependency injection a <em>bean</em> is typically a reusable unit of your application providing an encapsulated functionality.
+This <em>bean</em> can be injected into other beans and it should in general be replaceable.
+As an example we can think of a <a href="#guide-usecase.asciidoc">use-case</a>, a <a href="#guide-repository.asciidoc">repository</a>, etc.
+As best practice we use the following principles:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Separation of API and implementation</strong><br>
-We create a self-contained API documented with JavaDoc. Then we create an implementation of this API that we annotate with <code>@Named</code>. This implementation is treated as secret. Code from other components that wants to use the implementation shall only rely on the API. Therefore we use dependency injection via the interface with the <code>@Inject</code> annotation.</p>
-</li>
-<li>
 <p><strong>Stateless implementation</strong><br>
-By default implementations (CDI-Beans) shall always be stateless. If you store state information in member variables you can easily run into concurrency problems and nasty bugs. This is easy to avoid by using local variables and separate state classes for complex state-information. Try to avoid stateful CDI-Beans wherever possible. Only add state if you are fully aware of what you are doing and properly document this as a warning in your JavaDoc.</p>
+By default such beans shall be implemented <a href="coding-conventions.html#stateless-programming">stateless</a>. If you store state information in member variables you can easily run into concurrency problems and nasty bugs. This is easy to avoid by using local variables and separate state classes for complex state-information. Try to avoid stateful beans wherever possible. Only add state if you are fully aware of what you are doing and properly document this as a warning in your JavaDoc.</p>
 </li>
 <li>
-<p><strong>Usage of JSR330</strong><br>
-We use javax.inject (JSR330) and JSR250 as a common standard that makes our code portable (works in any modern Java EE environment). However, we recommend to use the springframework as container. But we never use proprietary annotations such as <code>@Autowired</code> instead of standardized annotations like <code>@Inject</code>. Generally we avoid proprietary annotations in business code (<code>common</code> and <a href="#guide-logic-layer.asciidoc">logic layer</a>).</p>
+<p><strong>Usage of Java standards</strong><br>
+We use common standards (see above) that makes our code portable. Therefore we use standardized annotations like <code>@Inject</code> (<code>javax.inject.Inject</code>) instead of proprietary annotations such as <code>@Autowired</code>. Generally we avoid proprietary annotations in business code (<a href="#guide-logic-layer.asciidoc">logic layer</a>).</p>
 </li>
 <li>
-<p><strong>Simple Injection-Style</strong><br>
-In general you can choose between constructor, setter or field injection. For simplicity we recommend to do private field injection as it is very compact and easy to maintain. We believe that constructor injection is bad for maintenance especially in case of inheritance (if you change the dependencies you need to refactor all sub-classes). Private field injection and public setter injection are very similar but setter injection is much more verbose (often you are even forced to have javadoc for all public methods). If you are writing re-usable library code setter injection will make sense as it is more flexible. In a business application you typically do not need that and can save a lot of boiler-plate code if you use private field injection instead. Nowadays you are using container infrastructure also for your tests (see <a href="#guide-testing.asciidoc">spring integration tests</a>) so there is no need to inject manually (what would require a public setter).</p>
+<p><strong>Simple injection-style</strong><br>
+In general you can choose between constructor, setter or field injection. For simplicity we recommend to do private field injection as it is very compact and easy to maintain. We believe that constructor injection is bad for maintenance especially in case of inheritance (if you change the dependencies you need to refactor all sub-classes). Private field injection and public setter injection are very similar but setter injection is much more verbose (often you are even forced to have javadoc for all public methods). If you are writing re-usable library code setter injection will make sense as it is more flexible. In a business application you typically do not need that and can save a lot of boiler-plate code if you use private field injection instead. Nowadays you are using container infrastructure also for your tests (see <a href="#guide-testing.asciidoc">testing</a>) so there is no need to inject manually (what would require a public setter).</p>
 </li>
 <li>
 <p><strong>KISS</strong><br>
-To follow the KISS (keep it small and simple) principle we avoid advanced features (e.g. <a href="#guide-aop.asciidoc">AOP</a>, non-singleton beans) and only use them where necessary.</p>
+To follow the KISS (keep it small and simple) principle we avoid advanced features (e.g. custom <a href="#guide-aop.asciidoc">AOP</a>, non-singleton beans) and only use them where necessary.</p>
+</li>
+<li>
+<p><strong>Separation of API and implementation</strong><br>
+For important components we should separate a self-contained API documented with JavaDoc from its implementation. Code from other components that wants to use the implementation shall only rely on the API. However, for things that will never be exchanged no API as interface is required you can skip such separation.</p>
 </li>
 </ul>
 </div>
@@ -146,14 +160,15 @@ To follow the KISS (keep it small and simple) principle we avoid advanced featur
 <h2 id="guide-dependency-injection.asciidoc_example-bean">Example Bean</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Here you can see the implementation of an example bean using JSR330 and JSR250:</p>
+<p>Here you can see the implementation of an example bean using dependency injection:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="java language-java">@Named
-public class MyBeanImpl implements MyBean {
+<pre class="highlight"><code class="java language-java">@ApplicationScoped
+@Named("MyComponent")
+public class MyComponentImpl implements MyComponent {
   @Inject
-  private MyOtherBean myOtherBean;
+  private MyOtherComponent myOtherComponent;
 
   @PostConstruct
   public void init() {
@@ -164,14 +179,47 @@ public class MyBeanImpl implements MyBean {
   public void dispose() {
     // shutdown bean, free resources if required (otherwise omit this method)
   }
+
+  ...
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>It depends on <code>MyOtherBean</code> that should be the interface of an other component that is injected into the field because of the <code>@Inject</code> annotation. To make this work there must be exactly one implementation of <code>MyOtherBean</code> in the container (in our case spring). In order to put a Bean into the container we use the <code>@Named</code> annotation so in our example we put <code>MyBeanImpl</code> into the container. Therefore it can be injected into all setters that take the interface <code>MyBean</code> as argument and are annotated with <code>@Inject</code>.</p>
+<p>Here <code>MyComponentImpl</code> depends on <code>MyOtherComponent</code> that is injected into the field <code>myOtherComponent</code> because of the <code>@Inject</code> annotation.
+To make this work there must be exactly one bean in the container (e.g. spring or quarkus) that is an instance of <code>MyOtherComponent</code>.
+In order to put a bean into the container, we can use <code>@ApplicationScoped</code> in case of CDI (required for quarkus) for a stateless bean.
+In spring we can ommit a CDI annotation and the <code>@Named</code> annotation is already sufficient as a bean is stateless by default in spring.
+If we always use <code>@ApplicationScoped</code> we can make this more explicit and more portable accross different frameworks.
+So in our example we put <code>MyComponentImpl</code> into the container.
+That bean will be called <code>MyComponent</code> as we specified in the <code>@Named</code> annotation but we can also omit the name to use the classname as fallback.
+Now our bean can be injected into other beans using <code>@Inject</code> annotation either via <code>MyComponent</code> interface (recommended when interface is present) or even directly via <code>MyComponentImpl</code>.
+In case you omit the interface, you should also omit the <code>Impl</code> suffix or instead use <code>Bean</code> as suffix.</p>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-dependency-injection.asciidoc_multiple-bean-implementations">Multiple bean implementations</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>In some situations you may have an Interface that defines a kind of "plugin" where you can have multiple implementations in your container and want to have all of them. Then you can request a list with all instances of that interface as in the following example:</p>
+<p>In some cases you might have multiple implementations as beans for the same interface.
+The following sub-sections handle the different scenarios to give you guidance.</p>
+</div>
+<div class="sect2">
+<h3 id="guide-dependency-injection.asciidoc_only-one-implementation-in-container">Only one implementation in container</h3>
+<div class="paragraph">
+<p>In some cases you still have only one implementation active as bean in the container at runtime.
+A typical example is that you have different implemenations for test and main usage.
+This case is easy, as <code>@Inject</code> will always be unique.
+The only thing you need to care about is how to configure your framework (spring, quaruks, etc.) to know which implementation to put in the container depending on specific configuration.
+In spring this can be archived via the proprietary <code>@Profile</code> annotaiton.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-dependency-injection.asciidoc_injecting-all-of-multiple-implementations">Injecting all of multiple implementations</h3>
+<div class="paragraph">
+<p>In some situations you may have an interface that defines a kind of "plugin".
+You can have multiple implementations in your container and want to have all of them injected.
+Then you can request a list with all the bean implementations via the interface as in the following example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -180,15 +228,175 @@ public class MyBeanImpl implements MyBean {
 </div>
 </div>
 <div class="paragraph">
-<p>Please note that when writing library code instead of annotating implementation with <code>@Named</code> it is better to provide <code>@Configuration</code> classes that choose the implementation via <code>@Bean</code> methods (see <a href="http://docs.spring.io/spring-javaconfig/docs/1.0.0.M4/reference/html/ch02s02.html">@Bean documentation</a>). This way you can better "export" specific features instead of relying library users to do a component-scan to your library code and loose control on upgrades.</p>
+<p>Your code may iterate over all plugins (converters) and apply them sequentially.
+Please note that the injection will fail (at least in spring), when there is no bean available to inject.
+So you do not get an empty list injected but will get an exception on startup.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-dependency-injection.asciidoc_injecting-one-of-multiple-implementations">Injecting one of multiple implementations</h3>
+<div class="paragraph">
+<p>Another scenario is that you have multiple implementations in your container coexisting, but for injection you may want to choose a specific implementation.
+Here you could use the <code>@Named</code> annotation to specify a unique identifier for each implementation what is called qualified injection:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@ApplicationScoped
+@Named("UserAuthenticator")
+public class UserAuthenticator implements Authenticator {
+  ...
+}
+@ApplicationScoped
+@Named("ServiceAuthenticator")
+public class ServiceAuthenticator implements Authenticator {
+  ...
+}
+public class MyUserComponent {
+  @Inject
+  @Named("UserAuthenticator")
+  private Authenticator authenticator;
+  ...
+}
+public class MyServiceComponent {
+  @Inject
+  @Named("ServiceAuthenticator")
+  private Authenticator authenticator;
+  ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>However, we discovered that this pattern is not so great:
+The identifiers in the <code>@Named</code> annotation are just strings that could easily break.
+You could use constants instead but still this is not the best solution.</p>
+</div>
+<div class="paragraph">
+<p>In the end you can very much simplify this by just directly injecting the implementation instead:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@ApplicationScoped
+public class UserAuthenticator implements Authenticator {
+  ...
+}
+@ApplicationScoped
+public class ServiceAuthenticator implements Authenticator {
+  ...
+}
+public class MyUserComponent {
+  @Inject
+  private UserAuthenticator authenticator;
+  ...
+}
+public class MyServiceComponent {
+  @Inject
+  private ServiceAuthenticator authenticator;
+  ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In case you want to strictly decouple from implementations, you can still create dedicated interfaces:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public interface UserAuthenticator extends Authenticator {}
+@ApplicationScoped
+public class UserAuthenticatorImpl implements UserAuthenticator {
+  ...
+}
+public interface ServiceAuthenticator extends Authenticator {}
+@ApplicationScoped
+public class ServiceAuthenticatorImpl implements ServiceAuthenticator {
+  ...
+}
+public class MyUserComponent {
+  @Inject
+  private UserAuthenticator authenticator;
+  ...
+}
+public class MyServiceComponent {
+  @Inject
+  private ServiceAuthenticator authenticator;
+  ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>However, as you can see this is again introducing additional boiler-plate code.
+While the principle to separate API and implementation and strictly decouple from implementation is valuable in general,
+you should always consider KISS, lean, and agile in contrast and balance pros and cons instead of blindly following dogmas.</p>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="guide-dependency-injection.asciidoc_bean-configuration">Bean configuration</h2>
+<h2 id="guide-dependency-injection.asciidoc_imports">Imports</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Wiring and Bean configuration can be found in <a href="#guide-configuration.asciidoc">configuration guide</a>.</p>
+<p>Here are the import statements for the most important annotations for dependency injection</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">import javax.inject.Inject;
+import javax.inject.Named;
+import javax.enterprise.context.ApplicationScoped;
+// import javax.enterprise.context.RequestScoped;
+// import javax.enterprise.context.SessionScoped;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-dependency-injection.asciidoc_dependencies">Dependencies</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Please note that with <a href="https://jakarta.ee/">Jakarta EE</a> the dependencies have changed.
+When you want to start with Jakarta EE you should use these dependencies to get the annoations for dependency injection:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;!-- Basic injection annotations (JSR-330) --&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;jakarta.inject&lt;/groupId&gt;
+  &lt;artifactId&gt;jakarta.inject-api&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;!-- Basic lifecycle and security annotations (JSR-250)--&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;jakarta.annotation&lt;/groupId&gt;
+  &lt;artifactId&gt;jakarta.annotation-api&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;!-- Context and dependency injection API (JSR-365) --&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;jakarta.enterprise&lt;/groupId&gt;
+  &lt;artifactId&gt;jakarta.enterprise.cdi-api&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Please note that with quarkus you will get them as transitive dependencies out of the box.
+The above Jakarate EE dependencies replace these JEE depdencies:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;!-- Basic injection annotations (JSR-330) --&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;javax.inject&lt;/groupId&gt;
+  &lt;artifactId&gt;javax.inject&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;!-- Basic lifecycle and security annotations (JSR-250)--&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;javax.annotation&lt;/groupId&gt;
+  &lt;artifactId&gt;javax.annotation-api&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;!-- Context and dependency injection API (JSR-365) --&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;jakarta.enterprise&lt;/groupId&gt;
+  &lt;artifactId&gt;jakarta.enterprise.cdi-api&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -329,7 +537,7 @@ public class MyBeanImpl implements MyBean {
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-07-26 15:33:42 UTC
+Last updated 2021-07-26 16:09:23 UTC
 </sub></div>
 </div>
 </div>
