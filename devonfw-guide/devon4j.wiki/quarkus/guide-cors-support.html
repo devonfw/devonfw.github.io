@@ -4,8 +4,6 @@
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="comprehensive documentation for the Java stack of devonfw.">
-<meta name="author" content="The devonfw community">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -23,7 +21,7 @@
 <!-- ************************************* -->
 
 
-<title>Java</title>
+<title>CORS support</title>
 <!-- devonfw website stylesheet -->
 <link rel="stylesheet" type="text/css" href="/devonfw.css">
 <!-- Lunr -->
@@ -54,7 +52,7 @@
 <!-- ******************************************** -->
 
 </head>
-<body id="java.asciidoc" class="book">
+<body class="article">
 <div id="website-navbar" class="website-navbar">
 <button id="menu-button" class="menu-button">
   <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
@@ -94,13 +92,135 @@
 <div id="sidebar" class="wiki-sidebar"></div>
 
 <div id="content" class="mt-4 mt-sm-5">
-<div id="preamble">
-<div class="sectionbody">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-cors-support.asciidoc">CORS support</a>
+<ul class="sectlevel1">
+<li><a href="#guide-cors-support.asciidoc_configuring-cors-support">Configuring CORS support</a>
+<ul class="sectlevel2">
+<li><a href="#guide-cors-support.asciidoc_configuration-with-quarkus">Configuration with quarkus</a></li>
+<li><a href="#guide-cors-support.asciidoc_configuration-with-service-mesh">Configuration with service mesh</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-cors-support.asciidoc" class="sect0">CORS support</h1>
 <div class="paragraph">
-<p>Unresolved directive in java.asciidoc - include::devon4j.wiki/devon4j.asciidoc[leveloffset=1]</p>
+<p>When you are developing Javascript client and server application separately, you have to deal with cross domain issues. We have to request from a origin domain distinct to target domain and browser does not allow this.</p>
 </div>
 <div class="paragraph">
-<p>Unresolved directive in java.asciidoc - include::devon4quarkus.wiki/devon4quarkus.asciidoc[leveloffset=1]</p>
+<p>So , we need to prepare server side to accept request from other domains. We need to cover the following points:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Accept request from other domains.</p>
+</li>
+<li>
+<p>Accept devonfw used headers like <code>X-CSRF-TOKEN</code> or <code>correlationId.</code></p>
+</li>
+<li>
+<p>Be prepared to receive secured request (cookies).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>It is important to note that if you are using security in your request (sending cookies) you have to set  <code>withCredentials</code> flag to <code>true</code> in your client side request and deal with special IE8 characteristics.</p>
+</div>
+<div class="sect1">
+<h2 id="guide-cors-support.asciidoc_configuring-cors-support">Configuring CORS support</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Quarkus comes with a <a href="https://quarkus.io/guides/http-reference#cors-filter">CORS filter</a> which implements the javax.servlet.Filter interface and intercepts all incoming HTTP requests. It can be enabled in the Quarkus configuration file, <strong>src/main/resources/application.properties</strong>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>quarkus.http.cors=true</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-cors-support.asciidoc_configuration-with-quarkus">Configuration with quarkus</h3>
+<div class="paragraph">
+<p>Here’s an example of a full CORS filter configuration, including a regular expression defining an allowed origin:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code># enable cors filter
+quarkus.http.cors=true
+# configurations cors
+quarkus.http.cors.origins=http://foo.com,http://www.bar.io,/https://([a-z0-9\\-_]+)\\.app\\.mydomain\\.com/
+quarkus.http.cors.methods=OPTIONS,HEAD,GET,PUT,POST,DELETE,PATCH
+quarkus.http.cors.headers=X-Custom
+quarkus.http.cors.exposed-headers=Content-Disposition
+quarkus.http.cors.access-control-max-age=24H
+quarkus.http.cors.access-control-allow-credentials=true</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Attribute</th>
+<th class="tableblock halign-left valign-top">Default</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">HTTP Header</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quarkus.http.cors.access-control-allow-credentials</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Boolean value to tell the browsers to expose the response to front-end JavaScript code when the request’s credentials mode Request.credentials is “include”</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Access-Control-Allow-Credentials</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quarkus.http.cors.origins</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The comma-separated list of origins allowed for CORS. Values starting and ending with '/'' will be treated as regular expressions. The filter allows any origin if this is not set or set to '*'.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Access-Control-Allow-Origin</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quarkus.http.cors.methods</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The comma-separated list of HTTP methods allowed for CORS. The filter allows any method if this is not set or set to '*'.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Access-Control-Allow-Methods</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quarkus.http.cors.headers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The comma-separated list of HTTP headers allowed for CORS. The filter allows any header if this is not set or set to '*'.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Access-Control-Allow-Headers</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quarkus.http.cors.exposed-headers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">*</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The comma-separated list of HTTP headers exposed in CORS. The filter allows any headers to be exposed if this is not set or set to '*'.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Access-Control-Expose-Headers</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quarkus.http.cors.access-control-max-age</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The duration (see note below) indicating how long the results of a pre-flight request can be cached.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Access-Control-Max-Age</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="guide-cors-support.asciidoc_configuration-with-service-mesh">Configuration with service mesh</h3>
+<div class="paragraph">
+<p>Alternatively, if you use service mesh, you can also define your CORS policy directly there. Here is an example from <a href="https://istio.io/latest/docs/reference/config/networking/virtual-service/#CorsPolicy">istio</a></p>
+</div>
+<div class="paragraph">
+<p>More information about the CORS headers can be found <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers#cors">here</a></p>
+</div>
 </div>
 </div>
 </div>
@@ -241,8 +361,7 @@
     ></script>
 <div class="footnote"><sub>
 
-Version <br>
-Last updated 2021-07-26 17:23:41 UTC
+Last updated 2021-07-28 06:01:50 UTC
 </sub></div>
 </div>
 </div>
