@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>JWT Spring-Starter</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-jwt-spring.asciidoc">JWT Spring-Starter</a>
+<ul class="sectlevel1">
+<li><a href="#guide-jwt-spring.asciidoc_keystore">Keystore</a></li>
+<li><a href="#guide-jwt-spring.asciidoc_jwt-dependency">JWT Dependency</a></li>
+<li><a href="#guide-jwt-spring.asciidoc_configuration">Configuration</a></li>
+<li><a href="#guide-jwt-spring.asciidoc_authentication-with-jwt-via-oauth">Authentication with JWT via OAuth</a></li>
+<li><a href="#guide-jwt-spring.asciidoc_login-with-username-and-password-to-get-jwt">Login with Username and Password to get JWT</a></li>
+<li><a href="#guide-jwt-spring.asciidoc_authentication-with-kafka">Authentication with Kafka</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-jwt-spring.asciidoc" class="sect0">JWT Spring-Starter</h1>
+<div class="sect1">
+<h2 id="guide-jwt-spring.asciidoc_keystore">Keystore</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A KeyStore is a repository of certificates and keys (public key, private key, or secret key). They can be used for TSL transportation, for encryption and decryption as well as for signing.
+For demonstration you might create a keystore with openssl, with the following commands:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365
+openssl pkcs12 -export -in cert.pem -inkey key.pem -out example.p12</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For Java tooling you may also try the following instead:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>keytool -genkeypair -alias devonfw -keypass "password" -storetype PKCS12 -keyalg RSA -keysize 4096 -storepass "password" -keystore keystore.pkcs</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+Please use reasonable passwords instead of <code>password</code> what should be obvious. Also for the alias the value <code>devonfw</code> is just an example.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-jwt-spring.asciidoc_jwt-dependency">JWT Dependency</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To use JWT support from devon4j with spring-boot you have to add following required dependency:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;dependency&gt;
+  &lt;groupId&gt;com.devonfw.java.starters&lt;/groupId&gt;
+  &lt;artifactId&gt;devon4j-starter-security-jwt&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-jwt-spring.asciidoc_configuration">Configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following properties need to be configured in your <code>application.properties</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="properties language-properties"># location of the keystore file, can be any spring resource (such as file or classpath URIs)
+security.keystore.location=classpath:config/keystore.pkcs
+# type of keystore e.g. "PKCS12" (recommended), "JKS", or "JCEKS"
+security.keystore.type=PKCS12
+# password the keystore is secured with. Consider using password encryption as described in devon4j configuration guide
+security.keystore.password=password
+# the algorithm for encryption/decryption and signing - see io.jsonwebtoken.SignatureAlgorithm
+security.authentication.jwt.algorithm=RS256
+# alias of public/private key in keystore (for validation only public key is used, for creation private key is required)
+security.authentication.jwt.alias=devonfw
+# the following properties are used if you are validating JWTs (e.g. via JwtAuthenticationFilter)
+security.authentication.jwt.validation.expiration-required=false
+security.authentication.jwt.validation.max-validity=42h
+security.authentication.jwt.validation.not-before-required=false
+# the following properties are only used if you are issuing JWTs (e.g. via JwtLoginFilter)
+security.authentication.jwt.creation.add-issued-at=true
+security.authentication.jwt.creation.validity=4h
+security.authentication.jwt.creation.not-before-delay=1m
+# the following properties enable backward compatiblity for devon4j &lt;= 2021.04.002
+# after microprofile JWT is used by default since 2021.04.003
+#security.authentication.jwt.claims.access-controls-name=roles
+#security.authentication.jwt.claims.access-controls-array=false</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>See also <a href="https://github.com/devonfw/devon4j/blob/master/modules/security-jwt/src/main/java/com/devonfw/module/security/jwt/common/impl/JwtConfigProperties.java">JwtConfigProperties</a> for details about configuration.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-jwt-spring.asciidoc_authentication-with-jwt-via-oauth">Authentication with JWT via OAuth</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The authentication with JWT via OAuth (HTTP header), will happen via <code>JwtAuthenticationFilter</code> that is automatically added by <code>devon4j-starter-security-jwt</code> via <code>JwtAutoConfiguration</code>.
+With the starter and auto-configuration we want to make it as easy as possible for you.
+In case you would like to build a server app that e.g. wants to issue JWTs but does not allow authentication via JWT itself, you can use <code>devon4j-security-jwt</code> as dependency instead of the starter and do the spring config yourself (pick and choose from <code>JwtAutoConfiguration</code>).</p>
+</div>
+<div class="paragraph">
+<p>To do this, you need to add the following changes in your <code>BaseWebSecurityConfig</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">  @Bean
+  public JwtAuthenticationFilter getJwtAuthenticationFilter() {
+    return new JwtAuthenticationFilter();
+  }
+
+  @Override
+  public void configure(HttpSecurity http) throws Exception {
+    // ...
+    // add this line to the end of this existing method
+    http.addFilterBefore(getJwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+  }</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-jwt-spring.asciidoc_login-with-username-and-password-to-get-jwt">Login with Username and Password to get JWT</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To allow a client to login with username and password to get a JWT for sub-sequent requests, you need to do the following changes in your <code>BaseWebSecurityConfig</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">  @Bean
+  public JwtLoginFilter getJwtLoginFilter() throws Exception {
+
+    JwtLoginFilter jwtLoginFilter = new JwtLoginFilter("/login");
+    jwtLoginFilter.setAuthenticationManager(authenticationManager());
+    jwtLoginFilter.setUserDetailsService(this.userDetailsService);
+    return jwtLoginFilter;
+  }
+
+  @Override
+  public void configure(HttpSecurity http) throws Exception {
+    // ...
+    // add this line to the end of this existing method
+    http.addFilterBefore(getJwtLoginFilter(), UsernamePasswordAuthenticationFilter.class);
+  }</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-jwt-spring.asciidoc_authentication-with-kafka">Authentication with Kafka</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Authentication with JWT and Kafka is explained in the <a href="#guide-kafka.asciidoc">Kafka guide</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html#introduction-why-should-i-use-devonfw.asciidoc">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devon4j.asciidoc_architecture.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-ide-support.asciidoc.html#LICENSE.asciidoc">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2021-08-02 22:25:06 UTC
+</sub></div>
+</div>
+</div>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+<script>
+  var internalUrls = ["https://cginternal.devonfw.com/websitesnippets/"];
+  $(".internal").each(function(){
+    internalUrls.forEach((internalUrl, index) => {
+      $.ajax({url: internalUrl + $(this).text() + "/index.html" })
+      .then(r => {
+        var leftDiv = $('<div class="info"><span class="infoText">Internal</span><img class="infoImage" src="' + internalUrl + 'logo.png"/></div>');
+        var rightFirstDiv = $('<div class="message">This is only visible inside of the corporate network.</div>');
+        var rightLastDiv = $('<div class="content"></div>');
+        rightLastDiv.html(r);
+        var rightDiv = $('<div class="right"></div>');
+        rightDiv.append(rightFirstDiv);
+        rightDiv.append(rightLastDiv);
+        $(this).html(leftDiv);
+        $(this).append(rightDiv);
+        $(this).addClass("internal-active");
+        $(this).removeClass("internal");
+      })
+    });
+	});
+</script>
+</body>
+</html>

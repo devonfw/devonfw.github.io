@@ -21,7 +21,7 @@
 <!-- ************************************* -->
 
 
-<title>JSON Web Token(JWT)</title>
+<title>JWT</title>
 <!-- devonfw website stylesheet -->
 <link rel="stylesheet" type="text/css" href="/devonfw.css">
 <!-- Lunr -->
@@ -95,179 +95,21 @@
 <div class="toc2">
 <div class="title">Table of Contents</div>
 <ul class="sectlevel0">
-<li><a href="#guide-jwt.asciidoc">JSON Web Token(JWT)</a>
-<ul class="sectlevel1">
-<li><a href="#guide-jwt.asciidoc_keystore">Keystore</a></li>
-<li><a href="#guide-jwt.asciidoc_dependency">Dependency</a></li>
-<li><a href="#guide-jwt.asciidoc_configuration">Configuration</a></li>
-<li><a href="#guide-jwt.asciidoc_authentication-with-jwt-via-oauth">Authentication with JWT via OAuth</a></li>
-<li><a href="#guide-jwt.asciidoc_login-with-username-and-password-to-get-jwt">Login with Username and Password to get JWT</a></li>
-<li><a href="#guide-jwt.asciidoc_authentication-with-kafka">Authentication with Kafka</a></li>
+<li><a href="#guide-jwt.asciidoc">JWT</a></li>
 </ul>
-</li>
-</ul>
-<h1 id="guide-jwt.asciidoc" class="sect0">JSON Web Token(JWT)</h1>
+<h1 id="guide-jwt.asciidoc" class="sect0">JWT</h1>
 <div class="paragraph">
-<p><a href="https://jwt.io/">JWT</a> is an open standard (<a href="https://tools.ietf.org/html/rfc7519">RFC 7519</a>) for creating Json based access token that assert some number of claims.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<a class="image" href="images/jwt_flow.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/jwt_flow.png" alt="jwt flow" width="450"></a>
-</div>
-</div>
-<div class="paragraph">
-<p>For more information about JWT <a href="https://jwt.io/">click here</a></p>
-</div>
-<div class="sect1">
-<h2 id="guide-jwt.asciidoc_keystore">Keystore</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>A KeyStore is a repository of certificates and keys (public key, private key, or secret key). They can be used for TSL transportation, for encryption and decryption as well as for signing.
-For demonstration you might create a keystore with openssl, with the following commands:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365
-openssl pkcs12 -export -in cert.pem -inkey key.pem -out example.p12</pre>
-</div>
+<p><a href="https://jwt.io">JWT</a> (JSON Web Token) is an open standard (see <a href="https://tools.ietf.org/html/rfc7519">RFC 7519</a>) for creating Json based access token that assert some number of claims.
+With an IT landscape divided into multiple smaller apps you want to avoid coupling all those apps or services tightly with your IAM (Identity &amp; Access Management).
+Instead your apps simply expects a JWT as <a href="https://oauth.net/2/bearer-tokens/">bearer-token</a> in the <code>Authorization</code> HTTP header field.
+All it needs to do for authentication is validating this JWT.
+Therefore we recommend to use strong asymmetric cryptography to sign the JWT when it is granted.
+Create a keypair per environment and keep the private key as a secret only known to the access system that authorizes the JWTs.
+You apps only need to know the public key to validate the JWT.</p>
 </div>
 <div class="paragraph">
-<p>For Java tooling you may also try the following instead:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>keytool -genkeypair -alias devonfw -keypass "password" -storetype PKCS12 -keyalg RSA -keysize 4096 -storepass "password" -keystore keystore.pkcs</pre>
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="icon-note" title=""></i>
-</td>
-<td class="content">
-Please use reasonable passwords instead of <code>password</code> what should be obvious. Also for the alias the value <code>devonfw</code> is just an example.
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="guide-jwt.asciidoc_dependency">Dependency</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>To use JWT support from devon4j you have to add following required dependency.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="xml language-xml">&lt;dependency&gt;
-  &lt;groupId&gt;com.devonfw.java.starters&lt;/groupId&gt;
-  &lt;artifactId&gt;devon4j-starter-security-jwt&lt;/artifactId&gt;
-&lt;/dependency&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="guide-jwt.asciidoc_configuration">Configuration</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The following properties need to be configured in your <code>application.properties</code> file:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="properties language-properties"># location of the keystore file, can be any spring resource (such as file or classpath URIs)
-security.keystore.location=classpath:config/keystore.pkcs
-# type of keystore e.g. "PKCS12" (recommended), "JKS", or "JCEKS"
-security.keystore.type=PKCS12
-# password the keystore is secured with. Consider using password encryption as described in devon4j configuration guide
-security.keystore.password=password
-# the algorithm for encryption/decryption and signing - see io.jsonwebtoken.SignatureAlgorithm
-security.authentication.jwt.algorithm=RS256
-# alias of public/private key in keystore (for validation only public key is used, for creation private key is required)
-security.authentication.jwt.alias=devonfw
-# the following properties are used if you are validating JWTs (e.g. via JwtAuthenticationFilter)
-security.authentication.jwt.validation.expiration-required=false
-security.authentication.jwt.validation.max-validity=42h
-security.authentication.jwt.validation.not-before-required=false
-# the following properties are only used if you are issuing JWTs (e.g. via JwtLoginFilter)
-security.authentication.jwt.creation.add-issued-at=true
-security.authentication.jwt.creation.validity=4h
-security.authentication.jwt.creation.not-before-delay=1m
-# the following properties enable backward compatiblity for devon4j &lt;= 2021.04.002
-# after microprofile JWT is used by default since 2021.04.003
-#security.authentication.jwt.claims.access-controls-name=roles
-#security.authentication.jwt.claims.access-controls-array=false</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>See also <a href="https://github.com/devonfw/devon4j/blob/master/modules/security-jwt/src/main/java/com/devonfw/module/security/jwt/common/impl/JwtConfigProperties.java">JwtConfigProperties</a> for details about configuration.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="guide-jwt.asciidoc_authentication-with-jwt-via-oauth">Authentication with JWT via OAuth</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The authentication with JWT via OAuth (HTTP header), will happen via <code>JwtAuthenticationFilter</code> that is automatically added by <code>devon4j-starter-security-jwt</code> via <code>JwtAutoConfiguration</code>.
-With the starter and auto-configuration we want to make it as easy as possible for you.
-In case you would like to build a server app that e.g. wants to issue JWTs but does not allow authentication via JWT itself, you can use <code>devon4j-security-jwt</code> as dependency instead of the starter and do the spring config yourself (pick and choose from <code>JwtAutoConfiguration</code>).</p>
-</div>
-<div class="paragraph">
-<p>To do this, you need to add the following changes in your <code>BaseWebSecurityConfig</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="java language-java">  @Bean
-  public JwtAuthenticationFilter getJwtAuthenticationFilter() {
-    return new JwtAuthenticationFilter();
-  }
-
-  @Override
-  public void configure(HttpSecurity http) throws Exception {
-    // ...
-    // add this line to the end of this existing method
-    http.addFilterBefore(getJwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-  }</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="guide-jwt.asciidoc_login-with-username-and-password-to-get-jwt">Login with Username and Password to get JWT</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>To allow a client to login with username and password to get a JWT for sub-sequent requests, you need to do the following changes in your <code>BaseWebSecurityConfig</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="java language-java">  @Bean
-  public JwtLoginFilter getJwtLoginFilter() throws Exception {
-
-    JwtLoginFilter jwtLoginFilter = new JwtLoginFilter("/login");
-    jwtLoginFilter.setAuthenticationManager(authenticationManager());
-    jwtLoginFilter.setUserDetailsService(this.userDetailsService);
-    return jwtLoginFilter;
-  }
-
-  @Override
-  public void configure(HttpSecurity http) throws Exception {
-    // ...
-    // add this line to the end of this existing method
-    http.addFilterBefore(getJwtLoginFilter(), UsernamePasswordAuthenticationFilter.class);
-  }</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="guide-jwt.asciidoc_authentication-with-kafka">Authentication with Kafka</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Authentication with JWT and Kafka is explained in the <a href="#guide-kafka.asciidoc">Kafka guide</a>.</p>
-</div>
-</div>
+<p>When using <a href="#spring.asciidoc">spring</a> check the <a href="#spring/guide-jwt-spring.asciidoc">JWT Spring-Starter</a>.
+For <a href="#quarkus.asciidoc">quarkus</a> follow <a href="https://quarkus.io/guides/security-jwt">Using JWT RBAC</a>.</p>
 </div>
 </div>
 <div id="footer" class="footer">
@@ -406,7 +248,7 @@ In case you would like to build a server app that e.g. wants to issue JWTs but d
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-07-30 11:54:51 UTC
+Last updated 2021-08-02 22:24:47 UTC
 </sub></div>
 </div>
 </div>

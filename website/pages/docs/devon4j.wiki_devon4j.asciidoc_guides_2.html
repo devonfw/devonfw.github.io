@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2021-07-30 12:01:29 UTC">
+<meta name="author" content="Updated at 2021-08-02 22:29:55 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -511,7 +511,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2021-07-30 12:02:09 UTC</span><br>
+<span id="author" class="author">Updated at 2021-08-02 22:30:28 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -524,18 +524,20 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel1">
 <li><a href="devon4j.asciidoc_general.html">General</a>
 </li>
-<li><a href="devon4j.asciidoc_spring.html">spring</a>
+<li><a href="spring.asciidoc.html">Spring</a>
 </li>
-<li><a href="devon4j.asciidoc_quarkus.html">quarkus</a>
+<li><a href="quarkus.asciidoc.html">Quarkus</a>
 <ul class="sectlevel2">
+<li><a href="quarkus.asciidoc_pros.html">Pros</a>
+</li>
+<li><a href="quarkus.asciidoc_cons.html">Cons</a>
+</li>
 <li><a href="guide-structure-modern.asciidoc.html">Modern project structure</a>
 </li>
 <li><a href="guide-domain-layer.asciidoc.html">Domain Layer</a>
 </li>
 <li><a href="devon4j.wiki_devon4j.asciidoc_guides_2.html"><span class="toc-current">Guides</span></a>
 <ul class="sectlevel3">
-<li><a href="devon4j.wiki_devon4j.asciidoc_guides_2.html#quarkus_guide-logging.asciidoc">Logging</a>
-</li>
 <li><a href="devon4j.wiki_devon4j.asciidoc_guides_2.html#quarkus_guide-cors-support.asciidoc">CORS support</a>
 </li>
 </ul>
@@ -578,241 +580,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect2">
 <h3 id="devon4j.wiki_devon4j.asciidoc_guides_2">Guides</h3>
 <!-- toc disabled -->
-<div class="sect3">
-<h4 id="quarkus_guide-logging.asciidoc">Logging</h4>
-<div class="paragraph">
-<p>Logging is the recording of messages during the execution of an application. The log messages provide information for developers or administrators that can be used to troubleshoot or maintain the application, such as errors and warnings, but also info messages such as runtime statistics that can be used for analysis.</p>
-</div>
-<div class="paragraph">
-<p>One must distinguish between a logging API and logging implementations. A logging API provides a standardised interface, while the specific implementation is a framework that is developed against and uses the API.</p>
-</div>
-<div class="paragraph">
-<p>Internally, Quarkus uses the JBoss Logging facade, an abstraction layer that provides support for multiple logging APIs and JBoss LogManager, which provides implementations for the specific APIs. The following logging APIs are supported:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://docs.jboss.org/hibernate/orm/current/topical/html_single/logging/Logging.html">JBoss Logging</a></p>
-</li>
-<li>
-<p><a href="http://www.slf4j.org/">SLF4j</a></p>
-</li>
-<li>
-<p><a href="https://commons.apache.org/proper/commons-logging/">Apache Commons Logging</a></p>
-</li>
-<li>
-<p><a href="https://docs.oracle.com/javase/8/docs/api/java/util/logging/package-summary.html">JDK JUL (java.util.logging)</a></p>
-</li>
-<li>
-<p><a href="https://logging.apache.org/log4j/2.x/">Log4j</a></p>
-</li>
-</ul>
-</div>
-<div class="sect4">
-<h5 id="quarkus_guide-logging.asciidoc_usage">Usage</h5>
-<div class="sect5">
-<h6 id="quarkus_guide-logging.asciidoc_maven-integration">Maven integration</h6>
-<div class="paragraph">
-<p>We recommend using SLF4j as the logging API. Since Quarkus uses JBoss logging internally, you can use it out of the box and do not need to add any dependencies to your project to use it. JBoss LogManager will send it to the appropriate implementation.</p>
-</div>
-<div class="paragraph">
-<p><strong>Exceptional case:</strong>
-If you use a dependency in your project that has dependencies on other logging libraries like SLF4j, then you need to exclude them from the dependency and use a JBoss Logging adapter. For more information, see <a href="https://quarkus.io/guides/logging#logging-adapters">here</a>.
-For example, if you have a dependency that uses SLF4j, you need to add the following dependency to your <code>pom.xml</code> file:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>&lt;dependency&gt;
-    &lt;groupId&gt;org.jboss.slf4j&lt;/groupId&gt;
-    &lt;artifactId&gt;slf4j-jboss-logmanager&lt;/artifactId&gt;
-&lt;/dependency&gt;</code></pre>
-</div>
-</div>
-<div id="quarkus_guide-logging.asciidoc_" class="admonitionblock note">
-<table>
-<tbody><tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>This is not needed for libraries that are dependencies of a Quarkus extension as the extension will take care of this for you.</p>
-</div>
-</td>
-</tr>
-</tbody></table>
-</div>
-</div>
-<div class="sect5">
-<h6 id="quarkus_guide-logging.asciidoc_logger-access">Logger access</h6>
-<div class="paragraph">
-<p>The general pattern for accessing an instance of a logger class is to use static instances. So for SLF4j, the following lines are sufficient to create a log object:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>...
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-public class MyClass {
-    private static final Logger log = LoggerFactory.getLogger(MyClass.class);
-
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>If you are use <a href="https://projectlombok.org/api/lombok/extern/slf4j/Slf4j.html">Lombok</a> in your project, you can simply add the <code>@SLF4J</code> annotation to your class. Lombok will then automatically create a logger instance that you can use in your code.</p>
-</div>
-</div>
-<div class="sect5">
-<h6 id="quarkus_guide-logging.asciidoc_using-the-logger">Using the logger</h6>
-<div class="paragraph">
-<p>After you have created the logger instance, you can simply use one of the log methods of the corresponding object. Different logging APIs provide different methods for creating log messages. When using SLF4j, there are several methods such as <code>info</code>, <code>warn</code>, <code>error</code> that are logged depending on the log level set  (see <a href="#guide-logging.asciidoc_guide-logging.asciidoc_configuration">configuration</a>).</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>...
-public void myMethod(...) {
-    log.info(&quot;your log message&quot;);
-}
-...</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>For detailed documentation on the SLF4j API, see <a href="http://www.slf4j.org/manual.html">here</a>.</p>
-</div>
-</div>
-<div class="sect5">
-<h6 id="quarkus_guide-logging.asciidoc_configuration">Configuration</h6>
-<div id="configuration" class="paragraph">
-<p>The are several options you can set in the <code>application.properties</code> file to configure the bahaviour of the logger. For example, to set the log level or the format of the log messages.</p>
-</div>
-<div class="sect6">
-<h7 id="quarkus_guide-logging.asciidoc_log-levels">Log levels</h7>
-<div class="paragraph">
-<p>Quarkus supports eight different log levels (see <a href="https://quarkus.io/guides/logging#logging-levels">here</a> for an overview). Use <code>quarkus.log.level</code> to set the default log level of the application (default is <code>INFO</code>).  To define more specific log levels, you can set different levels per category.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>quarkus.log.level=INFO
-quarkus.log.category.&quot;org.hibernate&quot;.level=DEBUG</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This would set the default log level in your application to <code>INFO</code> and the Hibernate log level to <code>DEBUG</code>.</p>
-</div>
-<div class="paragraph">
-<p>To understand when to use which log level, you can take a look at the <a href="https://github.com/devonfw/devon4j/blob/master/documentation/guide-logging.asciidoc#how-to-log">devon4j logging guide</a>.</p>
-</div>
-</div>
-<div class="sect6">
-<h7 id="quarkus_guide-logging.asciidoc_format">Format</h7>
-<div class="paragraph">
-<p>To configure the output format of the log messages, set the property <code>quarkus.log.console.format</code>. Information on the supported options can be found <a href="https://quarkus.io/guides/logging#logging-format">here</a>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>quarkus.log.console.format=[D: %d] [P: %p] [C: %X] [T: %t] [L: %c] [M: %m]%n</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Result:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>[D: 2021-07-20 11:54:33,127] [P: DEBUG] [C: &#xAB;MDC values&#xBB;] [T: executor-thread-0] [L: my.package.MyClass] [M: log message...]</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="quarkus_guide-logging.asciidoc_customizing-log-messages">Customizing log messages</h6>
-<div class="paragraph">
-<p>You can use <a href="http://www.slf4j.org/manual.html#mdc">Mapped Diagnostic Context</a> to add custom fields to your log messages. MDC is a simple map consisting of key-value pairs to store additional useful information such as session or request ids that can be helpful when filtering log messages or debugging applications.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
-
-...
-public class MyClass {
-
-    private static final Logger log = LoggerFactory.getLogger(SLF4JLoggingResource.class);
-
-    public String myMethod() {
-    	MDC.put(&quot;yourKey&quot;, &quot;yourValue&quot;);
-    	log.info(&quot;log message ...&quot;);
-    }
-
-    ...
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Result:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>[D: 2021-07-20 11:54:33,127] [P: DEBUG] [C: {yourKey=yourValue}] [T: executor-thread-0] [L: my.package.MyClass] [M: log message...]</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="quarkus_guide-logging.asciidoc_json-logging">JSON Logging</h5>
-<div class="paragraph">
-<p>For production environments we suggest to use JSON logs instead of plain text. The JSON output can be captured by external services for storing and analysis. To do this add the <code>quarkus-logging-json</code> extension to your project`s <code>pom.xml</code> file.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>&lt;dependency&gt;
-    &lt;groupId&gt;io.quarkus&lt;/groupId&gt;
-    &lt;artifactId&gt;quarkus-logging-json&lt;/artifactId&gt;
-&lt;/dependency&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This will change the output format by default. Since it makes sense in development environments to have the output format in a human readable format, you can disable JSON logging for development (or test) environments by adding the following properties to your <code>application.properties</code> file.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>%dev.quarkus.log.console.json=false
-%test.quarkus.log.console.json=false</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="quarkus_guide-logging.asciidoc_centralized-log-management">Centralized Log Management</h5>
-<div class="paragraph">
-<p>As mentioned in the section on JSON logging, in production environments it makes sense to have a service to store and analyse the logs. For this, you can use a central log management system like <a href="https://www.graylog.org/">Graylog</a> or <a href="https://www.elastic.co/logstash/">Logstash</a> in combination with <a href="https://www.elastic.co/elasticsearch/">Elasticsearch</a>, which provides you with a powerful search engine.</p>
-</div>
-<div class="paragraph">
-<p>For this, Quarkus provides the <code>quarkus-logging-gelf</code> extension to send the logs in the <a href="https://www.graylog.org/features/gelf">Graylog Extended Log Format (GELF)</a> to your log management system.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>&lt;dependency&gt;
-    &lt;groupId&gt;io.quarkus&lt;/groupId&gt;
-    &lt;artifactId&gt;quarkus-logging-gelf&lt;/artifactId&gt;
-&lt;/dependency&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You do not have to extend your code, just configure the GELF log handler to your management system.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>quarkus.log.handler.gelf.enabled=true
-quarkus.log.handler.gelf.host=tcp:localhost
-quarkus.log.handler.gelf.port=12201</code></pre>
-</div>
-</div>
-<div style="page-break-after: always;"></div>
-<!-- toc disabled -->
-</div>
-</div>
 <div class="sect3">
 <h4 id="quarkus_guide-cors-support.asciidoc">CORS support</h4>
 <div class="paragraph">
@@ -933,7 +700,7 @@ quarkus.http.cors.access-control-allow-credentials=true</code></pre>
 </div>
 </div>
 <div class="paragraph nav-footer">
-<p>&#x2190;&#xA0;Previous:&#xA0;<a href="guide-domain-layer.asciidoc.html">Domain Layer</a>&#xA0;| &#x2191;&#xA0;Up:&#xA0;<a href="devon4j.asciidoc_quarkus.html">quarkus</a>&#xA0;| &#x2302;&#xA0;Home:&#xA0;<a href="master.html">devonfw guide</a>&#xA0;| Next:&#xA0;<a href="master-devon4ng.asciidoc.html">Angular</a>&#xA0;&#x2192;</p>
+<p>&#x2190;&#xA0;Previous:&#xA0;<a href="guide-domain-layer.asciidoc.html">Domain Layer</a>&#xA0;| &#x2191;&#xA0;Up:&#xA0;<a href="quarkus.asciidoc.html">Quarkus</a>&#xA0;| &#x2302;&#xA0;Home:&#xA0;<a href="master.html">devonfw guide</a>&#xA0;| Next:&#xA0;<a href="master-devon4ng.asciidoc.html">Angular</a>&#xA0;&#x2192;</p>
 </div>
 </div>
 <div id="footer" class="footer">
@@ -1064,7 +831,7 @@ quarkus.http.cors.access-control-allow-credentials=true</code></pre>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-07-30 11:58:40 UTC
+Last updated 2021-08-02 22:27:41 UTC
 </sub></div>
 
 
