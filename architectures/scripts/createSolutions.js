@@ -15,7 +15,7 @@ function main(solutionsDir, outputFile, snippetLength) {
             if (fs.existsSync(indexHtmlPath)) {
                 var indexHtml = cheerio.load(fs.readFileSync(indexHtmlPath));
                 var headline = indexHtml("h1").first().text() || indexHtml("h2").first().text() || indexHtml("h3").first().text() || indexHtml("title").first().text() || "";
-                var imagePath = indexHtml("#content img").first().attr("src") || "";
+                var imagePath = indexHtml('.previewImage').first().attr("src") || indexHtml("#content img").first().attr("src") || "";
                 var snippet = indexHtml("#content .paragraph").first().text() || "";
                 if (snippet.length > snippetLength) {
                     snippet = snippet.slice(0, snippetLength - 1) + " ...";
