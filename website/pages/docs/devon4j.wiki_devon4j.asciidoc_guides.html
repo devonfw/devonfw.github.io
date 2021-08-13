@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2021-08-13 13:04:21 UTC">
+<meta name="author" content="Updated at 2021-08-13 14:22:08 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -511,7 +511,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2021-08-13 13:05:15 UTC</span><br>
+<span id="author" class="author">Updated at 2021-08-13 14:23:15 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -553,8 +553,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-jwt.asciidoc">JWT</a>
 </li>
 <li><a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-csrf.asciidoc">Cross-site request forgery (CSRF)</a>
-</li>
-<li><a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-validation.asciidoc">Validation</a>
 </li>
 <li><a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-aop.asciidoc">Aspect Oriented Programming (AOP)</a>
 </li>
@@ -737,7 +735,7 @@ A basic and secure configuration is provided which can be overridden or extended
 Subclasses must use the <code>@Profile</code> annotation to further discriminate between beans used in production and testing scenarios. See the following example:</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing 7. How to extend <code>BaseWebSecurityConfig</code> for Production and Test</div>
+<div class="title">Listing 12. How to extend <code>BaseWebSecurityConfig</code> for Production and Test</div>
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@Configuration
 @EnableWebSecurity
@@ -1644,7 +1642,7 @@ public class UcSafeOfferImpl extends ApplicationUc implements UcSafeOffer {
 </tbody>
 </table>
 <div class="listingblock">
-<div class="title">Listing 8. Example access-control-schema.xml</div>
+<div class="title">Listing 13. Example access-control-schema.xml</div>
 <div class="content">
 <pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;access-control-schema&gt;
@@ -2104,186 +2102,6 @@ This way your application will be secured against CSRF attacks.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="guide-validation.asciidoc">Validation</h4>
-<div class="paragraph">
-<p>Validation is about checking syntax and semantics of input data. Invalid data is rejected by the application.
-Therefore validation is required in multiple places of an application. E.g. the <a href="devon4j.asciidoc_layers.html#guide-client-layer.asciidoc">GUI</a> will do validation for usability reasons to assist the user, early feedback and to prevent unnecessary server requests.
-On the server-side validation has to be done for consistency and <a href="guide-security.asciidoc.html">security</a>.</p>
-</div>
-<div class="paragraph">
-<p>In general we distinguish these forms of validation:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><em>stateless validation</em> will produce the same result for given input at any time (for the same code/release).</p>
-</li>
-<li>
-<p><em>stateful validation</em> is dependent on other states and can consider the same input data as valid in once case and as invalid in another.</p>
-</li>
-</ul>
-</div>
-<div class="sect4">
-<h5 id="guide-validation.asciidoc_stateless-validation">Stateless Validation</h5>
-<div class="paragraph">
-<p>For regular, stateless validation we use the JSR303 standard that is also called bean validation (BV).
-Details can be found in the <a href="http://beanvalidation.org/1.1/spec/">specification</a>.
-As implementation we recommend <a href="http://hibernate.org/validator/">hibernate-validator</a>.</p>
-</div>
-<div class="sect5">
-<h6 id="guide-validation.asciidoc_example">Example</h6>
-<div class="paragraph">
-<p>A description of how to enable BV can be found in the relevant <a href="http://docs.spring.io/spring-framework/docs/current/spring-framework-reference/htmlsingle/#validation-beanvalidation">Spring documentation</a>. For a quick summary follow these steps:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Make sure that hibernate-validator is located in the classpath by adding a dependency to the pom.xml.</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>    &lt;dependency&gt;
-      &lt;groupId&gt;org.hibernate&lt;/groupId&gt;
-      &lt;artifactId&gt;hibernate-validator&lt;/artifactId&gt;
-    &lt;/dependency&gt;</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Add the @Validated annotation to the implementation (spring bean) to be validated. The standard use case is to annotate the logic layer implementation, i.e. the use case implementation or component facade in case of simple logic layer pattern. Thus, the validation will be executed for service requests as well as batch processing. For methods to validate go to their declaration and add constraint annotations to the method parameters.</p>
-<div class="ulist">
-<ul>
-<li>
-<p>@Valid annotation to the arguments to validate (if that class itself is annotated with constraints to check).</p>
-</li>
-<li>
-<p>@NotNull for required arguments.</p>
-</li>
-<li>
-<p>Other constraints (e.g. @Size) for generic arguments (e.g. of type String or Integer). However, consider to create <a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-datatype.asciidoc">custom datatypes</a> and avoid adding too much validation logic (especially redundant in multiple places).
-.<strong>BookingmanagementRestServiceImpl.java</strong></p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>@Validated
-public class BookingmanagementRestServiceImpl implements BookingmanagementRestService {
-  ...
-  public BookingEto saveBooking(@Valid BookingCto booking) {
-  ...</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Finally add appropriate validation constraint annotations to the fields of the ETO class.
-.<strong>BookingCto.java</strong></p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>  @Valid
-  private BookingEto booking;</pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="title">Listing 9. <strong>BookingEto.java</strong></div>
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">  @NotNull
-  @Future
-  private Timestamp bookingDate;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>A list with all bean validation constraint annotations available for hibernate-validator can be found <a href="http://docs.jboss.org/hibernate/stable/validator/reference/en-US/html_single/#table-spec-constraints">here</a>. In addition it is possible to configure custom constraints. Therefore it is necessary to implement a annotation and a corresponding validator. A description can also be found in the <a href="http://docs.spring.io/spring-framework/docs/current/spring-framework-reference/htmlsingle/#validation-beanvalidation-spring-constraints">Spring documentation</a> or with more details in the <a href="http://docs.jboss.org/hibernate/validator/4.3/reference/en-US/html/validator-customconstraints.html">hibernate documentation</a>.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tbody><tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-<strong>Bean Validation in Wildfly &gt;v8:</strong> Wildfly v8 is the first version of Wildfly implementing the JEE7 specification. It comes with bean validation based on <a href="https://samaxes.com/2014/04/jaxrs-beanvalidation-javaee7-wildfly/">hibernate-validator out of the box</a>. In case someone is running Spring in Wildfly for whatever reasons, the spring based annotation @Validated would duplicate bean validation at runtime and thus should be omitted.
-</td>
-</tr>
-</tbody></table>
-</div>
-</div>
-<div class="sect5">
-<h6 id="guide-validation.asciidoc_gui-integration">GUI-Integration</h6>
-<div class="paragraph">
-<p>TODO</p>
-</div>
-</div>
-<div class="sect5">
-<h6 id="guide-validation.asciidoc_cross-field-validation">Cross-Field Validation</h6>
-<div class="paragraph">
-<p>BV has poor support for this. Best practice is to create and use beans for ranges, etc. that solve this. A bean for a range could look like so:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class Range&lt;V extends Comparable&lt;V&gt;&gt; {
-
-  private V min;
-  private V max;
-
-  public Range(V min, V max) {
-
-    super();
-    if ((min != null) &amp;&amp; (max != null)) {
-      int delta = min.compareTo(max);
-      if (delta &gt; 0) {
-        throw new ValueOutOfRangeException(null, min, min, max);
-      }
-    }
-    this.min = min;
-    this.max = max;
-  }
-
-  public V getMin() ...
-  public V getMax() ...</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="guide-validation.asciidoc_stateful-validation">Stateful Validation</h5>
-<div class="paragraph">
-<p>For complex and stateful business validations we do not use BV (possible with groups and context, etc.) but follow KISS and just implement this on the server in a straight forward manner.
-An example is the deletion of a table in the example application. Here the state of the table must be checked first:
-<strong>BookingmanagementImpl.java</strong></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">  private void sendConfirmationEmails(BookingEntity booking) {
-
-    if (!booking.getInvitedGuests().isEmpty()) {
-      for (InvitedGuestEntity guest : booking.getInvitedGuests()) {
-        sendInviteEmailToGuest(guest, booking);
-      }
-    }
-
-    sendConfirmationEmailToHost(booking);
-  }</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Implementing this small check with BV would be a lot more effort.</p>
-</div>
-<div style="page-break-after: always;"></div>
-<!-- toc disabled -->
-</div>
-</div>
-<div class="sect3">
 <h4 id="guide-aop.asciidoc">Aspect Oriented Programming (AOP)</h4>
 <div class="paragraph">
 <p><a href="http://en.wikipedia.org/wiki/Aspect-oriented_programming">AOP</a> is a powerful feature for cross-cutting concerns. However, if used extensive and for the wrong things an application can get unmaintainable. Therefore we give you the best practices where and how to use AOP properly.</p>
@@ -2321,7 +2139,7 @@ An example is the deletion of a table in the example application. Here the state
 <p><a href="guide-security.html#method-authorization">Authorization</a></p>
 </li>
 <li>
-<p><a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-validation.asciidoc">Validation</a></p>
+<p><a href="guide-validation.asciidoc.html">Validation</a></p>
 </li>
 <li>
 <p><a href="guide-logging.html#tracing">Trace-Logging</a> (for testing and debugging)</p>
@@ -5174,7 +4992,7 @@ With spring we can simply use <a href="https://docs.spring.io/spring-framework/d
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-08-13 13:02:04 UTC
+Last updated 2021-08-13 14:19:20 UTC
 </sub></div>
 
 
