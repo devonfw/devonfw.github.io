@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2021-08-13 06:59:32 UTC">
+<meta name="author" content="Updated at 2021-08-13 13:04:21 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -511,7 +511,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2021-08-13 07:00:46 UTC</span><br>
+<span id="author" class="author">Updated at 2021-08-13 13:05:15 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -1128,9 +1128,8 @@ we suggest to have one <code>api</code> module per application that will contain
 <div class="paragraph">
 <p>The logic layer is the heart of the application and contains the main business logic.
 According to our <a href="architecture.html#business-architecture">business architecture</a>, we divide an application into <a href="guide-component.asciidoc.html">components</a>.
-For each component, the logic layer defines a <a href="devon4j.asciidoc_layers.html#guide-component-facade.asciidoc">component-facade</a>.
-According to the complexity, you can further divide this into individual <a href="devon4j.asciidoc_layers.html#guide-usecase.asciidoc">use-cases</a>.
-It is very important that you follow the links to understand the concept of component-facade and use-case in order to properly implement your business logic.</p>
+For each component, the logic layer defines different <a href="devon4j.asciidoc_layers.html#guide-usecase.asciidoc">use-cases</a>. Another approach is to define a <a href="devon4j.asciidoc_layers.html#guide-component-facade.asciidoc">component-facade</a>, which we do not recommend for future application. Especially for quarkus application, we want to simplify things and highly suggest omitting component-facade completely and using use-cases only.
+It is very important that you follow the links to understand the concept of use-case in order to properly implement your business logic.</p>
 </div>
 <div class="sect4">
 <h5 id="guide-logic-layer.asciidoc_responsibility">Responsibility</h5>
@@ -1184,6 +1183,18 @@ The following additional aspects are also included in its responsibility:</p>
 </div>
 <div class="sect4">
 <h5 id="guide-component-facade.asciidoc">Component Facade</h5>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Our recommended approach for implementing the logic layer is <a href="devon4j.asciidoc_layers.html#guide-usecase.asciidoc">use-cases</a>
+</td>
+</tr>
+</tbody></table>
+</div>
 <div class="paragraph">
 <p>For each component of the application, the <a href="devon4j.asciidoc_layers.html#guide-logic-layer.asciidoc">logic layer</a> defines a component facade.
 This is an interface defining all business operations of the component.
@@ -1247,10 +1258,6 @@ public class BookingmanagementImpl extends AbstractComponentFacade implements Bo
 <p>As you can see, <a href="guide-jpa.html#entity">entities</a> (<code>BookingEntity</code>) are mapped to corresponding <a href="guide-transferobject.html#eto">ETOs</a> (<code>BookingEto</code>).
 Further details about this can be found in <a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-beanmapping.asciidoc">bean-mapping</a>.</p>
 </div>
-<div class="paragraph">
-<p>For complex applications, the component facade consisting of many different methods.
-For better maintainability in such case it is recommended to split it into separate <a href="devon4j.asciidoc_layers.html#guide-usecase.asciidoc">use-cases</a> that are then only aggregated by the component facade.</p>
-</div>
 <!-- toc disabled -->
 </div>
 </div>
@@ -1258,9 +1265,14 @@ For better maintainability in such case it is recommended to split it into separ
 <h5 id="guide-usecase.asciidoc">UseCase</h5>
 <div class="paragraph">
 <p>A use-case is a small unit of the <a href="devon4j.asciidoc_layers.html#guide-logic-layer.asciidoc">logic layer</a> responsible for an operation on a particular <a href="guide-jpa.html#entity">entity</a> (business object).
-It is defined by an interface (API) with its according implementation.
-Following our <a href="guide-structure-classic.html#architecture-mapping">architecture-mapping</a>, use-cases are named <code>Uc&#xAB;Operation&#xBB;&#xAB;BusinessObject&#xBB;[Impl]</code>. The prefix <code>Uc</code> stands for use-case and allows to easily find and identify them in your IDE. The <code>&#xAB;Operation&#xBB;</code> stands for a verb that is operated on the entity identified by <code>&#xAB;BusinessObject&#xBB;</code>.
+We leave it up to you to decide whether you want to define an interface (API) for each use-case or provide an implementation directly.</p>
+</div>
+<div class="paragraph">
+<p>Following our architecture-mapping (for <a href="guide-structure-classic.html#architecture-mapping">classic</a> and <a href="guide-structure-modern.html#architecture-mapping">modern</a> project), use-cases are named <code>Uc&#xAB;Operation&#xBB;&#xAB;BusinessObject&#xBB;[Impl]</code>. The prefix <code>Uc</code> stands for use-case and allows to easily find and identify them in your IDE. The <code>&#xAB;Operation&#xBB;</code> stands for a verb that is operated on the entity identified by <code>&#xAB;BusinessObject&#xBB;</code>.
 For <a href="https://en.wikipedia.org/wiki/Create,_read,_update_and_delete">CRUD</a> we use the standard operations <code>Find</code> and <code>Manage</code> that can be generated by <a href="https://github.com/devonfw/cobigen">CobiGen</a>. This also separates read and write operations (e.g. if you want to do CQSR, or to configure read-only transactions for read operations).</p>
+</div>
+<div class="paragraph">
+<p>In our example, we choose to define an interface for each use-case.</p>
 </div>
 <div class="sect5">
 <h6 id="guide-usecase.asciidoc_find">Find</h6>
@@ -1322,28 +1334,37 @@ Here is an example:</p>
 <div class="sect5">
 <h6 id="guide-usecase.asciidoc_implementation">Implementation</h6>
 <div class="paragraph">
-<p>For the implementation of a use-cas, the same rules that are described for the <a href="guide-component-facade.html#implementation">component-facade implementation</a>.</p>
-</div>
-<div class="literalblock">
-<div class="content">
-<pre>.</pre>
-</div>
+<p>For the implementation of a use-case, the same rules that are described for the <a href="guide-component-facade.html#implementation">component-facade implementation</a>.</p>
 </div>
 <div class="paragraph">
-<p>However, when following the use-case approach, your component facade simply changes to:</p>
+<p>In short, the implementation should carry its own name and the suffix <code>Impl</code> and is annotated with <code>@Named</code>. It will need access to the persistent data which is done by injecting the corresponding repository (or DAO). Furthermore, it shall not expose persistent entities from the data access layer and has to map them to transfer objects using the bean-mapper. Please refer to our bean mapping documentation for more information.
+Here is an example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public interface Bookingmanagement extends UcFindBooking, UcManageBooking, UcApproveBooking {
+<pre class="highlight"><code class="language-java" data-lang="java">public class UcFindBookingImpl implements UcFindBooking {
+
+  @Inject
+  private BookingRepository bookingRepository;
+
+  @Override
+  public BookingEto findBooking(Long id) {
+
+    LOG.debug(&quot;Get Booking with id {} from database.&quot;, id);
+    BookingEntity entity = this.bookingRepository.findOne(id);
+    return getBeanMapper().map(entity, BookingEto.class));
+  }
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Where the implementation only delegates to the use-cases and gets entirely generated by CobiGen:</p>
+<p>The use-cases can then be injected directly into the service.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class BookingmanagementImpl implements  {
+<pre class="highlight"><code class="language-java" data-lang="java">@Named(&quot;BookingmanagementRestService&quot;)
+@Validated
+public class BookingmanagementRestServiceImpl implements BookingmanagementRestService {
 
   @Inject
   private UcFindBooking ucFindBooking;
@@ -1353,42 +1374,7 @@ Here is an example:</p>
 
   @Inject
   private UcApproveBooking ucApproveBooking;
-
-  @Override
-  public BookingEto findBooking(Long id) {
-    return this.ucFindBooking.findBooking(id);
-  }
-
-  @Override
-  public Page&lt;BookingEto&gt; findBookingEtos(BookingSearchCriteriaTo criteria) {
-    return this.ucFindBooking.findBookingEtos(criteria);
-  }
-
-  @Override
-  public BookingEto saveBooking(BookingEto booking) {
-    return this.ucManageBooking.saveBooking(booking);
-  }
-
-  @Override
-  public boolean deleteBooking(Long id) {
-    return this.ucManageBooking.deleteBooking(booking);
-  }
-
-  @Override
-  public void approveBooking(BookingEto booking) {
-    this.ucApproveBooking.approveBooking(booking);
-  }
-
-  ...
 }</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This approach is also illustrated by the following UML diagram:</p>
-</div>
-<div class="imageblock" style="text-align: center">
-<div class="content">
-<img src="images/component-facade-with-use-cases.png" alt="Component facade with use cases.">
 </div>
 </div>
 </div>
@@ -1400,48 +1386,6 @@ Of course, this can be exposed as an official use-case API but this will imply u
 In the first place, you should try to use abstract base implementations providing reusable methods the actual use-case implementations can inherit from.
 If your business logic is even more complex and you have multiple aspects of business logic to share and reuse but also run into multi-inheritance issues, you may also just create use-cases that have their interface located in the <code>impl</code> scope package right next to the implementation (or you may just skip the interface). In such a case, you may define methods that directly take or return entity objects.
 To avoid confusion with regular use-cases, we recommend to add the <code>Internal</code> suffix to the type name leading to <code>Uc&#xAB;Operation&#xBB;&#xAB;BusinessObject&#xBB;Internal[Impl]</code>.</p>
-</div>
-</div>
-<div class="sect5">
-<h6 id="guide-usecase.asciidoc_injection-issues">Injection issues</h6>
-<div class="paragraph">
-<p>Technically, now you have two implementations of your use-case:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>the direct implementation of the use-case (<code>Uc*Impl</code>)</p>
-</li>
-<li>
-<p>the component facade implementation (<code>&#xAB;Component&#xBB;Impl</code>)</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>When injecting a use-case interface this could cause ambiguities.
-This is addressed as following:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>In the component facade implementation (<code>&#xAB;Component&#xBB;Impl</code>) spring is smart enough to resolve the ambiguity as it assumes that a spring bean never wants to inject itself (it can already be an access via <code>this</code>).
-Therefore, only the proper use-case implementation remains as a candidate and injection works as expected.</p>
-</li>
-<li>
-<p>In all other places, simply always inject the component facade interface instead of the use-case.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>In case you might have the lucky occasion to hit this nice exception:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>org.springframework.beans.factory.BeanCurrentlyInCreationException: Error creating bean with name &apos;uc...Impl&apos;: Bean with name &apos;uc...Impl&apos; has been injected into other beans [...Impl] in its raw version as part of a circular reference, but has eventually been wrapped. This means that said other beans do not use the final version of the bean. This is often the result of over-eager type matching - consider using &apos;getBeanNamesOfType&apos; with the &apos;allowEagerInit&apos; flag turned off, for example.</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>To get rid of such an error you need to annotate your according implementation also with <code>@Lazy</code> in addition to <code>@Named</code>.</p>
 </div>
 <div style="page-break-after: always;"></div>
 <!-- toc disabled -->
@@ -1969,7 +1913,7 @@ public class BookingsExportBatchConfig {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-08-13 06:56:34 UTC
+Last updated 2021-08-13 13:02:04 UTC
 </sub></div>
 
 
