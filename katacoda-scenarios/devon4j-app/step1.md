@@ -1,10 +1,15 @@
-### Create devon4j sample application
+### A devon4j Sample Application
+
+Note: Startup script will take some time for set up. After that you can proceed further.
 
 If you want to create devon4j application on your local machine there are two ways to do it:
+
 * In eclipse as shown [here](https://devonfw.com/website/pages/docs/devon4j.asciidoc_tutorials.html#tutorial-newapp.asciidoc_from-eclipse)
+
 * Using command line as shown [here](https://devonfw.com/website/pages/docs/devon4j.asciidoc_tutorials.html#tutorial-newapp.asciidoc_from-command-line)
 
-Now, we will create sample devon4j application with name *sampleapp*. This step will guide you on how to do it.
+Now, you will create sample devon4j application with name *sampleapp*. This step will guide you on how to do it.
+
 
 
 
@@ -20,14 +25,14 @@ Now you can use devonfw to setup a Java project for you by executing the followi
 
 Once sampleapp is created switch to next tab of IDE. In IDE explorer you can see folder structure like devonfw-&gt; workspaces-&gt;main-&gt;sampleapp . 
 
-sampleapp contains 3 modules i.e api, core and server.
+Sampleapp contains 3 modules i.e api, core and server.
 
 **api**: It contains API for sampleapp.The API contains the required artifacts to interact with your application via remote services. This can be REST service interfaces, transfer-objects with their interfaces and datatypes but also OpenAPI or gRPC contracts.
 
 **core**: It is the core of the application.In this module you can write actual business logic with service implementation, as well as entire logic layer and dataaccess layer.
 
-**batch**: optional module for batch layer. In this example we have not created it. To add batch module while generating from commandline use -Dbatch=batch parameter. And to generate it from eclipse using mave archetype enter batch variable value as batch in project creation page.
+**batch**: Optional module for batch layer. In this example we have not created it. To add batch module while generating from commandline use -Dbatch=batch parameter. And to generate it from eclipse using maven archetype, enter batch variable value as batch in project creation page.
 
 **server**: This module bundles the entire app (core with optional batch) typically as a bootified WAR file.
 
-If you want to know more about modules and project structure refer [here](https://github.com/devonfw/devon4j/blob/master/documentation/guide-structure.asciidoc#project-structure).
+If you want to know more about modules and project structure refer [here](#https://github.com/devonfw/devon4j/blob/master/documentation/guide-structure.asciidoc#project-structure).

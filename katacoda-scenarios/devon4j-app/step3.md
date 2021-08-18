@@ -1,6 +1,4 @@
-### Build devon4j sample application
-
-Build the java project
+Now you have to build a devon4j sample application i.e. sampleapp.
 
 
 

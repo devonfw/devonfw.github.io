@@ -8,14 +8,13 @@ You can find a description of what to look for when creating a pull request at t
 
 devon4j is the Java stack of devonfw. It allows you to build business applications (backends) using Java technology in a highly efficient and standardized way based on established best-practices.
 
-
-## Prerequisites
+# Prerequisites
 
 * User should have Java development experience
 
+# Learning goals
 
-## Learning goals
-After completing this scenario, you will have learned how to generate Java application using devon4j.
+* After completing this scenario, you will have learned how to generate Java application using devon4j.
 
 More information about devon4j on https://devonfw.com/website/pages/docs/devon4j.asciidoc.html
 
