@@ -124,9 +124,16 @@ jobs:
           cd target/generated-docs/search-engine
           npm install
           node ./converter.js ../website/pages/docs/ ../website/pages/explore/ ../katacoda-scenarios/ ../website/pages/architectures/solutions/ .html
-          node ./searchSolutions.js ../website/pages/architectures/solutions/ .html
-          cp {index.json,docs-json.json,index_solutions.json,docs-json_solutions.json} ../website
+          cp {index.json,docs-json.json} ../website
           cd ../../..
+
+      - name: Reindex for solutions  
+        run: |
+          cd architectures/scripts
+          npm install 
+          node ./indexSolutions.js ../website/pages/architectures/solutions/ .html
+          cp {index_solutions.json,docs-json_solutions.json} ../website
+          cd ../..
 
       - name: Cleanup
         run: |
