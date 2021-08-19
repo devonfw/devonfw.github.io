@@ -92,7 +92,6 @@ function getFilesFromSolution(dirname, extension) {
             }
             result = result.concat(getFilesFromSolution(item, extension));
         }
-
     });
 
     return result;
@@ -126,7 +125,6 @@ function readFromSolution(
         }
     }
 
-    console.log(doc);
     return doc;
 }
 
