@@ -106,7 +106,9 @@
 <li><a href="#guide-jpa-query.asciidoc_using-wildcards">Using Wildcards</a></li>
 <li><a href="#guide-jpa-query.asciidoc_pagination">Pagination</a>
 <ul class="sectlevel2">
+<li><a href="#guide-jpa-query.asciidoc_paging-with-querydsl">Paging with QueryDSL</a></li>
 <li><a href="#guide-jpa-query.asciidoc_pagination-example">Pagination example</a></li>
+<li><a href="#guide-jpa-query.asciidoc_pagingation-in-devon4j-spring">Pagingation in devon4j-spring</a></li>
 </ul>
 </li>
 <li><a href="#guide-jpa-query.asciidoc_query-meta-parameters">Query Meta-Parameters</a></li>
@@ -156,32 +158,39 @@ So for example to get all <a href="https://github.com/devonfw/my-thai-star/blob/
 <p>For dynamic queries we use <a href="http://www.querydsl.com/">QueryDSL</a>. It allows to implement queries in a powerful but readable and type-safe way (unlike Criteria API). If you already know JPQL you will quickly be able to read and write QueryDSL code. It feels like JPQL but implemented in Java instead of plain text.</p>
 </div>
 <div class="paragraph">
-<p>Please be aware that code-generation can be painful especially with large teams. We therefore recommend to use QueryDSL without code-generation. Here is an example from our sample application:</p>
+<p>Here is an example from our sample application:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="java language-java">  public List&lt;DishEntity&gt; findOrders(DishSearchCriteriaTo criteria) {
-    DishEntity dish = Alias.alias(DishEntity.class);
-    JPAQuery&lt;OrderEntity&gt; query = newDslQuery(alias); // new JPAQuery&lt;&gt;(getEntityManager()).from(Alias.$(dish));
+<pre class="highlight"><code class="java language-java">  public List&lt;DishEntity&gt; findDishes(DishSearchCriteriaTo criteria) {
+    QDishEntity dish = QDishEntity.dishEntity;
+    JPAQuery&lt;DishEntity&gt; query = new JPAQuery&lt;OrderEntity&gt;(getEntityManager());
+    query.from(dish);
+
     Range&lt;BigDecimal&gt; priceRange = criteria.getPriceRange();
     if (priceRange != null) {
       BigDecimal min = priceRange.getMin();
       if (min != null) {
-        query.where(Alias.$(order.getPrice()).ge(min));
+        query.where(dish.price.goe(min));
       }
       BigDecimal max = priceRange.getMax();
       if (max != null) {
-        query.where(Alias.$(order.getPrice()).le(max));
+        query.where(dish.price.loe(max));
       }
     }
     String name = criteria.getName();
     if ((name != null) &amp;&amp; (!name.isEmpty())) {
-      // query.where(Alias.$(alias.getName()).eq(name));
-      QueryUtil.get().whereString(query, Alias.$(alias.getName()), name, criteria.getNameOption());
+      query.where(dish.name.eq(name));
     }
     return query.fetch();
   }</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>In this example we use the so called Q-types (<code>QDishEntity</code>). These are classes generated at build time by the QueryDSL annotation processor from entity classes. The Q-type classes can be used as static types representative of the original entity class.</p>
+</div>
+<div class="paragraph">
+<p>For spring, devon4j provides another approach that you can use for your Spring applications to implement QueryDSL logic without having to use these metaclasses. An example can be found <a href="#spring/guide-querydsl-spring.asciidoc">here</a>.</p>
 </div>
 </div>
 </div>
@@ -197,12 +206,52 @@ So for example to get all <a href="https://github.com/devonfw/my-thai-star/blob/
 <h2 id="guide-jpa-query.asciidoc_pagination">Pagination</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>devonfw provides pagination support. If you are using <a href="#guide-repository.asciidoc">spring-data repositories</a> you will get that directly from spring for static queries. Otherwise for dynamic or generally handwritten queries we provide this via <a href="https://github.com/devonfw/devon4j/blob/develop/modules/jpa-basic/src/main/java/com/devonfw/module/jpa/dataaccess/api/QueryUtil.java#L102">QueryUtil.findPaginated(&#8230;&#8203;)</a>:</p>
+<p>When dealing with large amounts of data, an efficient method of retrieving the data is required. Fetching the entire data set each time would be too time consuming. Instead, <em>Paging</em> is used to process only small subsets of the entire data set.</p>
+</div>
+<div class="paragraph">
+<p>If you are using <a href="#guide-repository.asciidoc">Spring Data repositories</a> you will get pagination support out of the box by providing the interfaces <a href="https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/domain/Pageable.html">Page</a> and  <a href="https://docs.spring.io/spring-data/commons/docs/current/api/org/springframework/data/domain/Pageable.html">Pageable</a>:</p>
+</div>
+<div class="listingblock">
+<div class="title"><strong>repository</strong></div>
+<div class="content">
+<pre class="highlight"><code class="java language-java">Page&lt;DishEntity&gt; findAll(Pageable pageable);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then you can create a Pageable object and pass it to the method call as follows:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="java language-java">boolean determineTotalHitCount = ...;
-return QueryUtil.get().findPaginated(criteria.getPageable(), query, determineTotalHitCount);</code></pre>
+<pre class="highlight"><code class="java language-java">int page = criteria.getPageNumber();
+int size = criteria.getPageSize();
+Pageable pageable = PageRequest.of(page, size);
+Page&lt;DishEntity&gt; dishes = dishRepository.findAll(pageable);</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-jpa-query.asciidoc_paging-with-querydsl">Paging with QueryDSL</h3>
+<div class="paragraph">
+<p>Pagination is also supported for dynamic queries with QueryDSL:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">  public Page&lt;DishEntity&gt; findDishes(DishSearchCriteriaTo criteria) {
+    QDishEntity dish = QDishEntity.dishEntity;
+    JPAQuery&lt;DishEntity&gt; query = new JPAQuery&lt;OrderEntity&gt;(getEntityManager());
+    query.from(dish);
+
+    // conditions
+
+    int page = criteria.getPageNumber();
+    int size = criteria.getPageSize();
+    Pageable pageable = PageRequest.of(page, size);
+    query.offset(pageable.getOffset());
+    query.limit(pageable.getPageSize());
+
+    List&lt;DishEntity&gt; dishes = query.fetch();
+    return new PageImpl&lt;&gt;(dishes, pageable, dishes.size());
+  }</code></pre>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -301,6 +350,12 @@ As we are requesting with the <code>total</code> property set to <code>true</cod
     ]
 }</code></pre>
 </div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-jpa-query.asciidoc_pagingation-in-devon4j-spring">Pagingation in devon4j-spring</h3>
+<div class="paragraph">
+<p>For spring applications, devon4j also offers its own solution for pagination. You can find an example of this <a href="spring/guide-querydsl-spring.html#pagination">here</a>.</p>
 </div>
 </div>
 </div>
@@ -495,7 +550,7 @@ As we are requesting with the <code>total</code> property set to <code>true</cod
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-08-31 07:14:14 UTC
+Last updated 2021-08-31 07:41:41 UTC
 </sub></div>
 </div>
 </div>
