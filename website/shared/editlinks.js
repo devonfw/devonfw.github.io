@@ -3,8 +3,9 @@ const editLinksModule = (function(window) {
 
   function executeRules(rules) {
     let result;
+    let path = $("li").has(".sectlevel1").has(".toc-current").find("a").first().attr("href") || window.location.pathname;
     rules.some(rule => {
-        let matches = rule.re.exec(window.location.pathname);
+        let matches = rule.re.exec(path);
         if(matches){
             if(rule.index !== undefined){
                 result = matches[rule.index];
@@ -32,14 +33,14 @@ const editLinksModule = (function(window) {
         },
         {
             re: /master-contributing\.asciidoc/,
-            value: 'devonfw-guide'
+            value: '.github'
         },
         {
             re: /master-database\.asciidoc/,
             value: 'devonfw-guide'
         },
         {
-            re: /devonfw-ide-([^\/]+?)\.asciidoc/,
+            re: /devonfw-ide\.asciidoc/,
             value: 'ide'
         },
         {
@@ -75,7 +76,7 @@ const editLinksModule = (function(window) {
         },
         {
             re: /master-contributing\.asciidoc/,
-            value: 'general'
+            value: ''
         },
         {
             re: /master-database\.asciidoc/,
@@ -125,12 +126,54 @@ const editLinksModule = (function(window) {
             value: 'master'
         },
         {
-            re: /(master-)?([^\/]+?)\.asciidoc/,
+            re: /master-dashboard\.asciidoc/,
             value: 'develop'
+        },
+        {
+            re: /master-mrchecker\.asciidoc/,
+            value: 'develop'
+        },
+        {
+            re: /(master-)?([^\/]+?)\.asciidoc/,
+            value: 'master'
         }
     ];
     return executeRules(rules);
   }
+
+  function getFilename(id) {
+
+    let rules = [
+        {
+            re: /contributing.asciidoc_(.+?)/,
+            value: 'CONTRIBUTING.asciidoc'
+        },
+        {
+            re: /code_of_conduct.asciidoc_(.+?)/,
+            value: 'CODE_OF_CONDUCT.asciidoc'
+        },
+        {
+            re: /(^.+?)\.asciidoc/,
+            index: 0
+        },
+    ];
+
+    let result;
+    rules.some(rule => {
+        let matches = rule.re.exec(id);
+        if (matches) {
+            if (rule.index !== undefined) {
+                result = matches[rule.index];
+            } else {
+                result = rule.value;
+            }
+            return true;
+        }
+        return false;
+    });
+
+    return result;
+}
 
   function addEditLinks(alwaysVisible = true) {    
     let title = 'This will open the corresponding asciidoc file in the github editor and create a PullRequest for your changes when you save them. The changes will be reviewed before they are published on the website.';
@@ -144,10 +187,17 @@ const editLinksModule = (function(window) {
         $('h3,h4,h5').each(function() {
             let headline = $( this );
             let id = headline.prop('id');
-            let re = /^.+?\.asciidoc/;
-            let matches = re.exec(id);
-            if(matches.length > 0) {
-                let filename = matches[0];
+            let filename = getFilename(id);
+            if(filename.length > 0) {
+                if (filename.indexOf("_") != -1) {
+                    if (filename != 'CODE_OF_CONDUCT.asciidoc') {
+                        filename = filename.split("_");
+                        filename = filename[filename.length - 1];
+                    }
+                }
+                if (filename == 'oss-compliance.asciidoc') {
+                    urlPrefix = "https://github.com/devonfw/devonfw-guide/edit/" + branchName + "/" + folderName + "general" + "/";
+                }
                 let url = urlPrefix + filename;
                 let link = $('<a title="' + title + '" target="_blank" style="padding-left: 0.375em;" class="edit-link" href="' + url + '">&#x270E</a>');
                 if(!alwaysVisible){
