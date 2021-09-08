@@ -24,6 +24,8 @@ function search() {
     var parameters = getParameters();
     var solutions = solutionsJson;
     let curentPage = 1;
+    let queryRes = queryIndex();
+
     for (const filterName of parameters.keys()) {
         var filterValues = parameters.get(filterName);
         if (filterName == 'page') {
@@ -31,16 +33,38 @@ function search() {
             parameters.delete('page', curentPage);
             continue;
         }
+        if (filterName == 'search') {
+            continue;
+        }
         for (var i in filterValues) {
             var filterValue = filterValues[i];
             var filterSolutions = tagsJson[filterName][filterValue];
-            var newSolutions = {};
+            let newSolutions = {};
             for (var solutionKey in solutions) {
                 if (filterSolutions.includes(solutionKey)) {
                     newSolutions[solutionKey] = solutions[solutionKey];
                 }
             }
             solutions = newSolutions;
+        }
+    }
+
+    let newSolutions = {};
+    let query = document.getElementById('search-field-solutions').value.trim();
+
+    if (query.length > 0) {
+        if (queryRes.length > 0) {
+            for (var r in queryRes) {
+                var result = queryRes[r];
+                console.log('queryRes, result', queryRes, result);
+                if (result in solutions) {
+                    newSolutions[result] = solutions[result];
+                }
+            }
+            solutions = newSolutions;
+        }
+        else {
+            solutions = {};
         }
     }
     renderSolutions(solutions, curentPage);
@@ -166,7 +190,6 @@ function disableFilters(solutions) {
     }
 }
 
-
 function orderTag(tag) {
     var tags = {};
     keys = Object.keys(tag);
@@ -182,9 +205,72 @@ function orderTag(tag) {
     return tags;
 }
 
+function searchOnClick() {
+    let searchField = document.getElementById('search-field-solutions');
+    let timer = null;
+    searchField.onkeypress = function (e) {
+        if (timer) {
+            clearTimeout(timer);
+        }
+        if (e.key == 'Enter') {
+            e.preventDefault();
+        }
+        timer = setTimeout(search, 500);
+    };
+
+    searchField.onpaste = function (e) {
+        if (timer) {
+            clearTimeout(timer);
+        }
+        timer = setTimeout(search, 100);
+    };
+
+    $('#search-field-solutions').change(function () {
+        if (timer) {
+            clearTimeout(timer);
+        }
+        timer = setTimeout(search, 500);
+    });
+}
+
+function queryIndex() {
+    let results = [];
+    let parameters = getParameters();
+    let searchArr = parameters.get('search');
+
+    let query = document.getElementById('search-field-solutions').value;
+    let queryRes = query ? searchData.index.search(query) : [];
+
+    const findById = (id, objects) => {
+        const obj = objects.find((obj) => '' + obj.id == '' + id);
+        return obj;
+    };
+
+    for (let i = 0; i < queryRes.length; i++) {
+        let res = queryRes[i];
+        let obj = findById(res.ref, searchData.documents);
+        results = results.concat(obj['dirname']);
+    }
+    if (searchArr) {
+        for (var p in searchArr) {
+            parameters.delete('search', searchArr[p]);
+        }
+    }
+    if (queryRes.length > 0) {
+        parameters.set('search', query);
+    }
+    document.location.hash = "#" + parameters.toString()
+
+    return results;
+}
+
 async function main() {
     indexJson = await $.ajax({
         url: "index.json?r=" + Math.random() * 10000
+    });
+
+    docsJson = await $.ajax({
+        url: "docs-json.json?r=" + Math.random() * 10000
     });
 
     solutionsJson = await $.ajax({
@@ -195,6 +281,7 @@ async function main() {
         url: "tags.json?r=" + (Math.random() * 10000)
     });
 
+    searchData = { index: lunr.Index.load(indexJson), documents: docsJson };
 
     for (const filter in tagsJson) {
         if (Object.hasOwnProperty.call(tagsJson, filter)) {
@@ -224,6 +311,8 @@ async function main() {
     $("head").append('<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">');
     var paginationDiv = $('<div id="pagination" class = "pagination"></div>');
     $("#content").append(paginationDiv);
+    var seachFieldDiv = '<div class="search-bar"><input id="search-field-solutions" type="search" class="form-control mr-sm-2" placeholder="Search by keyword(s)..." aria-label="Search" style="height: auto;"/>';
+    $('#content').append(seachFieldDiv);
     var parameters = getParameters();
 
     var filterspanel = $('<div id="filterspanel" class="filterspanel"></div>');
@@ -260,8 +349,13 @@ async function main() {
     $("#content").append(filterspanel);
     var resultspanel = $('<div id="resultspanel" class="resultspanel"></div>');
     $("#content").append(resultspanel);
+    for (const filterName of parameters.keys()) {
+        if (filterName == 'search') {
+            document.getElementById('search-field-solutions').value = parameters.get('search')[0];
+        }
+    }
     search();
+    searchOnClick();
 }
 
 main();
-
