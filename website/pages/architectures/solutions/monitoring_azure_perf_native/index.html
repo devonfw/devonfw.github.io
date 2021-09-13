@@ -1,0 +1,853 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Solution Performance Monitoring Azure Native</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt="">
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input id="search-field" type="search" class="form-control mr-sm-2" placeholder="Search by keyword(s)..." aria-label="Search" style="height: auto;">
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width="auto" height="auto" alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#index.asciidoc_solution-performance-monitoring-azure-native">Solution Performance Monitoring Azure Native</a>
+<ul class="sectlevel2">
+<li><a href="#index.asciidoc_application-monitoring">Application Monitoring</a></li>
+<li><a href="#index.asciidoc_infrastructure-monitoring">Infrastructure Monitoring</a></li>
+</ul>
+</li>
+</ul>
+<div class="sect1">
+<h2 id="index.asciidoc_solution-performance-monitoring-azure-native">Solution Performance Monitoring Azure Native</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="index.asciidoc_application-monitoring">Application Monitoring</h3>
+<div class="sect3">
+<h4 id="index.asciidoc_overview">Overview</h4>
+<div class="paragraph">
+<p>The solution is to use Azure Monitor with App Insights, Log Analytics and the following platform features regarding the monitored resources. The focus of this chapter is to introduce the relevant features. Recommendations for a concrete setup are given in the next chapter.</p>
+</div>
+<div class="paragraph">
+<p>The relevant Azure monitor features are as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Collection/ Storage (Monitoring Plane)</strong></p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Telemetry can either be stored internally inside the monitoring plane by App Insights/ Log Analytics or externally.</p>
+</div>
+<div class="paragraph">
+<p>Telemetry can be <strong>pulled</strong> from the monitoring plane. This is limited to metrics but faster than pushing. <strong>Pushing</strong> can be necessary if the telemetry is not available in Azure monitor out of the box or pulling from the monitored resources is not possible. The major mechanisms to push telemetry to the monitoring plane are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Diagnostic setting</strong></p>
+</li>
+<li>
+<p><strong>App Insights Instrumentation/ Linking</strong>: Linked App Insights must be specified for the monitored resource. Some Azure Services such as Azure App Service come with a built-in App Insight integration. However, other services only provide diagnostic settings instead such as API management.</p>
+</li>
+<li>
+<p><strong>Manual forwarding</strong>: E.g. by scheduled process using the APIs provided by Azure Monitor for App Insights and Log Analytics.
+App Insights/ log analytics also provide APIs to manual forward data. However this APIs have some constraints:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>timestamp cannot be set freely (Both)</p>
+</li>
+<li>
+<p>deleting something is not possible (Both)</p>
+</li>
+<li>
+<p>saved query cannot be updated (App insights only)</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Analysis/ Diagnosis (Monitoring Plane)</strong></p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Azure Monitor comes with no built-in support for KPIs such as code quality, test coverage or availability/ maintenance. However, standard KPIs such as mean time between failure (=MTBF) can be programmed with Kusto queries.
+Azure Application Insights sends web requests to your application at regular intervals from points around the world. It can alert you if your application isn’t responding, or if it responds too slowly <a href="https://docs.microsoft.com/en-us/azure/azure-monitor/app/availability-alerts">as described here</a>.</p>
+</div>
+<div class="paragraph">
+<p>Kusto queries across multiple application insights or log analytic workspaces are possible. App insight or log analytic workspaces must then be referenced with an additional identifier (App Insights: <code>app('&lt;identifier&gt;')</code>; Log Analytics: (<code>workspace('&lt;qualifier&gt;')</code>) as shown in the samples below. Various options for identifiers exist such as name and guid <a href="https://azure.microsoft.com/en-us/blog/query-across-resources/">as described here</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>// Cross-Kusto app insights example
+union app('mmsportal-prod').requests, app('AI-Prototype/Fabrikam/fabrikamprod').requests, requests
+| summarize count() by bin(timestamp, 1h)
+
+// Cross-Kusto log analytics example
+union Update, workspace("b438b4f6-912a-46d5-9cb1-b44069212ab4").Update
+| where TimeGenerated &gt;= ago(1h)
+| where UpdateState == "Needed"
+| summarize dcount(Computer) by Classification</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Azure Data Explorer is a service for large scale analysis of telemetry. Large refers large amount of data or high frequency of time series data <a href="https://iterationinsights.com/article/azure-data-explorer-3-scenarios/">as described here</a>.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Visualization/ Alerting (Monitoring Plane)</strong></p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Natively Azure monitor provides as <strong>dashboarding</strong> options (1) Azure dashboards and (2) Azure workbooks.</p>
+</div>
+<div class="paragraph">
+<p><strong>Alerts</strong> come with the following features:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Trigger</strong>: Results from Kusto queries can be used as trigger.</p>
+</li>
+<li>
+<p><strong>Action Groups:</strong> Assigning same action (=Action Group) to different triggers</p>
+</li>
+<li>
+<p><strong>Smart Groups (Preview as of 24.08.2021):</strong> Groups alerts that are triggered simultanously by using artificial intelligence <a href="https://docs.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-smartgroups-overview">as described here</a></p>
+</li>
+<li>
+<p><strong>Action Rules (Preview as of 24.08.2021)</strong>: Allows to suppress (e.g. due to maintenance), scope and filter alerts <a href="https://docs.microsoft.com/en-us/azure/azure-monitor/alerts/alerts-action-rules?tabs=portal">as described here</a></p>
+</li>
+<li>
+<p><strong>Reporting</strong>: Existing report for SLA/ Outages by using predefined Azure Monitor workbooks from gallery <a href="https://docs.microsoft.com/en-us/azure/azure-monitor/app/sla-report">as described here</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Application Insight comes with the following tools for <strong>exploration and root cause analysis</strong>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Application Map ⇒ application dependencies in other services such as backend APIs or databases</p>
+</li>
+<li>
+<p>Smart Detection ⇒ warn you when anomalies in performance or utilization patterns</p>
+</li>
+<li>
+<p>Usage Analysis ⇒ features of your application are most frequently used</p>
+</li>
+<li>
+<p>Release annotations ⇒ visual indicators in your Application Insights charts of new builds and other events. Possible to correlate changes in application performance to code releases.</p>
+</li>
+<li>
+<p>Cross-component transaction diagnostics ⇒ The unified diagnostics experience automatically correlates server-side telemetry from across all your Application Insights monitored components into a single view. It doesn’t matter if you have multiple resources with separate instrumentation keys. Application Insights detects the underlying relationship and allows you to easily diagnose the application component, dependency, or exception that caused a transaction slowdown or failure <a href="https://docs.microsoft.com/en-us/azure/azure-monitor/app/transaction-diagnostics">as described here</a>.</p>
+</li>
+<li>
+<p>Snapshot Debugger ⇒ collect a snapshot of a live application in case of an exception, to analyze it at a later stage.</p>
+</li>
+<li>
+<p>Correlation ⇒ Special fields are provided to convey global identifiers appearing in every request <a href="https://docs.microsoft.com/en-us/azure/azure-monitor/app/correlation">as described here</a>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Azure Monitor has also extensive integration features. This includes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Integrating telemetry from other Azure services (e.g. Azure Security Center also forwards to Azure Monitor)</p>
+</li>
+<li>
+<p>Integrating external data sources (e.g. Blobs by using Kusto external operator)</p>
+</li>
+<li>
+<p>Integrating third party tools such as Prometheus for Azure Kuberenetes</p>
+</li>
+<li>
+<p>Exposing telemtry as data sources for external third party (e.g. Log Analytics Workspaces for Grafana) <a href="https://docs.microsoft.com/en-us/azure/azure-monitor/partners">as described here</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The following picture summarizes potential Azure services/ features that might be potentially relevant:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="app_monitoring.png" alt="App Monitoring" width="533px" height="277px">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_variations">Variations</h4>
+<div class="paragraph">
+<p>A detailed configuration is not possible because the setup depends on the resources to be monitored and their capabilities. Therefore only guidelines are given to infer the right setup:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Collection/ Storage (Monitoring Plane)</strong></p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Two main decision must be made: (1) storage of telemetry and (2) push versus pull.</p>
+</div>
+<div class="paragraph">
+<p>The number of app insights/ log analytic workspaces needs to be determined per environment. Production should be kept separate already for compliance/ resilience reasons. Dev/ test environments are rather a question mark. Subsuming dev/ test environments into a single monitoring plane is benefecial for the monitoring consumer, since he then has to check only a single place. That also means you need an additional mechanism inferring the environment for later drill down or root cause analysis. Additional custom attributes are recommended if possible. Separate App Insights/ Log Analytic instances per environment require another one for a consolidated dev/ test view.</p>
+</div>
+<div class="paragraph">
+<p>Microsoft recommends a single app insights resource in the following cases <a href="https://docs.microsoft.com/en-us/azure/azure-monitor/app/separate-resources">as described here</a>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For application components that are deployed together. Usually developed by a single team, managed by the same set of DevOps/ITOps users.</p>
+</li>
+<li>
+<p>If it makes sense to aggregate Key Performance Indicators (KPIs) such as response durations, failure rates in dashboard etc., across all of them by default (you can choose to segment by role name in the Metrics Explorer experience).</p>
+</li>
+<li>
+<p>If there is no need to manage Azure role-based access control (Azure RBAC) differently between the application components.</p>
+</li>
+<li>
+<p>If you don’t need metrics alert criteria that are different between the components.</p>
+</li>
+<li>
+<p>If you do not need to manage continuous exports differently between the components.</p>
+</li>
+<li>
+<p>If you do not need to manage billing/quotas differently between the components.</p>
+</li>
+<li>
+<p>If it is okay to have an API key have the same access to data from all components. And 10 API keys are sufficient for the needs across all of them.</p>
+</li>
+<li>
+<p>If it is okay to have the same smart detection and work item integration settings across all roles.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Storing telemetry within the monitoring plane is easy to set up if the Azure service supports diagnostic settings or comes with app insights integration. App insights instrumentation allows extensive customization such as preprocessing. Log Analytics allows less customization out-of-the box.
+Log analytics can target cheap Azure blob storage. It can be accessed with Kusto and would also eliminate the need for archiving. However, an shared access signature is required in this case which has to be renewed. Updating a saved query is only possible for Log Analytics workspace. Due to simpler setup storing the telemetry inside the monitoring plane is the recommended option.</p>
+</div>
+<div class="paragraph">
+<p>Pull via metrics explorer is only possible for metrics but not logs. Pushing via a custom script makes sense if:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>API restrictions on monitoring plane are not a problem. E.g. not being able to set the timestamp according to original occurence.</p>
+</li>
+<li>
+<p>Tracking of UI driven actions that are not pushed automatically</p>
+</li>
+<li>
+<p>Service targets log analytic workspace but built-in limitations like filtering/ aggregations needed before ingestions in workspace</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The table below compares various options:</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 41%;">
+<col style="width: 15%;">
+<col style="width: 15%;">
+<col style="width: 16%;">
+<col style="width: 13%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top">Diagnostic Settings</th>
+<th class="tableblock halign-left valign-top">App Insights Logging</th>
+<th class="tableblock halign-left valign-top">Push via resource API</th>
+<th class="tableblock halign-left valign-top">Metrics Explorer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Possible per resource</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(X)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(X)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(X)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Telemetry Customization</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Limited</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">High</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Limited-High</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Limited</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Custom Logging in executed code</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Telemetry always captured</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(X)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Latency</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Medium</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Medium</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Medium</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Low</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Direction</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Push</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Push</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Push</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pull</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Comments:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Option “Push via resource API” ⇒ A scheduled script that reads periodically telemetry and pushes it to monitoring plane using the Rest API</p>
+</li>
+<li>
+<p>„Telemetry always captured“ ⇒ Some resources allow multiple ways to run something e.g. via UI or programmatically. If the telemetry is always captured the way does not matter.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Visualization/ Alerting (Monitoring Plane)</strong></p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>See the options below for dashboarding/ visualization:</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 99%;">
+<colgroup>
+<col style="width: 41%;">
+<col style="width: 16%;">
+<col style="width: 16%;">
+<col style="width: 12%;">
+<col style="width: 15%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top" colspan="3">Azure</th>
+<th class="tableblock halign-left valign-top">Third party</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Workbooks</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Dashboards</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Power BI</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Grafana</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Auto refresh in 5 Min Intervall</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Full screen</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tabs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://analyticoolblog.com/how-to-create-visual-tabs-in-power-bi-the-full-guide/">X</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://community.grafana.com/t/tabs-in-dashboards/17061/2">X</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fixed Parameter lists</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://www.red-gate.com/simple-talk/sql/bi/power-bi-introduction-working-with-parameters-in-power-bi-desktop-part-4/">X</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Drill down</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Additional hosting required</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Terraform Support</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">X</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Regarding components for logs/ metrics:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Metrics: Pull (Metrics explorer) or push (Kusto query targeting data source) possible</p>
+</li>
+<li>
+<p>Logs: Push to monitoring plane only</p>
+</li>
+<li>
+<p>Grafana can be used for visualization via using a connector for log analytics workspace</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_when-to-use">When to use</h4>
+<div class="paragraph">
+<p>This solution assumes that your application monitoring plane is in Azure and that your monitored resources are located in Azure.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_infrastructure-monitoring">Infrastructure Monitoring</h3>
+<div class="sect3">
+<h4 id="index.asciidoc_overview">Overview</h4>
+<div class="paragraph">
+<p>The solution is to use Azure Monitor with Log Analytics and the following platform regarding the monitored resources. The focus of this chapter is to introduce the available features. Recommendations for a concrete setup are given in the next chapter.</p>
+</div>
+<div class="paragraph">
+<p>The relevant Azure monitor features are as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Data Sources/ Instrumention</strong></p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>A major source for infrastructure is the health information provided by the platform. The following health information is relevant:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Service Health Information which also includes planned downtime of the Azure platform and problems on service type level such as VMs</p>
+</li>
+<li>
+<p>Resource Health which includes health information for service instances you created</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>On resource level resource utilization is relevant. This includes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Hitting capacity limits regarding CPU/ memory</p>
+</li>
+<li>
+<p>Idle resources</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Availability differs per service. They are usually exposed via metrics.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Collection/ Storage (Monitoring Plane)</strong></p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Telemetry can either be stored internally inside the monitoring plane or externally.</p>
+</div>
+<div class="paragraph">
+<p>Telemetry can be <strong>pulled</strong> from the monitoring plane. This is limited to metrics but faster than pushing. <strong>Pushing</strong> can be necessary if the telemetry is not available in Azure monitor out of the box or pulling from the monitored resources is not possible. Pushing can be done as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Resource diagnostic</strong>: Useful to push resource specific telemtry.</p>
+</li>
+<li>
+<p><strong>Health diagnostic</strong>: Resource Health tracks the health of your resources for specific known issues. With diagnostic settings configured on subscription level you can send that data to Log Analytics workspace. You will need to send the ResourceHealth/ Service Health categories (<a href="https://cloudadministrator.net/2021/01/13/tracking-issues-with-resource-health-and-log-analytics/">Source Health-Overall</a> <a href="https://docs.microsoft.com/en-us/azure/azure-monitor/essentials/activity-log-schema">Source Possible-Categories</a>).</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Analysis/ Diagnosis (Monitoring Plane)</strong></p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Health relevant KPIs can be determined via Kusto as shown in the example below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>AzureActivity
+// Filter only on resource health data in activity log
+| where CategoryValue == 'ResourceHealth'
+// dump any resource health data where the health issue was resolved. We are interested only on unhealthy data
+| where ActivityStatusValue &lt;&gt; "Resolved"
+// Column Properties has nested columns which we are parsing as json
+| extend p = parse_json(Properties)
+// Column the parsed Properties column is now a dynamic in column p
+// We take the top level properties of column p and place them in their own columns that start with prefix Properties_
+| evaluate bag_unpack(p, 'Properties_')
+// We do the same for the newly created column Properties_eventProperties
+| extend ep = parse_json(Properties_eventProperties)
+| evaluate bag_unpack(ep, 'EventProperties_' )
+// We list the unique values for column EventProperties_cause
+| distinct EventProperties_cause</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Availability of resource utilization specific KPIs depends on the monitored resources.</p>
+</div>
+<div class="paragraph">
+<p>Kusto queries across multiple application insights or log analytic workspaces are possible (See app monitoring for details).</p>
+</div>
+<div class="paragraph">
+<p>Log Analytics comes with the following tools for <strong>exploration and root cause analysis</strong>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Table based access</strong> allows you to define different permissions per log table. This is done using custom roles where you define the tables as part of the resource type <a href="https://msandbu.org/deep-dive-azure-monitor-and-log-analytics/">as described here</a>.</p>
+</li>
+<li>
+<p><strong>Additional management solutions</strong>: They have to be installed per werkspace. An example is the ITSM Connector used to automatically create incidents or work items when Alerts are created within Log Analytics. Such as System Center Service Manager or Service Now.</p>
+</li>
+<li>
+<p><strong>Log analytics agent managentment</strong>: agent collects telemetry from Windows and Linux virtual machines in any cloud, on-premises machines, and those monitored by System Center Operations Manager and sends it collected data to your Log Analytics workspace in Azure Monitor. The Log Analytics agent also supports insights and other services in Azure Monitor such as VM insights, Azure Security Center, and Azure Automation <a href="https://docs.microsoft.com/en-us/azure/azure-monitor/agents/log-analytics-agent">as described here</a>.</p>
+</li>
+<li>
+<p><strong>Service Map</strong> automatically discovers application components on Windows and Linux systems and maps the communication between services. Service Map shows connections between servers, processes, inbound and outbound connection latency, and ports across any TCP-connected architecture, with no configuration required other than the installation of an agent <a href="https://docs.microsoft.com/en-us/azure/azure-monitor/vm/service-map">as described here</a>.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Visualization/ Alerting (Monitoring Plane)</strong></p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>See Application monitoring features for alerts and visualization.</p>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The following picture summarizes potential Azure services/ features that might be potentially relevant:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="infra_monitoring.png" alt="Infra Monitoring" width="566px" height="285px">
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_variations">Variations</h4>
+<div class="paragraph">
+<p>See application monitoring.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_when-to-use">When to use</h4>
+<div class="paragraph">
+<p>This solution assumes that your infrastructure monitoring plane is in Azure and that your monitored resources are located in Azure.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html#introduction-why-should-i-use-devonfw.asciidoc">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devon4j.asciidoc_architecture.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-ide-support.asciidoc.html#LICENSE.asciidoc">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<div class="footnote"><sub>
+
+Last updated 2021-09-13 11:32:55 UTC
+</sub></div>
+</div>
+
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+<script>
+  var internalUrls = ["https://cginternal.devonfw.com/websitesnippets/"];
+  $(".internal").each(function(){
+    internalUrls.forEach((internalUrl, index) => {
+      $.ajax({url: internalUrl + $(this).text() + "/index.html" })
+      .then(r => {
+        var leftDiv = $('<div class="info"><span class="infoText">Internal</span><img class="infoImage" src="' + internalUrl + 'logo.png"/></div>');
+        var rightFirstDiv = $('<div class="message">This is only visible inside of the corporate network.</div>');
+        var rightLastDiv = $('<div class="content"></div>');
+        rightLastDiv.html(r);
+        var rightDiv = $('<div class="right"></div>');
+        rightDiv.append(rightFirstDiv);
+        rightDiv.append(rightLastDiv);
+        $(this).html(leftDiv);
+        $(this).append(rightDiv);
+        $(this).addClass("internal-active");
+        $(this).removeClass("internal");
+      })
+    });
+	});
+</script>
+
+</body></html>
