@@ -1,6 +1,7 @@
 const cheerio = require('cheerio');
 const fs = require('fs');
 const path = require('path');
+const sharp = require("sharp");
 
 function main(solutionsDir, outputFile, snippetLength) {
     var solutions = {};
@@ -20,10 +21,22 @@ function main(solutionsDir, outputFile, snippetLength) {
                 if (snippet.length > snippetLength) {
                     snippet = snippet.slice(0, snippetLength - 1) + " ...";
                 }
+                
+                console.log("Before: " + imagePath);
+
+                if (imagePath != "") {
+                    sharp(`./solutions/${dirItem}/${imagePath}`)
+                        .resize({ width: 600 })
+                        .toFile(`./target/generated-docs/solutions/${dirItem}/_previewImage.png`);
+                    imagePath = `./solutions/${dirItem}/_previewImage.png`;
+                }
+
+                console.log("After:" + imagePath);
+                
                 solutions[dirItem] = {
                     headline: headline,
                     path: `solutions/${dirItem}`,
-                    image: (imagePath != "") ? `./solutions/${dirItem}/${imagePath}` : "",
+                    image: imagePath,
                     snippet: snippet
                 }
             }
