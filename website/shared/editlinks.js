@@ -164,7 +164,6 @@ const editLinksModule = (function(window) {
     }
   }
 
-  $('.search-bar').append('<i class="fa fa-search"></i>');
   // List of functions accessibly by other scripts
   return {
     addEditLinks: addEditLinks
