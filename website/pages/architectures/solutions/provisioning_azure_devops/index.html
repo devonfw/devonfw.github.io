@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<!DOCTYPE html><html lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,7 +19,7 @@
 <!-- ************************************* -->
 
 
-<title>Provisioning</title>
+<title>Solution Provisioning Azure Native</title>
 <!-- devonfw website stylesheet -->
 <link rel="stylesheet" type="text/css" href="/devonfw.css">
 <!-- Lunr -->
@@ -40,7 +38,7 @@
 <!-- ************** Google analytics ************ -->
 
 <!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
@@ -55,7 +53,7 @@
 <body class="article">
 <div id="website-navbar" class="website-navbar">
 <button id="menu-button" class="menu-button">
-  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt="">
 </button>
 
 <ul>
@@ -72,13 +70,7 @@
 
 <form class="form-inline">
   <div class="search-bar">
-    <input
-      id="search-field"
-      type="search"
-      class="form-control mr-sm-2"
-      placeholder="Search by keyword(s)..."
-      aria-label="Search"
-      style="height: auto;"/>
+    <input id="search-field" type="search" class="form-control mr-sm-2" placeholder="Search by keyword(s)..." aria-label="Search" style="height: auto;">
     <div class="sb-res-pos px-4">
       <div id="click-outside" class="click-outside z-50 hidden"></div>
       <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
@@ -87,491 +79,30 @@
   </div>
 </form>
 <a class="navbar-github text-white" href="https://github.com/devonfw/">
-  <img src="/images/github-mark.png" width=auto height=auto alt="">
+  <img src="/images/github-mark.png" width="auto" height="auto" alt="">
 </a></div>
 <div id="sidebar" class="wiki-sidebar"></div>
 
 <div id="content" class="mt-4 mt-sm-5">
+<div class="toc">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#index.asciidoc_solution-provisioning-azure-native">Solution Provisioning Azure Native</a>
+<ul class="sectlevel2">
+<li><a href="#index.asciidoc_overview">Overview</a></li>
+<li><a href="#index.asciidoc_pattern-details">Pattern Details</a></li>
+<li><a href="#index.asciidoc_variations">Variations</a></li>
+<li><a href="#index.asciidoc_when-to-use">When to use</a></li>
+</ul>
+</li>
+</ul>
 <div class="sect1">
-<h2 id="index.asciidoc_provisioning">Provisioning</h2>
+<h2 id="index.asciidoc_solution-provisioning-azure-native">Solution Provisioning Azure Native</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="index.asciidoc_context--problem">Context &amp; Problem</h3>
+<h3 id="index.asciidoc_overview">Overview</h3>
 <div class="paragraph">
-<p>This document describes patterns to automate the deployment of an application to a target environment. The major players in this documentation are (1) the process as a whole (aka provisioning), (2) automation code and (3) application/ infra code to be deployed.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Automation code:</strong></p>
-<div class="openblock">
-<div class="content">
-<div class="paragraph">
-<p>The automation code is about automating parts of deployment cycle. In an ideal world this covers the entire code development cycle from the first pull request to the final deployment. Possible  activities in this cycle are: (1) quality gates, (2) build and (3) deployment.
-<strong>Quality gates</strong> refer to testing or approval. Approval might include a manual approval to deploy to sensitive environments like production or enforcing a review before the commit through a pull request. Failing a quality gate should stop the workflow to proceed. Ideally they are maximizing application code coverage and kick in as early as possible.
-From a timeline perspective major events that are kicking off actions from the automation code are:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Pull request/ commit (Only triggers quality gates that don&#8217;t take too long)</p>
-</li>
-<li>
-<p>Build</p>
-<div class="paragraph">
-<p>They can be manually, scheduled (e.g. as part of a nightly build) or automatically started. Additional quality gates ensure code quality.</p>
-</div>
-</li>
-<li>
-<p>Deplyoment to target environment</p>
-<div class="paragraph">
-<p>A typical quality gate for sensible environments such as production are manual approvals.</p>
-</div>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>The major construct is a <strong>pipeline</strong> that implements a certain activity or a combination. The trigger defines the condition that kick offs a pipeline. Kicking off a pipeline usually includes <strong>parameters</strong> such as the name of the target environment. The support of <strong>different triggers</strong> is essental to cover the entire lifecycle. Pipelines can be <strong>implemented</strong> using a UI driven or programatic approach.</p>
-</div>
-<div class="paragraph">
-<p>Pipelines are built in a modular way which also adds intermediate steps such as placing the built output in a <strong>build artefact repository</strong> for later deployment. It also introduces the need to <strong>orchestrate</strong> them into larger workflows such as creating an entire environment from scratch.</p>
-</div>
-<div class="paragraph">
-<p>Pipelines must ensure <strong>traceability</strong> of the performed actions across the entire chain including source code repo, the targeted environment or intermediate stores. This includes a versioning schema for built artefacts. Branches in source repos must be tagged to be able to reconstruct the code behind a versioned artefact.</p>
-</div>
-</div>
-</div>
-</li>
-<li>
-<p><strong>Application code/ infra:</strong></p>
-<div class="openblock">
-<div class="content">
-<div class="paragraph">
-<p>The base for automation code activities is the code creating/ updating the infrastructure and the application on top. Focus in this documentation is the interaction between automation code and application/ infra code. This includes:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Programming approach (Language or UI) for deploying infrastructure and application code</p>
-</li>
-<li>
-<p>Interaction standard problems between automation code and application/ infra code</p>
-<div class="paragraph">
-<p>Problems also depend on the chosen programing approach.</p>
-</div>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Not relevant are:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Application code: Structuring in repo, programming language specifics and details of build mechanism</p>
-</li>
-<li>
-<p>Specific deployment options of the platform services forming the infrastructure</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</li>
-<li>
-<p><strong>Provisioning</strong></p>
-<div class="openblock">
-<div class="content">
-<div class="paragraph">
-<p>The process must work in a compliant way end-to-end. <strong>Compliance</strong> includes the general concern security and to adhere to constraints from the organization&#8217;s perspective that need to be enforced.</p>
-</div>
-<div class="paragraph">
-<p>Provisoning should be subject to <strong>monitoring</strong> and must be able to adapt to the <strong>organizational structure</strong>.</p>
-</div>
-<div class="paragraph">
-<p><strong>Configuration</strong> is also a cross concern that affects both sides. From the automation side this includes properties of the environment and settings of the involved automation code. The application specific settings are out of scope in this pattern description. However, provisioning must enable the application code to access settings.</p>
-</div>
-<div class="paragraph">
-<p>As shown automation does not only include pipelines but also additional configuration settings. Automation code must be able to access the infra/ app code for deployment. This pattern includes guidelines regarding options to store the code and how to structure it in a <strong>repository</strong>. Application code structure is treated as black box.</p>
-</div>
-<div class="paragraph">
-<p>In most cases enterprises have already existing technologies in place that might not be based on cloud of a certain provider. <strong>Integration</strong> with other third party offerings to cover functionally also from elsewhere is also important.</p>
-</div>
-</div>
-</div>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>The picture below summarizes the major aspects:</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/problem_context.png" alt="Provisioning Problem Context" width="451" height="257">
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="index.asciidoc_standard-problems">Standard Problems</h3>
-<div class="paragraph">
-<p>The following standard problems will be addressed in subsequent paragraphs:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Automation code</p>
-<div class="openblock">
-<div class="content">
-<div class="paragraph">
-<p>Regarding pipelines the folloqing aspects will be detailed:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Modeling environments</p>
-</li>
-<li>
-<p>Pipeline Implementation (Programing approaches, Triggers, Paramterization, Store Code, Quality Gates)</p>
-</li>
-<li>
-<p>Orchestration</p>
-</li>
-<li>
-<p>Traceability (Versioning, Tagging)</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</li>
-<li>
-<p>Infra/ Application code (Programming approach,
-Interaction standard problems)</p>
-</li>
-<li>
-<p>Provisioning</p>
-<div class="openblock">
-<div class="content">
-<div class="ulist">
-<ul>
-<li>
-<p>Organizational Mapping</p>
-</li>
-<li>
-<p>Integration</p>
-</li>
-<li>
-<p>Code Repository (Automation/ Infra &amp; App Code)</p>
-</li>
-<li>
-<p>Configuration</p>
-</li>
-<li>
-<p>Compliance</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>For the following aspectcs check out the other defined patterns:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Monitoring infrastructure and application code</p>
-</li>
-<li>
-<p>General guidelines for structuring repositories (e.g. mono vs. multi-repo)</p>
-</li>
-<li>
-<p>General guidelines for defining landing zones</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect2">
-<h3 id="index.asciidoc_azure-as-platform">Azure as Platform</h3>
-<div class="sect3">
-<h4 id="index.asciidoc_automation-code">Automation code</h4>
-<div class="sect4">
-<h5 id="index.asciidoc_modelling-environments">Modelling Environments</h5>
-<div class="paragraph">
-<p>Azure provides the following structural elements to model an environment:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Resource groups:</strong> Smallest possible container</p>
-</li>
-<li>
-<p><strong>Subscriptions:</strong> One subscription can contain many resource groups. With a subscription discounts for dev/ test environments are possible.</p>
-</li>
-<li>
-<p><strong>Management groups:</strong> One management group can contain many resource groups. They can be used enforce policies across subscriptions if environments share common characteristics.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>An environment can be linked to another environment. Linking an environment to multiple environment is beneficial for addressing cross concerns such as monitoring (Similar to Hub/ Spoke topology in networks).</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="index.asciidoc_pipeline-implementation">Pipeline Implementation</h5>
-<div class="paragraph">
-<p>The programming approach can be either UI driven or <strong>programmatic</strong>. Pipeline programming languages such as YAML structure the actions to be performed by the pipeline and provide basic mechansims such as downloading code from the repo, parameter handling, stating triggers and triggering other programming languages. These other languages are then used to setup infrastructure such as terraform or deploying application code.</p>
-</div>
-<div class="paragraph">
-<p>Azure allows to <strong>trigger</strong> pipelines upon (1) a push to repo, (2) a pull request to repo, (3) a schedule and (4) a pipeline completion (<a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/build/triggers?view=azure-devops">Link</a>).</p>
-</div>
-<div class="paragraph">
-<p>The platform allows to <strong>pass parameters</strong> by various mechanisms to pipelines(Explicit per user input, programmatically). Parameters can be passed by group identifier or explicitly as key value pairs. Complex structured objects as known from object programming languages are not directly possible (Require parsing of files with object structure). Parametrization might be constrained by the used service in certain areas.</p>
-</div>
-<div class="paragraph">
-<p>The platform provides <strong>support for quality gates</strong> as follows:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Static code analysis</p>
-<div class="paragraph">
-<p>Microsoft does not provide own tools for static code analysis but allows integration of others.</p>
-</div>
-</li>
-<li>
-<p>Automated tests (Unit, Integration, End-To-End)</p>
-<div class="paragraph">
-<p>Microsoft provides services that include test management e.g. creating test suites with test cases and getting an overview about the results.</p>
-</div>
-</li>
-<li>
-<p>Approval</p>
-<div class="paragraph">
-<p>Azure services support approval for a certain environments and enforcing pull requests as quality gates.</p>
-</div>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>The Azure platform provides the following basic options to <strong>store</strong> automation code:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Services that provide repositories</p>
-</li>
-<li>
-<p>Integration of various external code repositories</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect4">
-<h5 id="index.asciidoc_orchestration">Orchestration</h5>
-<div class="paragraph">
-<p>To <strong>orchestrate</strong> pipelines the two following basic mechanisms can be used:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Implicit Chaining</p>
-<div class="paragraph">
-<p>In that case the complete workflow is not explicitly coded in a dedicated pipeline. Pipelines are chained implicitly by triggering events. The biggest problem with that approach is the missing single pane of control. The current state in the overall workflow is for instance only implicitly given by the currently running pipeline.</p>
-</div>
-</li>
-<li>
-<p>Creating a dedicated orchestration pipeline</p>
-<div class="paragraph">
-<p>An additional pipeline triggers in this scenario other pipelines acting as building blocks. Pipelines can run separately (Just run the deployment) or as part of a bigger workflow (=create environment from scratch).</p>
-</div>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Orchestration must take dependencies into account. They might result from the deployed code or the scope of the pipeline (Scope = e.g. a single microservice; Code = libraries needed).
-Orchestrated pipelines must pass data between them. The recommended method is to use key vault.</p>
-</div>
-<div class="paragraph">
-<p><strong>Recreation of resources in short intervals</strong> can cause pipelines to fail since the previously deleted resource still exists in the background.(Even although soft delete is not applicable). Whether Azure really deleted everything depends on the service. For instance Azure API management seemed to be affected by that problem.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="index.asciidoc_traceability">Traceability</h5>
-<div class="paragraph">
-<p><strong>Traceability</strong> requires an identifier for referencing artefacts. A standard schema is a semantic version. The platform only supports partial support for number generation such as incrementing numbers (<a href="https://ychetankumarsarma.medium.com/build-versioning-in-azure-devops-pipelines-94b5a79f80a0">Link</a>). Linking the code in the repo to a certain version depends on used repository.</p>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="index.asciidoc_infrastructure-application-code">Infrastructure/ Application code</h4>
-<div class="paragraph">
-<p>A <strong>programming language</strong> is either "declarative" or "imperative". Declarative programming languages state the target state and it is the job of the declarative programming language how to get there. The following rules are applied to achieve that: (1) Create a resource if not there, (2) update an existing resource if different properties, (3) delete resource if not there. Imperative programming languages state the how. The internal delta calculation needs to be explicitly programmed here. If possible declarative programming languages are recommended due to automatic delta calculation. Typical case is infrastructure.</p>
-</div>
-<div class="paragraph">
-<p>Typical declarative options are shown in detail in the table below. The overall recommendation is to go for terraform. Major reasons for downvoting Bicep/ ARM:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>ARM: difficult readability for humans</p>
-</li>
-<li>
-<p>Bicep: Lack of support for testing based on plan and testing ecosystem since first added recently.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Table with declarative programming language options:</p>
-</div>
-<table class="tableblock frame-all grid-all" style="width: 100%;">
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Criteria</th>
-<th class="tableblock halign-left valign-top">Bicep</th>
-<th class="tableblock halign-left valign-top">ARM</th>
-<th class="tableblock halign-left valign-top">Terraform</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Same syntax across clouds</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">- (Azure Only)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">- (Azure Only)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">+ (multi)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">What if</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">o (no complete prop list;only display of plan; unexpected delete)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">- (not available)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">+ (plan command)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Detection current</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">o (Real anaylsis but time)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">+ (Real anaylsis)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">o (Statefile)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Testing/ static analysis</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">o (Only via ARM)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">+ (available)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">+ (available)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Human Readability</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">+</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">+</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Reverse Engineering</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">- (Extra ARM step + adjust)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">o (adjust)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">+ (Direct via Terraformer)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Latest features</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">o (No embedded fallback)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">+ (native)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">o (Time lag but embedded fallback)</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>The major options for imperative programming languages are Azure CLI, Powershell (Windows) or Linux based scripting. Azure CLI is recommended as prefered choice since it works on linux and windows based VMs.</p>
-</div>
-<div class="paragraph">
-<p>The created resources should follow a <strong>uniform naming schema</strong>. This requires naming to be factored out in a centralized module. Terraform supports factoring out common code in modules. However the backend must already exist and should also follow a naming convention. The recommendation is therefore to expose the common terraform module via an additional path that does not require a backend to determine the names for the azure resources representing the backend.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="index.asciidoc_provisioning">Provisioning</h4>
-<div class="sect4">
-<h5 id="index.asciidoc_organizational-mapping">Organizational Mapping</h5>
-<div class="paragraph">
-<p>The provisioning must match the organizational requirements of your organization. Azure provides services to model sub units within your organization such as departments, projects and teams.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="index.asciidoc_integration">Integration</h5>
-<div class="paragraph">
-<p>Platform allows a modular approach to outsource certain functionality to third party software such as code repository. Which parts is service specific.</p>
-</div>
-<div class="paragraph">
-<p>External tools providing pipelines can be integrated in two conceptual ways:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Trigger automation pipelines from external:</strong> This involves the configuration of a CI pipeline in the external tool such as Jenkins and mechanism in the automation service that invokes the CI process when source code is pushed to a repository or a branch.</p>
-</li>
-<li>
-<p><strong>Run external pipelines from within the platform:</strong> In this approach automation reaches out to an external tool to work with the results.</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect4">
-<h5 id="index.asciidoc_configuration">Configuration</h5>
-<div class="paragraph">
-<p>Configuration for provisioning is required in various areas:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Environment:</strong> E.g. name of resource group per potential target environment</p>
-</li>
-<li>
-<p><strong>Repository:</strong> E.g. relevant repos/ branching</p>
-</li>
-<li>
-<p><strong>Pipelines:</strong> Parameters pipelines run with such as the technical user name or settings required by the built/ deployed code.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Concrete features used for the above three points depend on the used services. A general storage for sensitive data (Keys, secrets, certificates) in Azure is always Azure Key Vault.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="index.asciidoc_compliance">Compliance</h5>
-<div class="paragraph">
-<p>The standard concept for role-based access controls is called RBAC in Azure. It assigns principals (=humans or technical accounts) permissions for a certain resource. Regarding provisioning the following users are relevant:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Technical user (=service principal) the pipelines are running with</p>
-</li>
-<li>
-<p>Users for administrating the provisioning service</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Azure Active Directory is the central service in Azure that defines and controls all principals (human/ service).</p>
-</div>
-<div class="paragraph">
-<p>Granularity of roles that can be granted depend on the service. The boundaries in which users exist/ permissions can be assigned is also service specific.</p>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="index.asciidoc_solution-full-blown-productive">Solution (Full blown productive)</h3>
-<div class="sect3">
-<h4 id="index.asciidoc_overview">Overview</h4>
-<div class="paragraph">
-<p>The Azure service targeting a full-blown productive provisioning setup is Azure DevOps.</p>
+<p>The cloud native provisioning service in Azure is Azure DevOps formerly known as Team Foundation Server (TFS). Azure DevOps covers the full CI/ CD requiremenzs including project management. Due to its extensive extension features you can also replace features with other alternatives (see also under variations).</p>
 </div>
 <div class="paragraph">
 <p><strong>Note:</strong> Azure DevOps will be superseeded by GitHub in the long run after Microsoft acquired GitHub. New features will be initially implemented there.</p>
@@ -587,7 +118,7 @@ Orchestrated pipelines must pass data between them. The recommended method is to
 <li>
 <p>Azure App Configuration</p>
 <div class="paragraph">
-<p>This service provides settings (key-value pairs) and feature toggles. Native integrations exist for typical application programming languages like .NET/ Java. However native integrations with terraform do not exist and it is also a special hardened service for sensitive information as key vault. Therefore, it is recommended to use that service as special case for application layer if feature toggles are needed.</p>
+<p>This service provides settings (key-value pairs) and feature toggles. Native integrations exist for typical application programming languages like .NET/ Java. However native integrations with terraform do not exist and it is also not hardened for sensitive information as key vault. Therefore, it is recommended to use that service as special case for application layer if feature toggles are needed.</p>
 </div>
 </li>
 <li>
@@ -599,7 +130,7 @@ Orchestrated pipelines must pass data between them. The recommended method is to
 <li>
 <p>Monitoring</p>
 <div class="paragraph">
-<p>Azure DevOps generates metrics to check the health pipelines and displays te state in the Azure DevOps portal . However no built-in forwarding to App Insights independent from the deployed application exists. Continous monitoring assumes Web Applications.
+<p>Azure DevOps generates metrics to check the health pipelines and displays te state in the Azure DevOps portal. However no built-in forwarding to App Insights independent from the deployed application exists. Continous monitoring assumes Web Applications.
 Check out the pattern monitoring how monitoring for infrastructure/ application code can be achieved.
 Essential is that a monitoring consumer gets a single control plane across multiple environments.</p>
 </div>
@@ -614,23 +145,32 @@ Essential is that a monitoring consumer gets a single control plane across multi
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/complementing_services.png" alt="Complementing Services" width="594" height="335">
+<img src="complementing_svcs_devops.png" alt="Complementing Services" width="594" height="335">
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="index.asciidoc_pattern-details">Pattern Details</h3>
 <div class="sect3">
-<h4 id="index.asciidoc_pattern-details">Pattern Details</h4>
-<div class="sect4">
-<h5 id="index.asciidoc_geting-started">Geting Started</h5>
+<h4 id="index.asciidoc_geting-started">Geting Started</h4>
 <div class="paragraph">
-<p>Many aspects influence the setup of the service. Following a top down approach the following decisions have to be made:
-* Define landing zone of the service itself (out of scope)
-* Organizational mapping</p>
+<p>Many aspects influence the setup of the service. Following a top down approach the following decisions have to be made:</p>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>Define landing zone of the service itself in Azure (out of scope)</p>
+</li>
+<li>
+<p>Organizational mapping</p>
 <div class="paragraph">
-<p>+
-This yields the structural components to host provisioning which will be detailed in the next chapter. It introduces the possible components and guidelines for its structuring.
-* Modelling other outlined aspects across automation, infra/ app code and provisioning</p>
+<p>This yields the structural components to host provisioning which will be detailed in the next chapter. It introduces the possible components and guidelines for its structuring.</p>
+</div>
+</li>
+<li>
+<p>Modelling other outlined aspects across automation, infra/ app code and provisioning</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>The structural components are organizations, teams and projects. A team is a unit that supports many team-configurable tools. These tools help you plan and manage work, and make collaboration easier. Every team owns their own backlog, to create a new backlog you create a new team. By configuring teams and backlogs into a hierarchical structure, program owners can more easily track progress across teams, manage portfolios, and generate rollup data.</p>
@@ -736,10 +276,10 @@ This yields the structural components to host provisioning which will be detaile
 <div class="ulist">
 <ul>
 <li>
-<p>Visibility: It&#8217;s much easier to view progress across all teams</p>
+<p>Visibility: It’s much easier to view progress across all teams</p>
 </li>
 <li>
-<p>Tracking and auditing: It&#8217;s easier to link work items and other objects for tracking and auditing purposes</p>
+<p>Tracking and auditing: It’s easier to link work items and other objects for tracking and auditing purposes</p>
 </li>
 <li>
 <p>Maintainability: You minimize the maintenance of security groups and process updates.</p>
@@ -747,7 +287,7 @@ This yields the structural components to host provisioning which will be detaile
 </ul>
 </div>
 <div class="paragraph">
-<p>The table below lists typical configurations along with their characteristics :</p>
+<p>The table below lists typical configurations along with their characteristics:</p>
 </div>
 <table class="tableblock frame-all grid-all" style="width: 100%;">
 <colgroup>
@@ -780,8 +320,8 @@ This yields the structural components to host provisioning which will be detaile
 </tbody>
 </table>
 </div>
-<div class="sect4">
-<h5 id="index.asciidoc_remaining-goals-automation-code">Remaining goals (Automation Code)</h5>
+<div class="sect3">
+<h4 id="index.asciidoc_remaining-goals-automation-code">Remaining goals (Automation Code)</h4>
 <div class="paragraph">
 <p>This chapter details how the above conceptual features can be achieved with Azure DevOps pipelines.</p>
 </div>
@@ -799,7 +339,7 @@ This yields the structural components to host provisioning which will be detaile
 <li>
 <p>Variables</p>
 <div class="paragraph">
-<p>Variables can have different scopes. A special syntax is required to publish them at runtime and to consume them in a different job (requires declaration). (<a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&amp;tabs=yaml%2Cbatch">Link</a>)</p>
+<p>Variables can have different scopes. A special syntax is required to publish them at runtime and to consume them in a different job (requires declaration). (<a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&amp;tabs=yaml%2Cbatch">Link</a>). Various <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&amp;tabs=yaml">predefined</a> exist.</p>
 </div>
 </li>
 <li>
@@ -1019,8 +559,8 @@ environment: env-demo
 </ul>
 </div>
 </div>
-<div class="sect4">
-<h5 id="index.asciidoc_remaining-goals-provisioning">Remaining goals (Provisioning)</h5>
+<div class="sect3">
+<h4 id="index.asciidoc_remaining-goals-provisioning">Remaining goals (Provisioning)</h4>
 <div class="paragraph">
 <p><strong>Configuration settings</strong> can be broken down into key value pairs. As already stated key vault is the recommended place for storage. Azure App Configuration and variable groups can reference values in Key Vault. Key Value pairs must be selected in YAML based on the target environment. Switching based on the parameter value is possible by constructing filenames based on the parameter value. The resolved filenam contains then the variable group or the key value pairs. as shown below:</p>
 </div>
@@ -1066,7 +606,7 @@ variables:
 </div>
 </div>
 <div class="paragraph">
-<p>Azure DevOps <strong>can integrate</strong> with various external tools. Pipelines can be called from external and allow calling external tools. Various third party tools can be manually installed or used via extensions. The built in repository and the artefact store can be replaced with third party tools such as github.</p>
+<p>Azure DevOps <strong>can integrate</strong> with various external tools. Pipelines can be called from external and allow calling external tools. Various third party tools can be manually installed or used via extensions.</p>
 </div>
 <div class="paragraph">
 <p>For <strong>compliance</strong> Azure DevOps provides various settings inside Azure DevOps itself and via Azure Active Directory.
@@ -1079,7 +619,7 @@ Azure DevOps supports the following autthentication mechanisms to connect to ser
 <p>OAuth to generate tokens for accessing REST APIs for Azure DevOps. The Organizations and Profiles APIs support only OAuth.</p>
 </li>
 <li>
-<p>SSH authentication to generate encryption keys for using Linux, macOS, and Windows running Git for Windows, but you can&#8217;t use Git credential managers or personal access tokens (PATs) for HTTPS authentication.</p>
+<p>SSH authentication to generate encryption keys for using Linux, macOS, and Windows running Git for Windows, but you can’t use Git credential managers or personal access tokens (PATs) for HTTPS authentication.</p>
 </li>
 <li>
 <p>Personal access token (PAT) to generate tokens for:</p>
@@ -1091,7 +631,7 @@ Azure DevOps supports the following autthentication mechanisms to connect to ser
 <p>Accessing specific resources or activities, like builds or work items</p>
 </li>
 <li>
-<p>Clients like Xcode and NuGet that require usernames and passwords as basic credentials and don&#8217;t support Microsoft account and Azure Active Directory features like multi-factor authentication</p>
+<p>Clients like Xcode and NuGet that require usernames and passwords as basic credentials and don’t support Microsoft account and Azure Active Directory features like multi-factor authentication</p>
 </li>
 <li>
 <p>Accessing REST APIs for Azure DevOps</p>
@@ -1105,7 +645,7 @@ Azure DevOps supports the following autthentication mechanisms to connect to ser
 </div>
 <div class="paragraph">
 <p>User permissions for team members are split in access levels and project permissions inside Azure DevOps. The Basic and higher access levels support full access to all Azure Boards features. Stakeholder access provides partial support to select features, allowing users to view and modify work items without having access to all other features. Additional restrictions are possible by Azure Active Directory settings using conditional access policies and MFA. Azure DevOps honors all conditional access policies 100% for our Web flows. For third-party client flow, like using a PAT with git.exe, IP fencing policies are supported only (no support for MFA policies).
-Permissions to work with repositories can be set under project’s repositories settings which also allows to disable forks. Many forks makes it hard to keep the overview and forking allows to download code into someones private account. Azure DevOps supports creating branch protection policies, which protect the code committed to the main branches (project settings &#8658; repo &#8658; branch policies).
+Permissions to work with repositories can be set under project’s repositories settings which also allows to disable forks. Many forks makes it hard to keep the overview and forking allows to download code into someones private account. Azure DevOps supports creating branch protection policies, which protect the code committed to the main branches (project settings ⇒ repo ⇒ branch policies).
 Compliance affects dealing with sensitive settings. As already stated key vault is the standard service for storing them at runtime. Exports from key vault can only be decrypted in a key vault instance.
 Hence, secrets can be stored in a repository in a safe way without having to store the values in plain. Using them later should be done in a safe way. This includes publishing them in a safe way and passing them from YAML to terraform by avoiding log output in plain text. Avoiding log output passing them as environment variables/ files.</p>
 </div>
@@ -1147,7 +687,7 @@ Hence, secrets can be stored in a repository in a safe way without having to sto
 <li>
 <p>1.1.2.1.3. Modules</p>
 <div class="paragraph">
-<p>Factored out modules for shared reuse. One example is could a central module to generate the name for a given module.</p>
+<p>Factored out modules for shared reuse. One example is a central module to generate the name for a given module.</p>
 </div>
 </li>
 <li>
@@ -1184,22 +724,38 @@ Hence, secrets can be stored in a repository in a safe way without having to sto
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="index.asciidoc_variations">Variations</h4>
+<div class="sect2">
+<h3 id="index.asciidoc_variations">Variations</h3>
 <div class="paragraph">
-<p>For Dev/ Test scenarios the following services exist:</p>
+<p>The following features of Azure DevOps can be replaced with alternatives:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Azure Lab Services (<a href="https://docs.microsoft.com/en-us/azure/lab-services/" class="bare">https://docs.microsoft.com/en-us/azure/lab-services/</a>)</p>
+<p>Repos</p>
+</li>
+<li>
+<p>Boards for project management</p>
+</li>
+<li>
+<p>Azure Artefacts</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The following alternatives on service level exist:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.microsoft.com/en-us/azure/lab-services/">Azure Lab Services</a> for Dev/ Test scenarios</p>
 </li>
 <li>
 <p>Kubernetes</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Azure DevSpaces (Deprecated) in favor of “Bridge-to-kubernetes”</p>
+<p>Azure DevSpaces (Deprecated) in favor of “Bridge-to-kubernetes” for Dev/ Test scenarios</p>
 </li>
 <li>
 <p>Bridge-to-Kubernetes</p>
@@ -1210,11 +766,26 @@ Hence, secrets can be stored in a repository in a safe way without having to sto
 </ul>
 </div>
 </div>
-</div>
 <div class="sect2">
 <h3 id="index.asciidoc_when-to-use">When to use</h3>
 <div class="paragraph">
-<p>This solution assumes that your control plane is in Azure and that your monitored resources are located in Azure.</p>
+<p>Azure DevOps makes sense if you want to provision to Azure due to its tight integration into the Azure platform. The following circumstances also speak for Azure DevOps:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>You need a mature service on enterprise level</p>
+</li>
+<li>
+<p>You don’t need cloud agnostic pipelines e.g. due to a multi-cloud scenario</p>
+</li>
+<li>
+<p>Your code repository is not GitHub and Azure DevOps provides integrations for it (GitHub Actions are a better alternative if your code repos are already on GitHub.)</p>
+</li>
+<li>
+<p>You need a full blown provisioning service and plan to use the integrated repos that come with Azure DevOps</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -1344,22 +915,14 @@ Hence, secrets can be stored in a repository in a safe way without having to sto
       }
       EditLinksModule.addEditLinks(alwaysVisible);
     </script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-      crossorigin="anonymous"
-    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-09-20 13:11:24 UTC
+Last updated 2021-09-21 06:39:10 UTC
 </sub></div>
 </div>
-</div>
+
 <script>
   if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
     anchors.options.visible = 'always';
@@ -1387,5 +950,5 @@ Last updated 2021-09-20 13:11:24 UTC
     });
 	});
 </script>
-</body>
-</html>
+
+</body></html>

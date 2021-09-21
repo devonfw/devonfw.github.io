@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Solution Provisioning GitHub Actions</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/explore/explore.html">EXPLORE</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#index.asciidoc_solution-provisioning-github-actions">Solution Provisioning GitHub Actions</a>
+<ul class="sectlevel2">
+<li><a href="#index.asciidoc_overview">Overview</a></li>
+<li><a href="#index.asciidoc_pattern-details">Pattern Details</a></li>
+<li><a href="#index.asciidoc_variations">Variations</a></li>
+<li><a href="#index.asciidoc_when-to-use">When to use</a></li>
+</ul>
+</li>
+</ul>
+<div class="sect1">
+<h2 id="index.asciidoc_solution-provisioning-github-actions">Solution Provisioning GitHub Actions</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="index.asciidoc_overview">Overview</h3>
+<div class="paragraph">
+<p>GitHub was recently acquired by Microsoft. Microsoft announced that new features will be first incorporated into GitHub instead of Azure DevOps. This announcements shows the future strategic shift from Microsoft away from Azure DevOps to GitHub. The subset of features for implementing pipelines is called GitHub Actions. A pipeline is also called a workflow. So far GitHub Actions are limited to repositories within GitHub.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Azure Key Vault for storing secrets/ exchange of settings</p>
+<div class="paragraph">
+<p>Key vault secrets can be included by importing them as GitHub secrets as described <a href="https://docs.microsoft.com/en-us/azure/developer/github/github-key-vault">here</a>.</p>
+</div>
+</li>
+<li>
+<p>Azure App Configuration</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>This service provides settings (key-value pairs) and feature toggles. Native integrations exist for typical application programming languages like .NET/ Java. However native integrations with terraform do not exist and it is also not hardened for sensitive information as key vault. Therefore, it is recommended to use that service as special case for application layer if feature toggles are needed.</p>
+</div>
+<div class="paragraph">
+<p>Changes at in the repo can be automatically pushed to an App Configuration instance as described  <a href="https://docs.microsoft.com/en-us/azure/azure-app-configuration/concept-github-action">here</a>.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Azure AD</p>
+<div class="paragraph">
+<p>Azure Active Directory provides the service principal the pipelines run with. The essential values are stored as GitHub secrets. From there you can use them as in your workflows as described <a href="https://docs.microsoft.com/en-us/azure/developer/github/connect-from-azure">here</a>.</p>
+</div>
+</li>
+<li>
+<p>Monitoring</p>
+<div class="paragraph">
+<p>GitHub Actions generates metrics to check the health pipelines and displays te state in the Azure DevOps portal. GitHub Actions provides the Checks API to output statuses, results, and logs for a workflow which you can use for download as described <a href="https://stackoverflow.com/questions/64459114/downloading-github-actions-workflow-logs-using-github-api">here</a>.However no built-in forwarding to App Insights independent from the deployed application exists. Continous monitoring assumes Web Applications.
+Check out the pattern monitoring how monitoring for infrastructure/ application code can be achieved.
+Essential is that a monitoring consumer gets a single control plane across multiple environments.</p>
+</div>
+</li>
+<li>
+<p>Structural elements to model environments</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The picture illustrates the setup with the major dependencies:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/complementing_svcs_github.PNG" alt="Complementing Services" width="594" height="335">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_pattern-details">Pattern Details</h3>
+<div class="sect3">
+<h4 id="index.asciidoc_geting-started">Geting Started</h4>
+<div class="paragraph">
+<p>Many aspects influence the setup of the service. Following a top down approach the following decisions have to be made:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Organizational mapping</p>
+<div class="paragraph">
+<p>This yields the structural components to host provisioning which will be detailed in the next chapter. It introduces the possible components and guidelines for its structuring.</p>
+</div>
+</li>
+<li>
+<p>Modelling other outlined aspects across automation, infra/ app code and provisioning</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The structural components are organizations, teams and projects (in public beta as of 19.09.2021).</p>
+</div>
+<div class="paragraph">
+<p><strong>Organizations</strong> are a group of two or more users that typically mirror realworld organizations. They are administered by Organization members and can contain both repositories and teams.</p>
+</div>
+<div class="paragraph">
+<p>A <strong>project</strong> is a customizable spreadsheet that integrates with your issues and pull requests on GitHub. You can customize the layout by filtering, sorting, and grouping your issues and PRs. You can also add custom fields to track metadata. Projects are flexible so that your team can work in the way that is best for them.</p>
+</div>
+<div class="paragraph">
+<p><strong>Teams</strong> give you the ability to create groups of organization members with read, write, or admin permissions to repositories that belong to the organization. Teams are also central to many of GitHub’s collaborative features, such as team @mentions, which notify appropriate groups of people that you’d like their input or attention. Teams can be both project or subject-matter focused, and can relate to job titles or interest groups within your company as well.</p>
+</div>
+<div class="paragraph">
+<p>When setting up your GitHub Enterprise instance, the immediate instinct may be to create an Organization for every project or department at your company, leading to many divided groups that function in GitHub as siloes. This may seem like a good way to manage permissions and reduce noise, but it’s not always the ideal strategy. In fact, it is detrimental to cross-team collaboration and can result in administrative headaches down the line. <a href="https://resources.github.com/downloads/github-guide-to-organizations.pdf">Common setups</a> are shown below:</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Setup Type</th>
+<th class="tableblock halign-left valign-top">Company size</th>
+<th class="tableblock halign-left valign-top">Benefits</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Single Org and team</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">small, potentially medium</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ideal for highly collaborative start up</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Singe Org, multiple teams</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">medium/ small companies with strict security needs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">more granular repo access</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Multiple Orgs and multiple teams</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Large companys with strict repo access</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">higher level of separation, best for companys with &gt;500 users</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_remaining-goals-automation-code">Remaining goals (Automation Code)</h4>
+<div class="paragraph">
+<p>This chapter details how the above conceptual features can be achieved with Azure DevOps pipelines.</p>
+</div>
+<div class="paragraph">
+<p>Github only allows a <strong>programming approach</strong> for pipelines. YAML organizes pipelines into a hierarchy jobs and steps (a step is also refered to as action). Steps are the workhorse where activities are implemented. Steps support scripting languages as stated below. They in turn allow to install additional libraries frameworks from third party providers such as terraform (or you use extensions that give you additional task types). The list below highlights a few YAML points you have to be aware of:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Passing files/ artefacts between jobs/ pipelines</p>
+<div class="paragraph">
+<p>Artefacts can be passed between pipelines by uploading and downloading them from GitHub as shown <a href="https://github.com/actions/upload-artifact">here</a>.</p>
+</div>
+</li>
+<li>
+<p>Variables</p>
+<div class="paragraph">
+<p>Variables can have different scopes. To pass variables between steps you two ways are possble (<a href="https://www.edwardthomson.com/blog/github_actions_15_sharing_data_between_steps.html">set-env</a>, <a href="https://stackoverflow.com/questions/58033366/how-to-get-current-branch-within-github-actions">set as output</a>). Direct support for enum like variables do not yet exist or workarounds are needed as described <a href="https://github.community/t/can-action-inputs-be-arrays/16457">here</a>.</p>
+</div>
+</li>
+<li>
+<p>Obtaining client secret</p>
+<div class="paragraph">
+<p>Scripting languages such as terraform might require the client secret for embedded scripting blocks. Due to the direct encoding as GitHub secrets this is not a problem.</p>
+</div>
+</li>
+<li>
+<p>Triggers</p>
+<div class="paragraph">
+<p>You can configure your workflows to run when specific activity on GitHub happens, at a scheduled time, or when an event outside of GitHub occurs as described
+<a href="https://docs.github.com/en/actions/reference/events-that-trigger-workflows">here</a>.</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Implicit Chaining for <strong>orchestration</strong> is possible by using trigger condition. Calling other workflows explicitly is so far only possible with scripting as shown here <a href="https://github.community/t/start-a-workflow-from-another-workflow/16829">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>Orchestrated pipelines must pass data between them. The recommended method is to use key vault.</p>
+</div>
+<div class="paragraph">
+<p><strong>Recreation of resources in short intervals</strong> might cause pipelines to fail.Even if resources are deleted they might still exist in the background (Even although soft delete is not applicable). Programming languages can therefore get confused if pipelines recreate things in short intervals. Creating a new resource group can solve the problem since they are part of the tecnical resource id.</p>
+</div>
+<div class="paragraph">
+<p>As part of the <strong>configuration</strong> GitHub Actions provide the following configuration mechanisms:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Workflow</strong> input parameters</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Parameters and variables can be simple key value pairs only. Values can be string and other basic types such as bool. Strings can contain structured json to more complex structures as shown below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>on:
+  push:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: set output
+      id: set
+      run: |
+         echo ::set-output name=json_var::'[{ "name": "test", "client_payload": "111" }, { "name": "test2", "client_payload": "222" }] '
+    - name: use output
+      run: |
+        echo $json_var | jq '.[].name'
+      env:
+        json_var: ${{ steps.set.outputs.json_var}}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Input parameters refer to the input parameters of a workflow.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Action</strong> can use variables as input. Outputs (=string) of a step/ job can be used in subsequent steps/ jobs.</p>
+</li>
+<li>
+<p><strong>Environments</strong></p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Environments can hold with protection rules such as manual approval and secrets. A workflow job can reference an environment to use the environment&#8217;s protection rules and secrets. The environment name can be set dynamically in scripts as shwon <a href="https://github.community/t/how-to-set-environment-attribute-dynamically-in-a-workflow/163240/5">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>GitHub Actions includes a collection of variables called contexts and a similar collection of variables called default environment variables.
+Default environment variables exist only on the runner that is executing your job.
+Most contexts you can use at any point in your workflow, including when default environment variables would be unavailable. For example, you can use contexts with expressions to perform initial processing before the job is routed to a runner for execution; this allows you to use a context with the conditional if keyword to determine whether a step should run.</p>
+</div>
+<div class="paragraph">
+<p>Secrets are encrypted environment variables that you create in an organization, repository, or repository environment. The secrets that you create are available to use in GitHub Actions workflows.</p>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><strong>Quality gates</strong> can be enforced as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Static code analysis:</p>
+<div class="paragraph">
+<p>Various tool support exists depending on the programming language such as <a href="https://github.com/marketplace/actions/sonarqube-scan#:~:text=SonarQube%20GitHub%20Action&amp;text=SonarQube%20is%20an%20open%2Dsource,vulnerabilities%20on%2020%2B%20programming%20languages">SonarCube</a>.</p>
+</div>
+</li>
+<li>
+<p>Automated tests (Unit, Integration, End-To-End)</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Tests can be included in pipelines via additional libraries and additional previous installment through scripting. The workflow below runs npm tests:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+      - uses: actions/checkout@v2
+      - name: Set up node
+        uses: actions/setup-node@v1
+      - name: Install dependencies
+        run: npm install
+      - name: Run tests
+        run: npm test</code></pre>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Manual approval e.g. for production</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>GitHub actions allows deployments to named environments. Approvers can then be added as environments protection rules. The terraform apply command below is bound to the environment production:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>  terraformapply:
+    name: 'Terraform Apply'
+    needs: [terraform]
+    runs-on: ubuntu-latest
+    environment: production</code></pre>
+</div>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_remaining-goals-provisioning">Remaining goals (Provisioning)</h4>
+<div class="paragraph">
+<p>GitHUb Actions <strong>can integrate</strong> with various external tools. Pipelines can be called from external (<a href="https://github.community/t/external-trigger/17447">see here</a>) and allow calling external tools. Various third party tools can be manually installed or used via extensions.</p>
+</div>
+<div class="paragraph">
+<p>For <strong>compliance</strong> GitHub provides various settings as described <a href="https://docs.github.com/en/actions/learn-github-actions/security-hardening-for-github-actions">here</a>.
+Secrets can be configured at the organization, repository, or environment level, and allow you to store sensitive information in GitHub. They should not contain structured content like JSON since they are reacted to avoid display in logs.
+You can use the CODEOWNERS feature to control how changes are made to your workflow files. For example, if all your workflow files are stored in .github/workflows, you can add this directory to the code owners list, so that any proposed changes to these files will first require approval from a designated reviewer.
+You should ensure that untrusted input does not flow directly into workflows, actions, API calls, or anywhere else where they could be interpreted as executable code. In addition, there are other less obvious sources of potentially untrusted input, such as branch names and email addresses, which can be quite flexible in terms of their permitted content. For example, <code>zzz";echo${IFS}"hello";#</code> would be a valid branch name. A pull request with title of a"; ls $GITHUB_WORKSPACE" would for instance list the directory if the workflow would be as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code> - name: Check PR title
+        run: |
+          title="${{ github.event.pull_request.title }}"
+          if [[index.asciidoc_ $title =~ ^octocat ]]; then
+          echo "PR title starts with 'octocat'"
+          exit 0
+          else
+          echo "PR title did not start with 'octocat'"
+          exit 1
+          fi</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To help you manage the risk of dangerous patterns as early as possible in the development lifecycle, the GitHub Security Lab has developed CodeQL queries that repository owners can integrate into their CI/CD pipelines.
+Actions can use the GITHUB_TOKEN by accessing it from the github.token context.  It&#8217;s good security practice to set the default permission for the GITHUB_TOKEN to read access only for repository contents.</p>
+</div>
+<div class="paragraph">
+<p>The following <strong>repository</strong> structure shows a conceptual breakdown that covers most aspects:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>1. Infra</p>
+</li>
+<li>
+<p>1.1. Infrastructure</p>
+</li>
+<li>
+<p>1.1.1. Other landing zones</p>
+<div class="paragraph">
+<p>Represents other areas with shared functionality that are required. Examples are environments for monitoring, the environment containing Azure DevOps, Key Vault settings etc.</p>
+</div>
+</li>
+<li>
+<p>1.1.2. App Environments</p>
+<div class="paragraph">
+<p>Represents the environments where application is deployed to.</p>
+</div>
+</li>
+<li>
+<p>1.1.2.1. Envs</p>
+<div class="paragraph">
+<p>This level contains all infrastructure code for seting up en environment. The split between dev and non-dev leverages cost savings for less performant dev environments e.g. by picking cheaper service configurations or totally different Azure services.</p>
+</div>
+</li>
+<li>
+<p>1.1.2.1.1. Dev</p>
+</li>
+<li>
+<p>1.1.2.1.2. Non-Dev</p>
+</li>
+<li>
+<p>1.1.2.1.3. Modules</p>
+<div class="paragraph">
+<p>Factored out modules for shared reuse. One example is a central module to generate the name for a given module.</p>
+</div>
+</li>
+<li>
+<p>1.1.2.2. Envs-Mgmt</p>
+<div class="paragraph">
+<p>Captures aspects assumed by the chosen programming language such as terraform for managing an environment. This includes for instance the backend creation code.</p>
+</div>
+</li>
+<li>
+<p>1.2. Pipelines</p>
+<div class="paragraph">
+<p>Pipelines for automating infrastrcuture deployment.</p>
+</div>
+</li>
+<li>
+<p>2. App</p>
+</li>
+<li>
+<p>2.1. Application (Black Box)</p>
+</li>
+<li>
+<p>2.2. Pipelines</p>
+<div class="paragraph">
+<p>Pipelines for automating app code deployment.</p>
+</div>
+</li>
+<li>
+<p>3. Shared</p>
+<div class="paragraph">
+<p>Captures shared aspects between infrastructure and application code such as publishing key vault secrets for a pipeline or triggering another pipeline.</p>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_variations">Variations</h3>
+<div class="paragraph">
+<p>For the following features other tools can be used:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Project management</strong> support can be added by using other tools such as Azure DevOps.</p>
+</li>
+<li>
+<p><strong>Artefacts</strong> can be stored also in other systems</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_when-to-use">When to use</h3>
+<div class="paragraph">
+<p>Using GitHub makes sense in the following scenarios:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>You need cloud agnostic pipelines e.g. due to a multi-cloud scenario</p>
+</li>
+<li>
+<p>Your code repository is GitHub and absence of projects for project management is not a problem or can be replaced with something else such as Azure DevOps</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html#introduction-why-should-i-use-devonfw.asciidoc">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devon4j.asciidoc_architecture.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-ide-support.asciidoc.html#LICENSE.asciidoc">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script type="module">
+      import { UtilsModule } from '/website/shared/utils.js';
+      import { HeaderModule } from '/website/components/header/header.js';
+
+      let searchData = { index: null, documents: null };
+      UtilsModule.loadIndex(searchData);
+
+      $(window).on('load', function() {
+        const queryFun = () => {
+          HeaderModule.queryFunction(searchData);
+        };
+
+        HeaderModule.searchOnClick(queryFun);
+      });
+    </script>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2021-09-21 06:31:22 UTC
+</sub></div>
+</div>
+</div>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+<script>
+  var internalUrls = ["https://cginternal.devonfw.com/websitesnippets/"];
+  $(".internal").each(function(){
+    internalUrls.forEach((internalUrl, index) => {
+      $.ajax({url: internalUrl + $(this).text() + "/index.html" })
+      .then(r => {
+        var leftDiv = $('<div class="info"><span class="infoText">Internal</span><img class="infoImage" src="' + internalUrl + 'logo.png"/></div>');
+        var rightFirstDiv = $('<div class="message">This is only visible inside of the corporate network.</div>');
+        var rightLastDiv = $('<div class="content"></div>');
+        rightLastDiv.html(r);
+        var rightDiv = $('<div class="right"></div>');
+        rightDiv.append(rightFirstDiv);
+        rightDiv.append(rightLastDiv);
+        $(this).html(leftDiv);
+        $(this).append(rightDiv);
+        $(this).addClass("internal-active");
+        $(this).removeClass("internal");
+      })
+    });
+	});
+</script>
+</body>
+</html>
