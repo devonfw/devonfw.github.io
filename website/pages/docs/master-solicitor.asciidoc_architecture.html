@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2021-09-21 09:42:55 UTC">
+<meta name="author" content="Updated at 2021-09-21 10:42:20 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -511,7 +511,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2021-09-21 09:44:35 UTC</span><br>
+<span id="author" class="author">Updated at 2021-09-21 10:44:16 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -530,25 +530,25 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="master-database.asciidoc.html">Choosing your Database</a>
 </li>
+<li><a href="devonfw-guide_master.asciidoc_2.html">Tools</a>
+<ul class="sectlevel1">
 <li><a href="master-cicdgen.asciidoc.html">cicdgen</a>
 </li>
-<li><a href="master-production-line.asciidoc.html">Production Line Templates</a>
+<li><a href="h593708e8db8bc7e0b53adee5b191ee9b.asciidoc.html">CICDGEN</a>
 </li>
 <li><a href="master-cobigen.asciidoc.html">CobiGen&#x2009;&#x2014;&#x2009;Code-based incremental Generator</a>
 </li>
 <li><a href="master-mrchecker.asciidoc.html">MrChecker - devonfw testing tool</a>
 </li>
-<li><a href="master-my-thai-star.asciidoc.html">MyThaiStar</a>
-</li>
 <li><a href="master-dashboard.asciidoc.html">devonfw dashboard</a>
 </li>
 <li><a href="master-solicitor.asciidoc.html">Solicitor User Guide</a>
-<ul class="sectlevel1">
+<ul class="sectlevel2">
 <li><a href="master-solicitor.asciidoc_introduction.html">Introduction</a>
 </li>
 <li><a href="master-solicitor.asciidoc_architecture.html"><span class="toc-current">Architecture</span></a>
-<ul class="sectlevel2">
-<li><a href="master-solicitor.asciidoc_data-model.html">Data Model</a>
+<ul class="sectlevel3">
+<li><a href="master-solicitor.asciidoc_architecture.html#master-solicitor.asciidoc_data-model">Data Model</a>
 </li>
 </ul>
 </li>
@@ -578,6 +578,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </li>
+</ul>
+</li>
+<li><a href="master-production-line.asciidoc.html">Production Line Templates</a>
+</li>
+<li><a href="master-my-thai-star.asciidoc.html">MyThaiStar</a>
+</li>
 <li><a href="hangar.asciidoc.html">Hangar</a>
 </li>
 <li><a href="master-contributing.asciidoc.html">Contributing</a>
@@ -587,9 +593,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </div>
 </div><div id="content">
-<div class="sect1">
-<h2 id="master-solicitor.asciidoc_architecture">Architecture</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="master-solicitor.asciidoc_architecture">Architecture</h3>
 <div class="paragraph">
 <p>The following picture show a business oriented view of <em>Solicitor</em>.</p>
 </div>
@@ -631,17 +636,475 @@ For this step <em>Solicitor</em> only provides a framework / tool to support the
 <div class="paragraph">
 <p><em>Solicitor</em> is working without additional persisted data: When being executed it generates the output direcly from the read input data after processing the business rules.</p>
 </div>
-<div class="ulist chapters">
-<ul class="chapters">
+<div class="sect3">
+<h4 id="master-solicitor.asciidoc_data-model">Data Model</h4>
+<div class="paragraph">
+<p><span class="image"><img src="datamodel.png" alt="datamodel" width="50%"></span></p>
+</div>
+<div class="paragraph">
+<p>The internal business data model consists of 6 entities:</p>
+</div>
+<div class="ulist">
+<ul>
 <li>
-<p><a href="master-solicitor.asciidoc_data-model.html">Data Model</a></p>
+<p><strong><code>ModelRoot</code></strong>: root object of the business data model which holds metadata about the data processing</p>
+</li>
+<li>
+<p><strong><code>Engagement</code></strong>: the masterdata of the overall project</p>
+</li>
+<li>
+<p><strong><code>Application</code></strong>: a deliverable within the <code>Engagement</code></p>
+</li>
+<li>
+<p><strong><code>ApplicationComponent</code></strong>: component within an <code>Application</code></p>
+</li>
+<li>
+<p><strong><code>RawLicense</code></strong>: License info attached to an <code>ApplicationComponent</code> as it is read from the input data</p>
+</li>
+<li>
+<p><strong><code>NormalizedLicense</code></strong>: License info attached to an <code>ApplicationComponent</code> processed by the business rules</p>
+</li>
+</ul>
+</div>
+<div class="sect4">
+<h5 id="master-solicitor.asciidoc_modelroot">ModelRoot</h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 30%;">
+<col style="width: 10%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">modelVersion</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">version number of the data model</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">executionTime</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">timestamp when the data was processed</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">solicitorVersion</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Solicitor version which processed the model</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">solicitorGitHash</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">buildnumber / GitHash of the Solicitor build</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">solicitorBuilddate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">build date of the Solicitor build</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">extensionArtifactId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">artifactId of the active <em>Solicitor</em> Extension (&quot;NONE&quot; if no extension)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">extensionVersion</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Version of the active Extension (or &quot;NONE&quot;)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">extensionGitHash</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Buildnumber / GitHash of the Extension (or &quot;NONE&quot;)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="master-solicitor.asciidoc_engagement">Engagement</h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 30%;">
+<col style="width: 10%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">engagementName</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the engagement name</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">engagementType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EngagementType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the engagement type; possible values: INTERN, EXTERN</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">clientName</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">name of the client</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">goToMarketModel</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GoToMarketModel</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the go-to-market-model; possible values: LICENSE</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">contractAllowsOss</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">does the contract explicitely allow OSS?</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ossPolicyFollowed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is the companies OSS policy followed?</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">customerProvidesOss</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">does the customer provide the OSS?</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="master-solicitor.asciidoc_application">Application</h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 30%;">
+<col style="width: 10%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">applicationName</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">the name of the application / deliverable</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">releaseId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">version identifier of the application</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">releaseDate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sting</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">release data of the application</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sourceRepo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">URL of the source repo of the application (should be an URL)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">programmingEcosystem</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">programming ecosystem (e.g. Java8; Android/Java, iOS / Objective C)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="master-solicitor.asciidoc_applicationcomponent">ApplicationComponent</h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 30%;">
+<col style="width: 10%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">usagePattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UsagePattern</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">possible values: DYNAMIC_LINKING, STATIC_LINKING, STANDALONE_PRODUCT</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ossModified</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is the OSS modified?</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ossHomepage</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">URL of the OSS homepage</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">groupId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">component identifier: maven group</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">artifactId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">component identifier: maven artifactId</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">version</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">component identifier: Version</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">repoType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">component identifier: RepoType</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="master-solicitor.asciidoc_rawlicense">RawLicense</h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 30%;">
+<col style="width: 10%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">declaredLicense</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">name of the declared license</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">licenseUrl</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">URL of the declared license</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">trace</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">detail info of history of this data record</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">specialHandling</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>(for controlling rule processing)</em></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect4">
+<h5 id="master-solicitor.asciidoc_normalizedlicense">NormalizedLicense</h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 30%;">
+<col style="width: 10%;">
+<col style="width: 60%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">declaredLicense</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">name of the declared license (copied from RawLicense)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">licenseUrl</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">URL of the declared license (copied from RawLicense</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">declaredLicenseContent</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">resolved content of licenseUrl</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">normalizedLicenseType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type of the license, see <a href="master-solicitor.asciidoc_architecture.html#master-solicitor.asciidoc_license-types">License types</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">normalizedLicense</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">name of the license in normalized form (SPDX-Id) or special &quot;pseudo license id&quot;, see <a href="master-solicitor.asciidoc_architecture.html#master-solicitor.asciidoc_pseudo-license-ids">Pseudo License Ids</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">normalizedLicenseUrl</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">URL pointing to a normalized form of the license</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">normalizedLicenseType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type of the license, see <a href="master-solicitor.asciidoc_architecture.html#master-solicitor.asciidoc_license-types">License types</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">effectiveNormalizedLicenseType</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type of the effective license, see <a href="master-solicitor.asciidoc_architecture.html#master-solicitor.asciidoc_license-types">License types</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">effectiveNormalizedLicense</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">effective normalized license (SPDX-Id) or &quot;pseudo license id&quot;; this is the information after selecting the right license in case of multi licensing or any license override due to a component being redistributed under a different license</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">effectiveNormalizedLicenseUrl</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">URL pointing to the effective normalized license</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">effectiveNormalizedLicenseContent</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">resolved content of effectiveNormalizedLicenseUrl</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">legalPreApproved</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">indicates whether the license is pre approved based on company standard policy</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">copyLeft</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">indicates the type of copyleft of the license</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">licenseCompliance</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">indicates if the license is compliant according to the default company policy</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">licenseRefUrl</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">URL to the reference license information (TBD)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">licenseRefContent</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">resolved content of licenseRefUrl</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">includeLicense</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">does the license require to include the license text ?</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">includeSource</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">does the license require to deliver source code of OSS component ?</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">reviewedForRelease</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">for which release was the legal evaluation done?</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">comments</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">comments on the component/license (mainly as input to legal)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">legalApproved</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">indicates whether this usage is legally approved</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">legalComments</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">comments from legal, possibly indicating additional conditions to be fulfilled</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">trace</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">detail info of history of this data record (rule executions)</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>For the mechanism how <em>Solicitor</em> resolves the content of URLs and how the result
+might be influenced see <a href="master-solicitor.asciidoc_resolving-of-license-urls.html">Resolving of License URLs</a></p>
+</div>
+<div class="sect5">
+<h6 id="master-solicitor.asciidoc_license-types">License types</h6>
+<div class="paragraph">
+<p>Defines the type of license</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>OSS-SPDX</code> - An OSS license which has a corresponding SPDX-Id</p>
+</li>
+<li>
+<p><code>OSS-OTHER</code> - An OSS license which has no SPDX-Id</p>
+</li>
+<li>
+<p><code>COMMERCIAL</code> - Commercial (non OSS) license; this might also include code which is owned by the project</p>
+</li>
+<li>
+<p><code>UNKNOWN</code>- License is unknown</p>
+</li>
+<li>
+<p><code>IGNORED</code>- license will be ignored (non selected license in multi licensing case; only to be used as &quot;Effective Normalized License Type&quot;)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect5">
+<h6 id="master-solicitor.asciidoc_pseudo-license-ids">Pseudo License Ids</h6>
+<div class="paragraph">
+<p>A &quot;normalized&quot; license id might be either a SPDX-Id or a &quot;pseudo license id&quot; which is used to indicate a specific situation. The following pseudo license ids are used:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>OSS specific</code> - a nonstandard OSS license which could not be mapped to a SPDX-Id</p>
+</li>
+<li>
+<p><code>PublicDomain</code> - any form of public domain which is not represented by an explicit SPDX-Id</p>
+</li>
+<li>
+<p><code>Ignored</code> - license will be ignored (non selected license in multi licensing case; only to be used as &quot;Effective Normalized License&quot;)</p>
+</li>
+<li>
+<p><code>NonOSS</code> - commercial license, not OSS</p>
 </li>
 </ul>
 </div>
 </div>
 </div>
+</div>
+</div>
 <div class="paragraph nav-footer">
-<p>&#x2190;&#xA0;Previous:&#xA0;<a href="master-solicitor.asciidoc_licensing-of-solicitor.html">Licensing of Solicitor</a>&#xA0;| &#x2191;&#xA0;Up:&#xA0;<a href="master-solicitor.asciidoc.html">Solicitor User Guide</a>&#xA0;| &#x2302;&#xA0;Home:&#xA0;<a href="master.html">devonfw guide</a>&#xA0;| Next:&#xA0;<a href="master-solicitor.asciidoc_data-model.html">Data Model</a>&#xA0;&#x2192;</p>
+<p>&#x2190;&#xA0;Previous:&#xA0;<a href="master-solicitor.asciidoc_introduction.html">Introduction</a>&#xA0;| &#x2191;&#xA0;Up:&#xA0;<a href="master-solicitor.asciidoc.html">Solicitor User Guide</a>&#xA0;| &#x2302;&#xA0;Home:&#xA0;<a href="master.html">devonfw guide</a>&#xA0;| Next:&#xA0;<a href="master-solicitor.asciidoc_usage.html">Usage</a>&#xA0;&#x2192;</p>
 </div>
 </div>
 <div id="footer" class="footer">
@@ -772,7 +1235,7 @@ For this step <em>Solicitor</em> only provides a framework / tool to support the
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-09-21 09:39:31 UTC
+Last updated 2021-09-21 10:38:43 UTC
 </sub></div>
 
 
