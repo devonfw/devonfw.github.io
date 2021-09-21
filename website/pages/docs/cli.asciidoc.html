@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2021-09-21 07:16:49 UTC">
+<meta name="author" content="Updated at 2021-09-21 07:25:03 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -511,7 +511,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2021-09-21 07:18:02 UTC</span><br>
+<span id="author" class="author">Updated at 2021-09-21 07:26:36 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -1346,6 +1346,10 @@ To launch IntelliJ for your current workspace and <code>devonfw-ide</code> insta
 <td class="tableblock halign-left valign-top"><p class="tableblock">setup IntelliJ (install or update)</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>add-plugin &#xAB;id&#xBB;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">install an additional plugin</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>run</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">launch IntelliJ (default if no argument is given)</p></td>
 </tr>
@@ -1401,7 +1405,40 @@ To launch IntelliJ for your current workspace and <code>devonfw-ide</code> insta
 </tr>
 </tbody>
 </table>
+<div class="sect4">
+<h5 id="intellij.asciidoc_plugins">plugins</h5>
+<div class="paragraph">
+<p>To be productive with IntelliJ you need plugins. Of course <code>devonfw-ide</code> can automate this for your:
+In your <a href="structure.asciidoc.html#settings.asciidoc">settings</a> git repository create a folder <a href="https://github.com/devonfw/ide-settings/tree/master/intellij/plugins">intellij/plugins</a> (click this link to see more examples and see which plugins come by default).
+Here you can create a properties file for each plugin. This is an example <a href="https://github.com/devonfw/ide-settings/blob/master/intellij/plugins/scala.properties">scala.properties</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>plugin_id=org.intellij.scala
+plugin_active=false</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The variables are defined as following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>plugin_id</code> defines the unique ID of the plugin to install. If you want to customize <code>devonfw-ide</code> with new plugins use the search on <a href="https://plugins.jetbrains.com/idea_ce" class="bare">https://plugins.jetbrains.com/idea_ce</a> to find the plugin of your choice. Select the tab <code>Versions</code> and click on a version in the list. The plugin ID is displayed in the upper right corner. Copy &amp; paste the ID from here to make up your own custom config.</p>
+</li>
+<li>
+<p><code>plugin_active</code> is an optional parameter. If it is <code>true</code> (default) the plugin will be installed automatically during the project <a href="setup.asciidoc.html">setup</a> for all developers in your team. Otherwise developers can still install the plugin manually via <code>devon intellij add-plugin &#xAB;plugin_id&#xBB;</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In general you should try to stick with the configuration pre-defined by your project. But some plugins may be considered as personal flavor and are typically not predefined by the project config. Such plugins should be shipped with your <a href="structure.asciidoc.html#settings.asciidoc">settings</a> as described above with <code>plugin_active=false</code> allowing you to easily install it manually. Surely, you can easily add plugins via the UI of IntelliJ. However, be aware that some plugins may collect sensitive data or could introduce other vulnerabilities. So consider the governance of your project and talk to your technical lead before installing additional plugins that are not pre-defined in your <a href="structure.asciidoc.html#settings.asciidoc">settings</a>.</p>
+</div>
+<div class="paragraph">
+<p>As maintainer of the <a href="structure.asciidoc.html#settings.asciidoc">settings</a> for your project you should avoid to ship too many plugins that may waste resources but are not used by every developer. By configuring additional plugins with <code>plugin_active=false</code> you can give your developers the freedom to install some additional plugins easily.</p>
+</div>
 <!-- toc disabled -->
+</div>
 </div>
 <div class="sect3">
 <h4 id="ionic.asciidoc">ionic</h4>
@@ -2095,6 +2132,10 @@ To launch VSCode for your current workspace and <code>devonfw-ide</code> install
 <td class="tableblock halign-left valign-top"><p class="tableblock">setup VSCode (install or update)</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>add-plugin &#xAB;id&#xBB;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">install an additional plugin (extension)</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>run</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">launch VSCode (default if no argument is given)</p></td>
 </tr>
@@ -2356,7 +2397,7 @@ plugin_active=true</code></pre>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-09-21 07:14:30 UTC
+Last updated 2021-09-21 07:21:47 UTC
 </sub></div>
 
 

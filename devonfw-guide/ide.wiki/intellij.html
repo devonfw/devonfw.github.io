@@ -95,7 +95,11 @@
 <div class="toc2">
 <div class="title">Table of Contents</div>
 <ul class="sectlevel0">
-<li><a href="#intellij.asciidoc">intellij</a></li>
+<li><a href="#intellij.asciidoc">intellij</a>
+<ul class="sectlevel1">
+<li><a href="#intellij.asciidoc_plugins">plugins</a></li>
+</ul>
+</li>
 </ul>
 <h1 id="intellij.asciidoc" class="sect0">intellij</h1>
 <div class="paragraph">
@@ -126,6 +130,10 @@ To launch IntelliJ for your current workspace and <code>devonfw-ide</code> insta
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">setup IntelliJ (install or update)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>add-plugin «id»</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">install an additional plugin</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>run</code></p></td>
@@ -183,6 +191,41 @@ To launch IntelliJ for your current workspace and <code>devonfw-ide</code> insta
 </tr>
 </tbody>
 </table>
+<div class="sect1">
+<h2 id="intellij.asciidoc_plugins">plugins</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To be productive with IntelliJ you need plugins. Of course <code>devonfw-ide</code> can automate this for your:
+In your <a href="#settings.asciidoc">settings</a> git repository create a folder <a href="https://github.com/devonfw/ide-settings/tree/master/intellij/plugins">intellij/plugins</a> (click this link to see more examples and see which plugins come by default).
+Here you can create a properties file for each plugin. This is an example <a href="https://github.com/devonfw/ide-settings/blob/master/intellij/plugins/scala.properties">scala.properties</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>plugin_id=org.intellij.scala
+plugin_active=false</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The variables are defined as following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>plugin_id</code> defines the unique ID of the plugin to install. If you want to customize <code>devonfw-ide</code> with new plugins use the search on <a href="https://plugins.jetbrains.com/idea_ce" class="bare">https://plugins.jetbrains.com/idea_ce</a> to find the plugin of your choice. Select the tab <code>Versions</code> and click on a version in the list. The plugin ID is displayed in the upper right corner. Copy &amp; paste the ID from here to make up your own custom config.</p>
+</li>
+<li>
+<p><code>plugin_active</code> is an optional parameter. If it is <code>true</code> (default) the plugin will be installed automatically during the project <a href="#setup.asciidoc">setup</a> for all developers in your team. Otherwise developers can still install the plugin manually via <code>devon intellij add-plugin «plugin_id»</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In general you should try to stick with the configuration pre-defined by your project. But some plugins may be considered as personal flavor and are typically not predefined by the project config. Such plugins should be shipped with your <a href="#settings.asciidoc">settings</a> as described above with <code>plugin_active=false</code> allowing you to easily install it manually. Surely, you can easily add plugins via the UI of IntelliJ. However, be aware that some plugins may collect sensitive data or could introduce other vulnerabilities. So consider the governance of your project and talk to your technical lead before installing additional plugins that are not pre-defined in your <a href="#settings.asciidoc">settings</a>.</p>
+</div>
+<div class="paragraph">
+<p>As maintainer of the <a href="#settings.asciidoc">settings</a> for your project you should avoid to ship too many plugins that may waste resources but are not used by every developer. By configuring additional plugins with <code>plugin_active=false</code> you can give your developers the freedom to install some additional plugins easily.</p>
+</div>
+</div>
+</div>
 </div>
 <div id="footer" class="footer">
 <div class="openblock footerLinks">
@@ -320,7 +363,7 @@ To launch IntelliJ for your current workspace and <code>devonfw-ide</code> insta
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-09-21 07:13:51 UTC
+Last updated 2021-09-21 07:20:51 UTC
 </sub></div>
 </div>
 </div>
