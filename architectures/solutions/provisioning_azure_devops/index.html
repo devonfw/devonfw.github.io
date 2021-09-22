@@ -21,7 +21,7 @@
 <!-- ************************************* -->
 
 
-<title>Solution Provisioning Azure Native</title>
+<title>Provisioning Solution Azure Native</title>
 <!-- devonfw website stylesheet -->
 <link rel="stylesheet" type="text/css" href="/devonfw.css">
 <!-- Lunr -->
@@ -95,7 +95,7 @@
 <div class="toc2">
 <div class="title">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#index.asciidoc_solution-provisioning-azure-native">Solution Provisioning Azure Native</a>
+<li><a href="#index.asciidoc_provisioning-solution-azure-native">Provisioning Solution Azure Native</a>
 <ul class="sectlevel2">
 <li><a href="#index.asciidoc_overview">Overview</a></li>
 <li><a href="#index.asciidoc_pattern-details">Pattern Details</a></li>
@@ -105,7 +105,7 @@
 </li>
 </ul>
 <div class="sect1">
-<h2 id="index.asciidoc_solution-provisioning-azure-native">Solution Provisioning Azure Native</h2>
+<h2 id="index.asciidoc_provisioning-solution-azure-native">Provisioning Solution Azure Native</h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="index.asciidoc_overview">Overview</h3>
@@ -137,10 +137,25 @@
 </li>
 <li>
 <p>Monitoring</p>
+<div class="openblock">
+<div class="content">
 <div class="paragraph">
-<p>Azure DevOps generates metrics to check the health pipelines and displays te state in the Azure DevOps portal. However no built-in forwarding to App Insights independent from the deployed application exists. Continous monitoring assumes Web Applications.
-Check out the pattern monitoring how monitoring for infrastructure/ application code can be achieved.
-Essential is that a monitoring consumer gets a single control plane across multiple environments.</p>
+<p>Azure DevOps generates metrics to check the health pipelines and displays te state in the Azure DevOps portal. However no built-in forwarding to App Insights independent from the deployed application exists. The following options are available:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Continous monitoring: Monitoring which assumes Web Applications.</p>
+</li>
+<li>
+<p>Rest API to read service health information manually as explained <a href="https://docs.microsoft.com/en-us/rest/api/azure/devops/status/?view=azure-devops-rest-6.0">here</a>. Check out the pattern monitoring cloudnative how polling and forwarding to azure monitor can be achieved.</p>
+</li>
+<li>
+<p>audit streaming is similar to diagnostic settings (In preview as of 21.09.2021). It allows to configure a constant forwarding of telemetry to selected targets as described <a href="https://docs.microsoft.com/en-us/azure/devops/organizations/audit/auditing-streaming?view=azure-devops">here</a>.</p>
+</li>
+</ul>
+</div>
+</div>
 </div>
 </li>
 <li>
@@ -205,7 +220,7 @@ Essential is that a monitoring consumer gets a single control plane across multi
 <div class="openblock">
 <div class="content">
 <div class="paragraph">
-<p>Azure DevOps supports the following testing by defining test suites with test cases (<a href="https://docs.microsoft.com/en-us/azure/devops/test/create-test-cases?view=azure-devops">Link</a>):</p>
+<p>Azure DevOps supports the following testing by <a href="https://docs.microsoft.com/en-us/azure/devops/test/create-test-cases?view=azure-devops">defining test suites with test cases</a>:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -235,7 +250,7 @@ Essential is that a monitoring consumer gets a single control plane across multi
 </ul>
 </div>
 <div class="paragraph">
-<p>Your business structure should act as a guide for the number of organizations, projects, and teams that you create in Azure DevOps (<a href="https://docs.microsoft.com/en-us/azure/devops/user-guide/plan-your-azure-devops-org-structure?bc=%2Fazure%2Fdevops%2Fget-started%2Fbreadcrumb%2Ftoc.json&amp;toc=%2Fazure%2Fdevops%2Fget-started%2Ftoc.json&amp;view=azure-devops">Link</a>). Each organization gets its own free tier of services (up to five users for each service type) as follows. You can use all the services, or choose just what you need to complement your existing workflows.</p>
+<p>Your business structure should act as a guide for the number of organizations, projects, and teams that you create in <a href="https://docs.microsoft.com/en-us/azure/devops/user-guide/plan-your-azure-devops-org-structure?bc=%2Fazure%2Fdevops%2Fget-started%2Fbreadcrumb%2Ftoc.json&amp;toc=%2Fazure%2Fdevops%2Fget-started%2Ftoc.json&amp;view=azure-devops">Azure DevOps</a>. Each organization gets its own free tier of services (up to five users for each service type) as follows. You can use all the services, or choose just what you need to complement your existing workflows.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -257,7 +272,7 @@ Essential is that a monitoring consumer gets a single control plane across multi
 </ul>
 </div>
 <div class="paragraph">
-<p>Adding multiple projects makes sense in the following cases (<a href="https://docs.microsoft.com/en-us/azure/devops/organizations/projects/about-projects?view=azure-devops">Link</a>):</p>
+<p>Adding multiple projects makes sense in the following cases (see <a href="https://docs.microsoft.com/en-us/azure/devops/organizations/projects/about-projects?view=azure-devops">azure projects</a>):</p>
 </div>
 <div class="ulist">
 <ul>
@@ -279,7 +294,7 @@ Essential is that a monitoring consumer gets a single control plane across multi
 </ul>
 </div>
 <div class="paragraph">
-<p>Adding teams instead of projects is recommended over projects for the following reasons (<a href="https://docs.microsoft.com/en-us/azure/devops/boards/plans/agile-culture?view=azure-devops">Link</a>):</p>
+<p>Adding teams instead of projects is recommended over projects due to <a href="https://docs.microsoft.com/en-us/azure/devops/boards/plans/agile-culture?view=azure-devops">agile culture</a>:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -385,7 +400,7 @@ schedules:
 </div>
 </div>
 <div class="paragraph">
-<p>Pull request (PR) triggers cause a pipeline to run whenever a pull request is opened with one of the specified target branches, or when changes are pushed to such a pull request. In Azure Repos Git, this functionality is implemented using branch policies. To enable pull request validation in Azure Git Repos, navigate to the branch policies for the desired branch, and configure the Build validation policy for that branch. For more information, see Configure branch policies. Draft pull requests do not trigger a pipeline even if you configure a branch policy. Building pull requests from Azure Repos forks is no different from building pull requests within the same repository or project. You can create forks only within the same organization that your project is part of. (<a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/repos/azure-repos-git?view=azure-devops&amp;tabs=yaml#pr-triggers">Link</a>)
+<p>Pull request (PR) triggers cause a pipeline to run whenever a pull request is opened with one of the specified target branches, or when changes are pushed to such a pull request. In Azure Repos Git, this functionality is implemented using branch policies. To enable pull request validation in Azure Git Repos, navigate to the branch policies for the desired branch, and configure the Build validation policy for that branch. For more information, see Configure branch policies. Draft pull requests do not trigger a pipeline even if you configure a branch policy. Building pull requests from Azure Repos forks is no different from building pull requests within the same repository or project. You can create forks only within the same organization that your project is part of (see <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/repos/azure-repos-git?view=azure-devops&amp;tabs=yaml#pr-triggers">PR triggers</a>).
 To trigger a pipeline upon the completion of another pipeline, specify the triggering pipeline as a pipeline resource. The following example has two pipelines - app-ci (the pipeline defined by the YAML snippet), and security-lib-ci (the triggering pipeline referenced by the pipeline resource). We want the app-ci pipeline to run automatically every time a new version of security-lib-ci is built.</p>
 </div>
 <div class="listingblock">
@@ -469,11 +484,11 @@ catch {
 </div>
 </div>
 <div class="paragraph">
-<p>Orchestration must take dependencies into account. They might result from the deployed code or the scope of the pipeline (Scope = e.g. a single microservice; Code = libraries needed).
+<p>Orchestration must take dependencies into account. They might result from the deployed code or the scope of the pipeline (scope is e.g. a single microservice and code includes the libraries needed).
 Orchestrated pipelines must pass data between them. The recommended method is to use key vault.</p>
 </div>
 <div class="paragraph">
-<p><strong>Recreation of resources in short intervals</strong> might cause pipelines to fail.Even if resources are deleted they might still exist in the background (Even although soft delete is not applicable). Programming languages can therefore get confused if pipelines recreate things in short intervals. Creating a new resource group can solve the problem since they are part of the tecnical resource id.</p>
+<p><strong>Recreation of resources in short intervals</strong> might cause pipelines to fail. Even if resources are deleted they might still exist in the background (even although soft delete is not applicable). Programming languages can therefore get confused if pipelines recreate things in short intervals. Creating a new resource group can solve the problem since they are part of the tecnical resource id.</p>
 </div>
 <div class="paragraph">
 <p>As part of the <strong>configuration</strong> Azure DevOps provides the possibility to provide various settings that are used for development such as enforcing pull requests instead of direct pushes to the repo.
@@ -759,7 +774,7 @@ Hence, secrets can be stored in a repository in a safe way without having to sto
 <p><a href="https://docs.microsoft.com/en-us/azure/lab-services/">Azure Lab Services</a> for Dev/ Test scenarios</p>
 </li>
 <li>
-<p>Kubernetes</p>
+<p><a href="https://kubernetes.io">Kubernetes</a></p>
 <div class="ulist">
 <ul>
 <li>
@@ -935,7 +950,7 @@ Hence, secrets can be stored in a repository in a safe way without having to sto
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-09-22 08:49:18 UTC
+Last updated 2021-09-22 11:14:57 UTC
 </sub></div>
 </div>
 </div>

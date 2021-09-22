@@ -136,7 +136,23 @@
 <p>The programming approach can be either UI driven or <strong>programmatic</strong>. Pipeline programming languages such as YAML structure the actions to be performed by the pipeline and provide basic mechansims such as downloading code from the repo, parameter handling, stating triggers and triggering other programming languages. These other languages are then used to setup infrastructure such as terraform or deploying application code.</p>
 </div>
 <div class="paragraph">
-<p>Azure allows to <strong>trigger</strong> pipelines upon (1) a push to repo, (2) a pull request to repo, (3) a schedule and (4) a pipeline completion (<a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/build/triggers?view=azure-devops">Link</a>).</p>
+<p>Azure allows to <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/build/triggers?view=azure-devops"><strong>trigger</strong> pipelines</a> upon:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>a push to repo</p>
+</li>
+<li>
+<p>a pull request to repo</p>
+</li>
+<li>
+<p>a schedule</p>
+</li>
+<li>
+<p>a pipeline completion</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>The platform allows to <strong>pass parameters</strong> by various mechanisms to pipelines(Explicit per user input, programmatically). Parameters can be passed by group identifier or explicitly as key value pairs. Complex structured objects as known from object programming languages are not directly possible (Require parsing of files with object structure). Parametrization might be constrained by the used service in certain areas.</p>
@@ -196,13 +212,13 @@
 <li>
 <p>Creating a dedicated orchestration pipeline</p>
 <div class="paragraph">
-<p>An additional pipeline triggers in this scenario other pipelines acting as building blocks. Pipelines can run separately (Just run the deployment) or as part of a bigger workflow (=create environment from scratch).</p>
+<p>An additional pipeline triggers in this scenario other pipelines acting as building blocks. Pipelines can run separately (just run the deployment) or as part of a bigger workflow (e.g. create environment from scratch).</p>
 </div>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Orchestration must take dependencies into account. They might result from the deployed code or the scope of the pipeline (Scope = e.g. a single microservice; Code = libraries needed).
+<p>Orchestration must take dependencies into account. They might result from the deployed code or the scope of the pipeline (scope is e.g. a single microservice and code includes the libraries neede).
 Orchestrated pipelines must pass data between them. The recommended method is to use key vault.</p>
 </div>
 <div class="paragraph">
@@ -212,14 +228,30 @@ Orchestrated pipelines must pass data between them. The recommended method is to
 <div class="sect4">
 <h5 id="index.asciidoc_traceability">Traceability</h5>
 <div class="paragraph">
-<p><strong>Traceability</strong> requires an identifier for referencing artefacts. A standard schema is a semantic version. The platform only supports partial support for number generation such as incrementing numbers (<a href="https://ychetankumarsarma.medium.com/build-versioning-in-azure-devops-pipelines-94b5a79f80a0">Link</a>). Linking the code in the repo to a certain version depends on used repository.</p>
+<p><strong>Traceability</strong> requires an identifier for referencing artefacts. A standard schema is a semantic version. The platform only supports partial support for number generation such as <a href="https://ychetankumarsarma.medium.com/build-versioning-in-azure-devops-pipelines-94b5a79f80a0">incrementing numbers</a>. Linking the code in the repo to a certain version depends on used repository.</p>
 </div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="index.asciidoc_infrastructure-application-code">Infrastructure/ Application code</h4>
 <div class="paragraph">
-<p>A <strong>programming language</strong> is either "declarative" or "imperative". Declarative programming languages state the target state and it is the job of the declarative programming language how to get there. The following rules are applied to achieve that: (1) Create a resource if not there, (2) update an existing resource if different properties, (3) delete resource if not there. Imperative programming languages state the how. The internal delta calculation needs to be explicitly programmed here. If possible declarative programming languages are recommended due to automatic delta calculation. Typical case is infrastructure.</p>
+<p>A <strong>programming language</strong> is either "declarative" or "imperative". Declarative programming languages state the target state and it is the job of the declarative programming language how to get there. The following rules are applied to achieve that:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>create a resource if not there</p>
+</li>
+<li>
+<p>update an existing resource if different properties</p>
+</li>
+<li>
+<p>delete resource if not there</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Imperative programming languages state the how. The internal delta calculation needs to be explicitly programmed here. If possible declarative programming languages are recommended due to automatic delta calculation. Typical case is infrastructure.</p>
 </div>
 <div class="paragraph">
 <p>Typical declarative options are shown in detail in the table below. The overall recommendation is to go for terraform. Major reasons for downvoting Bicep/ ARM:</p>
@@ -350,18 +382,18 @@ Orchestrated pipelines must pass data between them. The recommended method is to
 </ul>
 </div>
 <div class="paragraph">
-<p>Concrete features used for the above three points depend on the used services. A general storage for sensitive data (Keys, secrets, certificates) in Azure is always Azure Key Vault.</p>
+<p>Concrete features used for the above three points depend on the used services. A general storage for sensitive data (keys, secrets, certificates) in Azure is always Azure Key Vault.</p>
 </div>
 </div>
 <div class="sect4">
 <h5 id="index.asciidoc_compliance">Compliance</h5>
 <div class="paragraph">
-<p>The standard concept for role-based access controls is called RBAC in Azure. It assigns principals (=humans or technical accounts) permissions for a certain resource. Regarding provisioning the following users are relevant:</p>
+<p>The standard concept for role-based access controls is called RBAC in Azure. It assigns principals (humans or technical accounts) permissions for a certain resource. Regarding provisioning the following users are relevant:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Technical user (=service principal) the pipelines are running with</p>
+<p>Technical user (service principal) the pipelines are running with</p>
 </li>
 <li>
 <p>Users for administrating the provisioning service</p>
@@ -372,7 +404,7 @@ Orchestrated pipelines must pass data between them. The recommended method is to
 <p>Azure Active Directory is the central service in Azure that defines and controls all principals (human/ service) per tenant.</p>
 </div>
 <div class="paragraph">
-<p>Granularity of roles that can be granted depend on the service. The boundaries in which users exist/ permissions can be assigned is also service specific.</p>
+<p>Granularity of roles that can be granted depend on the service. The boundaries in which users exist or permissions can be assigned is also service specific.</p>
 </div>
 </div>
 </div>
@@ -516,7 +548,7 @@ Orchestrated pipelines must pass data between them. The recommended method is to
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-09-22 08:59:37 UTC
+Last updated 2021-09-22 11:25:42 UTC
 </sub></div>
 </div>
 </div>
