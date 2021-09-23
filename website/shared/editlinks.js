@@ -212,6 +212,21 @@ const editLinksModule = (function(window) {
             }
         });
     }
+    
+    let docsPage = /(^.+?)\/docs/;
+    let top = $('#toc').offset().top;
+    let left = $('#toc').offset().left;
+    if(docsPage.test(window.location.pathname)){
+      $(window).scroll(function () {
+          let topOffset = parseInt(document.documentElement.scrollTop);
+          let leftOffset = parseInt(document.documentElement.scrollLeft)
+          let sidebarHeight = $('#toc').height();
+          let pageHeight = $('#content').height();
+          if ((top + topOffset + sidebarHeight) < pageHeight) {
+              $('#toc').offset({ top: top + topOffset, left: left + leftOffset });
+          }
+      });
+    }
   }
 
   // List of functions accessibly by other scripts
