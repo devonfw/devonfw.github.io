@@ -214,17 +214,18 @@ const editLinksModule = (function(window) {
     }
 
     let docsPage = /(^.+?)\/docs/;
-    let top = $('#toc').offset().top;
     if(docsPage.test(window.location.pathname)){
-      $(window).scroll(function () {
+        let top = $('#toc').offset().top;
+        $(window).scroll(function () {
           let topOffset = parseInt(document.documentElement.scrollTop);
           let sidebarHeight = $('#toc').height();
           let pageHeight = $('#content').height();
+
           if ((top + topOffset + sidebarHeight) < pageHeight) {
               $('#toc').offset({ top: top + topOffset});
               $('#toc').height(490);
-          }
-      });
+            }
+        });
     }
   }
 
