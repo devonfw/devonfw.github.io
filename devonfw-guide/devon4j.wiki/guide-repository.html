@@ -178,7 +178,7 @@ Such repository is the analogy to a <a href="#guide-dao.asciidoc">Data-Access-Ob
 <div class="listingblock">
 <div class="title"><strong>Repository</strong></div>
 <div class="content">
-<pre class="highlight"><code class="java language-java">public interface ExampleRepository extends JpaRepository&lt;ExampleEntity, Long&gt; {
+<pre class="highlight"><code class="java language-java">public interface ProductRepository extends JpaRepository&lt;ProductEntity, Long&gt; {
 
 }</code></pre>
 </div>
@@ -202,51 +202,51 @@ Such repository is the analogy to a <a href="#guide-dao.asciidoc">Data-Access-Ob
 <div class="listingblock">
 <div class="title"><strong>Repository</strong></div>
 <div class="content">
-<pre class="highlight"><code class="java language-java">public interface ExampleRepository extends JpaRepository&lt;ExampleEntity, Long&gt;, ExampleFragment {
+<pre class="highlight"><code class="java language-java">public interface ProductRepository extends JpaRepository&lt;ProductEntity, Long&gt;, ProductFragment {
 
-  @Query("SELECT example FROM ExampleEntity example" //
-      + " WHERE example.name = :name")
-  List&lt;ExampleEntity&gt; findByName(@Param("name") String name);
+  @Query("SELECT product FROM ProductEntity product" //
+      + " WHERE product.title = :title")
+  List&lt;ProductEntity&gt; findByTitle(@Param("title") String title);
 
-   @Query("SELECT example FROM ExampleEntity example" //
-      + " WHERE example.name = :name")
-  Page&lt;ExampleEntity&gt; findByNamePaginated(@Param("name") String name, Pageable pageable);
+  @Query("SELECT product FROM ProductEntity product" //
+      + " WHERE product.title = :title")
+  Page&lt;ProductEntity&gt; findByTitlePaginated(@Param("title") String title, Pageable pageable);
 }</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title"><strong>Repository fragment</strong></div>
 <div class="content">
-<pre class="highlight"><code class="java language-java">public interface ExampleFragment {
-  Page&lt;ExampleEntity&gt; findByCriteria(ExampleSearchCriteriaTo criteria);
+<pre class="highlight"><code class="java language-java">public interface ProductFragment {
+  Page&lt;ProductEntity&gt; findByCriteria(ProductSearchCriteriaTo criteria);
 }</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title"><strong>Fragment implementation</strong></div>
 <div class="content">
-<pre class="highlight"><code class="java language-java">public class ExampleFragment implements ExampleFragment {
+<pre class="highlight"><code class="java language-java">public class ProductFragmentImpl implements ProductFragment {
   @Inject
   EntityManager entityManager;
 
-  public Page&lt;ExampleEntity&gt; findByCriteria(ExampleSearchCriteriaTo criteria) {
-    QExampleEntity example = QExampleEntity.exampleEntity;
-    JPAQuery&lt;ExampleEntity&gt; query = new JPAQuery&lt;ExampleEntity&gt;(this.entityManager);
-    query.from(example);
+  public Page&lt;ProductEntity&gt; findByCriteria(ProductSearchCriteriaTo criteria) {
+    QProductEntity product = QProductEntity.productEntity;
+    JPAQuery&lt;ProductEntity&gt; query = new JPAQuery&lt;ProductEntity&gt;(this.entityManager);
+    query.from(product);
 
-    String name = criteria.getName();
-    if ((name != null) &amp;&amp; !name.isEmpty()) {
-      query.where(example.name.eq(name));
+    String title = criteria.getTitle();
+    if ((title != null) &amp;&amp; !title.isEmpty()) {
+      query.where(product.title.eq(title));
     }
 
-    List&lt;ExampleEntity&gt; examples = query.fetch();
-    return new PageImpl&lt;&gt;(examples, PageRequest.of(criteria.getPageNumber(), criteria.getPageSize()), examples.size());
+    List&lt;ProductEntity&gt; products = query.fetch();
+    return new PageImpl&lt;&gt;(products, PageRequest.of(criteria.getPageNumber(), criteria.getPageSize()), products.size());
   }
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>This <code>ExampleRepository</code> has the following features:</p>
+<p>This <code>ProductRepository</code> has the following features:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -257,15 +257,18 @@ Such repository is the analogy to a <a href="#guide-dao.asciidoc">Data-Access-Ob
 <p>Support for <a href="https://github.com/devonfw/devon4j/blob/develop/modules/jpa-spring-data/src/main/java/com/devonfw/module/jpa/dataaccess/api/data/QueryDslSupport.java">QueryDSL integration</a>, <a href="https://github.com/devonfw/devon4j/blob/develop/modules/jpa-basic/src/main/java/com/devonfw/module/jpa/dataaccess/api/QueryUtil.java">paging and more</a>.</p>
 </li>
 <li>
-<p>A static <a href="#guide-jpa-query.asciidoc">query</a> method <code>findByName</code> to find all <code>ExampleEntity</code> instances from DB that have the given name. Please note the <code>@Param</code> annotation that links the method parameter with the variable inside the query (<code>:name</code>).</p>
+<p>A static <a href="#guide-jpa-query.asciidoc">query</a> method <code>findByTitle</code> to find all <code>ProductEntity</code> instances from DB that have the given title. Please note the <code>@Param</code> annotation that links the method parameter with the variable inside the query (<code>:title</code>).</p>
 </li>
 <li>
-<p>The same with pagination support via findByNamePaginated method.</p>
+<p>The same with pagination support via findByTitlePaginated method.</p>
 </li>
 <li>
 <p>A dynamic <a href="#guide-jpa-query.asciidoc">query</a> method <code>findByCriteria</code> showing the QueryDSL and paging integration into Spring via a fragment implementation.</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>You can find an implementation of this <code>ProductRepository</code> in our <a href="https://github.com/devonfw-sample/devon4quarkus-reference/tree/master/src/main/java/com/devonfw/quarkus/productmanagement/domain/repo">Quarkus reference application</a>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -458,7 +461,7 @@ In Quarkus, native and named queries via the <code>@Query</code> annotation are 
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-10-07 05:44:39 UTC
+Last updated 2021-10-07 05:58:30 UTC
 </sub></div>
 </div>
 </div>

@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2021-10-07 05:50:02 UTC">
+<meta name="author" content="Updated at 2021-10-07 06:06:33 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -511,7 +511,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2021-10-07 05:51:18 UTC</span><br>
+<span id="author" class="author">Updated at 2021-10-07 06:08:16 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -1622,7 +1622,7 @@ Such repository is the analogy to a <a href="guide-jpa.asciidoc.html#guide-dao.a
 <div class="listingblock">
 <div class="title">Listing 10. <strong>Repository</strong></div>
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public interface ExampleRepository extends JpaRepository&lt;ExampleEntity, Long&gt; {
+<pre class="highlight"><code class="language-java" data-lang="java">public interface ProductRepository extends JpaRepository&lt;ProductEntity, Long&gt; {
 
 }</code></pre>
 </div>
@@ -1644,51 +1644,51 @@ Such repository is the analogy to a <a href="guide-jpa.asciidoc.html#guide-dao.a
 <div class="listingblock">
 <div class="title">Listing 11. <strong>Repository</strong></div>
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public interface ExampleRepository extends JpaRepository&lt;ExampleEntity, Long&gt;, ExampleFragment {
+<pre class="highlight"><code class="language-java" data-lang="java">public interface ProductRepository extends JpaRepository&lt;ProductEntity, Long&gt;, ProductFragment {
 
-  @Query(&quot;SELECT example FROM ExampleEntity example&quot; //
-      + &quot; WHERE example.name = :name&quot;)
-  List&lt;ExampleEntity&gt; findByName(@Param(&quot;name&quot;) String name);
+  @Query(&quot;SELECT product FROM ProductEntity product&quot; //
+      + &quot; WHERE product.title = :title&quot;)
+  List&lt;ProductEntity&gt; findByTitle(@Param(&quot;title&quot;) String title);
 
-   @Query(&quot;SELECT example FROM ExampleEntity example&quot; //
-      + &quot; WHERE example.name = :name&quot;)
-  Page&lt;ExampleEntity&gt; findByNamePaginated(@Param(&quot;name&quot;) String name, Pageable pageable);
+  @Query(&quot;SELECT product FROM ProductEntity product&quot; //
+      + &quot; WHERE product.title = :title&quot;)
+  Page&lt;ProductEntity&gt; findByTitlePaginated(@Param(&quot;title&quot;) String title, Pageable pageable);
 }</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">Listing 12. <strong>Repository fragment</strong></div>
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public interface ExampleFragment {
-  Page&lt;ExampleEntity&gt; findByCriteria(ExampleSearchCriteriaTo criteria);
+<pre class="highlight"><code class="language-java" data-lang="java">public interface ProductFragment {
+  Page&lt;ProductEntity&gt; findByCriteria(ProductSearchCriteriaTo criteria);
 }</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="title">Listing 13. <strong>Fragment implementation</strong></div>
 <div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class ExampleFragment implements ExampleFragment {
+<pre class="highlight"><code class="language-java" data-lang="java">public class ProductFragmentImpl implements ProductFragment {
   @Inject
   EntityManager entityManager;
 
-  public Page&lt;ExampleEntity&gt; findByCriteria(ExampleSearchCriteriaTo criteria) {
-    QExampleEntity example = QExampleEntity.exampleEntity;
-    JPAQuery&lt;ExampleEntity&gt; query = new JPAQuery&lt;ExampleEntity&gt;(this.entityManager);
-    query.from(example);
+  public Page&lt;ProductEntity&gt; findByCriteria(ProductSearchCriteriaTo criteria) {
+    QProductEntity product = QProductEntity.productEntity;
+    JPAQuery&lt;ProductEntity&gt; query = new JPAQuery&lt;ProductEntity&gt;(this.entityManager);
+    query.from(product);
 
-    String name = criteria.getName();
-    if ((name != null) &amp;&amp; !name.isEmpty()) {
-      query.where(example.name.eq(name));
+    String title = criteria.getTitle();
+    if ((title != null) &amp;&amp; !title.isEmpty()) {
+      query.where(product.title.eq(title));
     }
 
-    List&lt;ExampleEntity&gt; examples = query.fetch();
-    return new PageImpl&lt;&gt;(examples, PageRequest.of(criteria.getPageNumber(), criteria.getPageSize()), examples.size());
+    List&lt;ProductEntity&gt; products = query.fetch();
+    return new PageImpl&lt;&gt;(products, PageRequest.of(criteria.getPageNumber(), criteria.getPageSize()), products.size());
   }
 }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>This <code>ExampleRepository</code> has the following features:</p>
+<p>This <code>ProductRepository</code> has the following features:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1699,15 +1699,18 @@ Such repository is the analogy to a <a href="guide-jpa.asciidoc.html#guide-dao.a
 <p>Support for <a href="https://github.com/devonfw/devon4j/blob/develop/modules/jpa-spring-data/src/main/java/com/devonfw/module/jpa/dataaccess/api/data/QueryDslSupport.java">QueryDSL integration</a>, <a href="https://github.com/devonfw/devon4j/blob/develop/modules/jpa-basic/src/main/java/com/devonfw/module/jpa/dataaccess/api/QueryUtil.java">paging and more</a>.</p>
 </li>
 <li>
-<p>A static <a href="guide-jpa.asciidoc.html#guide-jpa-query.asciidoc">query</a> method <code>findByName</code> to find all <code>ExampleEntity</code> instances from DB that have the given name. Please note the <code>@Param</code> annotation that links the method parameter with the variable inside the query (<code>:name</code>).</p>
+<p>A static <a href="guide-jpa.asciidoc.html#guide-jpa-query.asciidoc">query</a> method <code>findByTitle</code> to find all <code>ProductEntity</code> instances from DB that have the given title. Please note the <code>@Param</code> annotation that links the method parameter with the variable inside the query (<code>:title</code>).</p>
 </li>
 <li>
-<p>The same with pagination support via findByNamePaginated method.</p>
+<p>The same with pagination support via findByTitlePaginated method.</p>
 </li>
 <li>
 <p>A dynamic <a href="guide-jpa.asciidoc.html#guide-jpa-query.asciidoc">query</a> method <code>findByCriteria</code> showing the QueryDSL and paging integration into Spring via a fragment implementation.</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>You can find an implementation of this <code>ProductRepository</code> in our <a href="https://github.com/devonfw-sample/devon4quarkus-reference/tree/master/src/main/java/com/devonfw/quarkus/productmanagement/domain/repo">Quarkus reference application</a>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -2310,7 +2313,7 @@ As a generic approach you can solve this via <a href="guide-rest.html#rest-excep
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-10-07 05:47:38 UTC
+Last updated 2021-10-07 06:03:03 UTC
 </sub></div>
 
 
