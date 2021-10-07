@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2021-10-07 05:37:00 UTC">
+<meta name="author" content="Updated at 2021-10-07 05:50:02 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -511,7 +511,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2021-10-07 05:38:33 UTC</span><br>
+<span id="author" class="author">Updated at 2021-10-07 05:51:18 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -3146,64 +3146,44 @@ However, passing persistent entities via <em>call-by-reference</em> across the e
 <p>In the following sections the different types of transfer-objects are explained.
 You will find all according naming-conventions in the <a href="guide-structure-classic.html#architecture-mapping">architecture-mapping</a></p>
 </div>
-<div class="sect4">
-<h5 id="guide-transferobject.asciidoc_eto">ETO</h5>
 <div class="paragraph">
-<p>For each <a href="guide-jpa.html#entity">persistent entity</a> <code>&#xAB;BusinessObject&#xBB;Entity</code> we create or generate a corresponding <em>entity transfer object</em> (ETO) named <code>&#xAB;BusinessObject&#xBB;Eto</code>. It has the same properties except for relations.</p>
+<p>To structure your transfer objects, we recommend the following approaches:</p>
 </div>
-</div>
-<div class="sect4">
-<h5 id="guide-transferobject.asciidoc_bo">BO</h5>
-<div class="paragraph">
-<p>In order to centralize the properties (getters and setters with their javadoc) we create a common interface <code>&#xAB;BusinessObject&#xBB;</code> implemented both by the entity and its ETO. This also gives us compile-time safety that
-<a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-beanmapping.asciidoc">bean-mapper</a> can properly map all properties between entity and ETO.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="guide-transferobject.asciidoc_cto">CTO</h5>
-<div class="paragraph">
-<p>If we need to pass an entity with its relation(s) we create a corresponding <em>composite transfer object</em> (CTO) named <code>&#xAB;BusinessObject&#xBB;&#xAB;Subset&#xBB;Cto</code> that only contains other transfer-objects or collections of them. Here <code>&#xAB;Subset&#xBB;</code> is empty for the canonical CTO that holds the ETO together with all its relations.
-This is what can be generated automatically with <a href="https://github.com/devonfw/cobigen">CobiGen</a>.
-However, be careful to generate CTOs without thinking and considering design.
-If there are no relations at all a CTO is pointless and shall be omitted.
-However, if there are multiple relations you typically need  multiple CTOs for the same <code>&#xAB;BusinessObject&#xBB;</code> that define different subsets of the related data.
-These will typically be designed and implemented by hand.
-E.g. you may have <code>CustomerWithAddressCto</code> and <code>CustomerWithContractCto</code>. Most CTOs correspond to a specific <code>&#xAB;BusinessObject&#xBB;</code> and therefore contain a <code>&#xAB;BusinessObject&#xBB;Eto</code>. Such CTOs should inherit from <code>MasterCto</code>.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#guide-eto-cto.asciidoc">ETO and CTO</a></p>
+</li>
+<li>
+<p><a href="#guide-dto.asciidoc">DTO</a></p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>This pattern with entities, ETOs and CTOs is illustrated by the following UML diagram from our sample application.</p>
+<p>Also considering the following transfer objects in specific cases:</p>
 </div>
-<div id="guide-transferobject.asciidoc_img-transfer-objects" class="imageblock" style="text-align: center">
-<div class="content">
-<a class="image" href="images/transfer-objects.png"><img src="images/transfer-objects.png" alt="ETOs and CTOs"></a>
-</div>
-<div class="title">Figure 8. ETOs and CTOs</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="guide-transferobject.asciidoc_to">TO</h5>
-<div class="paragraph">
-<p>Finally, there are typically transfer-objects for data that is never persistent.
-For very generic cases these just carry the suffix <code>To</code>.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="guide-transferobject.asciidoc_searchcriteriato">SearchCriteriaTo</h5>
-<div class="paragraph">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">SearchCriteriaTo</dt>
+<dd>
 <p>For searching we create or generate a <code>&#xAB;BusinessObject&#xBB;SearchCriteriaTo</code> representing a query to find instances of <code>&#xAB;BusinessObject&#xBB;</code>.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="guide-transferobject.asciidoc_sto">STO</h5>
-<div class="paragraph">
+</dd>
+<dt class="hdlist1">TO</dt>
+<dd>
+<p>There are typically transfer-objects for data that is never persistent.
+For very generic cases these just carry the suffix <code>To</code>.</p>
+</dd>
+<dt class="hdlist1">STO</dt>
+<dd>
 <p>We can potentially create separate <em>service transfer objects</em> (STO) (if possible named <code>&#xAB;BusinessObject&#xBB;Sto</code>) to keep the <a href="devon4j.asciidoc_layers.html#guide-service-layer.asciidoc">service</a> API stable and independent of the actual data-model.
 However, we usually do not need this and want to keep our architecture simple.
 Only create STOs if you need <a href="guide-service-layer.html#versioning">service versioning</a> and support previous APIs or to provide legacy service technologies that require their own isolated data-model.
-In such case you also need <a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-beanmapping.asciidoc">beanmapping</a> between STOs and ETOs what means extra effort and complexity that should be avoided.</p>
+In such case you also need <a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-beanmapping.asciidoc">beanmapping</a> between STOs and ETOs/DTOs what means extra effort and complexity that should be avoided.</p>
+</dd>
+</dl>
 </div>
 <div style="page-break-after: always;"></div>
 <!-- toc disabled -->
-</div>
 </div>
 <div class="sect3">
 <h4 id="guide-beanmapping.asciidoc">Bean-Mapping</h4>
@@ -4088,7 +4068,7 @@ in a 1-to-1-communication-scheme (not publish/subscribe) the following schema as
 <div class="content">
 <a class="image" href="https://devonfw.com/website/pages/docs/images/kafka-architecture-service.svg"><img src="images/kafka-architecture-service.png" alt="Architecture for Kafka services"></a>
 </div>
-<div class="title">Figure 9. Architecture for Kafka services</div>
+<div class="title">Figure 8. Architecture for Kafka services</div>
 </div>
 <div class="paragraph">
 <p>Import the following <code>starter-kafka-receiver</code> dependency to use the listener configurations and loggers from devon4j-kafka.</p>
@@ -4423,7 +4403,7 @@ To use it add a dependency to the devon4j-starter-security-jwt:</p>
 <div class="content">
 <a class="image" href="https://devonfw.com/website/pages/docs/images/kafka-architecture-internal.svg"><img src="images/kafka-architecture-internal.png" alt="Architecture for internal parallel processing with Kafka"></a>
 </div>
-<div class="title">Figure 10. Architecture for internal parallel processing with Kafka</div>
+<div class="title">Figure 9. Architecture for internal parallel processing with Kafka</div>
 </div>
 <div class="paragraph">
 <p>This examples shows a payment service which allows a to submit a list of receipt IDs for payment.
@@ -4686,7 +4666,7 @@ With spring we can simply use <a href="https://docs.spring.io/spring-framework/d
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-10-07 05:34:08 UTC
+Last updated 2021-10-07 05:47:38 UTC
 </sub></div>
 
 

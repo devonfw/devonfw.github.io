@@ -95,16 +95,7 @@
 <div class="toc2">
 <div class="title">Table of Contents</div>
 <ul class="sectlevel0">
-<li><a href="#guide-transferobject.asciidoc">Transfer-Objects</a>
-<ul class="sectlevel1">
-<li><a href="#guide-transferobject.asciidoc_eto">ETO</a></li>
-<li><a href="#guide-transferobject.asciidoc_bo">BO</a></li>
-<li><a href="#guide-transferobject.asciidoc_cto">CTO</a></li>
-<li><a href="#guide-transferobject.asciidoc_to">TO</a></li>
-<li><a href="#guide-transferobject.asciidoc_searchcriteriato">SearchCriteriaTo</a></li>
-<li><a href="#guide-transferobject.asciidoc_sto">STO</a></li>
-</ul>
-</li>
+<li><a href="#guide-transferobject.asciidoc">Transfer-Objects</a></li>
 </ul>
 <h1 id="guide-transferobject.asciidoc" class="sect0">Transfer-Objects</h1>
 <div class="paragraph">
@@ -131,73 +122,41 @@ However, passing persistent entities via <em>call-by-reference</em> across the e
 <p>In the following sections the different types of transfer-objects are explained.
 You will find all according naming-conventions in the <a href="guide-structure-classic.html#architecture-mapping">architecture-mapping</a></p>
 </div>
-<div class="sect1">
-<h2 id="guide-transferobject.asciidoc_eto">ETO</h2>
-<div class="sectionbody">
 <div class="paragraph">
-<p>For each <a href="guide-jpa.html#entity">persistent entity</a> <code>«BusinessObject»Entity</code> we create or generate a corresponding <em>entity transfer object</em> (ETO) named <code>«BusinessObject»Eto</code>. It has the same properties except for relations.</p>
+<p>To structure your transfer objects, we recommend the following approaches:</p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="guide-transferobject.asciidoc_bo">BO</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>In order to centralize the properties (getters and setters with their javadoc) we create a common interface <code>«BusinessObject»</code> implemented both by the entity and its ETO. This also gives us compile-time safety that
-<a href="#guide-beanmapping.asciidoc">bean-mapper</a> can properly map all properties between entity and ETO.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="guide-transferobject.asciidoc_cto">CTO</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>If we need to pass an entity with its relation(s) we create a corresponding <em>composite transfer object</em> (CTO) named <code>«BusinessObject»«Subset»Cto</code> that only contains other transfer-objects or collections of them. Here <code>«Subset»</code> is empty for the canonical CTO that holds the ETO together with all its relations.
-This is what can be generated automatically with <a href="https://github.com/devonfw/cobigen">CobiGen</a>.
-However, be careful to generate CTOs without thinking and considering design.
-If there are no relations at all a CTO is pointless and shall be omitted.
-However, if there are multiple relations you typically need  multiple CTOs for the same <code>«BusinessObject»</code> that define different subsets of the related data.
-These will typically be designed and implemented by hand.
-E.g. you may have <code>CustomerWithAddressCto</code> and <code>CustomerWithContractCto</code>. Most CTOs correspond to a specific <code>«BusinessObject»</code> and therefore contain a <code>«BusinessObject»Eto</code>. Such CTOs should inherit from <code>MasterCto</code>.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#guide-eto-cto.asciidoc">ETO and CTO</a></p>
+</li>
+<li>
+<p><a href="#guide-dto.asciidoc">DTO</a></p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>This pattern with entities, ETOs and CTOs is illustrated by the following UML diagram from our sample application.</p>
+<p>Also considering the following transfer objects in specific cases:</p>
 </div>
-<div id="guide-transferobject.asciidoc_img-transfer-objects" class="imageblock" style="text-align: center;">
-<div class="content">
-<a class="image" href="images/transfer-objects.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/transfer-objects.png" alt="ETOs and CTOs"></a>
-</div>
-<div class="title">Figure 1. ETOs and CTOs</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="guide-transferobject.asciidoc_to">TO</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Finally, there are typically transfer-objects for data that is never persistent.
-For very generic cases these just carry the suffix <code>To</code>.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="guide-transferobject.asciidoc_searchcriteriato">SearchCriteriaTo</h2>
-<div class="sectionbody">
-<div class="paragraph">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">SearchCriteriaTo</dt>
+<dd>
 <p>For searching we create or generate a <code>«BusinessObject»SearchCriteriaTo</code> representing a query to find instances of <code>«BusinessObject»</code>.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="guide-transferobject.asciidoc_sto">STO</h2>
-<div class="sectionbody">
-<div class="paragraph">
+</dd>
+<dt class="hdlist1">TO</dt>
+<dd>
+<p>There are typically transfer-objects for data that is never persistent.
+For very generic cases these just carry the suffix <code>To</code>.</p>
+</dd>
+<dt class="hdlist1">STO</dt>
+<dd>
 <p>We can potentially create separate <em>service transfer objects</em> (STO) (if possible named <code>«BusinessObject»Sto</code>) to keep the <a href="#guide-service-layer.asciidoc">service</a> API stable and independent of the actual data-model.
 However, we usually do not need this and want to keep our architecture simple.
 Only create STOs if you need <a href="guide-service-layer.html#versioning">service versioning</a> and support previous APIs or to provide legacy service technologies that require their own isolated data-model.
-In such case you also need <a href="#guide-beanmapping.asciidoc">beanmapping</a> between STOs and ETOs what means extra effort and complexity that should be avoided.</p>
-</div>
-</div>
+In such case you also need <a href="#guide-beanmapping.asciidoc">beanmapping</a> between STOs and ETOs/DTOs what means extra effort and complexity that should be avoided.</p>
+</dd>
+</dl>
 </div>
 </div>
 <div id="footer" class="footer">
@@ -336,7 +295,7 @@ In such case you also need <a href="#guide-beanmapping.asciidoc">beanmapping</a>
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-10-07 05:30:41 UTC
+Last updated 2021-10-07 05:44:48 UTC
 </sub></div>
 </div>
 </div>
