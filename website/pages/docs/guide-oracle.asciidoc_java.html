@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2021-10-07 12:44:10 UTC">
+<meta name="author" content="Updated at 2021-10-08 11:58:16 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -511,7 +511,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2021-10-07 12:46:04 UTC</span><br>
+<span id="author" class="author">Updated at 2021-10-08 11:59:31 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -535,6 +535,24 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="db_guide-hana.asciidoc.html">SAP HANA</a>
 </li>
 <li><a href="db_guide-oracle.asciidoc.html">Oracle RDBMS</a>
+<ul class="sectlevel2">
+<li><a href="guide-oracle.asciidoc_java.html"><span class="toc-current">Java</span></a>
+<ul class="sectlevel3">
+<li><a href="guide-oracle.asciidoc_java.html#db_guide-oracle.asciidoc_xe">XE</a>
+</li>
+<li><a href="guide-oracle.asciidoc_java.html#db_guide-oracle.asciidoc_driver">Driver</a>
+</li>
+<li><a href="guide-oracle.asciidoc_java.html#db_guide-oracle.asciidoc_pooling">Pooling</a>
+</li>
+<li><a href="guide-oracle.asciidoc_java.html#db_guide-oracle.asciidoc_messaging">Messaging</a>
+</li>
+<li><a href="guide-oracle.asciidoc_java.html#db_guide-oracle.asciidoc_general-notes-on-the-use-of-oracle-products">General Notes on the use of Oracle products</a>
+</li>
+<li><a href="guide-oracle.asciidoc_java.html#guide-oracle.asciidoc_fix-for-tns-listener-issues">Fix for TNS-Listener issues</a>
+</li>
+</ul>
+</li>
+</ul>
 </li>
 <li><a href="guide-mssqlserver.asciidoc.html">MS-SQL-Server</a>
 </li>
@@ -547,14 +565,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="guide-cassandra.asciidoc.html">Cassandra</a>
 </li>
 <li><a href="guide-neo4j.asciidoc.html">neo4j</a>
-<ul class="sectlevel2">
-<li><a href="guide-neo4j.asciidoc_attention.html">Attention</a>
-</li>
-<li><a href="guide-neo4j.asciidoc_driver.html">Driver</a>
-</li>
-<li><a href="guide-neo4j.asciidoc_spring-data.html"><span class="toc-current">Spring-Data</span></a>
-</li>
-</ul>
 </li>
 <li><a href="guide-mongodb.asciidoc.html">MongoDB</a>
 </li>
@@ -590,14 +600,202 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div><div id="content">
 <div class="sect2">
-<h3 id="guide-neo4j.asciidoc_spring-data">Spring-Data</h3>
+<h3 id="guide-oracle.asciidoc_java">Java</h3>
+<div class="sect3">
+<h4 id="db_guide-oracle.asciidoc_xe">XE</h4>
 <div class="paragraph">
-<p>There is spring-data integration available via <a href="https://neo4j.com/developer/spring-data-neo4j/">spring-data-neo4j</a>.</p>
+<p>For local development you should setup Oracle XE (eXpress Edition).
+You need an oracle account, then you can download it from <a href="https://www.oracle.com/technetwork/database/database-technologies/express-edition/downloads/index.html">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>The most comfortable way to run it as needed is using docker. You can build your own docker image from the downloaded RPM using the <a href="https://github.com/oracle/docker-images/tree/master/OracleDatabase/SingleInstance">instructions and dockerfile from oracle</a>. The following commands will build and start Oracle XE <code>18.4.0</code> on your machine:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>git clone https://github.com/oracle/docker-images.git
+cd docker-images/OracleDatabase/SingleInstance/dockerfiles
+./buildDockerImage.sh -x -v 18.4.0
+docker run -d -p 1521:1521 --name=oracle-xe --restart=always -e ORACLE_PWD=&#xAB;my-sys-pwd&#xBB; oracle/database:18.4.0-xe</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Please note that the <code>buildDockerImage.sh</code> will take a long time. Further after <code>docker run</code> has passed you need to give time for your new container to startup and setup the Oracle XE DB. So be patient and give it some time.
+(In case the build of the docker-image <a href="https://github.com/oracle/docker-images/issues/1133">fails reproducibly</a> and you want to give up with the Dockerfiles from Oracle you can also try this inofficial <a href="https://github.com/fuzziebrain/docker-oracle-xe">docker-oracle-xe</a> solution. However, this is not recommended and may lead to other problems.).</p>
+</div>
+<div class="paragraph">
+<p>Starting with XE 18c you need to be aware that oracle introduced a <a href="https://docs.oracle.com/database/121/CNCPT/cdbovrvw.htm">multi-tenant architecture</a>. Hence <code>xe</code> refers to the root <code>CDB</code> while you typically want to connect to the <code>PDB</code> (pluggable database) and XE ships with exactly one of this called <code>xepdb1</code>.
+To connect to your local XE database you need to use <code>xepdb1</code> as the <code>Service Name</code> (typically in <code>SQL Developer</code>). The <code>hostname</code> should be <code>localhost</code> and the <code>port</code> is by default <code>1521</code> if you did not remap it with docker to something else.
+In order to create schema users, use <code>sys</code> as <code>Username</code> and change <code>Role</code> to <code>SYSDBA</code>.</p>
+</div>
+<div class="paragraph">
+<p>Hint: If you happen to end up connected to <code>xe</code> instead of <code>xepdb1</code> in some case (e.g. in sqlplus), you may switch using this statement:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>ALTER SESSION SET CONTAINER = XEPDB1;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The JDBC URL for your Oracle XE Database is:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>jdbc:oracle:thin:@//localhost:1521/xepdb1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To locally connect as sysdba without password use the following command (<code>connect / as sysdba</code> is not working anymore):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>sqlplus sys/Oracle18@localhost/XE as sysdba</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="db_guide-oracle.asciidoc_driver">Driver</h4>
+<div class="paragraph">
+<p>The oracle JDBC driver is <a href="https://blogs.oracle.com/developers/oracle-database-client-libraries-for-java-now-on-maven-central">available in maven central</a>.
+Oracle JDBC drivers usually are backward and forward compatible so you should be able to use an older driver with a newer Oracle DB, etc.
+Your dependency for the oracle driver should look as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>&lt;dependency&gt;
+  &lt;groupId&gt;com.oracle.database.jdbc&lt;/groupId&gt;
+  &lt;artifactId&gt;ojdbc10&lt;/artifactId&gt;
+  &lt;version&gt;${oracle.driver.version}&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For the most recent Oracle DB 19 the property <code>oracle.driver.version</code> should be <code>19.8.0.0</code>. The number in the <code>artifactId</code> correlates to the minimum Java Version so for Java8 <code>artifactId</code> should be <code>ojdbc8</code> instead. It is fine to use <code>ojdbc10</code> with Java11 or higher.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="db_guide-oracle.asciidoc_pooling">Pooling</h4>
+<div class="paragraph">
+<p>In order to boost performance JDBC connections should be pooled and reused. If you are using Oracle RDBMS and do not plan to change that you can use the Oracle specific connection pool &quot;Universal Connection Pool (UCP)&quot; that is perfectly integrated with the Oracle driver. According to the documentation, UCP can even be used to <a href="https://docs.oracle.com/database/122/JJUCP/third-party-integration.htm#JJUCP8141">manage third party data sources</a>.
+Like the JDBC driver also the UCP is available in maven central. The dependency should look like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>&lt;dependency&gt;
+  &lt;groupId&gt;com.oracle.database.jdbc&lt;/groupId&gt;
+  &lt;artifactId&gt;ucp&lt;/artifactId&gt;
+  &lt;version&gt;${oracle.ucp.version}&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>with property <code>oracle.ucp.version</code> analogue to <code>oracle.driver.version</code>.</p>
+</div>
+<div class="paragraph">
+<p>Configuration is done via application.properties like this (example):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>#Oracle UCP
+# Datasource for accessing the database
+spring.datasource.url=jdbc:oracle:thin:@192.168.58.2:1521:xe
+spring.jpa.database-platform=org.hibernate.dialect.Oracle12cDialect
+spring.datasource.user=MyUser
+spring.datasource.password=ThisIsMyPassword
+spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
+spring.datasource.schema=MySchema
+
+spring.datasource.type=oracle.ucp.jdbc.PoolDataSourceImpl
+spring.datasource.factory=oracle.ucp.jdbc.PoolDataSourceFactory
+spring.datasource.factory-method=getPoolDataSource
+spring.datasource.connectionFactoryClassName=oracle.jdbc.pool.OracleDataSource
+spring.datasource.validateConnectionOnBorrow=true
+spring.datasource.connectionPoolName=MyPool
+spring.datasource.jmx-enabled=true
+
+# Optional: Set the log level to INTERNAL_ERROR, SEVERE, WARNING, INFO, CONFIG, FINE, TRACE_10, FINER, TRACE_20, TRACE_30, or FINEST
+# logging.level.oracle.ucp=INTERNAL_ERROR
+# Optional: activate tracing
+# logging.level.oracle.ucp.jdbc.oracle.OracleUniversalPooledConnection=TRACE
+
+#Optional: Configures pool size manually
+#spring.datasource.minPoolSize=10
+#spring.datasource.maxPoolSize=40
+#spring.datasource.initialPoolSize=20</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Resources: <a href="http://www.oracle.com/technetwork/database/application-development/default-2248812.html">FAQ</a>, <a href="https://docs.oracle.com/database/122/JJUCP/toc.htm">developer&#x2019;s guide</a>, <a href="https://docs.oracle.com/database/122/JJUAR/toc.htm">Java API Reference</a>. For an in-depth discussion on how to use JDBC and UCP, see the Oracle documentation <a href="http://www.oracle.com/technetwork/database/application-development/jdbc-ucp-conn-mgmt-strategies-3045654.pdf">Connection Management Strategies for Java Applications using JDBC and UCP</a>.</p>
+</div>
+<div class="paragraph">
+<p>Note: there is a bug in UCP 12.1.0.2 that results in the creation of thousands of java.lang.Timer threads over hours or days of system uptime (see <a href="https://stackoverflow.com/questions/37245827/too-many-ucp-timer-threads">article on stackoverflow</a>). Also, Oracle has a strange bug fixing / patching policy: instead of producing a fixed version 12.1.0.3 or 12.1.0.2.x, Oracle publishes collections of *.class files that must be manually patched into the ucp.jar! Therefore, use the newest versions only.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="db_guide-oracle.asciidoc_messaging">Messaging</h4>
+<div class="paragraph">
+<p>In case you want to do messaging based on JMS you might consider the <a href="https://docs.oracle.com/cd/E11882_01/server.112/e11013/aq_intro.htm">Oracle JMS</a> also called Oracle Streams Advanced Queuing, or Oracle Advanced Queuing, or OAQ or AQ for short. OAQ is a JMS provider based on the Oracle RDBMS and included in the DB product for no extra fee. OAQ has some features that exceed the JMS standard like a retention time (i.e. a built-in backup mechanism that allows to make messages &quot;unread&quot; within a configurable period of time so that these messages do not have to be resent by the sending application). Also, OAQ messages are stored in relational tables so they can easily be observed by a test driver in a system test scenario.
+Capgemini has used the <a href="https://projects.spring.io/spring-data-jdbc-ext/">Spring Data JDBC Extension</a> in order to process OAQ messages within <strong>the same technical transaction</strong> as the resulting Oracle RDBMS data changes <strong>without</strong> using 2PC and an XA-compliant transaction manager - which is not available out of the box in Tomcat. This is possible only due to the fact that OAQ queues and RDBMS tables actually reside in the same database. However, this is higher magic and should only be tried if high transaction rates must be achieved by avoiding 2PC.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="db_guide-oracle.asciidoc_general-notes-on-the-use-of-oracle-products">General Notes on the use of Oracle products</h4>
+<div class="paragraph">
+<p>Oracle sells commercial products and receives licence fees for them. This includes access to a support organization. Therefore, at an early stage of your project, prepare for contacting <a href="https://support.oracle.com">oracle support</a> in case of technical problems. You will need the Oracle support ID <strong>of your customer</strong> [i.e. the legal entity who pays the licence fee and runs the RDBMS] and your customer must grant you permission to use it in a service request - it is not legal to use a your own support ID in a customer-related project. Your customer pays for that service anyway, so use it in case of a problem!</p>
+</div>
+<div class="paragraph">
+<p>Software components like the JDBC driver or the UCP may be available without a registration or fee but they are protected by the Oracle Technology Network (OTN) License Agreement. The most important aspect of this licence agreement is the fact that an IT service provider is not allowed to simply download the Oracle software component, bundle it in a software artefact and deliver it to the customer. Instead, the Oracle software component must be (from a legal point of view) provided by the owner of the Oracle DB licence (i.e. your customer). This can be achieved in two ways: Advise your customer to install the Oracle software component in the application server as a library that can be used by your custom built system. Or, in cases where this is not feasible, e.g. in a OpenShift environment where the IT service provider delivers complete Docker images, you must advise your customer to (legally, i.e. documented in a written form) provide the Oracle software component to you, i.e. you don&#x2019;t download the software component from the Oracle site but receive it from your customer.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-oracle.asciidoc_fix-for-tns-listener-issues">Fix for TNS-Listener issues</h4>
+<div class="paragraph">
+<p>When switching networks (e.g. due to VPN) you might end up that your local Oracle XE stopps working with this error:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>Listener refused the connection with the following error:
+ORA-12505, TNS:listener does not currently know of SID given in connect descriptor</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>While a reboot resolves this problem, it is a huge pain to reboot every time this error occurs as this wastes a lot of time.
+Therefore we suggest the following fix:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Go to your oracle installation and open the folder <code>product/&#xAB;version&#xBB;/dbhomeXE/network/admin</code>.</p>
+</li>
+<li>
+<p>Edit the file <code>listener.ora</code> and change the value of the property <code>HOST</code> from your qualified hostname to <code>localhost</code> (<code>HOST = localhost</code>).</p>
+</li>
+<li>
+<p>Edit the file <code>tnsnames.ora</code> and change the value of the <code>HOST</code> properties (two occurences) from your qualified hostname to <code>localhost</code> (<code>HOST = localhost</code>).</p>
+</li>
+<li>
+<p>Reboot your machine or (on windows) restart the service <code>OracleServiceXE</code> via <code>services.msc</code>.</p>
+</li>
+<li>
+<p>Now this problem should be gone forever and you can continue your work.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>On older XE versions until 11g you could run the following SQL (<code>sqlplus / as sysdba @reset_tns_listener.sql</code>):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>WHENEVER SQLERROR EXIT;
+ALTER SYSTEM SET local_listener = &apos;(ADDRESS = (PROTOCOL = TCP)(HOST = 127.0.0.1)(PORT = 1521))&apos;;
+ALTER SYSTEM REGISTER;
+EXIT;</code></pre>
+</div>
 </div>
 <!-- toc disabled -->
 </div>
+</div>
 <div class="paragraph nav-footer">
-<p>&#x2190;&#xA0;Previous:&#xA0;<a href="guide-neo4j.asciidoc_driver.html">Driver</a>&#xA0;| &#x2191;&#xA0;Up:&#xA0;<a href="guide-neo4j.asciidoc.html">neo4j</a>&#xA0;| &#x2302;&#xA0;Home:&#xA0;<a href="master.html">devonfw guide</a>&#xA0;| Next:&#xA0;<a href="guide-mongodb.asciidoc.html">MongoDB</a>&#xA0;&#x2192;</p>
+<p>&#x2191;&#xA0;Up:&#xA0;<a href="db_guide-oracle.asciidoc.html">Oracle RDBMS</a>&#xA0;| &#x2302;&#xA0;Home:&#xA0;<a href="master.html">devonfw guide</a>&#xA0;| Next:&#xA0;<a href="guide-mssqlserver.asciidoc.html">MS-SQL-Server</a>&#xA0;&#x2192;</p>
 </div>
 </div>
 <div id="footer" class="footer">
@@ -728,7 +926,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-10-07 12:41:11 UTC
+Last updated 2021-10-08 11:56:03 UTC
 </sub></div>
 
 

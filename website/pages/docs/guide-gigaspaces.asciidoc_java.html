@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2021-10-07 12:44:10 UTC">
+<meta name="author" content="Updated at 2021-10-08 11:58:16 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -511,7 +511,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2021-10-07 12:46:04 UTC</span><br>
+<span id="author" class="author">Updated at 2021-10-08 11:59:31 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -564,13 +564,17 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="guide-gigaspaces.asciidoc.html">GigaSpaces XAP (Smart Cache)</a>
 <ul class="sectlevel2">
-<li><a href="guide-gigaspaces.asciidoc_attention.html"><span class="toc-current">Attention</span></a>
+<li><a href="guide-gigaspaces.asciidoc_java.html"><span class="toc-current">Java</span></a>
+<ul class="sectlevel3">
+<li><a href="guide-gigaspaces.asciidoc_java.html#guide-gigaspaces.asciidoc_attention">Attention</a>
 </li>
-<li><a href="guide-gigaspaces.asciidoc_possible-approach.html">Possible Approach</a>
+<li><a href="guide-gigaspaces.asciidoc_java.html#guide-gigaspaces.asciidoc_possible-approach">Possible Approach</a>
 </li>
-<li><a href="guide-gigaspaces.asciidoc_spring-data.html">Spring-Data</a>
+<li><a href="guide-gigaspaces.asciidoc_java.html#guide-gigaspaces.asciidoc_spring-data">Spring-Data</a>
 </li>
-<li><a href="guide-gigaspaces.asciidoc_example.html">Example</a>
+<li><a href="guide-gigaspaces.asciidoc_java.html#guide-gigaspaces.asciidoc_example">Example</a>
+</li>
+</ul>
 </li>
 </ul>
 </li>
@@ -592,7 +596,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div><div id="content">
 <div class="sect2">
-<h3 id="guide-gigaspaces.asciidoc_attention">Attention</h3>
+<h3 id="guide-gigaspaces.asciidoc_java">Java</h3>
+<div class="sect3">
+<h4 id="guide-gigaspaces.asciidoc_attention">Attention</h4>
 <div class="admonitionblock note">
 <table>
 <tbody><tr>
@@ -606,8 +612,61 @@ A sample for GigaSpaces integration has been contributed from a graduate work, w
 </tbody></table>
 </div>
 </div>
+<div class="sect3">
+<h4 id="guide-gigaspaces.asciidoc_possible-approach">Possible Approach</h4>
+<div class="paragraph">
+<p>GigaSpaces is currently not in the central maven repository, therefore an additional repository needs to be added along with the dependency:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>&lt;repositories&gt;
+    &lt;repository&gt;
+	&lt;id&gt;org.openspaces&lt;/id&gt;
+	&lt;url&gt;http://maven-repository.openspaces.org&lt;/url&gt;
+    &lt;/repository&gt;
+&lt;/repositories&gt;
+
+&lt;dependency&gt;
+    &lt;groupId&gt;org.gigaspaces&lt;/groupId&gt;
+    &lt;artifactId&gt;xap-openspaces&lt;/artifactId&gt;
+    &lt;version&gt;${gsVersion}&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Of course the version (<code>${gsVersion}</code>) needs to be adopted to your needs.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+public class ContextConfiguration {
+  @Bean
+  public GigaSpace space() {
+    UrlSpaceConfigurer urlSpaceConfigurer = new UrlSpaceConfigurer(&quot;jini://*/*/my-space&quot;);
+    return new GigaSpaceConfigurer(urlSpaceConfigurer).gigaSpace();
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To establish a connection with a running instance of GigaSpaces, a Configuration Class is required. Here a Bean will be created that retrieves via URL the name of a Space e.g. my-space (a Space is equivalent to a Database Schema). Of course a Space needs to be firstly created in order to use it (see also the <a href="guide-gigaspaces.asciidoc_java.html#guide-gigaspaces.asciidoc_example">Example</a>). This bean can be used for all database typical operations e.g. create, read, update and delete data (a complete list can be found <a href="https://resources.gigaspaces.com/api/15.8.0/java/org/openspaces/core/GigaSpace.html">here</a>). Another possibility to execute those operations is via spring-data (see section below). The spring-data-gigaspaces automatically detects if a GigaSpaces Bean exists.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-gigaspaces.asciidoc_spring-data">Spring-Data</h4>
+<div class="paragraph">
+<p>There is spring-data support available for GigaSpaces XAP (Smart Cache) via <a href="https://docs.gigaspaces.com/solution-hub/spring-data-quick-start.html">spring-data-gigaspaces</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-gigaspaces.asciidoc_example">Example</h4>
+<div class="paragraph">
+<p>There is an implementation of the sample application, My Thai Star, using GigaSpaces XAP (Smart Cache) as data storage. More details can be found on <a href="https://github.com/devonfw-forge/mts-gigaspaces">mts-gigaspaces</a>.</p>
+</div>
+</div>
+</div>
 <div class="paragraph nav-footer">
-<p>&#x2191;&#xA0;Up:&#xA0;<a href="guide-gigaspaces.asciidoc.html">GigaSpaces XAP (Smart Cache)</a>&#xA0;| &#x2302;&#xA0;Home:&#xA0;<a href="master.html">devonfw guide</a>&#xA0;| Next:&#xA0;<a href="guide-gigaspaces.asciidoc_possible-approach.html">Possible Approach</a>&#xA0;&#x2192;</p>
+<p>&#x2191;&#xA0;Up:&#xA0;<a href="guide-gigaspaces.asciidoc.html">GigaSpaces XAP (Smart Cache)</a>&#xA0;| &#x2302;&#xA0;Home:&#xA0;<a href="master.html">devonfw guide</a>&#xA0;| Next:&#xA0;<a href="devonfw-guide_master.asciidoc_2.html">Tools</a>&#xA0;&#x2192;</p>
 </div>
 </div>
 <div id="footer" class="footer">
@@ -738,7 +797,7 @@ A sample for GigaSpaces integration has been contributed from a graduate work, w
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-10-07 12:41:11 UTC
+Last updated 2021-10-08 11:56:03 UTC
 </sub></div>
 
 

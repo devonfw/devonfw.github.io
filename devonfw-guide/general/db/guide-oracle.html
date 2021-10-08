@@ -97,6 +97,8 @@
 <ul class="sectlevel0">
 <li><a href="#guide-oracle.asciidoc">Oracle RDBMS</a>
 <ul class="sectlevel1">
+<li><a href="#guide-oracle.asciidoc_java">Java</a>
+<ul class="sectlevel2">
 <li><a href="#guide-oracle.asciidoc_xe">XE</a></li>
 <li><a href="#guide-oracle.asciidoc_driver">Driver</a></li>
 <li><a href="#guide-oracle.asciidoc_pooling">Pooling</a></li>
@@ -106,13 +108,17 @@
 </ul>
 </li>
 </ul>
+</li>
+</ul>
 <h1 id="guide-oracle.asciidoc" class="sect0">Oracle RDBMS</h1>
 <div class="paragraph">
 <p>This section contains hints for those who use Oracle RDBMS. Besides general hints about the driver there are tips for more tight integration with other Oracle features or products. However, if you work for a project where Oracle RDBMS is settled and not going to be replaced (you are in a vendor lock-in anyway), you might want to use even more from Oracle technology to take advantage from a closer integration.</p>
 </div>
 <div class="sect1">
-<h2 id="guide-oracle.asciidoc_xe">XE</h2>
+<h2 id="guide-oracle.asciidoc_java">Java</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="guide-oracle.asciidoc_xe">XE</h3>
 <div class="paragraph">
 <p>For local development you should setup Oracle XE (eXpress Edition).
 You need an oracle account, then you can download it from <a href="https://www.oracle.com/technetwork/database/database-technologies/express-edition/downloads/index.html">here</a>.</p>
@@ -162,10 +168,8 @@ In order to create schema users, use <code>sys</code> as <code>Username</code> a
 </div>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="guide-oracle.asciidoc_driver">Driver</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="guide-oracle.asciidoc_driver">Driver</h3>
 <div class="paragraph">
 <p>The oracle JDBC driver is <a href="https://blogs.oracle.com/developers/oracle-database-client-libraries-for-java-now-on-maven-central">available in maven central</a>.
 Oracle JDBC drivers usually are backward and forward compatible so you should be able to use an older driver with a newer Oracle DB, etc.
@@ -184,10 +188,8 @@ Your dependency for the oracle driver should look as follows:</p>
 <p>For the most recent Oracle DB 19 the property <code>oracle.driver.version</code> should be <code>19.8.0.0</code>. The number in the <code>artifactId</code> correlates to the minimum Java Version so for Java8 <code>artifactId</code> should be <code>ojdbc8</code> instead. It is fine to use <code>ojdbc10</code> with Java11 or higher.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="guide-oracle.asciidoc_pooling">Pooling</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="guide-oracle.asciidoc_pooling">Pooling</h3>
 <div class="paragraph">
 <p>In order to boost performance JDBC connections should be pooled and reused. If you are using Oracle RDBMS and do not plan to change that you can use the Oracle specific connection pool "Universal Connection Pool (UCP)" that is perfectly integrated with the Oracle driver. According to the documentation, UCP can even be used to <a href="https://docs.oracle.com/database/122/JJUCP/third-party-integration.htm#JJUCP8141">manage third party data sources</a>.
 Like the JDBC driver also the UCP is available in maven central. The dependency should look like this:</p>
@@ -244,19 +246,15 @@ spring.datasource.jmx-enabled=true
 <p>Note: there is a bug in UCP 12.1.0.2 that results in the creation of thousands of java.lang.Timer threads over hours or days of system uptime (see <a href="https://stackoverflow.com/questions/37245827/too-many-ucp-timer-threads">article on stackoverflow</a>). Also, Oracle has a strange bug fixing / patching policy: instead of producing a fixed version 12.1.0.3 or 12.1.0.2.x, Oracle publishes collections of *.class files that must be manually patched into the ucp.jar! Therefore, use the newest versions only.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="guide-oracle.asciidoc_messaging">Messaging</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="guide-oracle.asciidoc_messaging">Messaging</h3>
 <div class="paragraph">
 <p>In case you want to do messaging based on JMS you might consider the <a href="https://docs.oracle.com/cd/E11882_01/server.112/e11013/aq_intro.htm">Oracle JMS</a> also called Oracle Streams Advanced Queuing, or Oracle Advanced Queuing, or OAQ or AQ for short. OAQ is a JMS provider based on the Oracle RDBMS and included in the DB product for no extra fee. OAQ has some features that exceed the JMS standard like a retention time (i.e. a built-in backup mechanism that allows to make messages "unread" within a configurable period of time so that these messages do not have to be resent by the sending application). Also, OAQ messages are stored in relational tables so they can easily be observed by a test driver in a system test scenario.
 Capgemini has used the <a href="https://projects.spring.io/spring-data-jdbc-ext/">Spring Data JDBC Extension</a> in order to process OAQ messages within <strong>the same technical transaction</strong> as the resulting Oracle RDBMS data changes <strong>without</strong> using 2PC and an XA-compliant transaction manager - which is not available out of the box in Tomcat. This is possible only due to the fact that OAQ queues and RDBMS tables actually reside in the same database. However, this is higher magic and should only be tried if high transaction rates must be achieved by avoiding 2PC.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="guide-oracle.asciidoc_general-notes-on-the-use-of-oracle-products">General Notes on the use of Oracle products</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="guide-oracle.asciidoc_general-notes-on-the-use-of-oracle-products">General Notes on the use of Oracle products</h3>
 <div class="paragraph">
 <p>Oracle sells commercial products and receives licence fees for them. This includes access to a support organization. Therefore, at an early stage of your project, prepare for contacting <a href="https://support.oracle.com">oracle support</a> in case of technical problems. You will need the Oracle support ID <strong>of your customer</strong> [i.e. the legal entity who pays the licence fee and runs the RDBMS] and your customer must grant you permission to use it in a service request - it is not legal to use a your own support ID in a customer-related project. Your customer pays for that service anyway, so use it in case of a problem!</p>
 </div>
@@ -264,10 +262,8 @@ Capgemini has used the <a href="https://projects.spring.io/spring-data-jdbc-ext/
 <p>Software components like the JDBC driver or the UCP may be available without a registration or fee but they are protected by the Oracle Technology Network (OTN) License Agreement. The most important aspect of this licence agreement is the fact that an IT service provider is not allowed to simply download the Oracle software component, bundle it in a software artefact and deliver it to the customer. Instead, the Oracle software component must be (from a legal point of view) provided by the owner of the Oracle DB licence (i.e. your customer). This can be achieved in two ways: Advise your customer to install the Oracle software component in the application server as a library that can be used by your custom built system. Or, in cases where this is not feasible, e.g. in a OpenShift environment where the IT service provider delivers complete Docker images, you must advise your customer to (legally, i.e. documented in a written form) provide the Oracle software component to you, i.e. you don&#8217;t download the software component from the Oracle site but receive it from your customer.</p>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="guide-oracle.asciidoc_fix-for-tns-listener-issues">Fix for TNS-Listener issues</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="guide-oracle.asciidoc_fix-for-tns-listener-issues">Fix for TNS-Listener issues</h3>
 <div class="paragraph">
 <p>When switching networks (e.g. due to VPN) you might end up that your local Oracle XE stopps working with this error:</p>
 </div>
@@ -309,6 +305,7 @@ Therefore we suggest the following fix:</p>
 ALTER SYSTEM SET local_listener = '(ADDRESS = (PROTOCOL = TCP)(HOST = 127.0.0.1)(PORT = 1521))';
 ALTER SYSTEM REGISTER;
 EXIT;</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -450,7 +447,7 @@ EXIT;</code></pre>
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-10-07 12:39:28 UTC
+Last updated 2021-10-08 11:54:48 UTC
 </sub></div>
 </div>
 </div>
