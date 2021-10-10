@@ -1,4 +1,4 @@
-name: linkchecker
+name: Broken link check
 
 on:
   workflow_run:
@@ -7,15 +7,14 @@ on:
       - completed
 
 jobs:
-  linkchecker:
+  broken_link_checker_job:
     runs-on: ubuntu-latest
-    steps:     
-      - name: Installation
-        run: npm install broken-link-checker -g
-
-      - name: Start the linkchecker
-        run: blc https://devonfw.com -ro
-   
-     
-
-
+    name: Check for broken links
+    steps:
+    - name: Check for broken links
+      id: link-report
+      uses: celinekurpershoek/github-actions-link-checker@{version}
+      with:
+        url: 'https://devonfw.com' 
+    - name: Get the result
+      run: echo "${{steps.link-report.outputs.result}}" 
