@@ -1,0 +1,38 @@
+name: previewPR
+
+on:
+  pull_request   
+  
+jobs:
+  previewPR:
+    runs-on: ubuntu-latest
+    steps:
+    
+      - name: Clone new architecture
+        uses: actions/checkout@v1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          
+          
+      - name: Run maven generate
+        run: |
+              mkdir PR_preview
+              cp -r solutions PR_preview
+              cp -a PRfiles/. PR_preview
+              cd PR_preview
+              mvn clean package
+      - name: Run image generate
+        run: |
+              cd PR_preview
+              npm install node-html-to-image-cli -g
+              cd target/generated-docs
+              node-html-to-image-cli index.html image.png              
+        
+        
+      - name: Artifact build
+        uses: actions/upload-artifact@v2
+        with: 
+          name: download-asset
+          path: |
+                PR_preview/target/generated-docs/image.png
+                PR_preview/target/generated-docs/index.html
