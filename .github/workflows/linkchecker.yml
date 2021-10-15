@@ -6,19 +6,29 @@ on:
     types:
       - completed
 
+
+
 jobs:
-  run:
-    name: Initialize
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: LouisBrunner/checks-action@v0.1.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          name: Check
-          status: in_progress
-          conclusion: neutral
-          output: >-
-            {"summary": "Waiting for deploy to finish"}
+      - name: install linkchecker
+        run: sudo apt-get install linkchecker
+      - name: start check
+        run: linkchecker -r https://devonfw.com 
+# jobs:
+#   run:
+#     name: Initialize
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: LouisBrunner/checks-action@v0.1.0
+#         with:
+#           token: ${{ secrets.GITHUB_TOKEN }}
+#           name: Check
+#           status: in_progress
+#           conclusion: neutral
+#           output: >-
+#             {"summary": "Waiting for deploy to finish"}
 
 # jobs:
 #   broken_link_checker_job:
