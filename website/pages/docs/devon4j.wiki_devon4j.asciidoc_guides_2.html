@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2021-10-18 11:48:59 UTC">
+<meta name="author" content="Updated at 2021-10-19 05:12:18 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -511,7 +511,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2021-10-18 11:50:57 UTC</span><br>
+<span id="author" class="author">Updated at 2021-10-19 05:14:25 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -538,6 +538,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="devon4j.wiki_devon4j.asciidoc_guides_2.html"><span class="toc-current">Guides</span></a>
 <ul class="sectlevel3">
+<li><a href="devon4j.wiki_devon4j.asciidoc_guides_2.html#getting-started-for-spring-developers.asciidoc">Getting started with Quarkus for Spring developers</a>
+</li>
 <li><a href="devon4j.wiki_devon4j.asciidoc_guides_2.html#guide-quarkus-configuration.asciidoc">Configuration</a>
 </li>
 <li><a href="devon4j.wiki_devon4j.asciidoc_guides_2.html#quarkus_guide-cors-support.asciidoc">CORS support</a>
@@ -578,6 +580,208 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect2">
 <h3 id="devon4j.wiki_devon4j.asciidoc_guides_2">Guides</h3>
 <!-- toc disabled -->
+<div class="sect3">
+<h4 id="getting-started-for-spring-developers.asciidoc">Getting started with Quarkus for Spring developers</h4>
+<div class="paragraph">
+<p>As a Spring developer, you heard more and more about Quarkus: its pros and cons, its fast growth etc. So, you decided to adopt/try Quarkus for your (next) project(s) and wonder where to go next and where do you need to pay attention to when moving from Spring to Quarkus.</p>
+</div>
+<div class="paragraph">
+<p>This guide tries to address exactly this concern. In the following, we will present you some main points you should be aware of when starting to develop with Quarkus, along with some useful sources.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Quarkus is fairly a new Java toolkit. Thus, it is very well documented. It also provides a set of well-written technical guides that are a good starting point to get in touch and make the first steps with Quarkus. See <a href="https://quarkus.io/get-started/">here</a>. It is an Open Source project licensed under the Apache License version 2.0. The source code is hosted in <a href="https://github.com/quarkusio/quarkus">GitHub</a>. If you have any question or concern, don&#x2019;t hesitate to reach out to the <a href="https://quarkus.io/community/">Quarkus community</a>.</p>
+</li>
+<li>
+<p>Same as <a href="https://start.spring.io/">Spring Initializr</a>, you can go to <a href="https://code.quarkus.io/">code.quarkus.io</a> to create a new application. Also, check out our <a href="devon4j.wiki_devon4j.asciidoc_guides_2.html#quarkus-template.asciidoc">Template Quarkus Guide</a> to have our recommendations on certain topics.</p>
+</li>
+<li>
+<p>In Spring stack, we recommend structuring your application into multiple modules, known as our <a href="#../guide-structure-classic">classic structure</a>. Moving to Quarkus and the world of cloud-native, microservices where we build smaller applications compared to monoliths, we recommend keeping everything top-level and simple. Therefore, we propose the <a href="#../guide-structure-modern">modern structure</a> as a better fit.</p>
+</li>
+<li>
+<p>Quarkus focuses not only on delivering top features but also on the developer experience. The <strong>Quarkus&#x2019;s Live Coding</strong> feature automatically detects changes made to Java files, application configuration, static resources or even classpath dependency changes and recompiles and redeploys the changes. As that, it solves the problem of traditional Java development workflow, hence improves productivity.</p>
+<div class="listingblock">
+<div class="content">
+<pre>    Write Code &#x2192; Compile &#x2192; Deploy &#x2192; Test Changes/ Refresh Browser/ etc &#x2192; Repeat (traditional)
+    Write Code &#x2192; Test Changes/ Refresh Browser/ etc &#x2192; Repeat (Quarkus)</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can use this feature out of the box without any extra setup by running:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>    mvn compile quarkus:dev</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Another highlight feature to speed up developing is the Quarkus&#x2019;s Dev Mode with <strong>Dev Services</strong>, which can automatically provision unconfigured services in development and test mode. It means that if you include an extension and don&#x2019;t configure it, Quarkus will automatically start the relevant service and wire up your application to use it, therefore will save you a lot of time setting up those services manually. In production mode, where the real configuration is provided, Dev Service will be disabled automatically.</p>
+</div>
+<div class="paragraph">
+<p>Also in Dev Mode, you can access the <strong>Dev UI</strong> at <code>\q\dev</code> to browse endpoints offered by various extensions, conceptually similar to what a Spring Boot actuator might provide.</p>
+</div>
+</li>
+<li>
+<p>Quarkus is made of a small core on which relies hundreds of extensions. In fact, the power of Quarkus is its extension mechanism. Think of these extensions as your project dependencies. You can add it per dependency manager such as maven or gradle.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mvn quarkus:list-extensions
+mvn quarkus:add-extension -Dextensions=&quot;groupId:artifactId&quot;
+(or add it manually to pom.xml)
+# or
+gradle list-extensions
+(add dependency to build.gradle)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Like Spring Boot, Quarkus also has a vast ecosystem of extensions with commonly-used technologies.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 45. Example of common Quarkus extensions and the Spring Boot Starters with similar functionality (<a href="https://developers.redhat.com/e-books/quarkus-spring-developers">book: Quarkus for Spring Developer</a>)</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Quarkus extension</th>
+<th class="tableblock halign-left valign-top">Spring Boot Starter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quarkus-resteasy-jackson</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring-boot-starter-web</p>
+<p class="tableblock">spring-boot-starter-webflux</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quarkus-resteasy-reactive-jackson</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring-boot-starter-web</p>
+<p class="tableblock">spring-boot-starter-webflux</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quarkus-hibernate-orm-panache</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring-boot-starter-data-jpa</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quarkus-hibernate-orm-rest-datapanache</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring-boot-starter-data-rest</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quarkus-hibernate-reactive-panache</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring-boot-starter-data-r2dbc</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quarkus-mongodb-panache</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring-boot-starter-data-mongodb</p>
+<p class="tableblock">spring-boot-starter-data-mongodb-reactive</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quarkus-hibernate-validator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring-boot-starter-validation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quarkus-qpid-jms</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring-boot-starter-activemq</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quarkus-artemis-jms</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring-boot-starter-artemis</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quarkus-cache</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring-boot-starter-cache</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quarkus-redis-client</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring-boot-starter-data-redis</p>
+<p class="tableblock">spring-boot-starter-data-redis-reactive</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quarkus-mailer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring-boot-starter-mail</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quarkus-quartz</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring-boot-starter-quartz</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quarkus-oidc</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring-boot-starter-oauth2-resource-server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quarkus-oidc-client</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring-boot-starter-oauth2-client</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quarkus-smallrye-jwt</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">spring-boot-starter-security</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>A full list of all Quarkus extensions can be found <a href="https://quarkus.pro/extensions/">here</a>. Furthermore, you can check out the community extensions hosted by <a href="https://github.com/quarkiverse/quarkiverse/wiki">Quarkiverse Hub</a>. Quarkus has some extensions for Spring API as well which is helpful while migrating from Spring to Quarkus.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://quarkus.io/guides/spring-di">Quarkus Extension for Spring Dependency Injection</a></p>
+</li>
+<li>
+<p><a href="https://quarkus.io/guides/spring-web">Quarkus Extension for Spring Web</a></p>
+</li>
+<li>
+<p><a href="https://quarkus.io/guides/spring-data-jpa">Quarkus Extension for Spring Data JPA</a></p>
+</li>
+<li>
+<p><a href="https://quarkus.io/guides/spring-security">Quarkus Extension for Spring Security</a></p>
+</li>
+<li>
+<p><a href="https://quarkus.io/guides/spring-boot-properties">Quarkus Extension for Spring Boot Properties</a></p>
+</li>
+<li>
+<p><a href="https://quarkus.io/guides/spring-cache">Quarkus Extension for Spring Cache</a></p>
+</li>
+<li>
+<p><a href="https://quarkus.io/guides/spring-cloud-config-client">Quarkus Extension for Spring Cloud Config Client</a></p>
+</li>
+<li>
+<p><a href="https://quarkus.io/guides/spring-data-rest">Quarkus Extension for Spring Data REST</a></p>
+</li>
+<li>
+<p><a href="https://quarkus.io/guides/spring-scheduled">Quarkus Extension for Spring Scheduled</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Besides extensions, which are officially maintained by Quarkus team, Quarkus allows adding external libraries too. While extensions can be integrated seamlessly into Quarkus as they can be processed at build time and be built in native mode with GraalVM, external dependencies might not work out of the box with native compilation. If that is the case, then you have to recompile them with the right GraalVM configuration to make them work.</p>
+</div>
+</li>
+<li>
+<p>Quarkus&#x2019;s design accounted for native compilation by default. A Quarkus native executable starts much faster and utilizes far less memory than a traditional JVM. To get familiar with building native executable, configuring and running it, please check out our <a href="devon4j.wiki_devon4j.asciidoc_guides_2.html#guide-native-image.asciidoc">Native Image Guide</a>. Be sure to test your code in both JVM and native mode.</p>
+</li>
+<li>
+<p>Both Quarkus and Spring include testing frameworks based on <a href="https://junit.org/junit5/">JUnit</a> and <a href="https://site.mockito.org/">Mockito</a>. Thus, by design, Quarkus enables test-driven development by detecting affected tests as changes are made and automatically rerun them in background. As that, it gives developer instant feedback, hence improves productivity. To use continuous testing, execute the following command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mvn quarkus:dev</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>For the sake of performance optimization, Quarkus avoids reflection as much as possible, instead favoring static class binding. When building a native executable, it analyzes the call tree and removes all the classes/methods/fields that are not used directly. As a consequence, the elements used via reflection are not part of the call tree so they are dead code eliminated (if not called directly in other cases).</p>
+<div class="paragraph">
+<p>A common example is the JSON libraries which typically use reflection to serialize the objects to JSON. If you use them out of the box, you might encounter some errors in native mode. So, be sure to register the elements for reflection explicitly. A How-to is provided by <a href="https://quarkus.io/guides/writing-native-applications-tips#registering-for-reflection">Quarkus Registering For Reflection</a> with practical program snippets.</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>A very good read on the topic is the e-book <a href="https://developers.redhat.com/e-books/quarkus-spring-developers">Quarkus for Spring Developers</a> by Red Hat. Another good source for direct hands-on coding tutorial is <a href="https://www.katacoda.com/openshift/courses/developing-with-quarkus/spring">Katacoda Quarkus for Spring Boot Developers</a></p>
+</div>
+<!-- toc disabled -->
+</div>
 <div class="sect3">
 <h4 id="guide-quarkus-configuration.asciidoc">Configuration</h4>
 <div class="sect4">
@@ -781,7 +985,7 @@ Therefore, in this guide, we aims to provide a general suggestion on basic frame
 </ol>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 45. Topic-based suggested implementation</caption>
+<caption class="title">Table 46. Topic-based suggested implementation</caption>
 <colgroup>
 <col style="width: 14.2857%;">
 <col style="width: 14.2857%;">
@@ -1073,7 +1277,7 @@ Follow this <a href="https://quarkus.io/guides/building-native-image#container-r
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-10-18 11:45:35 UTC
+Last updated 2021-10-19 05:09:02 UTC
 </sub></div>
 
 
