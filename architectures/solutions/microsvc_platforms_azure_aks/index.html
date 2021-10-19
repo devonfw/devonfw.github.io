@@ -123,7 +123,7 @@ The platform features that (can) complement Kubernetes are:</p>
 <div class="openblock">
 <div class="content">
 <div class="paragraph">
-<p>Use Bridge to Kubernetes to iteratively develop, test, and debug microservices targeted for AKS clusters. It is a <a href="https://azure.microsoft.com/de-de/updates/azure-dev-spaces-is-retiring-on-31-october-2023/">client-only experience</a> offered through extensions in Visual Studio and Visual Studio Code. See Provisioning for general aspects how you can handle provisioning in Azure such as creating pipelines for creating infrastructure.</p>
+<p>Use Bridge to Kubernetes to iteratively develop, test, and debug microservices targeted for AKS clusters. It is a <a href="https://azure.microsoft.com/de-de/updates/azure-dev-spaces-is-retiring-on-31-october-2023/">client-only experience</a> offered through extensions in Visual Studio and Visual Studio Code. See also Provisioning for general aspects and service options for creating pipelines for creating infrastructure.</p>
 </div>
 </div>
 </div>
@@ -133,10 +133,7 @@ The platform features that (can) complement Kubernetes are:</p>
 <div class="openblock">
 <div class="content">
 <div class="paragraph">
-<p>Use security measures on networking kevel to avoid public IPs. Combine AKS with additional services to control ingress and outgoing traffic such as Application Gateway or firewalls.</p>
-</div>
-<div class="paragraph">
-<p>Disks used in your AKS cluster can by encrypted by using your own keys through Azure Key Vault.</p>
+<p>Use security measures on networking level to avoid public IPs. Combine AKS with additional services to control ingress and outgoing traffic such as Application Gateway or firewalls.</p>
 </div>
 <div class="paragraph">
 <p>Enforce compliance rules to your cluster and CI/CD pipeline consistently with Azure Policy. Azure Active Directory provides access control with role-based-access-controls (RBAC) and service principals/ managed identities to back RBAC roles. Integration with Azure Security Center can provide security management, intelligent threat detection and actionable recommendations.</p>
@@ -166,23 +163,6 @@ The platform features that (can) complement Kubernetes are:</p>
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>The features that (can) complement the resources to be deployed are:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Provisioning</p>
-<div class="openblock">
-<div class="content">
-<div class="paragraph">
-<p>Application build pipelines need to build container images and store them in a registry. The native container registry service is Azure Container Registry.</p>
-</div>
-</div>
-</div>
-</li>
-</ul>
-</div>
 </div>
 <div class="sect3">
 <h4 id="index.asciidoc_detailed-native-setup">Detailed Native Setup</h4>
@@ -200,7 +180,7 @@ The platform features that (can) complement Kubernetes are:</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/virtual_nodes.png" alt="Virtual Nodes" width="1858" height="994">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/virtual_nodes.png" alt="Virtual Nodes" width="1394" height="746">
 </div>
 </div>
 </div>
@@ -269,33 +249,6 @@ The platform features that (can) complement Kubernetes are:</p>
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>AKS comes with the following additional features regarding the <strong>resources to be deployed</strong>:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Provisioning</p>
-<div class="openblock">
-<div class="content">
-<div class="paragraph">
-<p>The following <a href="https://docs.microsoft.com/en-us/azure/aks/operator-best-practices-container-image-management">best practises</a> are recommended:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>A container security scan can be included in the <strong>pipelines as quality gate</strong> by using tools like tools such as Twistlock or Aqua.</p>
-</li>
-<li>
-<p>Each time a <strong>base image is updated</strong>, you should also update any downstream container images. Integrate this build process into validation and deployment pipelines such as Azure Pipelines or Jenkins. These pipelines make sure that your applications continue to run on the updated based images. Once your application container images are validated, the AKS deployments can then be updated to run the latest, secure images. Azure Container Registry Tasks can also automatically update container images when the base image is updated. With this feature, you build a few base images and keep them updated with bug and security fixes.</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</li>
-</ul>
-</div>
 </div>
 <div class="sect3">
 <h4 id="index.asciidoc_variations">Variations</h4>
@@ -311,29 +264,6 @@ The platform features that (can) complement Kubernetes are:</p>
 <div class="paragraph">
 <p>DAPR is a distributed framework that provides application services to applications such as publish subscribe as described here.
 Open Service Mesh (OSM) add-on for Azure Kubernetes Service (AKS) is now available in public preview as of 10.09.2021. OSM implements Service Mesh Interface to provide the most common service mesh features as described here.</p>
-</div>
-</div>
-</div>
-</li>
-<li>
-<p>Deployment</p>
-<div class="openblock">
-<div class="content">
-<div class="paragraph">
-<p>Instead of having to write separate YAML files for each application manually, you can simply create a Helm chart and let Helm deploy the application to the cluster for you. Helm charts contain templates for various Kubernetes resources that combine to form an application. A Helm chart can be customized when deploying it on different Kubernetes clusters. Helm charts can be created in such a way that environment or deployment-specific configurations can be extracted out to a separate file so that these values can be specified when the Helm chart is deployed. For example, you need not have separate charts for deploying an application in development, staging, and production environments.</p>
-</div>
-</div>
-</div>
-</li>
-<li>
-<p>Compliance</p>
-<div class="openblock">
-<div class="content">
-<div class="paragraph">
-<p>For security reasons and improvement of Helm charts, it is useful to make use of at least one Helm linting tool to ensure your deployments are valid and versioned correctly.</p>
-</div>
-<div class="paragraph">
-<p>Why choosing Polaris as Linting Tool: For helm chart linting, there are several tools like Polaris, kube-score or config-lint available. With Polaris, checks and rules are already given by default, whereby other tools need a lot of custom rules configuration and are therefore more complex to setup. Polaris runs a variety of checks to ensure that Kubernetes pods and controllers are configured using best practices, helping to avoid problems in the future. Polaris can be either installed inside a cluster or as a command-line tool to analyze Kubernetes manifests statically.</p>
 </div>
 </div>
 </div>
@@ -364,10 +294,10 @@ Open Service Mesh (OSM) add-on for Azure Kubernetes Service (AKS) is now availab
 <div class="ulist">
 <ul>
 <li>
-<p>ArgoCD: Continuous Delivery for Kubernetes: ArgoCD is a leader developed by Intuit and synchronizes changes in the code of applications, photos and cluster definitions, so the Git - repository , to the cluster. The solution is open source software, kept relatively simple and is one of the most important and oldest tools on the market.</p>
+<p><strong>ArgoCD:</strong> ArgoCD is a leader developed by Intuit and synchronizes changes in the code of applications, photos and cluster definitions, so the Git - repository, to the cluster. The solution is open source software, kept relatively simple and is one of the most important and oldest tools on the market.</p>
 </li>
 <li>
-<p>Flux: Integration of Flux CD into the workflow: Flux basically does the same job as ArgoCD, i.e. synchronizes the repository and cluster in the course of continuous delivery. Flux is also open source and kept simple - the special thing: It comes from the GitOps inventor Weaveworks.</p>
+<p><strong>Flux:</strong> Flux basically does the same job as ArgoCD, i.e. synchronizes the repository and cluster in the course of continuous delivery. Flux is also open source and kept simple - the special thing: It comes from the GitOps inventor Weaveworks.</p>
 </li>
 </ul>
 </div>
@@ -381,7 +311,284 @@ Open Service Mesh (OSM) add-on for Azure Kubernetes Service (AKS) is now availab
 <div class="sect2">
 <h3 id="index.asciidoc_when-to-use">When to use</h3>
 <div class="paragraph">
-<p>When you need orchestration support due to a higher number of microservices. If you start with a single service then Function App reduces greatly the complexity. You can still later on move to Kubernetes by containerizing your function app code.</p>
+<p>When you need a container platform with orchestration support due to a higher number of microservices in Azure. Additional built in functionality that comes with Azure Red Hat OpenShift is not required or does not fit into your requirements (e.g. because you want to use a different tooling or need more flexibility.)</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_application">Application</h3>
+<div class="sect3">
+<h4 id="index.asciidoc_overview">Overview</h4>
+<div class="paragraph">
+<p>The solution is to deploy the containerized application to an Azure Kubernetes Service. Focus of that chapter are designing, building, monitoring and deploying containerized applications. Recommendations for a concrete setup are given in the next chapter.</p>
+</div>
+<div class="paragraph">
+<p>The services that (can) complement Kubernetes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Designing</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Each Pod is meant to run a single instance of a given application. If you want to scale your application horizontally (to provide more overall resources by running more instances), you should use multiple Pods, one for each instance. In Kubernetes, this is typically referred to as replication. Replicated Pods are usually created and managed as a group by a workload resource and its controller.</p>
+</div>
+<div class="paragraph">
+<p>The "one-container-per-Pod" model is the most common Kubernetes use case. A more advanced use case is running multiple containers in a pod that need to work together. A Pod can encapsulate an application composed of multiple co-located containers that are tightly coupled and need to share resources. These co-located containers form a single cohesive unit of service - for example, one container serving data stored in a shared volume to the public, while a separate sidecar container refreshes or updates those files. The Pod wraps these containers, storage resources, and an ephemeral network identity together as a single unit.</p>
+</div>
+<div class="paragraph">
+<p>Containers have to store information persistently. <a href="https://docs.microsoft.com/en-us/azure/aks/concepts-storage">Azure</a> provides Azure (managed) disks and Azure files as storage options for persistent volumes.
+AKS can connect with databases via wrapper objects such as Services  or databases can be directly deployed to Kubernetes. Options for deplyong a database directly to Kubernetes are given below:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>SQL server (Microsoft): Options range from single <a href="https://docs.microsoft.com/en-us/sql/linux/tutorial-sql-server-containers-kubernetes?view=sql-server-ver15">sql server</a> to <a href="https://docs.microsoft.com/en-us/sql/linux/tutorial-sql-server-containers-kubernetes-dh2i?view=sql-server-ver15">high availability</a> with failover groups. In both cases MS provides containers that contain sql server.</p>
+</li>
+<li>
+<p>Third party options such as <a href="https://portworx.com/blog/ha-postgresql-azure-aks/">PostgreSQL</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Configuration</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Configmaps are useful to store non-critical data in key-value pair format. They can also be used to inject env vars into pods. Secrets are useful to store sensitive data in key value pair format. They can also be used to inject env vars into pods. You can optionally specify how much of each resource a container needs. The most common resources to specify are CPU and memory (RAM).</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Compliance</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>A <a href="https://kubernetes.io/docs/tasks/configure-pod-container/security-context/">security context</a> defines privilege and access control settings for a pod. Examples are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Discretionary Access Control: Permission to access an object, like a file, is based on user ID (UID) and group ID (GID).</p>
+</li>
+<li>
+<p>Security Enhanced Linux (SELinux): Objects are assigned security labels.</p>
+</li>
+<li>
+<p>Running as privileged or unprivileged.</p>
+</li>
+<li>
+<p>Linux Capabilities: Give a process some privileges, but not all the privileges of the root user.</p>
+</li>
+<li>
+<p>AppArmor: Use program profiles to restrict the capabilities of individual programs.</p>
+</li>
+<li>
+<p>AllowPrivilegeEscalation: Controls whether a process can gain more privileges than its parent process.</p>
+</li>
+<li>
+<p>readOnlyRootFilesystem: Mounts the container&#8217;s root filesystem as read-only.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Disks used in your AKS cluster can by encrypted by using your own keys through Azure Key Vault.</p>
+</div>
+<div class="paragraph">
+<p>See building for additional security measures when containers are built.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Building (CI part of provisioning)</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Building containers includes the following steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Building the container image(s)</p>
+</li>
+<li>
+<p>Pushing the image(s) to the registry</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Provisioning tools such as Azure DevOps and Gitub Actions provide special docker tasks/ activities to build images. Pushing to registries is also supported. The following additional features can be used/ should be considered from security perspective:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Each time a <strong>base image is updated</strong>, you should also update any downstream container images. Integrate this build process into validation and deployment pipelines such as Azure Pipelines or Jenkins. These pipelines make sure that your applications continue to run on the updated based images. Once your application container images are validated, the AKS deployments can then be updated to run the latest, secure images. Azure Container Registry Tasks can also <a href="https://docs.microsoft.com/en-us/azure/aks/operator-best-practices-container-image-management">automatically update container images</a> when the base image is updated.</p>
+</li>
+<li>
+<p><a href="https://docs.microsoft.com/en-us/azure/aks/operator-best-practices-container-image-management">A container security scan</a> can be included in the <strong>pipelines as quality gate</strong> by using tools like tools such as Twistlock or Aqua.</p>
+</li>
+<li>
+<p>The <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/ecosystems/containers/content-trust?view=azure-devops">provisioning services support</a> Docker Content Trust (DCT). Docker Content Trust (DCT) are digital signatures for data sent to and received from remote Docker registries. These signatures allow client-side or runtime verification of the integrity and publisher of specific image tags.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Deployment (CI part of provisioning)</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>The term "Deployment" refers to the process that triggers a deployment in Kubernetes whereas a Kubernetes deployment refers to the Kubernets deployment resource. A kubernetes deployment resource is the standard controller for manipulating pods which in turn host the container workloads.</p>
+</div>
+<div class="paragraph">
+<p>A deployment is triggered by the provisioning pipeline.  Depending on the scope a deployment goes beyond the a kubernetes deployment that results in a Kubernetes deployment resource. The various steps across various scenarios can be generalized as follows:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Pre-Kubernetes Deployment steps</p>
+</li>
+<li>
+<p>Kubernetes Deployment
+Azure provisioning services provide ways to trigger with native kubernetes means such as manifests by supporting special tasks/ activties. However, this results in quite a number of files you have to maintain. Additional tools like <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/helm-deploy?view=azure-devops">helm</a> (see variation) provide better support.</p>
+</li>
+<li>
+<p>Post-Kubernetes Deployment steps</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The most complex deployment scenario is a rolling update with breaking database changes. In that case pre and post Kubernetes deployment steps are required to <a href="https://stackoverflow.com/questions/48877182/kubernetes-rolling-deployments-and-database-migrations/48880687">handle the breaking database changes</a>. Such an update requires targeting specific components e.g. with a certain version. Labels are key/value pairs that are attached to objects, such as pods. They help in filtering out specific objects. Using a Selector, the client/user can identify a set of objects. Annotations are used to attach arbitrary non-identifying metadata to objects.</p>
+</div>
+<div class="paragraph">
+<p>The basic idea is to break down the breaking database change into multiple non-breaking steps. The <a href="https://stackoverflow.com/questions/48877182/kubernetes-rolling-deployments-and-database-migrations/48880687">steps below</a> refer to a renaming of a column:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Add a db migration that inserts the new column</p>
+</li>
+<li>
+<p>Change the app so that all writes go to the old and new column</p>
+</li>
+<li>
+<p>Run a task that copies all values from the old to the new column</p>
+</li>
+<li>
+<p>Change the app that it reads from the new column</p>
+</li>
+<li>
+<p>Add a migration that remove the old column</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Monitoring</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Application logs can help in understanding the activities and status of the application. The logs are particularly useful for debugging problems and monitoring cluster activity. Monitoring applications can be done by storing logs and studying the application’s metrics.</p>
+</div>
+<div class="paragraph">
+<p>Tools like Prometheus-Grafana are popular as they make the management of metrics very easy. Very often, sidecar containers are used as metrics exporters of the main application container.</p>
+</div>
+<div class="paragraph">
+<p>By <a href="https://docs.microsoft.com/en-us/azure/azure-monitor/containers/container-insights-prometheus-integration">integrating with Azure Monitor</a>, a Prometheus server is not required. You just need to expose the Prometheus metrics endpoint through your exporters or pods (application), and the containerized agent for Container insights can scrape the metrics for you.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/mon_cnt_insights.png" alt="Monitoring Container Insights" width="1706" height="632">
+</div>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_variations">Variations</h4>
+<div class="paragraph">
+<p>The following additional extra tools can be used in conjunction with Kubernetes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Deployment</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Instead of having to write separate YAML files for each application manually, you can simply create a Helm chart and let Helm deploy the application to the cluster for you. Helm charts contain templates for various Kubernetes resources that combine to form an application.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/helm_chart_example.png" alt="Helm chart example">
+</div>
+</div>
+<div class="paragraph">
+<p>A Helm chart can be customized when deploying it on different Kubernetes clusters. Helm charts can be created in such a way that environment or deployment-specific configurations can be extracted out to a separate file so that these values can be specified when the Helm chart is deployed. The snippet below shows a template using placeholders to refer to the values in values.yaml:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="YAML language-YAML">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.postgres.name }}
+  labels:
+    app: {{ .Values.postgres.name }}
+    group: {{ .Values.postgres.group }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.postgres.name }}
+      ...</code></pre>
+</div>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Compliance</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>For security reasons and improvement of Helm charts, it is useful to make use of at least one Helm linting tool to ensure your deployments are valid and versioned correctly.</p>
+</div>
+<div class="paragraph">
+<p>Why choosing Polaris as Linting Tool: For helm chart linting, there are several tools like Polaris, kube-score or config-lint available. With Polaris, checks and rules are already given by default, whereby other tools need a lot of custom rules configuration and are therefore more complex to setup. Polaris runs a variety of checks to ensure that Kubernetes pods and controllers are configured using best practices, helping to avoid problems in the future. Polaris can be either installed inside a cluster or as a command-line tool to analyze Kubernetes manifests statically.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Configuration</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>See under infrastructure.</p>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_when-to-use">When to use</h3>
+<div class="paragraph">
+<p>When you want to deploy containerized applications to Azure Kubernetes Service.</p>
 </div>
 </div>
 </div>
@@ -523,7 +730,7 @@ Open Service Mesh (OSM) add-on for Azure Kubernetes Service (AKS) is now availab
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-10-19 06:37:34 UTC
+Last updated 2021-10-19 07:52:01 UTC
 </sub></div>
 </div>
 </div>
