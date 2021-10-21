@@ -99,10 +99,7 @@
 <ul class="sectlevel1">
 <li><a href="#guide-access-control.asciidoc_authentication">Authentication</a>
 <ul class="sectlevel2">
-<li><a href="#guide-access-control.asciidoc_preserve-original-request-anchors-after-form-login-redirect">Preserve original request anchors after form login redirect</a></li>
-<li><a href="#guide-access-control.asciidoc_users-vs.-systems">Users vs. Systems</a></li>
-<li><a href="#guide-access-control.asciidoc_using-jwt">Using JWT</a></li>
-<li><a href="#guide-access-control.asciidoc_mixed-authentication">Mixed Authentication</a></li>
+<li><a href="#guide-access-control.asciidoc_implementations">Implementations</a></li>
 </ul>
 </li>
 <li><a href="#guide-access-control.asciidoc_authorization">Authorization</a>
@@ -113,7 +110,8 @@
 <li><a href="#guide-access-control.asciidoc_devon4j-security">devon4j-security</a></li>
 <li><a href="#guide-access-control.asciidoc_access-control-config">Access Control Config</a></li>
 <li><a href="#guide-access-control.asciidoc_configuration-on-java-method-level">Configuration on Java Method level</a></li>
-<li><a href="#guide-access-control.asciidoc_check-data-permissions">Check Data-Permissions</a></li>
+<li><a href="#guide-access-control.asciidoc_jee-standard">JEE Standard</a></li>
+<li><a href="#guide-access-control.asciidoc_data-based-permissions">Data-based Permissions</a></li>
 <li><a href="#guide-access-control.asciidoc_access-control-schema-deprecated">Access Control Schema (deprecated)</a></li>
 </ul>
 </li>
@@ -148,11 +146,13 @@
 </blockquote>
 </div>
 <div class="paragraph">
-<p>The one authenticated is properly called <em>subject</em> or <a href="http://docs.oracle.com/javase/7/docs/api/java/security/Principal.html"><em>principal</em></a>. However, for simplicity we use the common term <em>user</em> even though it may not be a human (e.g. in case of a service call from an external system).</p>
+<p>The one authenticated is properly called <em>subject</em> or <a href="http://docs.oracle.com/javase/7/docs/api/java/security/Principal.html"><em>principal</em></a>. There are two forms of principals you need to distinguish while designing your authentication: <code>human users</code> and <code>autonomous systems</code>. While e.g. a Kerberos/SPNEGO Single-Sign-On makes sense for human users, it is pointless for authenticating autonomous systems.  For simplicity, we use the common term <em>user</em> to refer to any principal even though it may not be a human (e.g. in case of a service call from an external system).</p>
 </div>
 <div class="paragraph">
-<p>To prove his authenticity the user provides some secret called <em>credentials</em>. The most simple form of credentials is a password.</p>
+<p>To prove the authenticity, the user provides some secret called <em>credentials</em>. The most simple form of credentials is a password.</p>
 </div>
+<div class="sect2">
+<h3 id="guide-access-control.asciidoc_implementations">Implementations</h3>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -166,102 +166,13 @@ Please never implement your own authentication mechanism or credential store. Yo
 </table>
 </div>
 <div class="paragraph">
-<p>We use <a href="https://projects.spring.io/spring-security/">spring-security</a> as a framework for authentication purposes.</p>
+<p>We recommend using <a href="#guide-jwt.asciidoc">JWT</a> when possible. For KISS, also try to avoid combining multiple authentication mechanisms (form based, basic-auth, SAMLv2, OAuth, etc.) within the same application (for different URLs).</p>
 </div>
 <div class="paragraph">
-<p>Therefore you need to provide an implementation of <a href="https://docs.spring.io/spring-security/site/docs/4.2.x/apidocs/org/springframework/security/config/annotation/web/WebSecurityConfigurer.html">WebSecurityConfigurerAdapter</a>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="java language-java">@Configuration
-@EnableWebSecurity
-public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
-
-  @Inject
-  private UserDetailsService userDetailsService;
-  ...
-  public void configure(HttpSecurity http) throws Exception {
-    http.userDetailsService(this.userDetailsService)
-        .authorizeRequests().antMatchers("/public/**").permitAll()
-        .anyRequest().authenticated().and()
-        ...
-  }
-}</code></pre>
-</div>
+<p>For <a href="#spring.asciidoc">spring</a>, check the <a href="#spring/guide-authentication-spring.asciidoc">Spring Security</a></p>
 </div>
 <div class="paragraph">
-<p>As you can see spring-security offers a fluent API for easy configuration. You can simply add invocations like <code>formLogin().loginPage("/public/login")</code> or <code>httpBasic().realmName("MyApp")</code>. Also <a href="#guide-security.asciidoc">CSRF</a> protection can be configured by invoking <code>csrf()</code>.
-For further details see <a href="https://docs.spring.io/spring-security/site/docs/current/reference/html/jc.html#jc-httpsecurity">spring Java-config for HTTP security</a>.</p>
-</div>
-<div class="paragraph">
-<p>Further, you need to provide an implementation of the <a href="https://docs.spring.io/spring-security/site/docs/4.2.x/apidocs/org/springframework/security/core/userdetails/UserDetailsService.html">UserDetailsService</a> interface.
-A good starting point comes with our application template.</p>
-</div>
-<div class="sect2">
-<h3 id="guide-access-control.asciidoc_preserve-original-request-anchors-after-form-login-redirect">Preserve original request anchors after form login redirect</h3>
-<div class="paragraph">
-<p>Spring Security will automatically redirect any unauthorized access to the defined login-page. After successful login, the user will be redirected to the original requested URL. The only pitfall is, that anchors in the request URL will not be transmitted to server and thus cannot be restored after successful login. Therefore the <code>devon4j-security</code> module provides the <code>RetainAnchorFilter</code>, which is able to inject javascript code to the source page and to the target page of any redirection. Using javascript this filter is able to retrieve the requested anchors and store them into a cookie. Heading the target URL this cookie will be used to restore the original anchors again.</p>
-</div>
-<div class="paragraph">
-<p>To enable this mechanism you have to integrate the <code>RetainAnchorFilter</code> as follows:
-First, declare the filter with</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>storeUrlPattern</code>: an regular expression matching the URL, where anchors should be stored</p>
-</li>
-<li>
-<p><code>restoreUrlPattern</code>: an regular expression matching the URL, where anchors should be restored</p>
-</li>
-<li>
-<p><code>cookieName</code>: the name of the cookie to save the anchors in the intermediate time</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>You can easily configure this as code in your <code>WebSecurityConfig</code> as following:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="java language-java">RetainAnchorFilter filter = new RetainAnchorFilter();
-filter.setStoreUrlPattern("http://[^/]+/[^/]+/login.*");
-filter.setRestoreUrlPattern("http://[^/]+/[^/]+/.*");
-filter.setCookieName("TARGETANCHOR");
-http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="guide-access-control.asciidoc_users-vs.-systems">Users vs. Systems</h3>
-<div class="paragraph">
-<p>If we are talking about authentication we have to distinguish two forms of principals:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>human users</p>
-</li>
-<li>
-<p>autonomous systems</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>While e.g. a Kerberos/SPNEGO Single-Sign-On makes sense for human users it is pointless for authenticating autonomous systems. So always keep this in mind when you design your authentication mechanisms and separate access for human users from access for systems.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="guide-access-control.asciidoc_using-jwt">Using JWT</h3>
-<div class="paragraph">
-<p>For authentication via JSON Web Token (JWT) see <a href="#guide-jwt.asciidoc">JWT guide</a>.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="guide-access-control.asciidoc_mixed-authentication">Mixed Authentication</h3>
-<div class="paragraph">
-<p>In rare cases you might need to mix multiple authentication mechanisms (form based, basic-auth, SAMLv2, OAuth, etc.) within the same app (for different URLs). For KISS this should be avoided where possible. However, when needed, you can find a solution
-<a href="https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#multiple-httpsecurity">here</a>.</p>
+<p>For <a href="#quarkus.asciidoc">quarkus</a>, check the <a href="#quarkus/guide-authentication-quarkus.asciidoc">Quarkus Authentication</a></p>
 </div>
 </div>
 </div>
@@ -494,7 +405,106 @@ public class UcSafeOfferImpl extends ApplicationUc implements UcSafeOffer {
 </div>
 </div>
 <div class="sect2">
-<h3 id="guide-access-control.asciidoc_check-data-permissions">Check Data-Permissions</h3>
+<h3 id="guide-access-control.asciidoc_jee-standard">JEE Standard</h3>
+<div class="paragraph">
+<p><a href="https://en.wikipedia.org/wiki/Role-based_access_control">Role-based Access Control (RBAC)</a> is commonly used for authorization.
+JSR 250 defines a number of common annotations to secure your application.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>javax.annotation.security.PermitAll</code> specifies that no access control is required to invoke the specified method(s).</p>
+</li>
+<li>
+<p><code>javax.annotation.security.DenyAll</code> specifies that no access controls are allowed to invoke the specified method(s).</p>
+</li>
+<li>
+<p><code>javax.annotation.security.RolesAllowed</code> specifies that only a list of access controls are allowed to invoke the specified method(s).</p>
+</li>
+<li>
+<p><code>javax.annotation.security.DeclareRoles</code> defines roles for security checking.</p>
+</li>
+<li>
+<p><code>javax.annotation.security.RunAs</code> specifies the RunAs role for the given components.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><code>@PermitAll</code>, <code>@Denyall</code>, and <code>@RolesAllowed</code> annotations can be applied to both class and method.
+A method-level annotation will override the behaviour of class-level annotation. Using multiple annotations of those 3 is not valid.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">// invalid
+@PermitAll
+@DenyAll
+public String foo()
+
+// invalid and compilation fails
+@RolesAllowed("admin")
+@RolesAllowed("user")
+public String bar()
+
+// OK
+@RolesAllowed("admin", "user")
+public String bar()</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Please note that when specifying multiple arguments to <code>@RolesAllowed</code> those are combined with OR (and not with AND).
+So if the user has any of the specified access controls, he will be able to access the method.</p>
+</div>
+<div class="paragraph">
+<p>As a best practice avoid specifying string literals to <code>@RolesAllowed</code>.
+Instead define a class with all access controls as constants and reference them from there.
+This class is typically called <code>ApplicationAccessControlConfig</code> in devonfw.</p>
+</div>
+<div class="paragraph">
+<p>In many complicated cases where <code>@PermitAll</code> <code>@DenyAll</code> <code>@RolesAllowed</code> are insufficient e.g. a method should be accessed by a user in role A and not in role B at the same time, you have to verify the user role directly in the method. You can use <code>SecurityContext</code> class to get further needed information.</p>
+</div>
+<div class="sect3">
+<h4 id="guide-access-control.asciidoc_spring">Spring</h4>
+<div class="paragraph">
+<p>Spring Security also supports authorization on method level. To use it, you need to add the <code>spring-security-config</code> dependency. If you use Spring Boot, the dependency <code>spring-boot-starter-security</code> already includes <code>spring-security-config</code>. Then you can configure as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>prePostEnabled</code> property enables Spring Security pre/post annotations. <code>@PreAuthorize</code> and <code>@PostAuthorize</code> annotations provide expression-based access control. See more <a href="https://docs.spring.io/spring-security/site/docs/4.2.x/reference/html/el-access.html">here</a></p>
+</li>
+<li>
+<p><code>securedEnabled</code> property determines if the <code>@Secured</code> annotation should be enabled. <code>@Secured</code> can be used similarly as <code>@RollesAllowed</code>.</p>
+</li>
+<li>
+<p><code>jsr250Enabled</code> property allows us to use the JSR-250 annotations such as <code>@RolesAllowed</code>.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Configuration
+@EnableGlobalMethodSecurity(
+  prePostEnabled = true,
+  securedEnabled = true,
+  jsr250Enabled = true)
+public class MethodSecurityConfig
+  extends GlobalMethodSecurityConfiguration {
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A further read about the whole concept of Spring Security Authorization can be found <a href="https://docs.spring.io/spring-security/site/docs/current/reference/html5/#servlet-authorization">here</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-access-control.asciidoc_quarkus">Quarkus</h4>
+<div class="paragraph">
+<p>Quarkus comes with built-in security to allow for RBAC based on the common security annotations <code>@RolesAllowed</code>, <code>@DenyAll</code>, <code>@PermitAll</code> on REST endpoints and CDI beans. Quarkus also provides the <code>io.quarkus.security.Authenticated</code> annotation that will permit any authenticated user to access the resource (equivalent to @RolesAllowed("**")).</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-access-control.asciidoc_data-based-permissions">Data-based Permissions</h3>
 <div class="paragraph">
 <p>See <a href="#guide-data-permission.asciidoc">data permissions</a></p>
 </div>
@@ -644,7 +654,7 @@ public class UcSafeOfferImpl extends ApplicationUc implements UcSafeOffer {
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-10-21 05:53:54 UTC
+Last updated 2021-10-21 07:03:56 UTC
 </sub></div>
 </div>
 </div>

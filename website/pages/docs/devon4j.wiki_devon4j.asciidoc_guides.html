@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2021-10-21 05:59:39 UTC">
+<meta name="author" content="Updated at 2021-10-21 07:09:52 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -511,7 +511,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2021-10-21 06:01:15 UTC</span><br>
+<span id="author" class="author">Updated at 2021-10-21 07:11:32 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -547,8 +547,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-auditing.asciidoc">Auditing</a>
 </li>
 <li><a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-access-control.asciidoc">Access-Control</a>
-</li>
-<li><a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-access-control-schema.asciidoc">Access Control Schema</a>
 </li>
 <li><a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-jwt.asciidoc">JWT</a>
 </li>
@@ -928,11 +926,13 @@ CREATE CACHED TABLE PUBLIC.&lt;TABLE_NAME&gt;_AUD(
 </blockquote>
 </div>
 <div class="paragraph">
-<p>The one authenticated is properly called <em>subject</em> or <a href="http://docs.oracle.com/javase/7/docs/api/java/security/Principal.html"><em>principal</em></a>. However, for simplicity we use the common term <em>user</em> even though it may not be a human (e.g. in case of a service call from an external system).</p>
+<p>The one authenticated is properly called <em>subject</em> or <a href="http://docs.oracle.com/javase/7/docs/api/java/security/Principal.html"><em>principal</em></a>. There are two forms of principals you need to distinguish while designing your authentication: <code>human users</code> and <code>autonomous systems</code>. While e.g. a Kerberos/SPNEGO Single-Sign-On makes sense for human users, it is pointless for authenticating autonomous systems.  For simplicity, we use the common term <em>user</em> to refer to any principal even though it may not be a human (e.g. in case of a service call from an external system).</p>
 </div>
 <div class="paragraph">
-<p>To prove his authenticity the user provides some secret called <em>credentials</em>. The most simple form of credentials is a password.</p>
+<p>To prove the authenticity, the user provides some secret called <em>credentials</em>. The most simple form of credentials is a password.</p>
 </div>
+<div class="sect5">
+<h6 id="guide-access-control.asciidoc_implementations">Implementations</h6>
 <div class="admonitionblock note">
 <table>
 <tbody><tr>
@@ -946,102 +946,13 @@ Please never implement your own authentication mechanism or credential store. Yo
 </tbody></table>
 </div>
 <div class="paragraph">
-<p>We use <a href="https://projects.spring.io/spring-security/">spring-security</a> as a framework for authentication purposes.</p>
+<p>We recommend using <a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-jwt.asciidoc">JWT</a> when possible. For KISS, also try to avoid combining multiple authentication mechanisms (form based, basic-auth, SAMLv2, OAuth, etc.) within the same application (for different URLs).</p>
 </div>
 <div class="paragraph">
-<p>Therefore you need to provide an implementation of <a href="https://docs.spring.io/spring-security/site/docs/4.2.x/apidocs/org/springframework/security/config/annotation/web/WebSecurityConfigurer.html">WebSecurityConfigurerAdapter</a>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
-@EnableWebSecurity
-public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
-
-  @Inject
-  private UserDetailsService userDetailsService;
-  ...
-  public void configure(HttpSecurity http) throws Exception {
-    http.userDetailsService(this.userDetailsService)
-        .authorizeRequests().antMatchers(&quot;/public/**&quot;).permitAll()
-        .anyRequest().authenticated().and()
-        ...
-  }
-}</code></pre>
-</div>
+<p>For <a href="spring.asciidoc.html">spring</a>, check the <a href="#spring/guide-authentication-spring.asciidoc">Spring Security</a></p>
 </div>
 <div class="paragraph">
-<p>As you can see spring-security offers a fluent API for easy configuration. You can simply add invocations like <code>formLogin().loginPage(&quot;/public/login&quot;)</code> or <code>httpBasic().realmName(&quot;MyApp&quot;)</code>. Also <a href="guide-security.asciidoc.html">CSRF</a> protection can be configured by invoking <code>csrf()</code>.
-For further details see <a href="https://docs.spring.io/spring-security/site/docs/current/reference/html/jc.html#jc-httpsecurity">spring Java-config for HTTP security</a>.</p>
-</div>
-<div class="paragraph">
-<p>Further, you need to provide an implementation of the <a href="https://docs.spring.io/spring-security/site/docs/4.2.x/apidocs/org/springframework/security/core/userdetails/UserDetailsService.html">UserDetailsService</a> interface.
-A good starting point comes with our application template.</p>
-</div>
-<div class="sect5">
-<h6 id="guide-access-control.asciidoc_preserve-original-request-anchors-after-form-login-redirect">Preserve original request anchors after form login redirect</h6>
-<div class="paragraph">
-<p>Spring Security will automatically redirect any unauthorized access to the defined login-page. After successful login, the user will be redirected to the original requested URL. The only pitfall is, that anchors in the request URL will not be transmitted to server and thus cannot be restored after successful login. Therefore the <code>devon4j-security</code> module provides the <code>RetainAnchorFilter</code>, which is able to inject javascript code to the source page and to the target page of any redirection. Using javascript this filter is able to retrieve the requested anchors and store them into a cookie. Heading the target URL this cookie will be used to restore the original anchors again.</p>
-</div>
-<div class="paragraph">
-<p>To enable this mechanism you have to integrate the <code>RetainAnchorFilter</code> as follows:
-First, declare the filter with</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>storeUrlPattern</code>: an regular expression matching the URL, where anchors should be stored</p>
-</li>
-<li>
-<p><code>restoreUrlPattern</code>: an regular expression matching the URL, where anchors should be restored</p>
-</li>
-<li>
-<p><code>cookieName</code>: the name of the cookie to save the anchors in the intermediate time</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>You can easily configure this as code in your <code>WebSecurityConfig</code> as following:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">RetainAnchorFilter filter = new RetainAnchorFilter();
-filter.setStoreUrlPattern(&quot;http://[^/]+/[^/]+/login.*&quot;);
-filter.setRestoreUrlPattern(&quot;http://[^/]+/[^/]+/.*&quot;);
-filter.setCookieName(&quot;TARGETANCHOR&quot;);
-http.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);</code></pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="guide-access-control.asciidoc_users-vs.-systems">Users vs. Systems</h6>
-<div class="paragraph">
-<p>If we are talking about authentication we have to distinguish two forms of principals:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>human users</p>
-</li>
-<li>
-<p>autonomous systems</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>While e.g. a Kerberos/SPNEGO Single-Sign-On makes sense for human users it is pointless for authenticating autonomous systems. So always keep this in mind when you design your authentication mechanisms and separate access for human users from access for systems.</p>
-</div>
-</div>
-<div class="sect5">
-<h6 id="guide-access-control.asciidoc_using-jwt">Using JWT</h6>
-<div class="paragraph">
-<p>For authentication via JSON Web Token (JWT) see <a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-jwt.asciidoc">JWT guide</a>.</p>
-</div>
-</div>
-<div class="sect5">
-<h6 id="guide-access-control.asciidoc_mixed-authentication">Mixed Authentication</h6>
-<div class="paragraph">
-<p>In rare cases you might need to mix multiple authentication mechanisms (form based, basic-auth, SAMLv2, OAuth, etc.) within the same app (for different URLs). For KISS this should be avoided where possible. However, when needed, you can find a solution
-<a href="https://docs.spring.io/spring-security/site/docs/current/reference/htmlsingle/#multiple-httpsecurity">here</a>.</p>
+<p>For <a href="quarkus.asciidoc.html">quarkus</a>, check the <a href="#quarkus/guide-authentication-quarkus.asciidoc">Quarkus Authentication</a></p>
 </div>
 </div>
 </div>
@@ -1273,7 +1184,106 @@ public class UcSafeOfferImpl extends ApplicationUc implements UcSafeOffer {
 </div>
 </div>
 <div class="sect5">
-<h6 id="guide-access-control.asciidoc_check-data-permissions">Check Data-Permissions</h6>
+<h6 id="guide-access-control.asciidoc_jee-standard">JEE Standard</h6>
+<div class="paragraph">
+<p><a href="https://en.wikipedia.org/wiki/Role-based_access_control">Role-based Access Control (RBAC)</a> is commonly used for authorization.
+JSR 250 defines a number of common annotations to secure your application.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>javax.annotation.security.PermitAll</code> specifies that no access control is required to invoke the specified method(s).</p>
+</li>
+<li>
+<p><code>javax.annotation.security.DenyAll</code> specifies that no access controls are allowed to invoke the specified method(s).</p>
+</li>
+<li>
+<p><code>javax.annotation.security.RolesAllowed</code> specifies that only a list of access controls are allowed to invoke the specified method(s).</p>
+</li>
+<li>
+<p><code>javax.annotation.security.DeclareRoles</code> defines roles for security checking.</p>
+</li>
+<li>
+<p><code>javax.annotation.security.RunAs</code> specifies the RunAs role for the given components.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><code>@PermitAll</code>, <code>@Denyall</code>, and <code>@RolesAllowed</code> annotations can be applied to both class and method.
+A method-level annotation will override the behaviour of class-level annotation. Using multiple annotations of those 3 is not valid.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">// invalid
+@PermitAll
+@DenyAll
+public String foo()
+
+// invalid and compilation fails
+@RolesAllowed(&quot;admin&quot;)
+@RolesAllowed(&quot;user&quot;)
+public String bar()
+
+// OK
+@RolesAllowed(&quot;admin&quot;, &quot;user&quot;)
+public String bar()</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Please note that when specifying multiple arguments to <code>@RolesAllowed</code> those are combined with OR (and not with AND).
+So if the user has any of the specified access controls, he will be able to access the method.</p>
+</div>
+<div class="paragraph">
+<p>As a best practice avoid specifying string literals to <code>@RolesAllowed</code>.
+Instead define a class with all access controls as constants and reference them from there.
+This class is typically called <code>ApplicationAccessControlConfig</code> in devonfw.</p>
+</div>
+<div class="paragraph">
+<p>In many complicated cases where <code>@PermitAll</code> <code>@DenyAll</code> <code>@RolesAllowed</code> are insufficient e.g. a method should be accessed by a user in role A and not in role B at the same time, you have to verify the user role directly in the method. You can use <code>SecurityContext</code> class to get further needed information.</p>
+</div>
+<div class="sect6">
+<h7 id="guide-access-control.asciidoc_spring">Spring</h7>
+<div class="paragraph">
+<p>Spring Security also supports authorization on method level. To use it, you need to add the <code>spring-security-config</code> dependency. If you use Spring Boot, the dependency <code>spring-boot-starter-security</code> already includes <code>spring-security-config</code>. Then you can configure as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>prePostEnabled</code> property enables Spring Security pre/post annotations. <code>@PreAuthorize</code> and <code>@PostAuthorize</code> annotations provide expression-based access control. See more <a href="https://docs.spring.io/spring-security/site/docs/4.2.x/reference/html/el-access.html">here</a></p>
+</li>
+<li>
+<p><code>securedEnabled</code> property determines if the <code>@Secured</code> annotation should be enabled. <code>@Secured</code> can be used similarly as <code>@RollesAllowed</code>.</p>
+</li>
+<li>
+<p><code>jsr250Enabled</code> property allows us to use the JSR-250 annotations such as <code>@RolesAllowed</code>.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Configuration
+@EnableGlobalMethodSecurity(
+  prePostEnabled = true,
+  securedEnabled = true,
+  jsr250Enabled = true)
+public class MethodSecurityConfig
+  extends GlobalMethodSecurityConfiguration {
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A further read about the whole concept of Spring Security Authorization can be found <a href="https://docs.spring.io/spring-security/site/docs/current/reference/html5/#servlet-authorization">here</a>.</p>
+</div>
+</div>
+<div class="sect6">
+<h7 id="guide-access-control.asciidoc_quarkus">Quarkus</h7>
+<div class="paragraph">
+<p>Quarkus comes with built-in security to allow for RBAC based on the common security annotations <code>@RolesAllowed</code>, <code>@DenyAll</code>, <code>@PermitAll</code> on REST endpoints and CDI beans. Quarkus also provides the <code>io.quarkus.security.Authenticated</code> annotation that will permit any authenticated user to access the resource (equivalent to @RolesAllowed(&quot;**&quot;)).</p>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="guide-access-control.asciidoc_data-based-permissions">Data-based Permissions</h6>
 <div class="paragraph">
 <p>See <a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-data-permission.asciidoc">data permissions</a></p>
 </div>
@@ -1281,140 +1291,11 @@ public class UcSafeOfferImpl extends ApplicationUc implements UcSafeOffer {
 <div class="sect5">
 <h6 id="guide-access-control.asciidoc_access-control-schema-deprecated">Access Control Schema (deprecated)</h6>
 <div class="paragraph">
-<p>The <code>access-control-schema.xml</code> approach is deprecated. The documentation can still be found in <a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-access-control-schema.asciidoc">access control schema</a>.</p>
+<p>The <code>access-control-schema.xml</code> approach is deprecated. The documentation can still be found in <a href="#guide-access-control-schema.asciidoc">access control schema</a>.</p>
 </div>
 <div style="page-break-after: always;"></div>
 <!-- toc disabled -->
 </div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="guide-access-control-schema.asciidoc">Access Control Schema</h4>
-<div class="paragraph">
-<p>With release <code>3.0.0</code> the <code>access-control-schema.xml</code> has been deprecated. You may still use it and find the documentation in this section. However, for new devonfw applications always start with the new approach described in <a href="guide-access-control.html#access-control-config.asciidoc">access control config</a>.</p>
-</div>
-<div class="sect4">
-<h5 id="guide-access-control-schema.asciidoc_legacy-access-control-schema-documentation">Legacy Access Control Schema Documentation</h5>
-<div class="paragraph">
-<p>The file <code>access-control-schema.xml</code> is used to define the mapping from groups to permissions (see <a href="https://github.com/devonfw/my-thai-star/blob/develop/java/mtsj/core/src/main/resources/config/app/security/access-control-schema.xml">example from sample app</a>). The general terms discussed above can be mapped to the implementation as follows:</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 42. General security terms related to devon4j access control schema</caption>
-<colgroup>
-<col style="width: 15%;">
-<col style="width: 15%;">
-<col style="width: 70%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top"><strong>Term</strong></th>
-<th class="tableblock halign-left valign-top"><strong>devon4j-security implementation</strong></th>
-<th class="tableblock halign-left valign-top"><strong>Comment</strong></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Permission</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>AccessControlPermission</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Group</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>AccessControlGroup</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">When considering different levels of groups of different meanings, declare <code>type</code> attribute, e.g. as &quot;group&quot;.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Role</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>AccessControlGroup</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">With <code>type=&quot;role&quot;</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Access Control</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>AccessControl</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Super type that represents a tree of <code>AccessControlGroups</code> and <code>AccessControlPermissions</code>. If a principal &quot;has&quot; a <code>AccessControl</code> he also &quot;has&quot; all <code>AccessControls</code> with according permissions in the spanned sub-tree.</p></td>
-</tr>
-</tbody>
-</table>
-<div class="listingblock">
-<div class="title">Listing 22. Example access-control-schema.xml</div>
-<div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;access-control-schema&gt;
-  &lt;group id=&quot;ReadMasterData&quot; type=&quot;group&quot;&gt;
-    &lt;permissions&gt;
-      &lt;permission id=&quot;OfferManagement_GetOffer&quot;/&gt;
-      &lt;permission id=&quot;OfferManagement_GetProduct&quot;/&gt;
-      &lt;permission id=&quot;TableManagement_GetTable&quot;/&gt;
-      &lt;permission id=&quot;StaffManagement_GetStaffMember&quot;/&gt;
-    &lt;/permissions&gt;
-  &lt;/group&gt;
-
-  &lt;group id=&quot;Waiter&quot; type=&quot;role&quot;&gt;
-    &lt;inherits&gt;
-      &lt;group-ref&gt;Barkeeper&lt;/group-ref&gt;
-    &lt;/inherits&gt;
-    &lt;permissions&gt;
-      &lt;permission id=&quot;TableManagement_ChangeTable&quot;/&gt;
-    &lt;/permissions&gt;
-  &lt;/group&gt;
-  ...
-&lt;/access-control-schema&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This example <code>access-control-schema.xml</code> declares</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>a group named <code>ReadMasterData</code>, which grants four different permissions, e.g., <code>OfferManagement_GetOffer</code></p>
-</li>
-<li>
-<p>a group named <code>Waiter</code>, which</p>
-<div class="ulist">
-<ul>
-<li>
-<p>also grants all permissions from the group <code>Barkeeper</code></p>
-</li>
-<li>
-<p>in addition grants the permission <code>TableManagement_ChangeTable</code></p>
-</li>
-<li>
-<p>is marked to be a <code>role</code> for further application needs.</p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>The devon4j-security module automatically validates the schema configuration and will throw an exception if invalid.</p>
-</div>
-<div class="paragraph">
-<p>Unfortunately, Spring Security does not provide differentiated interfaces for authentication and authorization. Thus we have to provide an <code>AuthenticationProvider</code>, which is provided from Spring Security as an interface for authentication and authorization simultaneously.
-To integrate the devon4j-security provided access control schema, you can simply inherit your own implementation from the devon4j-security provided abstract class <code>AbstractAccessControlBasedAuthenticationProvider</code> and register your <code>ApplicationAuthenticationProvider</code> as an <code>AuthenticationManager</code>. Doing so, you also have to declare the two Beans <code>AccessControlProvider</code> and <code>AccessControlSchemaProvider</code>, which are precondition for the <code>AbstractAccessControlBasedAuthenticationProvider</code>.</p>
-</div>
-<div class="paragraph">
-<p>As state of the art devon4j will focus on role-based authorization to cope with authorization for executing use case of an application.
-We will use the JSR250 annotations, mainly <code>@RolesAllowed</code>, for authorizing method calls against the permissions defined in the annotation body. This has to be done for each use-case method in logic layer. Here is an example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public class OrdermanagementImpl extends AbstractComponentFacade implements Ordermanagement {
-
-  @RolesAllowed(Roles.WAITER)
-  public PaginatedListTo&lt;OrderCto&gt; findOrdersByPost(OrderSearchCriteriaTo criteria) {
-
-    return findOrderCtos(criteria);
-  }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Now this method can only be called if a user is logged-in that has the permission <code>FIND_TABLE</code>.</p>
-</div>
-<div style="page-break-after: always;"></div>
-<!-- toc disabled -->
 </div>
 <div class="sect4">
 <h5 id="guide-data-permission.asciidoc">Data-permissions</h5>
@@ -2042,7 +1923,7 @@ org.springframework.*</code></pre>
 <p>The following errors may occur in any devon application:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 43. Common Exceptions</caption>
+<caption class="title">Table 42. Common Exceptions</caption>
 <colgroup>
 <col style="width: 33.3333%;">
 <col style="width: 33.3333%;">
@@ -4153,7 +4034,7 @@ With spring we can simply use <a href="https://docs.spring.io/spring-framework/d
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-10-21 05:57:18 UTC
+Last updated 2021-10-21 07:07:28 UTC
 </sub></div>
 
 
