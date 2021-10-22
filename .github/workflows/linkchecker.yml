@@ -1,18 +1,18 @@
 name: Broken link check
-
 on:
   workflow_run:
     workflows: ["build-and-deploy"]
     types:
       - completed
-
 jobs:
-  broken_link_checker_job:
+  build:
     runs-on: ubuntu-latest
-    name: Check for broken links
     steps:
-      - name: Check links with linkcheck
-        uses: filiph/linkcheck@v2.0.15+1
-        with:
-          arguments: https://devonfw.com
-          recursiveLinks: true 
+      - name: update
+        run: sudo apt-get update
+      - name: check if apt can find linkchecker
+        run: sudo apt-cache search linkchecker  
+      - name: install linkchecker
+        run: sudo apt-get install w3c-linkchecker
+      - name: start check
+        run: checklink -r https://devonfw.com 
