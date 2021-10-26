@@ -104,6 +104,11 @@
 </ul>
 </li>
 </ul>
+<div class="imageblock" style="text-align: right;">
+<div class="content">
+<a class="image" href="https://forms.office.com/Pages/ResponsePage.aspx?id=Wq6idgCfa0-V7V0z13xNYal7m2EdcFdNsyBBMUiro4NUNllHQTlPNU9QV1JRRjk3TTAwVUJCNThTRSQlQCN0PWcu"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/ms_guild_logo.png" alt="MS Guild Logo" width="160" height="75"></a>
+</div>
+</div>
 <div class="sect1">
 <h2 id="index.asciidoc_provisioning-solution-github-actions">Provisioning Solution GitHub Actions</h2>
 <div class="sectionbody">
@@ -155,7 +160,7 @@
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/complementing_svcs_github.PNG" alt="Complementing Services" width="594" height="335">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/complementing_svcs_github.png" alt="Complementing Services" width="594" height="335">
 </div>
 </div>
 </div>
@@ -244,8 +249,34 @@
 </li>
 <li>
 <p>Variables</p>
+<div class="openblock">
+<div class="content">
 <div class="paragraph">
-<p>Variables can have different scopes. To pass variables between steps you two ways are possble (<a href="https://www.edwardthomson.com/blog/github_actions_15_sharing_data_between_steps.html">set-env</a>, <a href="https://stackoverflow.com/questions/58033366/how-to-get-current-branch-within-github-actions">set as output</a>). Direct support for enum like variables do not yet exist or workarounds are needed as described <a href="https://github.community/t/can-action-inputs-be-arrays/16457">here</a>.</p>
+<p>Variables can have different scopes.  Two ways are possible to pass variables between steps (<a href="https://www.edwardthomson.com/blog/github_actions_15_sharing_data_between_steps.html">set-env</a>, <a href="https://stackoverflow.com/questions/58033366/how-to-get-current-branch-within-github-actions">set as output</a>). Direct support for enum like variables do not yet exist or workarounds are needed as described <a href="https://github.community/t/can-action-inputs-be-arrays/16457">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>Variables can be simple key value pairs only. Values can be string and other basic types such as bool. Strings can contain structured json to accommodate more complex structures as shown below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>on:
+  push:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: set output
+      id: set
+      run: |
+         echo ::set-output name=json_var::'[{ "name": "test", "client_payload": "111" }, { "name": "test2", "client_payload": "222" }] '
+    - name: use output
+      run: |
+        echo $json_var | jq '.[].name'
+      env:
+        json_var: ${{ steps.set.outputs.json_var}}</code></pre>
+</div>
+</div>
+</div>
 </div>
 </li>
 <li>
@@ -282,29 +313,27 @@
 <div class="openblock">
 <div class="content">
 <div class="paragraph">
-<p>Parameters and variables can be simple key value pairs only. Values can be string and other basic types such as bool. Strings can contain structured json to more complex structures as shown below:</p>
+<p>When using the <code>workflow_call</code> keyword, you can optionally specify inputs that are passed to the called workflow from the caller workflow. Inputs for reusable workflows are specified with the same format as action inputs.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>on:
-  push:
+  workflow_call:
+    inputs:
+      username:
+        description: 'A username passed from the caller workflow'
+        default: 'john-doe'
+        required: false
+        type: string
+
 jobs:
-  build:
+  print-username:
     runs-on: ubuntu-latest
+
     steps:
-    - name: set output
-      id: set
-      run: |
-         echo ::set-output name=json_var::'[{ "name": "test", "client_payload": "111" }, { "name": "test2", "client_payload": "222" }] '
-    - name: use output
-      run: |
-        echo $json_var | jq '.[].name'
-      env:
-        json_var: ${{ steps.set.outputs.json_var}}</code></pre>
+      - name: Print the input name to STDOUT
+        run: echo The username is ${{ inputs.username }}</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>Input parameters refer to the input parameters of a workflow.</p>
 </div>
 </div>
 </div>
@@ -399,7 +428,7 @@ Most contexts you can use at any point in your workflow, including when default 
 <div class="paragraph">
 <p>For <strong>compliance</strong> GitHub provides various settings as described <a href="https://docs.github.com/en/actions/learn-github-actions/security-hardening-for-github-actions">here</a>.
 Secrets can be configured at the organization, repository, or environment level, and allow you to store sensitive information in GitHub. They should not contain structured content like JSON since they are reacted to avoid display in logs.
-You can use the CODEOWNERS feature to control how changes are made to your workflow files. For example, if all your workflow files are stored in .github/workflows, you can add this directory to the code owners list, so that any proposed changes to these files will first require approval from a designated reviewer.
+You can use the CODEOWNERS feature to control how changes are made to your workflow files. For example, if all your workflow files are stored in <code>.github/workflows</code>, you can add this directory to the code owners list, so that any proposed changes to these files will first require approval from a designated reviewer.
 You should ensure that untrusted input does not flow directly into workflows, actions, API calls, or anywhere else where they could be interpreted as executable code. In addition, there are other less obvious sources of potentially untrusted input, such as branch names and email addresses, which can be quite flexible in terms of their permitted content. For example, <code>zzz";echo${IFS}"hello";#</code> would be a valid branch name. A pull request with title of a"; ls $GITHUB_WORKSPACE" would for instance list the directory if the workflow would be as follows:</p>
 </div>
 <div class="listingblock">
@@ -417,8 +446,8 @@ You should ensure that untrusted input does not flow directly into workflows, ac
 </div>
 </div>
 <div class="paragraph">
-<p>To help you manage the risk of dangerous patterns as early as possible in the development lifecycle, the GitHub Security Lab has developed CodeQL queries that repository owners can integrate into their CI/CD pipelines.
-Actions can use the GITHUB_TOKEN by accessing it from the github.token context.  It&#8217;s good security practice to set the default permission for the GITHUB_TOKEN to read access only for repository contents.</p>
+<p>To help you manage the risk of dangerous patterns as early as possible in the development lifecycle, the GitHub Security Lab has developed CodeQL queries that repository owners can integrate into their CI/CD pipelines. <a href="https://github.com/github/codeql-action">This action</a> runs GitHub&#8217;s industry-leading semantic code analysis engine, CodeQL, against a repository&#8217;s source code to find security vulnerabilities. It then automatically uploads the results to GitHub so they can be displayed in the repository&#8217;s security tab.
+Actions can use the GITHUB_TOKEN by accessing it from the github.token context. It&#8217;s good security practice to set the default permission for the GITHUB_TOKEN to read access only for repository contents.</p>
 </div>
 <div class="paragraph">
 <p>The following <strong>repository</strong> structure shows a conceptual breakdown that covers most aspects:</p>
@@ -497,6 +526,8 @@ Actions can use the GITHUB_TOKEN by accessing it from the github.token context. 
 </div>
 <div class="sect2">
 <h3 id="index.asciidoc_variations">Variations</h3>
+<div class="sect3">
+<h4 id="index.asciidoc_possible-other-third-party">Possible Other Third Party</h4>
 <div class="paragraph">
 <p>For the following features other tools can be used:</p>
 </div>
@@ -509,6 +540,77 @@ Actions can use the GITHUB_TOKEN by accessing it from the github.token context. 
 <p><strong>Artefacts</strong> can be stored also in other systems</p>
 </li>
 </ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_migrate-from-azure-devops">Migrate from Azure DevOps</h4>
+<div class="paragraph">
+<p>Workflows/ Repos can be created by porting from Azure DevOps. Besides Azure DevOps pipelines and Azure DevOps Repos additional features/ settings exist, which need to be considered such as Azure DevOps artefacts. The picture below summarizes the starting point.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/mig_ado_scope.png" alt="Migration Scope" width="853" height="403">
+</div>
+</div>
+<div class="paragraph">
+<p>The migration approach detailed below tries to fulfill the following constraints:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>No big bang introduction of GitHub Actions but incremental approach</p>
+</li>
+<li>
+<p>Minimizing parallel infrastructure in GitHub until migration is fully finished</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To account for an incremental approach the pipelines are migrated first and the repo including its settings afterwards. The new GitHub workflow is created on the Azure DevOps side and copied over to GitHub Actions for execution. This helps to minimize parallel infrastructure in GitHub until Azure DevOps repos are fully migrated. The  picture below illustrate the first stage (Placement of remote executioner is just one possible example):</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/mig_ado_stage_mig_pl.png" alt="Migration Stage "Migrate Pipelines"" width="864" height="342">
+</div>
+</div>
+<div class="paragraph">
+<p>In the second step the Azure DevOps Repo is moved to GitHub. All related settings are migrated. Not required components such as the remote executioner can be dropped. The  picture below illustrate the second stage:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/mig_ado_stage_mig_repo.png" alt="Migration Stage "Migrate Repo"" width="835" height="340">
+</div>
+</div>
+<div class="paragraph">
+<p>The subsequent paragraphs detail the introduced two steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Migrate Azure DevOps Pipelines to GitHub workflows</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Azure DevOps Pipeline can call GitHub Workflows. This can be used to recreate GitHub Workflows without adjusting the interface of the Azure DevOps pipelines. <a href="https://github.com/samsmithnz/AzurePipelinesToGitHubActionsConverter">Tools</a> exist that allow at least partially to automatically translate the yaml code.</p>
+</div>
+<div class="paragraph">
+<p>Azure DevOps Artefacts can be migrated to <a href="https://docs.github.com/en/actions/advanced-guides/storing-workflow-data-as-artifacts">GitHub artefacts</a>, that can be also uploaded and downloaded for reuse.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Migrate Azure DevOps Repos to GitHub</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>An Azure DevOps repo can be imported into GitHub as described <a href="https://docs.github.com/en/github/importing-your-projects-to-github/importing-source-code-to-github/importing-a-git-repository-using-the-command-line">here</a>.</p>
+</div>
+</div>
+</div>
+</li>
+</ol>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -666,7 +768,7 @@ Actions can use the GITHUB_TOKEN by accessing it from the github.token context. 
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-10-25 11:56:57 UTC
+Last updated 2021-10-26 06:47:07 UTC
 </sub></div>
 </div>
 </div>
