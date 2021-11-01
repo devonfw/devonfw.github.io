@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2021-11-01 13:06:34 UTC">
+<meta name="author" content="Updated at 2021-11-01 13:58:42 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -511,7 +511,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2021-11-01 13:08:34 UTC</span><br>
+<span id="author" class="author">Updated at 2021-11-01 14:00:32 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -549,6 +549,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="devon4j.wiki_devon4j.asciidoc_guides_2.html#quarkus-template.asciidoc">Quarkus template</a>
 </li>
 <li><a href="devon4j.wiki_devon4j.asciidoc_guides_2.html#guide-native-image.asciidoc">Building a native image</a>
+</li>
+<li><a href="devon4j.wiki_devon4j.asciidoc_guides_2.html#guide-beanmapping-quarkus.asciidoc">Bean mapping with Quarkus</a>
 </li>
 </ul>
 </li>
@@ -1166,6 +1168,195 @@ Follow this <a href="https://quarkus.io/guides/building-native-image#container-r
 <div class="paragraph">
 <p>A list of all configuration properties for a native image can be found <a href="https://quarkus.io/guides/building-native-image#configuration-reference">here</a>.</p>
 </div>
+<!-- toc disabled -->
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-beanmapping-quarkus.asciidoc">Bean mapping with Quarkus</h4>
+<div class="paragraph">
+<p>This guide will show bean-mapping in particular for a Quarkus application. We recommend using <a href="https://mapstruct.org/">MapStruct</a> with a Quarkus application because the other bean-mapper frameworks are using Java reflections. They are not supported in GraalVm right now and causes problems building native applications. MapStruct is a code generator that greatly simplifies the implementation of mappings between Java bean types based on a convention over configuration approach. The mapping code will be generated at compile-time and uses plain method invocations and thus is fast, type-safe, and easy to understand. MapStruct has to be configured to not use Java reflections but it will be shown in this guide.</p>
+</div>
+<div class="paragraph">
+<p>You can find the official
+<a href="https://mapstruct.org/documentation/stable/reference/pdf/mapstruct-reference-guide.pdf">MapStruct reference guide</a> and a general introduction to MapStruct from <a href="https://www.baeldung.com/mapstruct">Baeldung</a>.</p>
+</div>
+<div class="sect4">
+<h5 id="guide-beanmapping-quarkus.asciidoc_mapstruct-dependency">MapStruct Dependency</h5>
+<div class="paragraph">
+<p>To get access to MapStruct we have to add the dependency to our POM.xml:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.mapstruct&lt;/groupId&gt;
+  &lt;artifactId&gt;mapstruct&lt;/artifactId&gt;
+  &lt;version&gt;1.4.2.Final&lt;/version&gt;
+  &lt;scope&gt;provided&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>MapStruct provides an annotation processor that also has to be added to the POM.xml</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;plugin&gt;
+	&lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+	&lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+	&lt;version&gt;3.8.1&lt;/version&gt;
+	&lt;configuration&gt;
+		&lt;source&gt;1.8&lt;/source&gt;
+		&lt;target&gt;1.8&lt;/target&gt;
+		&lt;annotationProcessorPaths&gt;
+			&lt;path&gt;
+				&lt;groupId&gt;org.mapstruct&lt;/groupId&gt;
+				&lt;artifactId&gt;mapstruct-processor&lt;/artifactId&gt;
+				&lt;version&gt;1.4.2.Final&lt;/version&gt;
+			&lt;/path&gt;
+		&lt;/path&gt;
+		&lt;/annotationProcessorPaths&gt;
+	&lt;/configuration&gt;
+&lt;/plugin&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>MapStruct takes advantage of generated getters, setters, and constructors from the <a href="https://projectlombok.org/">Lombok</a> library, follow this <a href="#../guide-lombok.asciidoc_lombok-with-mapstruct">Lombok with Mapstruct guide</a> to get Lombok with Mapstruct working.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guide-beanmapping-quarkus.asciidoc_mapstruct-configuration">MapStruct Configuration</h5>
+<div class="paragraph">
+<p>We already discussed the benefits of <a href="https://github.com/devonfw/devon4j/blob/master/documentation/guide-dependency-injection.asciidoc#dependency-injection">dependency injection</a> and MapStruct supports CDI with EJB, spring, and jsr330. The default retrieving method for a mapper is a factory that uses reflections and should be avoided. The component model should be set to CDI, as this will allow us to easily inject the generated mapper implementation. The component model can be configured in multiple ways.</p>
+</div>
+<div class="sect5">
+<h6 id="guide-beanmapping-quarkus.asciidoc_simple-configuration">Simple Configuration</h6>
+<div class="paragraph">
+<p>Add the attribute <strong>componentModel</strong> to the <strong>@Mapper</strong> annotation in the mapper interface.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Mapper(compnentModel = &quot;cdi&quot;)
+public interface ProductMapper{
+  ...
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="guide-beanmapping-quarkus.asciidoc_mapperconfig-configuration">MapperConfig Configuration</h6>
+<div class="paragraph">
+<p>Create a shared configuration that can be used for multiple mappers. Implement an Interface and use the annotation <strong>@MapperConfig</strong> for the class. You can define all configurations in this interface and pass the generated <code>MapperConfig.class</code> with the <strong>config</strong> attribute to the mapper. The <code>MapperConfig</code> also defines the <strong>InjectionStrategy</strong> and <strong>MappingInheritaceStrategy</strong> both will be explained later.
+A list of all configurations can be found <a href="https://mapstruct.org/documentation/stable/api/org/mapstruct/MapperConfig.html">here</a>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@MapperConfig(
+  compnentModel = &quot;cdi&quot;,
+  mappingInheritanceStrategy = MappingInheritanceStrategy.AUTO_INHERIT_FROM_CONFIG
+  injectionStrategy =InjectionStrategy.CONSTRUCTOR
+)
+public interface MapperConfig{
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Mapper( config = MapperConfig.class )
+public interface ProductMapper{
+  ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Any attributes not given via <strong>@Mapper</strong> will be inherited from the shared configuration <code>MapperConfig.class</code>.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="guide-beanmapping-quarkus.asciidoc_configuration-via-annotation-processor-options">Configuration via annotation processor options</h6>
+<div class="paragraph">
+<p>The MapStruct code generator can be configured using annotation processor options.
+You can pass the options to the compiler while invoking javac directly, or add the parameters to the maven configuration in the POM.xml</p>
+</div>
+<div class="paragraph">
+<p>We are also using the constructor injection strategie to avoid field injections and potential reflections also it will simplify our tests.
+The option to pass the parameter to the annotation processor in the POM.xml is used and can be inspected in our <a href="https://github.com/devonfw-sample/devon4quarkus-reference/blob/master/pom.xml#L220-L228">quarkus reference project</a>.</p>
+</div>
+<div class="paragraph">
+<p>A list of all annotation processor options can be found <a href="https://mapstruct.org/documentation/dev/reference/html/#configuration-options">here</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guide-beanmapping-quarkus.asciidoc_basic-bean-mapper-usage">Basic Bean-Mapper Usage</h5>
+<div class="paragraph">
+<p>To use the mapper we have to implement the mapper interface and the function prototypes with a <strong>@Mapper</strong> annotation.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Mapper
+public interface ProductMapper {
+
+  ProductDto map(ProductEntity model);
+
+  ProductEntity create(NewProductDto dto);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The MapStruct annotation processor will generate the implementation for us under <code>/target/generated-sources/</code>, we just need to tell it that we would like to have a method that accepts an <code>ProductEntity</code> entity and returns a new <code>ProductDto</code> DTO.</p>
+</div>
+<div class="paragraph">
+<p>The generated mapper implementation will be marked with the <strong>@ApplicationScoped</strong> annotation and thus can be injected into fields, constructor arguments, etc. using the <strong>@Inject</strong> annotation:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class ProductRestService{
+
+  @Inject
+  ProductMapper mapper;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>That is the basic usage of a Mapstruct mapper. In the next chapter, we go a bit into detail and show some more configurations.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guide-beanmapping-quarkus.asciidoc_advanced-bean-mapper-usage">Advanced Bean-Mapper Usage</h5>
+<div class="paragraph">
+<p>Let&#xB4;s assume our <code>Product</code> entity and the <code>ProductDto</code> has some different named property that should be mapped. Add a mapping annotation to map the property <strong>type</strong> from <code>Product</code> to <strong>kind</strong> from <code>ProductDto</code>. We define the source name of the property and the target name.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Mapper
+public interface ProductMapper {
+  @Mapping(target = &quot;kind&quot;, source = &quot;type&quot;)
+  ProductDto map(ProductEntity entity);
+
+  @InheritInverseConfiguration(name = &quot;map&quot; )
+  ProductEntity create(ProductDto dto);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For bi-directional mappings, we can indicate that a method shall inherit the inverse configuration of the corresponding method with the <strong>@InheritInverseConfiguration</strong>. You can omit the name parameter if the result type of method A is the same as the
+single-source type of method B and if the single-source type of A is the same as the result type of B. If multiple applies the attribute name is needed. Specific mappings from the inversed method can (optionally) be overridden, ignored, and set to constants or expressions.</p>
+</div>
+<div class="paragraph">
+<p>The mappingInheritanceStrategy can be defined as showed in <a href="devon4j.wiki_devon4j.asciidoc_guides_2.html#guide-beanmapping-quarkus.asciidoc_mapstruct-configuration">MapStruct Configuration</a> the existing options can be found <a href="https://mapstruct.org/documentation/dev/reference/html/#shared-configurations">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>Not always a mapped attribute has the same type in the source and target objects. For instance, an attribute may be of type <code>int</code> in the source bean but of type <code>Long</code> in the target bean.</p>
+</div>
+<div class="paragraph">
+<p>Another example are references to other objects which should be mapped to the corresponding types in the target model. E.g. the class <code>ShoppingCart</code> might have a property <strong>content</strong> of the type <code>Product</code> which needs to be converted into an <code>ProductDto</code> object when mapping a <code>ShoppingCart</code> object to <code>ShoppingCartDto</code>. For these cases, it&#x2019;s useful to understand how Mapstruct is <a href="https://mapstruct.org/documentation/dev/reference/html/#datatype-conversions">converting the data types</a> and the <a href="https://mapstruct.org/documentation/dev/reference/html/#mapping-object-references">object references</a>.</p>
+</div>
+<div class="paragraph">
+<p>Also, the Chapter for <a href="https://mapstruct.org/documentation/dev/reference/html/#controlling-nested-bean-mappings">nested bean mappings</a> will help to configure MapStruct to map arbitrary deep object graphs.</p>
+</div>
+<div class="paragraph">
+<p>You can study running MapStruct implementation examples given by <a href="https://github.com/mapstruct/mapstruct-examples">MapStruct</a> or in our <a href="https://github.com/devonfw-sample/devon4quarkus-reference">Quarkus reference project</a></p>
+</div>
 </div>
 </div>
 </div>
@@ -1301,7 +1492,7 @@ Follow this <a href="https://quarkus.io/guides/building-native-image#container-r
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-11-01 13:03:27 UTC
+Last updated 2021-11-01 13:56:04 UTC
 </sub></div>
 
 

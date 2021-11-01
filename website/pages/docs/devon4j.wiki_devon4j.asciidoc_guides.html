@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2021-11-01 13:06:34 UTC">
+<meta name="author" content="Updated at 2021-11-01 13:58:42 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -511,7 +511,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2021-11-01 13:08:34 UTC</span><br>
+<span id="author" class="author">Updated at 2021-11-01 14:00:32 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -566,7 +566,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-transferobject.asciidoc">Transfer-Objects</a>
 </li>
-<li><a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-beanmapping.asciidoc">Bean-Mapping</a>
+<li><a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-beanmapping-spring.asciidoc">Bean Mapping in devon4j-spring</a>
 </li>
 <li><a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-datatype.asciidoc">Datatypes</a>
 </li>
@@ -3320,67 +3320,49 @@ For very generic cases these just carry the suffix <code>To</code>.</p>
 <p>We can potentially create separate <em>service transfer objects</em> (STO) (if possible named <code>&#xAB;BusinessObject&#xBB;Sto</code>) to keep the <a href="devon4j.asciidoc_layers.html#guide-service-layer.asciidoc">service</a> API stable and independent of the actual data-model.
 However, we usually do not need this and want to keep our architecture simple.
 Only create STOs if you need <a href="guide-service-layer.html#versioning">service versioning</a> and support previous APIs or to provide legacy service technologies that require their own isolated data-model.
-In such case you also need <a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-beanmapping.asciidoc">beanmapping</a> between STOs and ETOs/DTOs what means extra effort and complexity that should be avoided.</p>
+In such case you also need <a href="guide-beanmapping.asciidoc.html">beanmapping</a> between STOs and ETOs/DTOs what means extra effort and complexity that should be avoided.</p>
 </dd>
 </dl>
 </div>
 <div style="page-break-after: always;"></div>
-<!-- toc disabled -->
 </div>
 <div class="sect3">
-<h4 id="guide-beanmapping.asciidoc">Bean-Mapping</h4>
+<h4 id="guide-beanmapping-spring.asciidoc">Bean Mapping in devon4j-spring</h4>
 <div class="paragraph">
-<p>For decoupling you sometimes need to create separate objects (beans) for a different view. E.g. for an external service you will use a <a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-transferobject.asciidoc">transfer-object</a> instead of the <a href="guide-jpa.html#entity">persistence entity</a> so internal changes to the entity do not implicitly change or break the service.</p>
-</div>
-<div class="paragraph">
-<p>Therefore you have the need to map similar objects what creates a copy. This also has the benefit that modifications to the copy have no side-effect on the original source object. However, to implement such mapping code by hand is very tedious and error-prone (if new properties are added to beans but not to mapping code):</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public UserEto mapUser(UserEntity source) {
-  UserEto target = new UserEto();
-  target.setUsername(source.getUsername());
-  target.setEmail(source.getEmail());
-  ...
-  return target;
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Therefore we are using a <code>BeanMapper</code> for this purpose that makes our lives a lot easier.</p>
+<p>We have developed a solution that uses a <code>BeanMapper</code> that allows to abstract from the underlying implementation. As mentioned in the <a href="#../guide-beanmapping.asccidoc">general bean mapping guide</a>, we started with <a href="http://dozer.sourceforge.net/documentation/about.html">Dozer</a> a Java Bean to Java Bean mapper that recursively copies data from one object to another. Now we recommend using <a href="https://orika-mapper.github.io/orika-docs/">Orika</a>. This guide will show an introduction to Orika and Dozer bean-mapper.</p>
 </div>
 <div class="sect4">
-<h5 id="guide-beanmapping.asciidoc_bean-mapper-dependency">Bean-Mapper Dependency</h5>
+<h5 id="guide-beanmapping-spring.asciidoc_bean-mapper-dependency">Bean-Mapper Dependency</h5>
 <div class="paragraph">
-<p>To get access to the <code>BeanMapper</code> we have to use either of below dependency in our POM:</p>
-</div>
-<div class="paragraph">
-<p>We started with dozer.sourceforge.net/[dozer] in devon4j and still support it. However, we now recommend <a href="https://orika-mapper.github.io/orika-docs/">orika</a> (for new projects) as it is much faster (see <a href="https://www.baeldung.com/java-performance-mapping-frameworks#2-orika">Performance of Java Mapping Frameworks</a>).</p>
+<p>To get access to the <code>BeanMapper</code> we have to use either of the below dependency in our POM:</p>
 </div>
 <div class="listingblock">
+<div class="title">Listing 22. <strong>Orika</strong></div>
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">    &lt;dependency&gt;
-      &lt;groupId&gt;com.devonfw.java&lt;/groupId&gt;
-      &lt;artifactId&gt;devon4j-beanmapping-orika&lt;/artifactId&gt;
-    &lt;/dependency&gt;</code></pre>
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.devonfw.java.modules&lt;/groupId&gt;
+    &lt;artifactId&gt;devon4j-beanmapping-orika&lt;/artifactId&gt;
+    &lt;version&gt;2020.12.002&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>or</p>
 </div>
 <div class="listingblock">
+<div class="title">Listing 23. <strong>Dozer</strong></div>
 <div class="content">
-<pre class="highlight"><code class="language-xml" data-lang="xml">    &lt;dependency&gt;
-      &lt;groupId&gt;com.devonfw.java&lt;/groupId&gt;
-      &lt;artifactId&gt;devon4j-beanmapping-dozer&lt;/artifactId&gt;
-    &lt;/dependency&gt;</code></pre>
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency&gt;
+    &lt;groupId&gt;com.devonfw.java.modules&lt;/groupId&gt;
+    &lt;artifactId&gt;devon4j-beanmapping-dozer&lt;/artifactId&gt;
+    &lt;version&gt;2020.12.002&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
 </div>
 </div>
 </div>
 <div class="sect4">
-<h5 id="guide-beanmapping.asciidoc_bean-mapper-configuration-using-dozer">Bean-Mapper Configuration using Dozer</h5>
+<h5 id="guide-beanmapping-spring.asciidoc_bean-mapper-configuration">Bean-Mapper Configuration</h5>
+<div class="sect5">
+<h6 id="guide-beanmapping-spring.asciidoc_bean-mapper-configuration-using-dozer">Bean-Mapper Configuration using Dozer</h6>
 <div class="paragraph">
-<p>The <code>BeanMapper</code> implementation is based on an existing open-source bean mapping framework.
+<p>The <code>BeanMapper</code> implementation is based on an existing open-source bean-mapping framework.
 In case of Dozer the mapping is configured <code>src/main/resources/config/app/common/dozer-mapping.xml</code>.</p>
 </div>
 <div class="paragraph">
@@ -3400,8 +3382,27 @@ Important is that you configure all your custom datatypes as <code>&lt;copy-by-r
 </div>
 </div>
 </div>
+</div>
 <div class="sect4">
-<h5 id="guide-beanmapping.asciidoc_bean-mapper-usage">Bean-Mapper Usage</h5>
+<h5 id="guide-beanmapping-spring.asciidoc_bean-mapper-configuration-using-orika">Bean-Mapper Configuration using Orika</h5>
+<div class="paragraph">
+<p>Orika with devonfw is configured by default and sets some custom mappings for <em>GenericEntity.java</em> to <em>GenericEntityDto.java</em>. To specify and customize the mappings you can create the class <em>BeansOrikaConfig.java</em> that extends the class <em>BaseOrikaConfig.java</em> from the <strong>devon4j.orika</strong> package. To register a basic mapping, register a <strong>ClassMap</strong> for the <strong>mapperFactory</strong> with your custom mapping. Watch the example below and follow the <a href="https://orika-mapper.github.io/orika-docs/mappings-via-classmapbuilder.html">basic Orika mapping configuration guide</a> and the <a href="https://orika-mapper.github.io/orika-docs/advanced-mappings.html">Orika advanced mapping guide</a>.</p>
+</div>
+<div class="paragraph">
+<p>Register Mappings:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">mapperFactory.classMap(UserEntity.class, UserEto.class)
+			.field(&quot;email&quot;, &quot;email&quot;)
+			.field(&quot;username&quot;, &quot;name&quot;)
+			.byDefault()
+			.register();</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guide-beanmapping-spring.asciidoc_bean-mapper-usage">Bean-Mapper Usage</h5>
 <div class="paragraph">
 <p>Then we can get the <code>BeanMapper</code> via <a href="guide-dependency-injection.asciidoc.html">dependency-injection</a> what we typically already provide by an abstract base class (e.g. <code>AbstractUc</code>). Now we can solve our problem very easy:</p>
 </div>
@@ -3412,9 +3413,6 @@ UserEntity resultEntity = ...;
 ...
 return getBeanMapper().map(resultEntity, UserEto.class);</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>There is also additional support for mapping entire collections.</p>
 </div>
 <div style="page-break-after: always;"></div>
 <!-- toc disabled -->
@@ -4295,7 +4293,7 @@ With spring we can simply use <a href="https://docs.spring.io/spring-framework/d
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-11-01 13:03:27 UTC
+Last updated 2021-11-01 13:56:04 UTC
 </sub></div>
 
 
