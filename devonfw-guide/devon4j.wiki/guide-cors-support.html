@@ -97,12 +97,8 @@
 <ul class="sectlevel0">
 <li><a href="#guide-cors-support.asciidoc">CORS support</a>
 <ul class="sectlevel1">
-<li><a href="#guide-cors-support.asciidoc_configuring-cors-support">Configuring CORS support</a>
-<ul class="sectlevel2">
-<li><a href="#guide-cors-support.asciidoc_dependency">Dependency</a></li>
-<li><a href="#guide-cors-support.asciidoc_configuration">Configuration</a></li>
-</ul>
-</li>
+<li><a href="#guide-cors-support.asciidoc_configuring-cors-support">Configuring CORS support</a></li>
+<li><a href="#guide-cors-support.asciidoc_configuration-with-service-mesh">Configuration with service mesh</a></li>
 </ul>
 </li>
 </ul>
@@ -129,82 +125,22 @@
 <div class="paragraph">
 <p>It is important to note that if you are using security in your request (sending cookies) you have to set  <code>withCredentials</code> flag to <code>true</code> in your client side request and deal with special IE8 characteristics.</p>
 </div>
+<div class="paragraph">
+<p>For more information about CORS see <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">here</a>. Information about the CORS headers can be found <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers#cors">here</a>.</p>
+</div>
 <div class="sect1">
 <h2 id="guide-cors-support.asciidoc_configuring-cors-support">Configuring CORS support</h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="guide-cors-support.asciidoc_dependency">Dependency</h3>
 <div class="paragraph">
-<p>To enable the CORS support from the server side add the below dependency.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="xml language-xml">&lt;dependency&gt;
-  &lt;groupId&gt;com.devonfw.java.starters&lt;/groupId&gt;
-  &lt;artifactId&gt;devon4j-starter-security-cors&lt;/artifactId&gt;
-&lt;/dependency&gt;</code></pre>
+<p>To enable CORS support for your application, see the advanced guides. For Spring applications see <a href="#spring/guide-cors-spring.asciidoc">here</a>. For Quarkus follow the <a href="https://quarkus.io/guides/http-reference#cors-filter">official Quarkus guide</a>.</p>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="guide-cors-support.asciidoc_configuration">Configuration</h3>
+<div class="sect1">
+<h2 id="guide-cors-support.asciidoc_configuration-with-service-mesh">Configuration with service mesh</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>Add the below properties in your application.properties file.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>#CORS support
-security.cors.spring.allowCredentials=true
-security.cors.spring.allowedOriginPatterns=*
-security.cors.spring.allowedHeaders=*
-security.cors.spring.allowedMethods=OPTIONS,HEAD,GET,PUT,POST,DELETE,PATCH
-security.cors.pathPattern=/**</code></pre>
-</div>
-</div>
-<table class="tableblock frame-all grid-all" style="width: 100%;">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Attribute</th>
-<th class="tableblock halign-left valign-top">Description</th>
-<th class="tableblock halign-left valign-top">HTTP Header</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">allowCredentials</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Decides the browser should include any cookies associated with the request (<code>true</code> if cookies should be included).</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Access-Control-Allow-Credentials</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">allowedOrigins</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">List of allowed origins (use <code>*</code> to allow all orgins).</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Access-Control-Allow-Origin</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">allowedMethods</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">List of allowed HTTP request methods (<code>OPTIONS</code>, <code>HEAD</code>, <code>GET</code>, <code>PUT</code>, <code>POST</code>, <code>DELETE</code>, <code>PATCH</code>, etc.).</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">allowedHeaders</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">List of allowed headers that can be used during the request (use <code>*</code> to allow all headers requested by the client)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Access-Control-Allow-Headers</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pathPattern</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Ant-style pattern for the URL paths where to apply CORS. Use "/**" to match all URL paths.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>More information about the CORS headers can be found <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers#cors">here</a></p>
-</div>
+<p>If you are using a service mesh, you can also define your CORS policy directly there. Here is an example from <a href="https://istio.io/latest/docs/reference/config/networking/virtual-service/#CorsPolicy">Istio</a>.</p>
 </div>
 </div>
 </div>
@@ -345,7 +281,7 @@ security.cors.pathPattern=/**</code></pre>
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-11-02 05:36:37 UTC
+Last updated 2021-11-02 06:56:20 UTC
 </sub></div>
 </div>
 </div>
