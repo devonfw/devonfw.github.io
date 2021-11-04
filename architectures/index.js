@@ -256,7 +256,7 @@ function queryIndex() {
             parameters.delete('search', searchArr[p]);
         }
     }
-    if (queryRes.length > 0) {
+    if(query != '') {
         parameters.set('search', query);
     }
     document.location.hash = "#" + parameters.toString()
