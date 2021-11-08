@@ -1,4 +1,6 @@
 var pageSize = 10;
+var MATURITY_LEVEL = "Maturity level"
+var MATURITY_LEVEL_COMPLETE = "Complete"
 
 function getParameters() {
     const searchParams = new URLSearchParams(document.location.hash.length > 0 ? document.location.hash.substring(1) : "");
@@ -25,6 +27,7 @@ function search() {
     var solutions = solutionsJson;
     let curentPage = 1;
     let queryRes = queryIndex();
+    let filterMaturity = true;
 
     for (const filterName of parameters.keys()) {
         var filterValues = parameters.get(filterName);
@@ -36,17 +39,19 @@ function search() {
         if (filterName == 'search') {
             continue;
         }
+        if (filterName == 'show' && filterValues[0] == 'maturity') {
+            filterMaturity = false;
+        }
         for (var i in filterValues) {
             var filterValue = filterValues[i];
-            var filterSolutions = tagsJson[filterName][filterValue];
-            let newSolutions = {};
-            for (var solutionKey in solutions) {
-                if (filterSolutions.includes(solutionKey)) {
-                    newSolutions[solutionKey] = solutions[solutionKey];
-                }
+            if(typeof tagsJson[filterName] !== 'undefined') {
+                solutions = filterSolutions(solutions, filterName, filterValue);
             }
-            solutions = newSolutions;
         }
+    }
+
+    if(filterMaturity) {
+        solutions = filterSolutions(solutions, MATURITY_LEVEL, MATURITY_LEVEL_COMPLETE);
     }
 
     let newSolutions = {};
@@ -70,6 +75,17 @@ function search() {
     renderSolutions(solutions, curentPage);
     disableFilters(solutions);
     highlightSelected();
+}
+
+function filterSolutions(solutions, filterName, filterValue) {
+    var filterSolutions = tagsJson[filterName][filterValue];
+    let newSolutions = {};
+    for (var solutionKey in solutions) {
+        if (filterSolutions.includes(solutionKey)) {
+            newSolutions[solutionKey] = solutions[solutionKey];
+        }
+    }
+    return newSolutions;
 }
 
 function renderSolutions(solutions, current) {
@@ -322,32 +338,36 @@ async function main() {
     var filterspanel = $('<div id="filterspanel" class="filterspanel"></div>');
     for (const filter in tagsJson) {
         if (Object.hasOwnProperty.call(tagsJson, filter)) {
-            const tag = orderTag(tagsJson[filter]);
-            console.log(tag);
-            var filterpanel = $('<div id="filterpanel_' + filter + '" class="filterpanel"></div>');
-            var filterpanelhead = $('<div id="filterpanel_' + filter + '_head" class="filterpanelhead"></div>');
-            filterpanelhead.text(filter);
-            filterpanel.append(filterpanelhead);
-            var filterpanelbody = $('<div id="filterpanel_' + filter + '_body" class="filterpanelbody"></div>');
-            filterpanel.append(filterpanelbody);
-            for (const tagValue in tag) {
-                if (Object.hasOwnProperty.call(tag, tagValue)) {
-                    var tagDiv = $('<div class="tag" id="tag_' + filter.replace(/[^a-zA-Z0-9]/g, "_") + '_' + tagValue.replace(/[^a-zA-Z0-9]/g, "_") + '"></div>');
-                    tagDiv.text(tagValue);
-                    tagDiv.prepend($('<span id="tag_' + filter.replace(/[^a-zA-Z0-9]/g, "_") + '_' + tagValue.replace(/[^a-zA-Z0-9]/g, "_") + '_checkbox" class="checkbox material-icons-sharp">check_box_outline_blank</span>'))
-                    tagDiv.click((e) => {
-                        if (!$(e.currentTarget).hasClass("disabled")) {
-                            if (!parameters.delete(filter, tagValue)) {
-                                parameters.set(filter, tagValue);
+            var showParameter = parameters.get('show');
+            let showMaturity = (filter == MATURITY_LEVEL && typeof showParameter !== 'undefined' && showParameter.length > 0 && showParameter[0] == 'maturity');
+            if (filter != MATURITY_LEVEL || showMaturity) {
+                const tag = orderTag(tagsJson[filter]);
+                console.log(tag);
+                var filterpanel = $('<div id="filterpanel_' + filter + '" class="filterpanel"></div>');
+                var filterpanelhead = $('<div id="filterpanel_' + filter + '_head" class="filterpanelhead"></div>');
+                filterpanelhead.text(filter);
+                filterpanel.append(filterpanelhead);
+                var filterpanelbody = $('<div id="filterpanel_' + filter + '_body" class="filterpanelbody"></div>');
+                filterpanel.append(filterpanelbody);
+                for (const tagValue in tag) {
+                    if (Object.hasOwnProperty.call(tag, tagValue)) {
+                        var tagDiv = $('<div class="tag" id="tag_' + filter.replace(/[^a-zA-Z0-9]/g, "_") + '_' + tagValue.replace(/[^a-zA-Z0-9]/g, "_") + '"></div>');
+                        tagDiv.text(tagValue);
+                        tagDiv.prepend($('<span id="tag_' + filter.replace(/[^a-zA-Z0-9]/g, "_") + '_' + tagValue.replace(/[^a-zA-Z0-9]/g, "_") + '_checkbox" class="checkbox material-icons-sharp">check_box_outline_blank</span>'))
+                        tagDiv.click((e) => {
+                            if (!$(e.currentTarget).hasClass("disabled")) {
+                                if (!parameters.delete(filter, tagValue)) {
+                                    parameters.set(filter, tagValue);
+                                }
+                                document.location.hash = "#" + parameters.toString()
+                                search();
                             }
-                            document.location.hash = "#" + parameters.toString()
-                            search();
-                        }
-                    });
-                    filterpanelbody.append(tagDiv);
+                        });
+                        filterpanelbody.append(tagDiv);
+                    }
                 }
+                filterspanel.append(filterpanel);
             }
-            filterspanel.append(filterpanel);
         }
     }
     $("#content").append(filterspanel);
