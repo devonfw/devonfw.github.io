@@ -139,6 +139,10 @@ function createBtns(totalPage, current) {
     }
 }
 
+window.onpopstate = () =>{
+    search();          
+}
+
 function clickBtn(current) {
     let parameters = getParameters();
     let pageArr = parameters.get('page');
