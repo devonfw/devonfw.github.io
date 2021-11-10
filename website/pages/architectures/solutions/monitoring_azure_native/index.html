@@ -19,7 +19,7 @@
 <!-- ************************************* -->
 
 
-<title>Monitoring Solution Azure Native</title>
+<title>Monitoring Solutions - Azure Native</title>
 <!-- devonfw website stylesheet -->
 <link rel="stylesheet" type="text/css" href="/devonfw.css">
 <!-- Lunr -->
@@ -87,7 +87,7 @@
 <div class="toc">
 <div class="title">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#index.asciidoc_monitoring-solution-azure-native">Monitoring Solution Azure Native</a>
+<li><a href="#index.asciidoc_monitoring-solutions---azure-native">Monitoring Solutions - Azure Native</a>
 <ul class="sectlevel2">
 <li><a href="#index.asciidoc_application-monitoring">Application Monitoring</a></li>
 <li><a href="#index.asciidoc_infrastructure-monitoring">Infrastructure Monitoring</a></li>
@@ -96,7 +96,7 @@
 <li><a href="#index.asciidoc_credits">Credits</a></li>
 </ul>
 <div class="sect1">
-<h2 id="index.asciidoc_monitoring-solution-azure-native">Monitoring Solution Azure Native</h2>
+<h2 id="index.asciidoc_monitoring-solutions---azure-native">Monitoring Solutions - Azure Native</h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="index.asciidoc_application-monitoring">Application Monitoring</h3>
@@ -424,7 +424,62 @@ Log analytics can target cheap Azure blob storage. It can be accessed with Kusto
 <div class="openblock">
 <div class="content">
 <div class="paragraph">
-<p>See the options below for dashboarding/ visualization:</p>
+<p>Various options inside Azure and by external tools such as Grafana exist. If you are using Grafana you have to (1) find a hosting option and (2) have to connect Grafana with Azure.</p>
+</div>
+<div class="paragraph">
+<p>The basic options are either using the (1) <a href="https://devblogs.microsoft.com/devops/monitoring-azure-by-using-grafana-dashboards/">Grafana cloud</a> or (2) hosting Grafana in Azure.
+The hosting options within Azure can be further diveded into configurations where a <a href="https://bitnami.com/stack/grafana/cloud/azure">single VM</a> with Grafana preinstalled is enough or more sophisticated high availability configurations with additional redundancy on node/ VM level.Hosting options with additional redundancy include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Installing Grafana on multiple nodes as described <a href="https://azure.microsoft.com/de-de/blog/deploying-grafana-for-production-deployments-on-azure/">here</a> via Bitnami Grafana Multi-Tier offering through the Azure Marketplace <strong>(Recommended way)</strong>.</p>
+</li>
+<li>
+<p>Installing Grafana on managed apache cluster instance as described <a href="https://docs.microsoft.com/en-us/azure/managed-instance-apache-cassandra/visualize-prometheus-grafana">here</a></p>
+</li>
+<li>
+<p>Installing Grafana on Kubernetes Cluster as described <a href="https://grafana.com/docs/grafana/latest/installation/kubernetes/">here</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For connecting Grafana with data source in Azure the options below exist. This also means that Grafana cannot directly connect to Azure Services. Therefore it is required to collect Azure telemetry in Azure places such as Azure Monitor/ Data Explorer:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Azure Monitor via plugin as described <a href="https://grafana.com/grafana/plugins/grafana-azure-monitor-datasource/">here</a></p>
+</li>
+<li>
+<p>Azure Data Explorer via plugin as described <a href="https://grafana.com/grafana/plugins/grafana-azure-data-explorer-datasource/">here</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Grafana and Azure Monitor provide visualization and alerts. The following recommenations are intended to help to choose:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Service Management Tool Integration (ITSM)</strong>: Both can be integrated. See here how to integrate Grafana Events into the <a href="https://docs.servicenow.com/bundle/paris-it-operations-management/page/product/event-management/task/grafana-event-integration.html">ITSM tool ServiceNow</a>. For Azure Monitor <a href="https://azure.microsoft.com/en-us/updates/azure-monitor-itsm-connector-for-servicenow-itom-with-secure-export/">connectors</a> exist that depend on the ServiceNow version and arepartially in preview.</p>
+</li>
+<li>
+<p>Azure Monitor telemetry is also available via other means (Portal etc.)</p>
+</li>
+<li>
+<p><strong>Cloud agnostic</strong>: Using Grafana opens a cloud agnostic way and could also be used for other clouds</p>
+</li>
+<li>
+<p>Including critical features in Grafana such as alert might require Grafana hosting with additional redundancy</p>
+</li>
+<li>
+<p>Grafana can be integrated with Azure AD or LDAP as described <a href="https://community.grafana.com/t/integration-of-grafana-with-azure-active-directory/23425/2">here</a> for authentication</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Grafana is moving to the new version 8.0 which is in public preview (as of 4.11.2021). Machine learning mechanisms e.g. for <a href="https://grafana.com/blog/2021/06/08/grafanaconline-2021-your-guide-to-the-newest-announcements-from-grafana-labs/">dynamic thresholds</a> are only in place for Grafana Cloud users which is possible in Azure. A final decision depends on the priorities e.g. cloud agnostic/ drilldown vs. dynamic thresholds. The table below summarizes the features related to the previously introduced Azure dashbaord. See the options below for dashboarding/ visualization:</p>
 </div>
 <table class="tableblock frame-all grid-all" style="width: 99%;">
 <colgroup>
@@ -510,9 +565,6 @@ Log analytics can target cheap Azure blob storage. It can be accessed with Kusto
 </li>
 <li>
 <p>Logs: Push to monitoring plane only</p>
-</li>
-<li>
-<p>Grafana can be used for visualization via using a connector for log analytics workspace</p>
 </li>
 </ul>
 </div>
@@ -829,7 +881,7 @@ Log analytics can target cheap Azure blob storage. It can be accessed with Kusto
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-11-10 18:36:21 UTC
+Last updated 2021-11-10 19:03:46 UTC
 </sub></div>
 </div>
 
