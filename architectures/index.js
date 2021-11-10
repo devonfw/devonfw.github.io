@@ -336,11 +336,12 @@ async function main() {
     var parameters = getParameters();
 
     var filterspanel = $('<div id="filterspanel" class="filterspanel"></div>');
+    var filterMaturityComplete = Object.keys(filterSolutions(solutionsJson, MATURITY_LEVEL, MATURITY_LEVEL_COMPLETE));
     for (const filter in tagsJson) {
         if (Object.hasOwnProperty.call(tagsJson, filter)) {
             var showParameter = parameters.get('show');
-            let showMaturity = (filter == MATURITY_LEVEL && typeof showParameter !== 'undefined' && showParameter.length > 0 && showParameter[0] == 'maturity');
-            if (filter != MATURITY_LEVEL || showMaturity) {
+            let showMaturity = (typeof showParameter !== 'undefined' && showParameter.length > 0 && showParameter[0] == 'maturity');
+            if (filter != MATURITY_LEVEL || (filter == MATURITY_LEVEL && showMaturity)) {    
                 const tag = orderTag(tagsJson[filter]);
                 console.log(tag);
                 var filterpanel = $('<div id="filterpanel_' + filter + '" class="filterpanel"></div>');
@@ -349,8 +350,13 @@ async function main() {
                 filterpanel.append(filterpanelhead);
                 var filterpanelbody = $('<div id="filterpanel_' + filter + '_body" class="filterpanelbody"></div>');
                 filterpanel.append(filterpanelbody);
+                var filterpanelEmpty = true;
                 for (const tagValue in tag) {
-                    if (Object.hasOwnProperty.call(tag, tagValue)) {
+                    var solutionFilterExists = false
+                    tag[tagValue].forEach(element => {
+                        solutionFilterExists = solutionFilterExists || filterMaturityComplete.includes(element)
+                    });
+                    if (Object.hasOwnProperty.call(tag, tagValue) && (showMaturity || solutionFilterExists)) {
                         var tagDiv = $('<div class="tag" id="tag_' + filter.replace(/[^a-zA-Z0-9]/g, "_") + '_' + tagValue.replace(/[^a-zA-Z0-9]/g, "_") + '"></div>');
                         tagDiv.text(tagValue);
                         tagDiv.prepend($('<span id="tag_' + filter.replace(/[^a-zA-Z0-9]/g, "_") + '_' + tagValue.replace(/[^a-zA-Z0-9]/g, "_") + '_checkbox" class="checkbox material-icons-sharp">check_box_outline_blank</span>'))
@@ -364,9 +370,12 @@ async function main() {
                             }
                         });
                         filterpanelbody.append(tagDiv);
+                        filterpanelEmpty = false;
                     }
                 }
-                filterspanel.append(filterpanel);
+                if(!filterpanelEmpty) {
+                    filterspanel.append(filterpanel);
+                }
             }
         }
     }
