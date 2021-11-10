@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    component: vmagent
+  name: vmagent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: vmagent
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        component: vmagent
+    spec:
+      containers:
+        - args:
+            - --promscrape.config=/conf/vMetrics.yaml
+            - --remoteWrite.url=http://victoriametrics:8428/api/v1/write
+          image: victoriametrics/vmagent
+          name: vmagent
+          ports:
+            - containerPort: 8429
+          volumeMounts:
+          - mountPath: /conf
+            name: vmetrics-config
+      restartPolicy: Always
+      volumes:
+      - configMap:
+          items:
+          - key: vMetrics.yaml
+            path: vMetrics.yaml
+          name: vmetrics-config
+        name: vmetrics-config
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    component: vmagent
+  name: vmagent
+spec:
+  ports:
+    - name: "8429"
+      port: 8429
+      targetPort: 8429
+  selector:
+    component: vmagent

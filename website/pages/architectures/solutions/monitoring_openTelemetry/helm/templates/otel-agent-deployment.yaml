@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    component: otel-agent
+  name: otel-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: otel-agent
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        component: otel-agent
+    spec:
+      containers:
+      - args:
+        - /otelcol
+        - --config=/conf/otel-agent-config.yaml
+        - --log-level=DEBUG
+        image: otel/opentelemetry-collector:latest
+        name: otel-agent
+        ports:
+        - containerPort: 8888
+        - containerPort: 14250
+        - containerPort: 14268
+        - containerPort: 55678
+        - containerPort: 4317
+        - containerPort: 9411
+        - containerPort: 1777
+        - containerPort: 13133
+        resources: {}
+        volumeMounts:
+        - mountPath: /conf
+          name: otel-agent-config-volume
+      volumes:
+        - name: otel-agent-config-volume
+          configMap:
+            name: otel-agent
+            items:
+            - key: otel-agent-config
+              path: otel-agent-config.yaml
+      restartPolicy: Always
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    component: otel-agent
+  name: otel-agent
+spec:
+  ports:
+    - name: "8887"
+      port: 8887
+      targetPort: 8888
+    - name: "14250"
+      port: 14250
+      targetPort: 14250
+    - name: "14268"
+      port: 14268
+      targetPort: 14268
+    - name: "55678"
+      port: 55678
+      targetPort: 55678
+    - name: "4317"
+      port: 4317
+      targetPort: 4317
+    - name: "9411"
+      port: 9411
+      targetPort: 9411
+    - name: "1777"
+      port: 1777
+      targetPort: 1777
+    - name: "55679"
+      port: 55679
+      targetPort: 55679
+    - name: "13133"
+      port: 13133
+      targetPort: 13133
+  selector:
+    component: otel-agent

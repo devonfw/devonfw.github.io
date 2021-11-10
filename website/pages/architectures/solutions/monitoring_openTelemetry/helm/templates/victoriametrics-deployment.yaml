@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    component: victoriametrics
+  name: victoriametrics
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: victoriametrics
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        component: victoriametrics
+    spec:
+      containers:
+        - args:
+            - --promscrape.config=/conf/vMetrics.yaml
+          image: victoriametrics/victoria-metrics
+          name: victoriametrics
+          ports:
+            - containerPort: 8428
+            - containerPort: 8089
+            - containerPort: 8089
+              protocol: UDP
+            - containerPort: 2003
+            - containerPort: 2003
+              protocol: UDP
+            - containerPort: 4242
+          resources: {}
+          volumeMounts:
+            - mountPath: /conf
+              name: vmetrics-config
+      restartPolicy: Always
+      volumes:
+      - configMap:
+          items:
+          - key: vMetrics.yaml
+            path: vMetrics.yaml
+          name: vmetrics-config
+        name: vmetrics-config
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    component: victoriametrics
+  name: victoriametrics
+spec:
+  ports:
+    - name: "8428"
+      port: 8428
+      targetPort: 8428
+    - name: "8089"
+      port: 8089
+      targetPort: 8089
+    - name: 8089-udp
+      port: 8089
+      protocol: UDP
+      targetPort: 8089
+    - name: "2003"
+      port: 2003
+      targetPort: 2003
+    - name: 2003-udp
+      port: 2003
+      protocol: UDP
+      targetPort: 2003
+    - name: "4242"
+      port: 4242
+      targetPort: 4242
+  selector:
+    component: victoriametrics

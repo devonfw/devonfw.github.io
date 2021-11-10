@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    component: jaeger-all-in-one
+  name: jaeger-all-in-one
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: jaeger-all-in-one
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        component: jaeger-all-in-one
+    spec:
+      containers:
+        - image: jaegertracing/all-in-one:latest
+          name: jaeger-all-in-one
+          ports:
+            - containerPort: 16686
+            - containerPort: 14268
+            - containerPort: 14250
+          resources: {}
+      restartPolicy: Always
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    component: jaeger-all-in-one
+  name: jaeger-all-in-one
+spec:
+  ports:
+    - name: "16686"
+      port: 16686
+      targetPort: 16686
+    - name: "14268"
+      port: 14268
+      targetPort: 14268
+    - name: "14250"
+      port: 14250
+      targetPort: 14250
+  selector:
+    component: jaeger-all-in-one

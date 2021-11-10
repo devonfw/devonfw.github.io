@@ -1,0 +1,98 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-agent
+data:
+  otel-agent-config: |
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+
+    processors:
+      batch:
+
+    exporters:
+      otlp:
+        endpoint: "otel-collector.default.svc.cluster.local:4317"
+        insecure: true
+
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [otlp]
+        metrics:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [otlp]
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-collector
+data:
+  otel-collector-config: |
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+          http:
+            cors_allowed_origins:
+            - http://*
+            - https://*
+
+    processors:
+        batch:
+
+    exporters:
+      logging:
+      zipkin:
+        endpoint: "http://zipkin-all-in-one.default.svc.cluster.local:9411/api/v2/spans"
+        format: proto
+      jaeger:
+        endpoint: jaeger-all-in-one.default.svc.cluster.local:14250
+        insecure: true
+      prometheus:
+        endpoint: "0.0.0.0:8889"
+
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          exporters: [zipkin, jaeger]
+          processors: [batch]
+        metrics:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [prometheus]
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vmetrics-config
+data:
+  vMetrics.yaml: |
+    scrape_configs:
+      - job_name: '{{ .Values.application.metrics.jobname }}'
+        scrape_interval: 10s
+        metrics_path: '{{ .Values.application.metrics.url }}'
+        static_configs:
+          - targets: ['{{ .Values.application.service.name }}:{{ .Values.application.service.port }}']
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus
+data:
+  prometheus-config: |
+    scrape_configs:
+      - job_name: '{{ .Values.application.metrics.jobname }}'
+        scrape_interval: 10s
+        metrics_path: '{{ .Values.application.metrics.url }}'
+        static_configs:
+          - targets: ['{{ .Values.application.service.name }}:{{ .Values.application.service.port }}']
