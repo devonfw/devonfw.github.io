@@ -347,10 +347,10 @@ The implementation of the Merge interface must override the following methods:</
 <div class="ulist">
 <ul>
 <li>
-<p>create the file <code>META-INF/services/com.capgemini.cobigen.api.extension.GeneratorPluginActivator</code> containing just the full qualified name of the class implementing the <code>GeneratorPluginActivator</code> interface, if the plugin provides a <code>Merger</code> and/or a <code>TriggerInterpreter</code></p>
+<p>create the file <code>META-INF/services/com.devonfw.cobigen.api.extension.GeneratorPluginActivator</code> containing just the full qualified name of the class implementing the <code>GeneratorPluginActivator</code> interface, if the plugin provides a <code>Merger</code> and/or a <code>TriggerInterpreter</code></p>
 </li>
 <li>
-<p>create the file <code>META-INF/services/com.capgemini.cobigen.api.extension.TextTemplateEngine</code> containing just the full qualified name of the class implementing the <code>TextTemplateEngine</code> interface, if provided by the plugin</p>
+<p>create the file <code>META-INF/services/com.devonfw.cobigen.api.extension.TextTemplateEngine</code> containing just the full qualified name of the class implementing the <code>TextTemplateEngine</code> interface, if provided by the plugin</p>
 </li>
 <li>
 <p>include <code>META-INF</code> into the target bundle (i.e. the folder <code>META-INF</code> has to be present in the target jar file)</p>
@@ -361,11 +361,11 @@ The implementation of the Merge interface must override the following methods:</
 <div class="content">
 <div class="title">Example: Java Plugin</div>
 <div class="paragraph">
-<p>The java plugin provides both a <code>Merger</code> and a <code>TriggerInterpreter</code>. It contains therefore a <code>com.capgemini.cobigen.api.extension.GeneratorPluginActivator</code> file with the following content:</p>
+<p>The java plugin provides both a <code>Merger</code> and a <code>TriggerInterpreter</code>. It contains therefore a <code>com.devonfw.cobigen.api.extension.GeneratorPluginActivator</code> file with the following content:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>com.capgemini.cobigen.javaplugin.JavaPluginActivator</code></pre>
+<pre class="highlight"><code>com.devonfw.cobigen.javaplugin.JavaPluginActivator</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -383,7 +383,7 @@ The implementation of the Merge interface must override the following methods:</
 <div class="listingblock">
 <div class="content">
 <pre>&lt;parent&gt;
-    &lt;groupId&gt;com.capgemini&lt;/groupId&gt;
+    &lt;groupId&gt;com.devonfw&lt;/groupId&gt;
     &lt;artifactId&gt;cobigen-parent&lt;/artifactId&gt;
     &lt;version&gt;dev-SNAPSHOT&lt;/version&gt;
 &lt;/parent&gt;</pre>
@@ -395,7 +395,7 @@ The implementation of the Merge interface must override the following methods:</
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="xml language-xml">&lt;parent&gt;
-    &lt;groupId&gt;com.capgemini&lt;/groupId&gt;
+    &lt;groupId&gt;com.devonfw&lt;/groupId&gt;
     &lt;artifactId&gt;cobigen-tempeng-parent&lt;/artifactId&gt;
     &lt;version&gt;dev-SNAPSHOT&lt;/version&gt;
 &lt;/parent&gt;</code></pre>
@@ -410,7 +410,7 @@ The implementation of the Merge interface must override the following methods:</
 <p>The dependencies of the plugin are included in the bundle</p>
 </li>
 <li>
-<p>To make the plugin available to the Eclipse plugin it must be included into the current <code>compositeContent.xml</code> and <code>compositeArtifacts.xml</code> files. Both files are located in <a href="http://de-mucevolve02/files/cobigen/updatesite"><code>http://de-mucevolve02/files/cobigen/updatesite/{experimental|nightly|stable}</code></a>. To do so, add an <code>&lt;child&gt;</code> entry to the <code>&lt;children&gt;</code> tag in both files and adapt the <code>size</code> attribute to match the new number of references. The <code>location</code> attribute of the new <code>&lt;child&gt;</code> tag needs to be the artifact id of the plugins <code>pom.xml</code>.</p>
+<p>To make the plugin available to the Eclipse plugin it must be included into the current <code>compositeContent.xml</code> and <code>compositeArtifacts.xml</code> files. Both files are located in <a href="https://github.com/devonfw/cobigen/tree/gh-pages/updatesite/stable"><code>https://github.com/devonfw/cobigen/tree/gh-pages/updatesite/{test|stable}</code></a>. To do so, add an <code>&lt;child&gt;</code> entry to the <code>&lt;children&gt;</code> tag in both files and adapt the <code>size</code> attribute to match the new number of references. The <code>location</code> attribute of the new <code>&lt;child&gt;</code> tag needs to be the artifact id of the plugins <code>pom.xml</code>.</p>
 </li>
 </ul>
 </div>
@@ -429,46 +429,16 @@ The implementation of the Merge interface must override the following methods:</
 </div>
 <div class="sect2">
 <h3 id="howto_create-a-new-plugin.asciidoc_deployment">Deployment</h3>
-<div class="sect3">
-<h4 id="howto_create-a-new-plugin.asciidoc_for-the-maven-plugin">For the Maven Plugin</h4>
 <div class="paragraph">
-<p>Execute <code>mvn clean deploy</code> from the plugins project folder. You need to configure write access to the <a href="https://devon.s2-eu.capgemini.com/nexus/">devon nexus</a> (e.g in the CobiGen IDE via the <code>variables-customized</code> script)</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="howto_create-a-new-plugin.asciidoc_for-the-eclipse-plugin">For the Eclipse Plugin</h4>
-<div class="paragraph">
-<p>Depending on the kind of release you want to publish you can chose from the following maven profiles:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>experimental</code> is for, as the name suggests, experimental snapshot builds. In case of new plugins this is a good place to upload first drafts.</p>
-</li>
-<li>
-<p><code>nightly</code> is for periodically CI deployment.</p>
-</li>
-<li>
-<p><code>stable</code> is solely for releases.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>E.g. you want an experimental release you need to follow these steps:</p>
+<p>If you want to create a test release of eclipse you need to run the command</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="shell language-shell"># Builds the Manifest and bundles the dependencies
-mvn clean package bundle:bundle -Pp2-bundle
-# Uses the created bundle and builds a p2 update site for it. Do NOT use clean
-mvn install bundle:bundle -Pp2-bundle,p2-build-mars,p2-build-experimental p2:site
-# Uploads the p2 update site to the experimental repository. Do NOT use clean
-mvn deploy -Pp2-build-mars,p2-build-experimental -Dp2.upload=experimental</code></pre>
+<pre class="highlight"><code class="shell language-shell">sh deploy.sh</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>You need write access to the <a href="http://de-mucevolve02">iCSD file server</a> configured (e.g in the CobiGen IDE via the <code>variables-customized</code> script).</p>
-</div>
+<p>on the cloned cobigen repository while making sure, that your current version of cobigen cloned is a snapshot version. This will automatically be detected by the deploy script.</p>
 </div>
 </div>
 </div>
@@ -610,7 +580,7 @@ mvn deploy -Pp2-build-mars,p2-build-experimental -Dp2.upload=experimental</code>
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-11-12 07:14:29 UTC
+Last updated 2021-11-12 07:24:50 UTC
 </sub></div>
 </div>
 </div>
