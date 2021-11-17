@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2021-11-17 14:19:05 UTC">
+<meta name="author" content="Updated at 2021-11-17 16:20:08 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -515,7 +515,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2021-11-17 14:20:42 UTC</span><br>
+<span id="author" class="author">Updated at 2021-11-17 16:21:45 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -557,6 +557,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="master-solicitor.asciidoc_reading-license-information-with-readers.html#master-solicitor.asciidoc_csv">CSV</a>
 </li>
 <li><a href="master-solicitor.asciidoc_reading-license-information-with-readers.html#master-solicitor.asciidoc_npm">NPM</a>
+</li>
+<li><a href="master-solicitor.asciidoc_reading-license-information-with-readers.html#master-solicitor.asciidoc_yarn">Yarn</a>
+</li>
+<li><a href="master-solicitor.asciidoc_reading-license-information-with-readers.html#master-solicitor.asciidoc_pip">Pip</a>
 </li>
 <li><a href="master-solicitor.asciidoc_reading-license-information-with-readers.html#master-solicitor.asciidoc_gradle-windows">Gradle (Windows)</a>
 </li>
@@ -785,6 +789,89 @@ line in the file for each license.</p>
   "repoType" : "npm"
 } ]</pre>
 </div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="master-solicitor.asciidoc_yarn">Yarn</h4>
+<div class="paragraph">
+<p>To generate the input file required for Solicitor yarn needs to be executed with the following command within the directory that contains the project’s package.json (we require JSON output here):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>yarn licenses list --json &gt; /path/to/yarnlicenses.json</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The export should look like the following</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>Unresolved directive in solicitor.wiki/master-solicitor.asciidoc - include::yarnlicenses.json.asciidoc[]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Source: <a href="https://classic.yarnpkg.com/en/docs/cli/licenses/" class="bare">https://classic.yarnpkg.com/en/docs/cli/licenses/</a></p>
+</div>
+<div class="paragraph">
+<p>In <em>Solicitor</em> the data is read with the following part of the config</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>"readers" : [ {
+  "type" : "yarn",
+  "source" : "file:path/to/yarnlicenses.json",
+  "usagePattern" : "DYNAMIC_LINKING",
+  "repoType" : "yarn"
+} ]</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="master-solicitor.asciidoc_pip">Pip</h4>
+<div class="paragraph">
+<p>To generate the input file required for Solicitor one has follow two steps:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Capsulate software with all relevant dependencies/requirements in a virtual environment (venv)</p>
+</li>
+<li>
+<p>Install the pip-licenses plugin within this virtual environment</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>After that, we execute following command within the virtual environment to extract the input file (we require JSON output here):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>pip-licenses --from=all --format=json --with-urls --with-license-file &gt; piplicenses.json</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The export should look like the following</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>Unresolved directive in solicitor.wiki/master-solicitor.asciidoc - include::piplicenses.json.asciidoc[]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Source: <a href="https://pypi.org/project/pip-licenses/" class="bare">https://pypi.org/project/pip-licenses/</a></p>
+</div>
+<div class="paragraph">
+<p>In <em>Solicitor</em> the data is read with the following part of the config</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>"readers" : [ {
+  "type" : "pip",
+  "source" : "file:path/to/piplicenses.json",
+  "usagePattern" : "DYNAMIC_LINKING",
+  "repoType" : "pip"
+} ]</pre>
 </div>
 </div>
 </div>
@@ -1074,7 +1161,7 @@ The former reader of type <code>gradle</code> is deprecated and should no longer
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-11-17 14:16:39 UTC
+Last updated 2021-11-17 16:17:40 UTC
 </sub></div>
 
 
