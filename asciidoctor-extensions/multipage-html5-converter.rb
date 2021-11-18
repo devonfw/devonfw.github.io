@@ -271,21 +271,11 @@ class MultipageHtml5Converter < Asciidoctor::Converter::Html5Converter
         if block.context == :section
           part = block
           part.convert
-          #part.add_role "halloss"
           text = %(<<#{part.id},#{part.captioned_title}>>)
           if desc = block.attr('desc') then text << %( – #{desc}) end
-          #parts_list << Asciidoctor::ListItem.new(parts_list, text)
           part_item = Asciidoctor::ListItem.new(parts_list, text)
-          #part_item.set_attr('multipggggg', 'HALLOOOOO')
-          #part_item.attr 'test' 'myname'
-          #part_item.attr('test','myname')
-          #part_item.role = "hallo"
           part_item.title = part.captioned_title
-          #puts part_item
-          #part_item.style = 'HALLLO'
           parts_list << part_item
-          #https://github.com/asciidoctor/asciidoctor/blob/d4b576c990ec001b13c1ea298b1ead91e8cf01f1/lib/asciidoctor/abstract_node.rb#L7
-          #https://github.com/asciidoctor/asciidoctor/blob/d4b576c990ec001b13c1ea298b1ead91e8cf01f1/lib/asciidoctor/abstract_block.rb#L4
         end
       end
       node << parts_list
@@ -562,7 +552,6 @@ class MultipageHtml5Converter < Asciidoctor::Converter::Html5Converter
             text = %(<<#{chapter.id},#{chapter.captioned_title}>>)
             # NOTE, there is a non-breaking space (Unicode U+00A0) below.
             if desc = block.attr('desc') then text << %( – #{desc}) end
-            #chapters_list << Asciidoctor::ListItem.new(chapters_list, text)
             chapter_item = Asciidoctor::ListItem.new(chapters_list, text)
             chapter_item.title = chapter.captioned_title
             chapters_list << chapter_item
