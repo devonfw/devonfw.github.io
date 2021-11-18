@@ -5,6 +5,7 @@ on:
     workflows: ["Dispcher event on update of devonfw guide"]
     types:
       - completed
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -119,13 +120,22 @@ jobs:
         run: |
           cp -avr architectures/target/generated-docs/ target/generated-docs/website/pages/architectures/
 
+      - name: Build and test search engine
+        run: |
+          cd website/components/header/search-engine
+          npm run test
+          npm run build
+          cp ./dist/bundle.js ../../../../target/generated-docs/website/components/header/search-engine
+          ls -al ../../../../target/generated-docs/website/components/header/search-engine
+          cd ../../../../
+
       - name: Reindex
         run: |
-          cd target/generated-docs/search-engine
+          cd search-engine
           npm install
-          node ./converter.js ../website/pages/docs/ ../website/pages/explore/ ../katacoda-scenarios/ ../website/pages/architectures/solutions/ .html
-          cp {index.json,docs-json.json} ../website
-          cd ../../..
+          node ./converter.js ../target/generated-docs/website/pages/docs/  ../architectures/solutions/ ../target/generated-docs/website/components/header/search-engine
+          ls -al ../target/generated-docs/website/components/header/search-engine
+          cd ../
 
       - name: Cleanup
         run: |
