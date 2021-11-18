@@ -266,7 +266,6 @@ class MultipageHtml5Converter < Asciidoctor::Converter::Html5Converter
       # for the book landing page.
       parts_list = Asciidoctor::List.new(node, :ulist)
       parts_list.style = "toc"
-      parts_list.id = 'multipggggg'
       node.blocks.delete_if do |block|
         if block.context == :section
           part = block
