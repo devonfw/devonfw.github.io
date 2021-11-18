@@ -157,6 +157,60 @@ class MultipageHtml5Converter < Asciidoctor::Converter::Html5Converter
     opts.empty? ? (send transform, node) : (send transform, node, opts)
   end
 
+  def ulist(node)
+    result = []
+    id_attribute = node.id ? %( id="#{node.id}") : ''
+    div_classes = ['ulist', node.style, node.role].compact
+    marker_checked = marker_unchecked = ''
+    if (checklist = node.option? 'checklist')
+      div_classes.unshift div_classes.shift, 'checklist'
+      ul_class_attribute = ' class="checklist"'
+      if node.option? 'interactive'
+        if @xml_mode
+          marker_checked = '<input type="checkbox" data-item-complete="1" checked="checked"/> '
+          marker_unchecked = '<input type="checkbox" data-item-complete="0"/> '
+        else
+          marker_checked = '<input type="checkbox" data-item-complete="1" checked> '
+          marker_unchecked = '<input type="checkbox" data-item-complete="0"> '
+        end
+      elsif node.document.attr? 'icons', 'font'
+        marker_checked = '<i class="fa fa-check-square-o"></i> '
+        marker_unchecked = '<i class="fa fa-square-o"></i> '
+      else
+        marker_checked = '&#10003; '
+        marker_unchecked = '&#10063; '
+      end
+    else
+      ul_class_attribute = node.style ? %( class="#{node.style}") : ''
+    end
+    result << %(<div#{id_attribute} class="#{div_classes.join ' '}">)
+    result << %(<div class="title">#{node.title}</div>) if node.title?
+    result << %(<ul#{ul_class_attribute}>)
+
+    node.items.each do |item|
+      if item.id
+        result << %(<li id="#{item.id}"#{item.role ? %( class="#{item.role}") : ''}>)
+      elsif item.role
+        result << %(<li class="#{item.role}">)
+      elsif item.title
+        result << %(<li data-content="#{item.title}">)
+      else
+        result << %(<li>)
+      end
+      if checklist && (item.attr? 'checkbox')
+        result << %(<p>#{(item.attr? 'checked') ? marker_checked : marker_unchecked}#{item.text}</p>)
+      else
+        result << %(<p>#{item.text}</p>)
+      end
+      result << item.content if item.blocks?
+      result << '</li>'
+    end
+
+    result << '</ul>'
+    result << '</div>'
+    result.join LF
+  end
+
   # Process Document (either the original full document or a processed page)
   def document(node)
     if node.processed
@@ -212,13 +266,26 @@ class MultipageHtml5Converter < Asciidoctor::Converter::Html5Converter
       # for the book landing page.
       parts_list = Asciidoctor::List.new(node, :ulist)
       parts_list.style = "toc"
+      parts_list.id = 'multipggggg'
       node.blocks.delete_if do |block|
         if block.context == :section
           part = block
           part.convert
+          #part.add_role "halloss"
           text = %(<<#{part.id},#{part.captioned_title}>>)
           if desc = block.attr('desc') then text << %( – #{desc}) end
-          parts_list << Asciidoctor::ListItem.new(parts_list, text)
+          #parts_list << Asciidoctor::ListItem.new(parts_list, text)
+          part_item = Asciidoctor::ListItem.new(parts_list, text)
+          #part_item.set_attr('multipggggg', 'HALLOOOOO')
+          #part_item.attr 'test' 'myname'
+          #part_item.attr('test','myname')
+          #part_item.role = "hallo"
+          part_item.title = part.captioned_title
+          #puts part_item
+          #part_item.style = 'HALLLO'
+          parts_list << part_item
+          #https://github.com/asciidoctor/asciidoctor/blob/d4b576c990ec001b13c1ea298b1ead91e8cf01f1/lib/asciidoctor/abstract_node.rb#L7
+          #https://github.com/asciidoctor/asciidoctor/blob/d4b576c990ec001b13c1ea298b1ead91e8cf01f1/lib/asciidoctor/abstract_block.rb#L4
         end
       end
       node << parts_list
@@ -495,7 +562,10 @@ class MultipageHtml5Converter < Asciidoctor::Converter::Html5Converter
             text = %(<<#{chapter.id},#{chapter.captioned_title}>>)
             # NOTE, there is a non-breaking space (Unicode U+00A0) below.
             if desc = block.attr('desc') then text << %( – #{desc}) end
-            chapters_list << Asciidoctor::ListItem.new(chapters_list, text)
+            #chapters_list << Asciidoctor::ListItem.new(chapters_list, text)
+            chapter_item = Asciidoctor::ListItem.new(chapters_list, text)
+            chapter_item.title = chapter.captioned_title
+            chapters_list << chapter_item
             true
           end
         end
