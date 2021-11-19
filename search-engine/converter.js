@@ -1,300 +1,178 @@
-const fs = require('fs');
-const path = require('path');
-const lunr = require('lunr');
-const cheerio = require('cheerio');
+const fs = require("fs");
+const path = require("path");
+const cheerio = require("cheerio");
+const { resolve } = require("path");
+const { promisify } = require("util");
+const readdir = promisify(fs.readdir);
+const stat = promisify(fs.stat);
+const natural = require("natural");
+const { exit } = require("process");
+const TfIdf = natural.TfIdf;
+const tfidf = new TfIdf();
 
-let visitedExploreDocs = [];
-let id = 0;
+let resultCounter = 0;
 
-function getLunrDoc(docsDirname, exploreDirname, katacodaDirname, solutionDirname, extension) {
-  let docs = getDocumentsFromDocs(docsDirname, extension);
-  docs = docs.concat(getDocumentsFromExplore(exploreDirname, extension));
-  docs = docs.concat(getDocumentsFromKatacoda(katacodaDirname, extension));
-  docs = docs.concat(getDocumentsFromSolution(solutionDirname, extension));
-  
-  generateIndexJson(docs);
+async function getFiles(dir) {
+  const subdirs = await readdir(dir);
+  const files = await Promise.all(
+    subdirs.map(async (subdir) => {
+      const res = resolve(dir, subdir);
+      return (await stat(res)).isDirectory() ? getFiles(res) : res;
+    })
+  );
+  return files.reduce((a, f) => a.concat(f), []);
 }
 
-function getDocumentsFromDocs(dirname, extension) {
-  let files = getFilesFromDir(dirname, extension);
+async function createTfidf(docsDirname, solutionDirname, outputPath) {
+  if (!fs.existsSync(path.join(__dirname, outputPath, "results"))) {
+    fs.mkdirSync(path.join(__dirname, outputPath, "results"));
+  }
 
-  let docs = [];
-  let processing = {
-    preprocessing: [getContent],
-    postprocessing: [removeHtml, removeTooMuchSpaces],
-  };
-  files.forEach((file) => docs = docs.concat(readFromFilename(file, processing)));
-
-  return docs;
-}
-
-function getDocumentsFromExplore(dirname, extension) {
-  let docs = [];
-  let htmlStr = fs.readFileSync(path.join(dirname, 'dir-content', 'entry-point' + extension), 'utf-8');
-  let $ = cheerio.load(htmlStr);
-  $('div#content div.links-to-files > div.sectionbody > div.paragraph a').each(function (_, link) {
-    docs = docs.concat(getDocumentsFromExploreFile(dirname, link.attribs['href'], '#'));
+  await addHtmlFiles(docsDirname, outputPath, "doc");
+  await addAsciidocFiles(solutionDirname, outputPath, "solution");
+  let stopwords = fs.readFileSync(path.join(__dirname, "stopwords.txt"), {
+    encoding: "utf-8",
   });
-  return docs;
-}
+  let stopwordsList = stopwords.split("\r\n");
 
-function getDocumentsFromKatacoda(dirname, extension) {
-  let docs = [];
-
-  let dirContent = fs.readdirSync(path.join(__dirname, dirname));
-
-  dirContent.forEach(function (dirItem) {
-    item = path.join(dirname, dirItem);
-    fileStats = fs.lstatSync(item);
-
-    if (fileStats.isDirectory()) {
-      if(fs.existsSync(`${item}/index.json`)){
-        console.log(`${item}`);
-        let indexJson = fs.readFileSync(`${item}/index.json`, 'utf-8');
-        let index = JSON.parse(indexJson);
-        
-        let introFilename = item + '/' + index['details']['intro']['text'];
-        let intro = '';
-
-        if(fs.existsSync(introFilename)){
-          intro = fs.readFileSync(introFilename, 'utf-8');
-        }
-
-        let doc = {
-          id: id++,
-          path: 'https://www.katacoda.com/devonfw/scenarios/' + dirItem,
-          type: 'tutorial',
-          title: index.title,
-          body: index.title + '\r\n' + intro,
-        };
-        docs.push(doc);
+  for (let i = 0; i < tfidf.documents.length; i++) {
+    for (let term in tfidf.documents[i]) {
+      if (stopwordsList.includes(term)) {
+        tfidf.documents[i][term] = undefined;
       }
     }
-  });
-
-  return docs;
-}
-
-function getDocumentsFromExploreFile(dirname, file, parenthash) {
-  visitedExploreDocs.push(file);
-  let docs = [];
-  let filePath = path.join(dirname, 'dir-content', file);
-  if (fs.existsSync(filePath)) {
-    let htmlStr = fs.readFileSync(filePath, 'utf-8');
-    let $ = cheerio.load(htmlStr);
-    let hash = parenthash + '/' + file.substr(0, file.lastIndexOf('.'));
-    let doc = {
-      id: id++,
-      path: path.join(dirname, 'explore.html').replace(/\\/g, '/') + hash,
-      type: 'explore',
-      title: $('div#content div.directory h2').text(),
-      body: $('div#content div.directory p').text(),
-    };
-    docs.push(doc);
-    $('div#content div.links-to-files > div.sectionbody > div.paragraph a').each(function (_, link) {
-      if (visitedExploreDocs.indexOf(link.attribs['href']) === -1) {
-        docs = docs.concat(getDocumentsFromExploreFile(dirname, link.attribs['href'], hash));
-      }
-    });
-
   }
-  return docs;
+  fs.writeFileSync(
+    path.join(__dirname, outputPath, "tfidf.json"),
+    JSON.stringify(tfidf)
+  );
+  fs.writeFileSync(
+    path.join(__dirname, outputPath, "meta.json"),
+    JSON.stringify({ date: new Date() })
+  );
 }
 
-function getDocumentsFromSolution(dirname, extension) {
-  let files = getFilesFromSolution(dirname, extension);
-  
-  let docs = [];
-  let processing = {
-    preprocessing: [getContent],
-    postprocessing: [removeHtml, removeTooMuchSpaces],
-  };
+let headlineRegex = /^=+ (.+?)$/gm;
+let maturityLevelRegex = /^\/\/\s*Maturity level\s*=\s*Complete\s*$/gm;
 
-  files.forEach((file) => docs = docs.concat(readFromSolution(file, processing)));
+async function addAsciidocFiles(dirname, outputPath, type) {
+  let resolvedDirname = resolve(dirname);
+  var results = await getFiles(dirname);
+  for (var i = 0; i < results.length; i++) {
+    if (results[i].endsWith(".asciidoc")) {
+      let fileText = fs.readFileSync(results[i], "utf-8");
 
-  return docs;
+      if (!maturityLevelRegex.test(fileText)) {
+        continue;
+      }
+      headlineRegex.lastIndex = 0;
+      let matches = headlineRegex.exec(fileText);
+      if (!matches) {
+        continue;
+      }
+      let headline = matches[1];
+      let title = "";
+
+      for (let i = 0; i < 20; i++) {
+        title += headline + " ";
+      }
+      let resultObj = {
+        type: type,
+        filename: results[i].substring(resolvedDirname.length + 1),
+        title: headline,
+        breadcrumbs: [],
+        text: fileText,
+      };
+      fs.writeFileSync(
+        path.join(__dirname, outputPath, "results", resultCounter + ".json"),
+        JSON.stringify(resultObj)
+      );
+      tfidf.addDocument(title + resultObj.text, resultCounter);
+      resultCounter++;
+    }
+  }
 }
 
-function normalize(path) {
-  return path
-    .replace('\\/', '/')
-    .replace('//', '/')
-    .replace('\\', '/');
+let chapterRegex =
+  /<h[1-4].+?id="(?<id>[^"].+?)".*?>((([0-9]+\.\s?)+\s)?(?<title>[^<]+))<\/h[1-4]>(?<content>.+?)(?=((<h[1-4].+?id="([^"].+?)".*?>)|$))/gis;
+
+async function addHtmlFiles(dirname, outputPath, type) {
+  let resolvedDirname = resolve(dirname);
+  var results = await getFiles(dirname);
+  for (var i = 0; i < results.length; i++) {
+    if (results[i].endsWith(".html")) {
+      addHtmlFile(
+        results[i],
+        type,
+        results[i].substring(resolvedDirname.length + 1),
+        outputPath
+      );
+    }
+  }
 }
 
-function removeTooMuchSpaces(str) {
-  let withoutRN = str.replace(/\r\n\s*\r\n/g, '\n').replace(/( )+/g, ' ');
-  let noMultipleN = withoutRN.replace(/\n\s*\n*/g, '\n');
-  return noMultipleN;
+async function addHtmlFile(file, type, filename, outputPath) {
+  let fileText = fs.readFileSync(file, "utf-8");
+  let fileContent = getContent(fileText);
+  fileContent = clearPre(fileContent);
+  fileContent = clearNavFooter(fileContent);
+  let $ = cheerio.load(fileText);
+  let breadcrumbs = $(".toc-current").parents("li").find(">a");
+  let breadcrumbsArray = [];
+  for (let i = 0; i < breadcrumbs.length; i++) {
+    breadcrumbsArray.push(breadcrumbs.eq(i).text());
+  }
+
+  while ((regexMatch = chapterRegex.exec(fileContent)) !== null) {
+    console.log(regexMatch.groups.title + " -> #" + regexMatch.groups.id);
+
+    let context = "";
+    for (let i = 0; i < 20; i++) {
+      context +=
+        regexMatch.groups.title + " " + breadcrumbsArray.join(" ") + " ";
+    }
+    let resultObj = {
+      type: type,
+      filename: filename,
+      anchor: regexMatch.groups.id,
+      title: regexMatch.groups.title,
+      breadcrumbs: breadcrumbsArray,
+      text: removeHtml(regexMatch[0]),
+    };
+    fs.writeFileSync(
+      path.join(__dirname, outputPath, "results", resultCounter + ".json"),
+      JSON.stringify(resultObj)
+    );
+    tfidf.addDocument(context + resultObj.text, resultCounter);
+    resultCounter++;
+  }
 }
 
-function removeHtml(htmlStr) {
-  return htmlStr.replace(/(<([^>]+)>)/gi, '');
+function clearPre(fileContent) {
+  let $ = cheerio.load(fileContent);
+  $("pre").text("");
+  return $.html() || "";
+}
+
+function clearNavFooter(fileContent) {
+  let $ = cheerio.load(fileContent);
+  $(".nav-footer").text("");
+  return $.html() || "";
 }
 
 function getContent(htmlStr) {
   let $ = cheerio.load(htmlStr);
-  let content = $('div#content');
-  return content.html() || '';
+  let content = $("div#content");
+  return content.html() || "";
 }
 
-function getSolutionTitle(htmlStr) {
-  let $ = cheerio.load(htmlStr);
-  let title = $('h1').first().text();
-
-  if(title.length == 0){
-    title = $('h2').first().text();
-  }
-  return title;
+function removeHtml(htmlStr) {
+  return htmlStr.replace(/(<([^>]+)>)/gi, "");
 }
 
-function getFilesFromDir(dirname, extension) {
-  let dirContent = fs.readdirSync(path.join(__dirname, dirname));
-  let fileStats;
-  let item;
-  let result = [];
-
-  dirContent.forEach(function (dirItem) {
-    item = `${dirname}/${dirItem}`;
-    fileStats = fs.lstatSync(item);
-
-    if (fileStats.isDirectory()) {
-      result = result.concat(getFilesFromDir(item, extension));
-    }
-
-    if (fileStats.isFile() && path.extname(item) === extension) {
-      result = result.concat([normalize(item)]);
-    }
+if (process.argv.length > 4) {
+  createTfidf(process.argv[2], process.argv[3], process.argv[4]).catch((e) => {
+    console.error(e);
+    process.exit(-1);
   });
-
-  return result;
-}
-
-function getFilesFromSolution(dirname, extension){
-  let dirContent = fs.readdirSync(path.join(__dirname, dirname));
-  let fileStats;
-  let item;
-  let result = [];
-
-  dirContent.forEach(function (dirItem) {
-    item = `${dirname}/${dirItem}`;
-    fileStats = fs.lstatSync(item);
-
-    if (fileStats.isDirectory()) {
-      if(fs.existsSync(`${item}/index.html`)){
-        result = result.concat([normalize(`${item}/index.html`)]);
-      }
-      result = result.concat(getFilesFromSolution(item, extension));
-    }
-
-  });
-
-  return result;
-}
-
-function getType(file){
-  let isTutorial = !!file.match(/\/[^\/]*?(tutorial|how[-_]?to)-/i);
-  let isReleaseNote = !!file.match(/\/[^\/]*?(release[-_]?notes)-/i);
-  if(isTutorial){
-    return 'tutorial';
-  } 
-  if(isReleaseNote){
-    return 'releasenote';
-  }
-  return 'docs'
-}
-
-function readFromFilename(
-  file,
-  processing = { preprocessing: [], postprocessing: [] },
-) {
-  let type = getType(file);
-  let chapterRegex = /<h[1-4].+?id="(?<id>[^"].+?)".*?>((([0-9]+\.\s?)+\s)?(?<title>[^<]+))<\/h[1-4]>(?<content>.+?)(?=((<h[1-4].+?id="([^"].+?)".*?>)|$))/isg;
-
-  let docs = [];
-  let fileContent = fs.readFileSync(file, 'utf-8');
-
-  const preprocessing = processing.preprocessing;
-  if (preprocessing) {
-    for (let i = 0; i < preprocessing.length; i++) {
-      fileContent = preprocessing[i](fileContent);
-    }
-  }
-  let doc = {};
-  console.log(file + ' type: ' + type);
-  while ((regexMatch = chapterRegex.exec(fileContent)) !== null) {
-    console.log(regexMatch.groups.title + ' -> #' + regexMatch.groups.id)
-    let doc = {
-      id: id++,
-      path: file + '#' + regexMatch.groups.id,
-      type: type,
-      title: regexMatch.groups.title,
-      body: regexMatch[0],
-    };
-    const postprocessing = processing.postprocessing;
-    if (postprocessing) {
-      for (let i = 0; i < postprocessing.length; i++) {
-        doc.title = postprocessing[i](doc.title);
-        doc.body = postprocessing[i](doc.body);
-      }
-    }
-    docs.push(doc);
-  }
-
-  return docs;
-}
-
-function readFromSolution(
-file,
-processing = { preprocessing: [], postprocessing: [] },
-){
-  let fileContent = fs.readFileSync(file, 'utf-8');
-  
-  const preprocessing = processing.preprocessing;
-  if (preprocessing) {
-    for (let i = 0; i < preprocessing.length; i++) {
-      fileContent = preprocessing[i](fileContent);
-    }
-  }
-  let doc = {
-      id: id++,
-      path: file,
-      type: 'solution',
-      title: getSolutionTitle(fileContent),
-      body: fileContent,
-    };
-    const postprocessing = processing.postprocessing;
-    if (postprocessing) {
-      for (let i = 0; i < postprocessing.length; i++) {
-        doc.title = postprocessing[i](doc.title);
-        doc.body = postprocessing[i](doc.body);
-      }
-    }
-
-  return doc;
-}
-
-function generateIndexJson(documents) {
-  let idx = lunr(function () {
-    this.ref('id');
-    this.field('title');
-    this.field('body');
-    this.metadataWhitelist = ['position'];
-
-    documents.forEach(function (doc) {
-      this.add(doc);
-    }, this);
-  });
-
-  let idxJson = JSON.stringify(idx);
-
-  fs.writeFileSync('./docs-json.json', JSON.stringify(documents));
-  fs.writeFileSync('./index.json', idxJson);
-  console.log('The file was saved!');
-
-  return idxJson;
-}
-
-if (process.argv.length > 6) {
-  getLunrDoc(process.argv[2], process.argv[3], process.argv[4], process.argv[5], process.argv[6]);
 }
