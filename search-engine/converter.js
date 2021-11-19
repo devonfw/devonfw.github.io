@@ -6,6 +6,7 @@ const { promisify } = require("util");
 const readdir = promisify(fs.readdir);
 const stat = promisify(fs.stat);
 const natural = require("natural");
+const { exit } = require("process");
 const TfIdf = natural.TfIdf;
 const tfidf = new TfIdf();
 
@@ -169,8 +170,8 @@ function removeHtml(htmlStr) {
   return htmlStr.replace(/(<([^>]+)>)/gi, "");
 }
 
-if (process.argv.length > 3) {
-  createTfidf(process.argv[2], process.argv[3]).catch((e) => {
+if (process.argv.length > 4) {
+  createTfidf(process.argv[2], process.argv[3], process.argv[4]).catch((e) => {
     console.error(e);
     process.exit(-1);
   });
