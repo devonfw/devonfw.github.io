@@ -5,6 +5,7 @@ on:
     workflows: ["Dispcher event on update of devonfw guide"]
     types:
       - completed
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -76,6 +77,12 @@ jobs:
           rm architectures/README.md || true
           rm architectures/index.scss || true
 
+      - name: npm install for asciidoctor-stylesheet
+        run: |
+          cd asciidoctor-stylesheet
+          npm install
+          cd ../
+
       - name: Build
         run: mvn -s ./.m2/unblock-rubygem-proxy-settings.xml clean package
         
@@ -103,7 +110,6 @@ jobs:
           cd general-scripts
           npm install
           node merger.js ../target/generated-docs/devonfw-guide/master.html ../target/generated-docs/website/pages/docs/ ../target/generated-docs/website/pages/docs/
-          node merge-search-results.js search-results.html ../target/generated-docs/devonfw-guide/master.html ../target/generated-docs/website/pages/search-results/ ../target/generated-docs/website/pages/search-results/
           node merge-explore.js page-explore.html ../target/generated-docs/website/pages/explore/explore.html ../target/generated-docs/website/pages/explore/ ../target/generated-docs/website/pages/explore/ explore.html
           node video-to-iframe.js ../target/generated-docs/website/pages/resources/resources.html
           node rereferencer/rereference.js ../../target/asciidoc/devonfw-guide/ ../../target/generated-docs/website/pages/docs/
@@ -119,13 +125,23 @@ jobs:
         run: |
           cp -avr architectures/target/generated-docs/ target/generated-docs/website/pages/architectures/
 
+      - name: Build and test search engine
+        run: |
+          cd website/components/header/search-engine
+          npm install
+          npm run test
+          npm run build
+          cp ./dist/bundle.js ../../../../target/generated-docs/website/components/header/search-engine
+          ls -al ../../../../target/generated-docs/website/components/header/search-engine
+          cd ../../../../
+
       - name: Reindex
         run: |
-          cd target/generated-docs/search-engine
+          cd search-engine
           npm install
-          node ./converter.js ../website/pages/docs/ ../website/pages/explore/ ../katacoda-scenarios/ ../website/pages/architectures/solutions/ .html
-          cp {index.json,docs-json.json} ../website
-          cd ../../..
+          node ./converter.js ../target/generated-docs/website/pages/docs/  ../architectures/solutions/ ../target/generated-docs/website/components/header/search-engine
+          ls -al ../target/generated-docs/website/components/header/search-engine
+          cd ../
 
       - name: Cleanup
         run: |

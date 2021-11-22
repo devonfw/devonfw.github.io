@@ -32,6 +32,10 @@ end %>
 <title><%= doctitle(:sanitize => true) || (attr 'untitled-label') %></title>
 <!-- devonfw website stylesheet -->
 <link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Ubuntu Font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400&display=swap" rel="stylesheet">
 <!-- Lunr -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
 <!-- JQuery -->
@@ -95,6 +99,8 @@ end
 
 <script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
 
+<script src="/website/components/header/search-engine/bundle.js"></script>
+
 <!-- ************** Google analytics ************ -->
 
 <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -125,7 +131,8 @@ unless noheader %>
       class="form-control mr-sm-2"
       placeholder="Search by keyword(s)..."
       aria-label="Search"
-      style="height: auto;"/>
+      style="height: auto;"
+      autocomplete="off"/>
     <div class="sb-res-pos px-4">
       <div id="click-outside" class="click-outside z-50 hidden"></div>
       <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
@@ -154,21 +161,6 @@ unless !footnotes? || attr?(:nofootnotes) %>
 end %><%
 unless nofooter %>
 <div id="footer" class="footer"><%= Nokogiri::HTML(open(normalize_system_path('footer.html', '../../target/generated-docs/website/_includes/footer/'))).at_css('div#content').inner_html %></div>
-    <script type="module">
-      import { UtilsModule } from '/website/shared/utils.js';
-      import { HeaderModule } from '/website/components/header/header.js';
-
-      let searchData = { index: null, documents: null };
-      UtilsModule.loadIndex(searchData);
-
-      $(window).on('load', function() {
-        const queryFun = () => {
-          HeaderModule.queryFunction(searchData);
-        };
-
-        HeaderModule.searchOnClick(queryFun);
-      });
-    </script>
     <script>
       let bb = document.getElementById('menu-button');
       bb.addEventListener('click', function() {
