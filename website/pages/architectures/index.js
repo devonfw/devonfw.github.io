@@ -228,8 +228,8 @@ function orderTag(tag) {
 function searchOnClick() {
     let searchField = document.getElementById('search-field-solutions');
     let timer = null;
-    searchField.onkeypress = function (e) {
-        if (timer) {
+    searchField.onkeydown = function (e) {
+            if (timer) {
             clearTimeout(timer);
         }
         if (e.key == 'Enter') {
