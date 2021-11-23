@@ -18,11 +18,10 @@ jobs:
         run: sudo apt-get install w3c-linkchecker
       - name: start check
         run: |
-          checklink -s -b https://devonfw.com  | tee output.txt
+          checklink -r -s -b https://devonfw.com  | tee output.txt
       - name: parse check output
         run: |
           output=$(cat output.txt)
-          echo $output
           if [[ $output == *"Code: 404 Not Found"* ]]; then
             echo "Broken link"
             exit 1
