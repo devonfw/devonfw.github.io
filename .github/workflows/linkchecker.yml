@@ -16,6 +16,17 @@ jobs:
       - name: install linkchecker
         run: sudo apt-get install w3c-linkchecker
       - name: start check
+        id: start_check
         run: |
-          checklink -r -s -b https://devonfw.com 
-          echo $?
+          checklink -r -s -b https://devonfw.com  | tee output.txt
+          echo "::set-output name=output::$(cat output.txt)"
+      - name: parse check output
+        run: |
+          if [[ $steps.start_check.outputs.output == *"Code: 404 Not Found"* ]]; then
+            echo "Broken link"
+            exit 1
+          fi
+          if [[ $steps.start_check.outputs.output == *"To do: Some of the links to this resource point to broken URI fragments"* ]]; then
+            echo "Broken fragment"
+            exit 2
+          fi
