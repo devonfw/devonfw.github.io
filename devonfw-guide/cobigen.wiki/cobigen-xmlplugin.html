@@ -103,9 +103,9 @@
 <ul class="sectlevel1">
 <li><a href="#cobigen-xmlplugin.asciidoc_trigger-extension">Trigger extension</a>
 <ul class="sectlevel2">
-<li><a href="#cobigen-xmlplugin.asciidoc_containermatcher-type">ContainerMatcher type</a></li>
+<li><a href="#cobigen-xmlplugin.asciidoc_container-matcher-type">Container Matcher type</a></li>
 <li><a href="#cobigen-xmlplugin.asciidoc_matcher-types">Matcher types</a></li>
-<li><a href="#cobigen-xmlplugin.asciidoc_variableassignment-types">VariableAssignment types</a></li>
+<li><a href="#cobigen-xmlplugin.asciidoc_variable-assignment-types">Variable Assignment types</a></li>
 <li><a href="#cobigen-xmlplugin.asciidoc_xml-input-reader">XML input reader</a></li>
 </ul>
 </li>
@@ -115,7 +115,7 @@
 </ul>
 <h1 id="cobigen-xmlplugin.asciidoc" class="sect0">XML Plug-in</h1>
 <div class="paragraph">
-<p>The CobiGen XML Plug-in comes with an input reader for xml artifacts, xml related trigger and matchers and provides different merge mechanisms for XML result documents.</p>
+<p>The CobiGen XML Plug-in comes with an input reader for XML artifacts, XML related trigger and matchers and provides different merge mechanisms for XML result documents.</p>
 </div>
 <div class="sect1">
 <h2 id="cobigen-xmlplugin.asciidoc_trigger-extension">Trigger extension</h2>
@@ -124,14 +124,14 @@
 <p><em>(since cobigen-xmlplugin v2.0.0)</em></p>
 </div>
 <div class="paragraph">
-<p>The XML Plug-in provides a trigger for xml related inputs. It accepts xml documents as input (see <a href="#cobigen-xmlplugin.asciidoc_xml-input-reader">XML input reader</a>) and provides additional matching and variable assignment mechanisms. The configuration in the <code>context.xml</code> for this trigger looks like this:</p>
+<p>The XML Plug-in provides a trigger for XML related inputs. It accepts XML documents as input (see <code><a href="#cobigen-xmlplugin.asciidoc_xml-input-reader">XML input reader</a></code>) and provides additional matching and variable assignment mechanisms. The configuration in the <code>context.xml</code> for this trigger looks like this:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
 <p>type 'xml'</p>
 <div class="listingblock">
-<div class="title">Example of a xml trigger definition.</div>
+<div class="title">Example of a XML trigger definition.</div>
 <div class="content">
 <pre class="highlight"><code class="xml language-xml">&lt;trigger id="..." type="xml" templateFolder="..."&gt;
     ...
@@ -139,7 +139,7 @@
 </div>
 </div>
 <div class="paragraph">
-<p>This trigger type enables xml documents as inputs.</p>
+<p>This trigger type enables XML documents as inputs.</p>
 </div>
 </li>
 <li>
@@ -153,22 +153,22 @@
 </div>
 </div>
 <div class="paragraph">
-<p>This trigger type enables xml documents as container inputs, which consists of several subdocuments.</p>
+<p>This trigger type enables XML documents as container inputs, which consists of several subdocuments.</p>
 </div>
 </li>
 </ul>
 </div>
 <div class="sect2">
-<h3 id="cobigen-xmlplugin.asciidoc_containermatcher-type">ContainerMatcher type</h3>
+<h3 id="cobigen-xmlplugin.asciidoc_container-matcher-type">Container Matcher type</h3>
 <div class="paragraph">
-<p>A ContainerMatcher check if the input is a valid container.</p>
+<p>A <code>ContainerMatcher</code> check if the input is a valid container.</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
 <p>xpath: type: 'xpath'</p>
 <div class="listingblock">
-<div class="title">Example of a xml trigger definition with a nodename matcher.</div>
+<div class="title">Example of a XML trigger definition with a nodename matcher.</div>
 <div class="content">
 <pre class="highlight"><code class="xml language-xml">&lt;trigger id="..." type="xml" templateFolder="..."&gt;
     &lt;containerMatcher type="xpath" value="./uml:Model//packagedElement[@xmi:type='uml:Class']"&gt;
@@ -178,7 +178,7 @@
 </div>
 </div>
 <div class="paragraph">
-<p>Before applying any Matcher, this containerMatcher checks if the XML file contains a node "uml:Model" with a childnode "packagedElement" which contains an attribute "xmi:type" with the value "uml:Class".</p>
+<p>Before applying any Matcher, this <code>containerMatcher</code> checks if the XML file contains a node <code>uml:Model</code> with a childnode <code>packagedElement</code> which contains an attribute <code>xmi:type</code> with the value <code>uml:Class</code>.</p>
 </div>
 </li>
 </ul>
@@ -192,9 +192,9 @@
 <div class="ulist">
 <ul>
 <li>
-<p>xml: type 'nodename' &#8594; document&#8217;s root name matching</p>
+<p>XML: type 'nodename' &#8594; document&#8217;s root name matching</p>
 <div class="listingblock">
-<div class="title">Example of a xml trigger definition with a nodename matcher</div>
+<div class="title">Example of a XML trigger definition with a nodename matcher</div>
 <div class="content">
 <pre class="highlight"><code class="xml language-xml">&lt;trigger id="..." type="xml" templateFolder="..."&gt;
     &lt;matcher type="nodename" value="\D\w*"&gt;
@@ -220,16 +220,16 @@
 </div>
 </div>
 <div class="paragraph">
-<p>This trigger will be enabled if the XML file contains a node "/packagedElement" where the "xmi:type" property equals "uml:Class".</p>
+<p>This trigger will be enabled if the XML file contains a node <code>/packagedElement</code> where the <code>xmi:type</code> property equals <code>uml:Class</code>.</p>
 </div>
 </li>
 </ul>
 </div>
 </div>
 <div class="sect2">
-<h3 id="cobigen-xmlplugin.asciidoc_variableassignment-types">VariableAssignment types</h3>
+<h3 id="cobigen-xmlplugin.asciidoc_variable-assignment-types">Variable Assignment types</h3>
 <div class="paragraph">
-<p>Furthermore, it provides the ability to extract information from each input for further processing in the templates. The values assigned by variable assignments will be made available in template and the <code>destinationPath</code> of context.xml through the namespace <code>variables.&lt;key&gt;</code>. The XML Plug-in currently provides only one mechanism:</p>
+<p>Furthermore, it provides the ability to extract information from each input for further processing in the templates. The values assigned by variable assignments will be made available in template and the <code>destinationPath</code> of <code>context.xml</code> through the namespace <code>variables.&lt;key&gt;</code>. The XML Plug-in currently provides only one mechanism:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -254,12 +254,12 @@
 <div class="sect2">
 <h3 id="cobigen-xmlplugin.asciidoc_xml-input-reader">XML input reader</h3>
 <div class="paragraph">
-<p>The Cobigen XML Plug-in implements an input reader for parsed xml documents. So API user can pass <code>org.w3c.dom.Document</code> objects for generation. For getting the right parsed xml inputs you can easily use the <code>xmlplugin.util.XmlUtil</code>, which provides static functionality to parse xml files or input streams and get the appropriate <code>Document</code> object.</p>
+<p>The Cobigen XML Plug-in implements an input reader for parsed XML documents. So API user can pass <code>org.w3c.dom.Document</code> objects for generation. For getting the right parsed XML inputs you can easily use the <code>xmlplugin.util.XmlUtil</code>, which provides static functionality to parse XML files or input streams and get the appropriate <code>Document</code> object.</p>
 </div>
 <div class="sect3">
 <h4 id="cobigen-xmlplugin.asciidoc_template-object">Template object</h4>
 <div class="paragraph">
-<p>Due to the heterogeneous structure an xml document can have, the xml input reader does not always create exactly the same model structure (in contrast to the java input reader). For example the model&#8217;s depth differs strongly, according to it&#8217;s input document. To allow navigational access to the nodes, the model also depends on the document&#8217;s element&#8217;s node names. All child elements with unique names, are directly accessible via their names. In addition it is possible to iterate over all child elements with held of the child list <code>Children</code>. So it is also possible to access child elements with non unique names.</p>
+<p>Due to the heterogeneous structure an XML document can have, the XML input reader does not always create exactly the same model structure (in contrast to the java input reader). For example the model&#8217;s depth differs strongly, according to it&#8217;s input document. To allow navigational access to the nodes, the model also depends on the document&#8217;s element&#8217;s node names. All child elements with unique names, are directly accessible via their names. In addition it is possible to iterate over all child elements with held of the child list <code>Children</code>. So it is also possible to access child elements with non unique names.</p>
 </div>
 <div class="paragraph">
 <p>The XML input reader will create the following object model for template creation (<code><sub>EXAMPLEROOT</sub>, <sub>EXAMPLENODE1</sub>, <sub>EXAMPLENODE2</sub>, <sub>EXAMPLEATTR1</sub>,&#8230;&#8203;</code> are just used here as examples. Of course they will be replaced later by the actual node or attribute names):</p>
@@ -267,23 +267,23 @@
 <div class="ulist">
 <ul>
 <li>
-<p><strong>~EXAMPLEROOT~</strong> ('Map&lt;String, Object&gt;' :: common element structure)</p>
+<p><strong><code>~EXAMPLEROOT~</code></strong> ('Map&lt;String, Object&gt;' :: common element structure)</p>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>_nodeName_</strong> ('String' :: Simple name of the root node)</p>
+<p><strong><code>_nodeName_</code></strong> ('String' :: Simple name of the root node)</p>
 </li>
 <li>
-<p><strong>_text_</strong> ('String' :: Concatenated text content (PCDATA) of the root node)</p>
+<p><strong><code>_text_</code></strong> ('String' :: Concatenated text content (<code>PCDATA</code>) of the root node)</p>
 </li>
 <li>
-<p><strong>TextNodes</strong> ('List&lt;String&gt;' :: List of all the root&#8217;s text node contents)</p>
+<p><strong><code>TextNodes</code></strong> ('List&lt;String&gt;' :: List of all the root&#8217;s text node contents)</p>
 </li>
 <li>
-<p><strong>_at_~EXAMPLEATTR1~</strong> ('String' :: String representation of the attribute&#8217;s value)</p>
+<p><strong><code>_at_~EXAMPLEATTR1~</code></strong> ('String' :: String representation of the attribute&#8217;s value)</p>
 </li>
 <li>
-<p><strong>_at_~EXAMPLEATTR2~</strong> ('String' :: String representation of the attribute&#8217;s value)</p>
+<p><strong><code>_at_~EXAMPLEATTR2~</code></strong> ('String' :: String representation of the attribute&#8217;s value)</p>
 </li>
 <li>
 <p><strong>_at_&#8230;&#8203;</strong></p>
@@ -297,10 +297,10 @@
 <div class="ulist">
 <ul>
 <li>
-<p><strong>_attName_</strong> ('String' :: Name of the attribute)</p>
+<p><code><strong>_attName_</strong> ('String' :: Name of the attribute)</code></p>
 </li>
 <li>
-<p><strong>_attValue_</strong> ('String' :: String representation of the attribute&#8217;s value)</p>
+<p><code><strong>_attValue_</strong> ('String' :: String representation of the attribute&#8217;s value)</code></p>
 </li>
 </ul>
 </div>
@@ -326,7 +326,7 @@
 </div>
 </li>
 <li>
-<p><strong>~EXAMPLENODE1~</strong> ('Map&lt;String, Object&gt;' :: One of the root&#8217;s child nodes)</p>
+<p><strong><code>~EXAMPLENODE1~</code></strong> ('Map&lt;String, Object&gt;' :: One of the root&#8217;s child nodes)</p>
 <div class="ulist">
 <ul>
 <li>
@@ -336,14 +336,14 @@
 </div>
 </li>
 <li>
-<p><strong>~EXAMPLENODE2~</strong> ('Map&lt;String, Object&gt;' :: One of the root&#8217;s child nodes)</p>
+<p><strong><code>~EXAMPLENODE2~</code></strong> ('Map&lt;String, Object&gt;' :: One of the root&#8217;s child nodes)</p>
 <div class="ulist">
 <ul>
 <li>
 <p>&#8230;&#8203;common element sub structure&#8230;&#8203;</p>
 </li>
 <li>
-<p><strong>~EXAMPLENODE21~</strong> ('Map&lt;String, Object&gt;' :: One of the nodes' child nodes)</p>
+<p><strong><code>~EXAMPLENODE21~</code></strong> ('Map&lt;String, Object&gt;' :: One of the nodes' child nodes)</p>
 <div class="ulist">
 <ul>
 <li>
@@ -353,13 +353,13 @@
 </div>
 </li>
 <li>
-<p><strong>~EXAMPLENODE&#8230;&#8203;~</strong></p>
+<p><strong><code>~EXAMPLENODE&#8230;&#8203;~</code></strong></p>
 </li>
 </ul>
 </div>
 </li>
 <li>
-<p><strong>~EXAMPLENODE&#8230;&#8203;~</strong></p>
+<p><strong><code>~EXAMPLENODE&#8230;&#8203;~</code></strong></p>
 </li>
 </ul>
 </div>
@@ -367,7 +367,7 @@
 </ul>
 </div>
 <div class="paragraph">
-<p>In contrast to the java input reader, this xml input reader does currently not provide any additional template methods.</p>
+<p>In contrast to the java input reader, this XML input reader does currently not provide any additional template methods.</p>
 </div>
 </div>
 </div>
@@ -377,14 +377,14 @@
 <h2 id="cobigen-xmlplugin.asciidoc_merger-extensions">Merger extensions</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The XML plugin uses the <a href="https://github.com/maybeec/lexeme">LeXeMe</a> merger library to produce semantically correct merge products. The merge strategies can be found in the <a href="https://github.com/devonfw/cobigen/blob/master/cobigen/cobigen-xmlplugin/src/main/java/com/devonfw/cobigen/xmlplugin/merger/delegates/MergeType.java#L11">MergeType enum</a> and can be configured in the <code>templates.xml</code> as a mergeStrategy attribute:</p>
+<p>The XML plugin uses the <a href="https://github.com/maybeec/lexeme"><code>LeXeMe</code></a> merger library to produce semantically correct merge products. The merge strategies can be found in the <a href="https://github.com/devonfw/cobigen/blob/master/cobigen/cobigen-xmlplugin/src/main/java/com/devonfw/cobigen/xmlplugin/merger/delegates/MergeType.java#L11"><code>MergeType</code> enum</a> and can be configured in the <code>templates.xml</code> as a <code>mergeStrategy</code> attribute:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>mergeStrategy 'xmlmerge'</p>
+<p><code>mergeStrategy</code> 'xmlmerge'</p>
 <div class="listingblock">
-<div class="title">Example of a template using the mergeStrategy <code>xmlmerge</code></div>
+<div class="title">Example of a template using the <code>mergeStrategy</code> <code>xmlmerge</code></div>
 <div class="content">
 <pre class="highlight"><code class="xml language-xml">&lt;templates&gt;
 	&lt;template name="..." destinationPath="..." templateFile="..." mergeStrategy="xmlmerge"/&gt;
@@ -522,7 +522,7 @@ On how the merger works consult the <a href="https://github.com/maybeec/lexeme/w
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-11-23 07:46:33 UTC
+Last updated 2021-11-23 08:53:24 UTC
 </sub></div>
 </div>
 </div>

@@ -105,8 +105,8 @@
 <li><a href="#cobigen-textmerger.asciidoc_anchor-functionality">Anchor functionality</a>
 <ul class="sectlevel2">
 <li><a href="#cobigen-textmerger.asciidoc_anchor-definition">Anchor Definition</a></li>
-<li><a href="#cobigen-textmerger.asciidoc_documentparts">Documentparts</a></li>
-<li><a href="#cobigen-textmerger.asciidoc_mergestrategies">Mergestrategies</a></li>
+<li><a href="#cobigen-textmerger.asciidoc_document-parts">Document parts</a></li>
+<li><a href="#cobigen-textmerger.asciidoc_mergestrategies"><code>Mergestrategies</code></a></li>
 </ul>
 </li>
 <li><a href="#cobigen-textmerger.asciidoc_usage-examples">Usage Examples</a>
@@ -142,7 +142,7 @@ _Remark_: empty patches will not result in appending a new line any more since v
 </li>
 <li>
 <p>merge strategy <code>textmerge_override</code> (replaces the contents of the existing file with the patch)
-_Remark_: If anchors are defined, override is set as the default mergestrategy for every text block if not redefined in an anchor specification.</p>
+_Remark_: If anchors are defined, override is set as the default <code>mergestrategy</code> for every text block if not redefined in an anchor specification.</p>
 </li>
 </ul>
 </div>
@@ -167,18 +167,18 @@ Anchors will also be read when they are not comments due to the merger being abl
 </div>
 </div>
 <div class="sect2">
-<h3 id="cobigen-textmerger.asciidoc_documentparts">Documentparts</h3>
+<h3 id="cobigen-textmerger.asciidoc_document-parts">Document parts</h3>
 <div class="paragraph">
-<p>In general, ${documentpart} is an id to mark a part of the document, that way the merger knows what parts of the text to merge with which parts of the patch (e.g. if the existing text contains <code>anchor:table:${}:anchorend</code> that part will be merged with the part tagged <code>anchor:table:${}:anchorend</code> of the patch).</p>
+<p>In general, <code>${documentpart}</code> is an id to mark a part of the document, that way the merger knows what parts of the text to merge with which parts of the patch (e.g. if the existing text contains <code>anchor:table:${}:anchorend</code> that part will be merged with the part tagged <code>anchor:table:${}:anchorend</code> of the patch).</p>
 </div>
 <div class="paragraph">
-<p>If the same documentpart is defined multiple times, it can lead to errors, so instead of defining <code>table</code> multiple times, use <code>table1</code>, <code>table2</code>, <code>table3</code> etc.</p>
+<p>If the same <code>documentpart</code> is defined multiple times, it can lead to errors, so instead of defining <code>table</code> multiple times, use <code>table1</code>, <code>table2</code>, <code>table3</code> etc.</p>
 </div>
 <div class="paragraph">
-<p>If a <code>${documentpart}</code> is defined in the document but not in the patch and they are in the same position, it is processed in the following way: If only the documentparts <code>header</code>, <code>test</code> and <code>footer</code> are defined in the document in that order, and the patch contains <code>header</code>, <code>order</code> and <code>footer</code>, the resulting order will be <code>header</code>, <code>test</code>, <code>order</code> then <code>footer</code>.</p>
+<p>If a <code>${documentpart}</code> is defined in the document but not in the patch and they are in the same position, it is processed in the following way: If only the <code>documentparts header</code>, <code>test</code> and <code>footer</code> are defined in the document in that order, and the patch contains <code>header</code>, <code>order</code> and <code>footer</code>, the resulting order will be <code>header</code>, <code>test</code>, <code>order</code> then <code>footer</code>.</p>
 </div>
 <div class="paragraph">
-<p>The following documentparts have default functionality:</p>
+<p>The following <code>documentparts</code> have default functionality:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -193,9 +193,9 @@ Anchors will also be read when they are not comments due to the merger being abl
 </div>
 </div>
 <div class="sect2">
-<h3 id="cobigen-textmerger.asciidoc_mergestrategies">Mergestrategies</h3>
+<h3 id="cobigen-textmerger.asciidoc_mergestrategies"><code>Mergestrategies</code></h3>
 <div class="paragraph">
-<p>Mergestrategies are only relevant in the patch, as the merger is only interested in how text in the patch should be managed, not how it was managed in the past.</p>
+<p><code>Mergestrategies</code> are only relevant in the patch, as the merger is only interested in how text in the patch should be managed, not how it was managed in the past.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -203,11 +203,11 @@ Anchors will also be read when they are not comments due to the merger being abl
 <p><code>anchor:${documentpart}::anchorend</code> will use the merge strategy from templates.xml, see <a href="#extensions">Merger-Extensions</a>.</p>
 </li>
 <li>
-<p><code>anchor:${}:${mergestrategy}_newline:anchorend</code> or <code>anchor:${}:newline_${mergestrategy}:anchorend</code> states that a new line should be appended before or after this anchors text, depending on where the newline is (before or after the mergestrategy). <code>anchor:${documentpart}:newline:anchorend</code> puts a new line after the anchors text.
+<p><code>anchor:${}:${mergestrategy}_newline:anchorend</code> or <code>anchor:${}:newline_${mergestrategy}:anchorend</code> states that a new line should be appended before or after this anchors text, depending on where the newline is (before or after the <code>mergestrategy</code>). <code>anchor:${documentpart}:newline:anchorend</code> puts a new line after the anchors text.
 <em>Remark:</em> Only works with appending strategies, not merging/replacing ones. These strategies currently include: <code>appendbefore</code>, <code>append</code>/<code>appendafter</code></p>
 </li>
 <li>
-<p><code>anchor:${documentpart}:override:anchorend</code> means that the new text of this documentpart will replace the existing one completely</p>
+<p><code>anchor:${documentpart}:override:anchorend</code> means that the new text of this <code>documentpart</code> will replace the existing one completely</p>
 </li>
 <li>
 <p><code>anchor:${documentpart}:appendbefore:anchorend</code> or <code>anchor:${documentpart}:appendafter:anchorend</code>/<code>anchor:${documentpart}:append:anchorend</code> specifies whether the text of the patch should come before the existing text or after.</p>
@@ -367,16 +367,16 @@ Dolor Sit
 <div class="ulist">
 <ul>
 <li>
-<p>If there are anchors in the text, but either base or patch do not start with one, the merging process wil be aborted, as text might go missing this way.</p>
+<p>If there are anchors in the text, but either base or patch do not start with one, the merging process will be aborted, as text might go missing this way.</p>
 </li>
 <li>
-<p>Using <code>_newline</code> or <code>newline_</code> with mergestrategies that don&#8217;t support it , like <code>override</code>, will abort the merging process. See <a href="#mergestrategies">Merge Strategies</a> &#8594;2 for details.</p>
+<p>Using <code>_newline</code> or <code>newline_</code> with <code>mergestrategies</code> that don&#8217;t support it , like <code>override</code>, will abort the merging process. See &lt;&lt;`mergestrategies`,Merge Strategies&gt;&gt; &#8594;2 for details.</p>
 </li>
 <li>
-<p>Using undefined mergestrategies will abort the merging process.</p>
+<p>Using undefined <code>mergestrategies</code> will abort the merging process.</p>
 </li>
 <li>
-<p>Wrong anchor definitions, for example <code>anchor:${}:anchorend</code> will abort the merging process, see <a href="#anchordef">Anchor Definition</a> for details.</p>
+<p>Wrong anchor definitions, for example <code>anchor:${}:anchorend</code> will abort the merging process, see &lt;&lt;`anchordef`,Anchor Definition&gt;&gt; for details.</p>
 </li>
 </ul>
 </div>
@@ -504,7 +504,7 @@ Dolor Sit
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-11-23 07:46:30 UTC
+Last updated 2021-11-23 08:53:22 UTC
 </sub></div>
 </div>
 </div>

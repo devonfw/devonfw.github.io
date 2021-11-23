@@ -118,7 +118,8 @@
 <li><a href="#eclipse-plugin_development.asciidoc_wizard-development">Wizard Development</a>
 <ul class="sectlevel2">
 <li><a href="#eclipse-plugin_development.asciidoc_starting-the-wizard">Starting the Wizard</a></li>
-<li><a href="#eclipse-plugin_development.asciidoc_selectfilespage-and-selectattributespage">SelectFilesPage and SelectAttributesPage</a></li>
+<li><a href="#eclipse-plugin_development.asciidoc_wizard-and-wizardpages">Wizard and <code>WizardPages</code></a></li>
+<li><a href="#eclipse-plugin_development.asciidoc_select-files-page-and-select-attributes-page">Select Files Page and Select Attributes Page</a></li>
 </ul>
 </li>
 <li><a href="#eclipse-plugin_development.asciidoc_finish-and-perform-generation">Finish and perform generation</a>
@@ -132,7 +133,7 @@
 </ul>
 <h1 id="eclipse-plugin_development.asciidoc" class="sect0">Eclipse Plugin Development</h1>
 <div class="paragraph">
-<p>The Eclipse plugin is where all the other plugins (JavaPlugin, XMLPlugin, PropertyPlugin, TextMerger and the core) are loaded.</p>
+<p>The Eclipse plugin is where all the other plugins (<code>JavaPlugin</code>, <code>XMLPlugin</code>, <code>PropertyPlugin</code>, <code>TextMerger</code> and the core) are loaded.</p>
 </div>
 <div class="sect1">
 <h2 id="eclipse-plugin_development.asciidoc_configuration">Configuration</h2>
@@ -140,8 +141,8 @@
 <div class="sect2">
 <h3 id="eclipse-plugin_development.asciidoc_activator-java">Activator java</h3>
 <div class="paragraph">
-<p>Activator class is the start point of the plugin. Activator class is loaded initially and it extends the <strong>AbstractUIPlugin</strong>, which tells the Eclipse Run-time that this Plugin is someway related to the Eclipse Platform UI.
-An ID for the plugin is defined for configuration at <a href="https://github.com/devonfw/cobigen/wiki/Eclipse-Plugin-Development#plugin-xml">Plugin.xml</a> needs.</p>
+<p>Activator class is the start point of the plugin. Activator class is loaded initially and it extends the <code><strong>AbstractUIPlugin</strong></code>, which tells the Eclipse Run-time that this Plugin is someway related to the Eclipse Platform <code>UI</code>.
+An <code>ID</code> for the plugin is defined for configuration at <a href="https://github.com/devonfw/cobigen/wiki/Eclipse-Plugin-Development#plugin-xml">Plugin.xml</a> needs.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -152,7 +153,7 @@ public static final String PLUGIN_ID = "com.capgemini.cobigen.eclipseplugin"; //
 </div>
 </div>
 <div class="paragraph">
-<p>The overrode <code><em>start()</em></code> method starts the plugin and loads all the sub-plugins using the <strong>PluginRegistry</strong> from the core for each plug-in:</p>
+<p>The overrode <code><em>start()</em></code> method starts the plugin and loads all the sub-plugins using the <strong><code>PluginRegistry</code></strong> from the core for each plug-in:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -174,7 +175,7 @@ public static final String PLUGIN_ID = "com.capgemini.cobigen.eclipseplugin"; //
 </table>
 </div>
 <div class="paragraph">
-<p>The activator has the listener <strong><em>ConfigurationProjectListener.java</em></strong> from the <strong>workbenchcontrol</strong> package that checks continuously changes on the templates project</p>
+<p>The activator has the listener <strong><em>`ConfigurationProjectListener.java`</em></strong> from the <strong><code>workbenchcontrol</code></strong> package that checks continuously changes on the templates project</p>
 </div>
 </div>
 <div class="sect2">
@@ -256,7 +257,7 @@ public static final String PLUGIN_ID = "com.capgemini.cobigen.eclipseplugin"; //
 <h2 id="eclipse-plugin_development.asciidoc_handlers">Handlers</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The <strong>workbenchcontrol</strong> package provides to the plugin the listener regarding to the templates project, the listener for logging needs and the handler for the two main use cases (Generate and HealthCheck).</p>
+<p>The <strong>workbenchcontrol</strong> package provides to the plugin the listener regarding to the templates project, the listener for logging needs and the handler for the two main use cases (Generate and <code>HealthCheck</code>).</p>
 </div>
 <div class="sect2">
 <h3 id="eclipse-plugin_development.asciidoc_update-templates">Update Templates:</h3>
@@ -273,8 +274,8 @@ public static final String PLUGIN_ID = "com.capgemini.cobigen.eclipseplugin"; //
 <div class="sect2">
 <h3 id="eclipse-plugin_development.asciidoc_generate-action-handler">Generate Action Handler</h3>
 <div class="paragraph">
-<p>The wizard launching is the responsibility of the generate handler (<strong><em>GenerateHandler.java</em></strong>). In case of Generate action and depending of the input provided for that, the handler will create a JavaGeneratorWrapper or XMlGeneratorWrapper object.
-For JavaGeneratorWrapper, if the input is a package or a selection of multiple entity files, the wizard will be launched in batch mode calling the <strong><em>GenerateBatchWizard.java</em></strong> from the <strong>wizard.generate</strong> package. But if the input is a single entity java class file, it will be launched in normal mode calling the <strong><em>GenerateWizard.java</em></strong> from the same package.</p>
+<p>The wizard launching is the responsibility of the generate handler (<strong><em>`GenerateHandler.java`</em></strong>). In case of Generate action and depending of the input provided for that, the handler will create a <code>JavaGeneratorWrapper</code> or <code>XMlGeneratorWrapper</code> object.
+For <code>JavaGeneratorWrapper</code>, if the input is a package or a selection of multiple entity files, the wizard will be launched in batch mode calling the <strong><em>`GenerateBatchWizard.java`</em></strong> from the <strong>wizard.generate</strong> package. But if the input is a single entity java class file, it will be launched in normal mode calling the <strong><em>`GenerateWizard.java`</em></strong> from the same package.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -284,7 +285,7 @@ For JavaGeneratorWrapper, if the input is a package or a selection of multiple e
 </td>
 <td class="content">
 <div class="paragraph">
-<p>For both Wrapper objects, the inputs will be converted to valid inputs for Freemarker using the <strong><em>Xml/JavaInputConverter.java</em></strong> from the <strong>generator.xml/java</strong> package.</p>
+<p>For both Wrapper objects, the inputs will be converted to valid inputs for Freemarker using the <strong><em>`Xml/JavaInputConverter.java`</em></strong> from the <strong>generator.xml/java</strong> package.</p>
 </div>
 </td>
 </tr>
@@ -294,7 +295,7 @@ For JavaGeneratorWrapper, if the input is a package or a selection of multiple e
 <p><span class="image"><a class="image" href="images/howtos/eclipse-plugin/eclipse-plugin_diag1.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/eclipse-plugin/eclipse-plugin_diag1.png" alt="Diagram 1" width="450"></a></span></p>
 </div>
 <div class="paragraph">
-<p>For XmlGeneratorWrapper, the input must be a single valid XML file. As only has a single file as input, the <strong><em>GenerateWizard.java</em></strong> will be called.</p>
+<p>For <code>XmlGeneratorWrapper</code>, the input must be a single valid XML file. As only has a single file as input, the <strong><em>`GenerateWizard.java`</em></strong> will be called.</p>
 </div>
 <div class="paragraph">
 <p>In summary, this will be the process for the Generate Action before calling the wizard:</p>
@@ -306,7 +307,7 @@ For JavaGeneratorWrapper, if the input is a package or a selection of multiple e
 <div class="sect2">
 <h3 id="eclipse-plugin_development.asciidoc_health-check-action-handler">Health Check Action Handler</h3>
 <div class="paragraph">
-<p>At the case of Health Check action, a success/error dialog is shown instead of a wizard itself. The <strong><em>HealtchCheckHandler.java</em></strong> will call the execute method of <strong><em>HealthCheck.java</em></strong> from the <strong>healthcheck</strong> package. That class will test first if the templates project exists at the workspace opening and error dialog if not by throwing and handling the custom exception <strong><em>GeneratorProjectNotExistentException.java</em></strong> from the <strong>common.exceptions</strong> package.</p>
+<p>At the case of Health Check action, a success/error dialog is shown instead of a wizard itself. The <strong><em>`HealtchCheckHandler.java`</em></strong> will call the execute method of <strong><em>`HealthCheck.java`</em></strong> from the <strong>healthcheck</strong> package. That class will test first if the templates project exists at the workspace opening and error dialog if not by throwing and handling the custom exception <strong><em>`GeneratorProjectNotExistentException.java`</em></strong> from the <strong>common.exceptions</strong> package.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -327,7 +328,7 @@ For JavaGeneratorWrapper, if the input is a package or a selection of multiple e
 </div>
 </div>
 <div class="paragraph">
-<p>If the project exists, HealthCheck will test if the <em>context.xml</em> file is valid. In case of invalid, HealthCheck will throw and handle the <strong>InvalidConfigurationException</strong> from the core and check if it is possible to upgrade the version of the xml file, showing an <em>UPGRADE</em> button at the dialog. If the upgrade is not possible, will show a dialog message telling the user to check the <em>context.xml</em> file for errors.</p>
+<p>If the project exists, <code>HealthCheck</code> will test if the <em>context.xml</em> file is valid. In case of invalid, <code>HealthCheck</code> will throw and handle the <strong><code>InvalidConfigurationException</code></strong> from the core and check if it is possible to upgrade the version of the xml file, showing an <em>UPGRADE</em> button at the dialog. If the upgrade is not possible, will show a dialog message telling the user to check the <em>context.xml</em> file for errors.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -369,7 +370,7 @@ For JavaGeneratorWrapper, if the input is a package or a selection of multiple e
 </div>
 </div>
 <div class="paragraph">
-<p>At this point, if all is correct, the user can choose to finish the HealtCheck process or run the Advance Health Check running the <strong><em>AdvancedHealthCheck.java</em></strong> to check the the validity of template configurations. That check has three steps:</p>
+<p>At this point, if all is correct, the user can choose to finish the <code>HealtCheck</code> process or run the Advance Health Check running the <strong><em>`AdvancedHealthCheck.java`</em></strong> to check the the validity of template configurations. That check has three steps:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -383,7 +384,7 @@ Will check if the template configuration file exists, if it is accessible and if
 </li>
 <li>
 <p><strong>Show current status to the user</strong><br>
-Will call the <strong><em>AdvancedHealthCheckDialog.java</em></strong> showing a dialog with the current state of each configuration template, showing an <em>UPGRADE</em> button if the configuration version can be upgraded.</p>
+Will call the <strong><em>`AdvancedHealthCheckDialog.java`</em></strong> showing a dialog with the current state of each configuration template, showing an <em>UPGRADE</em> button if the configuration version can be upgraded.</p>
 </li>
 </ol>
 </div>
@@ -396,8 +397,8 @@ Will call the <strong><em>AdvancedHealthCheckDialog.java</em></strong> showing a
 <div class="sect2">
 <h3 id="eclipse-plugin_development.asciidoc_starting-the-wizard">Starting the Wizard</h3>
 <div class="paragraph">
-<p>To open a wizard, use the <strong>WizardDialog</strong> class from the <strong>org.eclipse.jface.wizard</strong> package.
-The plugin does that at <strong><em>GenerateHandler.java</em></strong> as previously explained <a href="https://github.com/devonfw/cobigen/wiki/Eclipse-Plugin-Development#3-1-generate-action-handler">here</a>:</p>
+<p>To open a wizard, use the <strong><code>WizardDialog</code></strong> class from the <strong><code>org.eclipse.jface.wizard</code></strong> package.
+The plugin does that at <strong><em>`GenerateHandler.java`</em></strong> as previously explained <a href="https://github.com/devonfw/cobigen/wiki/Eclipse-Plugin-Development#3-1-generate-action-handler">here</a>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -413,42 +414,45 @@ The plugin does that at <strong><em>GenerateHandler.java</em></strong> as previo
      wiz.setPageSize(new Point(800, 500));
      wiz.open();
      LOG.info("Generate Wizard opened.");
-}
-Adapt Template: Select Entity file and right click then select cobigen  Adapt Template.If cobigen template  jar not available then it download automatically.If Cobigen templates is already then it will override existing template in workspace and click on OK then imported template successfully message will come .If Template not available the it automatically
-[[eclipse-plugin_development.asciidoc_wizard-and-wizardpages]]
-=== Wizard and WizardPages</code></pre>
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The Wizard class from the <strong>org.eclipse.jface.wizard</strong> package provides the functionality to build custom wizards. This class controls the navigation between the different pages and provides the base user interface, for example, an area for error and information messages.</p>
+<p>Adapt Template: Select Entity file and right click then select cobigen  Adapt Template.If cobigen template  jar not available then it download automatically.If Cobigen templates is already then it will override existing template in workspace and click on OK then imported template successfully message will come .If Template not available the it automatically</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="eclipse-plugin_development.asciidoc_wizard-and-wizardpages">Wizard and <code>WizardPages</code></h3>
+<div class="paragraph">
+<p>The Wizard class from the <strong><code>org.eclipse.jface.wizard</code></strong> package provides the functionality to build custom wizards. This class controls the navigation between the different pages and provides the base user interface, for example, an area for error and information messages.</p>
 </div>
 <div class="paragraph">
-<p>A wizard contains one or several pages of the type <strong>WizardPage</strong>. Such a page is added to a Wizard object via the <code><em>addPage()</em></code> method.</p>
+<p>A wizard contains one or several pages of the type <strong><code>WizardPage</code></strong>. Such a page is added to a Wizard object via the <code><em>addPage()</em></code> method.</p>
 </div>
 <div class="paragraph">
-<p>A <strong>WizardPage</strong> must create a new Composite in its <code><em>createControl()</em></code> method. This new Composite must use the Composite of the method parameter as parent. It also must call the <code><em>setControl()</em></code> method with this new Composite as parameter. If this is omitted, Eclipse will throw an error.</p>
+<p>A <strong><code>WizardPage</code></strong> must create a new Composite in its <code><em>createControl()</em></code> method. This new Composite must use the Composite of the method parameter as parent. It also must call the <code><em>setControl()</em></code> method with this new Composite as parameter. If this is omitted, Eclipse will throw an error.</p>
 </div>
 <div class="paragraph">
 <p>On the CobiGen eclipse-plugin project:
 <span class="image"><a class="image" href="images/howtos/eclipse-plugin/eclipse-plugin_diag3.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/eclipse-plugin/eclipse-plugin_diag3.png" alt="Diagram 3" width="450"></a></span></p>
 </div>
 <div class="paragraph">
-<p>The WizardPage class defines the <code>canFlipToNextPage()</code> and <code>setPageComplete()</code> methods to control if the <em>NEXT</em> or the <em>FINISH</em> button in the wizard becomes active.</p>
+<p>The <code>WizardPage</code> class defines the <code>canFlipToNextPage()</code> and <code>setPageComplete()</code> methods to control if the <em>NEXT</em> or the <em>FINISH</em> button in the wizard becomes active.</p>
 </div>
 <div class="paragraph">
-<p>The Wizard class defines the <code>canFinish()</code> method in which you can define if the wizard can be completed. This last method is overrode at <strong><em>AbstractGenerateWizard.java</em></strong>.</p>
+<p>The Wizard class defines the <code>canFinish()</code> method in which you can define if the wizard can be completed. This last method is overrode at <code><strong><em>AbstractGenerateWizard.java</em></strong></code>.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="eclipse-plugin_development.asciidoc_selectfilespage-and-selectattributespage">SelectFilesPage and SelectAttributesPage</h3>
+<h3 id="eclipse-plugin_development.asciidoc_select-files-page-and-select-attributes-page">Select Files Page and Select Attributes Page</h3>
 <div class="paragraph">
-<p>In case that has been launched in batch mode, the wizard only will have the select increment and files page (initialized and configured at <strong><em>SelectFilePage.java</em></strong> from the package <strong>wizard.common</strong>)</p>
+<p>In case that has been launched in batch mode, the wizard only will have the select increment and files page (initialized and configured at <strong><em>`SelectFilePage.java`</em></strong> from the package <strong>wizard.common</strong>)</p>
 </div>
 <div class="paragraph">
-<p>In case of normal mode with an entity java class as input, the wizard will have an optional second page provided for <strong><em>SelectAttributesPage.java</em></strong> of the package <strong>wizard.generate.common</strong> for selecting attributes of the entity that will be used for the generation. The page is optional because the user can finish the wizard and perform the generation from the first page.</p>
+<p>In case of normal mode with an entity java class as input, the wizard will have an optional second page provided for <strong><em>`SelectAttributesPage.java`</em></strong> of the package <strong>wizard.generate.common</strong> for selecting attributes of the entity that will be used for the generation. The page is optional because the user can finish the wizard and perform the generation from the first page.</p>
 </div>
 <div class="paragraph">
-<p>The pages of the CobiGen wizard is composed essentially for container. The containers have a CheckBoxTreeViewer object, a content provider object and a listener (that defines the behavior of the wizard when a check box is checked or unchecked)</p>
+<p>The pages of the CobiGen wizard is composed essentially for container. The containers have a <code>CheckBoxTreeViewer</code> object, a content provider object and a listener (that defines the behavior of the wizard when a check box is checked or unchecked)</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><a class="image" href="images/howtos/eclipse-plugin/eclipse-plugin_diag4.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/eclipse-plugin/eclipse-plugin_diag4.png" alt="Diagram 4" width="450"></a></span></p>
@@ -456,7 +460,7 @@ Adapt Template: Select Entity file and right click then select cobigen  Adapt Te
 <div class="sect3">
 <h4 id="eclipse-plugin_development.asciidoc_select-files-page">Select Files Page</h4>
 <div class="paragraph">
-<p>The first page (<em>SelectFilesPage</em>) is composed by two containers:</p>
+<p>The first page (<em>`SelectFilesPage`</em>) is composed by two containers:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -465,50 +469,54 @@ Adapt Template: Select Entity file and right click then select cobigen  Adapt Te
 <div class="ulist">
 <ul>
 <li>
-<p>Created as a <strong>CustomizedCheckBoxTreeViewer</strong></p>
+<p>Created as a <strong><code>CustomizedCheckBoxTreeViewer</code></strong></p>
 </li>
 <li>
-<p>The content provider is a <strong>SelectIncrementContentProvider</strong></p>
+<p>The content provider is a <strong><code>SelectIncrementContentProvider</code></strong></p>
 </li>
 <li>
 <p>Setting the input will upgrade the labels to show</p>
 </li>
 <li>
-<p>Set <strong>CheckStateListener</strong> as listener</p>
+<p>Set <strong><code>CheckStateListener</code></strong> as listener</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="java language-java">incrementSelector = new CustomizedCheckboxTreeViewer(containerLeft);
+<pre>incrementSelector = new CustomizedCheckboxTreeViewer(containerLeft);
 incrementSelector.setContentProvider(new SelectIncrementContentProvider());
 incrementSelector.setInput(cobigenWrapper.getAllIncrements());
 gd = new GridData(GridData.FILL_BOTH);
 gd.grabExcessVerticalSpace = true;
 incrementSelector.getTree().setLayoutData(gd);
 CheckStateListener checkListener = new CheckStateListener(cobigenWrapper, this, batch);
-incrementSelector.addCheckStateListener(checkListener);incrementSelector.expandAll();</code></pre>
+incrementSelector.addCheckStateListener(checkListener);incrementSelector.expandAll();</pre>
 </div>
 </div>
-</li>
-</ul>
-</div>
-</li>
+<div class="olist arabic">
+<ol class="arabic">
 <li>
 <p><strong>Right Container - Resources to be generated</strong><br></p>
 <div class="ulist">
 <ul>
 <li>
-<p>Created as <strong>SimulatedCheckBoxTreeViewer</strong> if the Customize button is not enabled or as <strong>CustomizedCheckBoxTreeViewer</strong> if it is.</p>
+<p>Created as <strong><code>SimulatedCheckBoxTreeViewer</code></strong> if the Customize button is not enabled or as <strong><code>CustomizedCheckBoxTreeViewer</code></strong> if it is.</p>
 </li>
 <li>
-<p><strong>SelectFileContentProvider</strong> as content provider.</p>
+<p><strong><code>SelectFileContentProvider</code></strong> as content provider.</p>
 </li>
 <li>
-<p><strong>SelectFileLabelProvider</strong> as label provider</p>
+<p><strong><code>SelectFileLabelProvider</code></strong> as label provider</p>
 </li>
 <li>
 <p>Generation target project as input</p>
 </li>
 <li>
-<p>Set <strong>CheckStateListener</strong> as listener</p>
+<p>Set <strong><code>CheckStateListener</code></strong> as listener</p>
 </li>
 </ul>
 </div>
@@ -536,7 +544,7 @@ incrementSelector.addCheckStateListener(checkListener);incrementSelector.expandA
 <p>As previously explained, this page is optional, the user can press the Finish button at the previous page. Nevertheless, this page can only be accessed in case of a single entity file as input, never on batch mode.</p>
 </div>
 <div class="paragraph">
-<p>The container is composed by a single <strong>CheckBoxTableViewer</strong> with a <em>SelectAttributesContentProvider</em> as content provider and a <em>SelectAttributesLabelProvider</em> as label provider.</p>
+<p>The container is composed by a single <strong><code>CheckBoxTableViewer</code></strong> with a <em>`SelectAttributesContentProvider`</em> as content provider and a <em>`SelectAttributesLabelProvider`</em> as label provider.</p>
 </div>
 </div>
 </div>
@@ -547,7 +555,7 @@ incrementSelector.addCheckStateListener(checkListener);incrementSelector.expandA
 <div class="sectionbody">
 <div class="paragraph">
 <p>When the user press the Finish button, the generation process will begin. For that, a generation job will be created using as argument a list of templates to be generated retrieving them from the user selection of the first page (Select Files Page).
-The generate wizard will use the <strong><em>GenerateSelectionJob.java</em></strong> or the <strong><em>GenerateBatchSelectionJob.java</em></strong> for normal mode or batch mode respectively.</p>
+The generate wizard will use the <strong><em>`GenerateSelectionJob.java`</em></strong> or the <strong><em>`GenerateBatchSelectionJob.java`</em></strong> for normal mode or batch mode respectively.</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><a class="image" href="images/howtos/eclipse-plugin/eclipse-plugin_diag5.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/eclipse-plugin/eclipse-plugin_diag5.png" alt="Diagram 5" width="450"></a></span></p>
@@ -576,10 +584,10 @@ protected void generateContents(ProgressMonitorDialog dialog) {
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>dialog.run(true, false, job)</code> method will call the <code>performGeneration()</code> method from <em>GenerateSelectionJob.java</em></p>
+<p>The <code>dialog.run(true, false, job)</code> method will call the <code>performGeneration()</code> method from <em>`GenerateSelectionJob.java`</em></p>
 </div>
 <div class="paragraph">
-<p>Calling the <code>generate()</code> method from the <strong>CobiGenWrapper</strong> will call the method with the same name from the core and the generation will begin.</p>
+<p>Calling the <code>generate()</code> method from the <strong><code>CobiGenWrapper</code></strong> will call the method with the same name from the core and the generation will begin.</p>
 </div>
 </div>
 <div class="sect2">
@@ -615,7 +623,7 @@ protected void generateContents(ProgressMonitorDialog dialog) {
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>dialog.run(true, false, job)</code> method will call the <code>performGeneration()</code> method from <em>GenerateBatchSelectionJob.java</em></p>
+<p>The <code>dialog.run(true, false, job)</code> method will call the <code>performGeneration()</code> method from <em>`GenerateBatchSelectionJob.java`</em></p>
 </div>
 </div>
 </div>
@@ -742,7 +750,7 @@ protected void generateContents(ProgressMonitorDialog dialog) {
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-11-23 07:46:35 UTC
+Last updated 2021-11-23 08:53:26 UTC
 </sub></div>
 </div>
 </div>

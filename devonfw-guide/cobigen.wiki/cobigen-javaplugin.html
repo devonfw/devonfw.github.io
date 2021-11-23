@@ -104,8 +104,8 @@
 <li><a href="#cobigen-javaplugin.asciidoc_trigger-extension">Trigger extension</a>
 <ul class="sectlevel2">
 <li><a href="#cobigen-javaplugin.asciidoc_matcher-types">Matcher types</a></li>
-<li><a href="#cobigen-javaplugin.asciidoc_containermatcher-types">ContainerMatcher types</a></li>
-<li><a href="#cobigen-javaplugin.asciidoc_variableassignment-types">VariableAssignment types</a></li>
+<li><a href="#cobigen-javaplugin.asciidoc_container-matcher-types">Container Matcher types</a></li>
+<li><a href="#cobigen-javaplugin.asciidoc_variable-assignment-types">Variable Assignment types</a></li>
 <li><a href="#cobigen-javaplugin.asciidoc_java-input-reader">Java input reader</a></li>
 </ul>
 </li>
@@ -149,7 +149,7 @@
 <div class="ulist">
 <ul>
 <li>
-<p>type 'fqn' &#8594; full qualified name matching</p>
+<p>type <code>fqn</code> &#8594; full qualified name matching</p>
 <div class="listingblock">
 <div class="title">Example of a java trigger definition with a full qualified name matcher</div>
 <div class="content">
@@ -206,7 +206,7 @@
 </div>
 </div>
 <div class="sect2">
-<h3 id="cobigen-javaplugin.asciidoc_containermatcher-types">ContainerMatcher types</h3>
+<h3 id="cobigen-javaplugin.asciidoc_container-matcher-types">Container Matcher types</h3>
 <div class="paragraph">
 <p>Additionally, the java plugin provides the ability to match packages (containers) as follows:</p>
 </div>
@@ -223,14 +223,14 @@
 </div>
 </div>
 <div class="paragraph">
-<p>The container matcher matches packages provided by the type <code>com.capgemini.cobigen.javaplugin.inputreader.to.PackageFolder</code> with a regular expression stated in the <code>value</code> attribute. (See <a href="cobigen-core_configuration.html#containermatcher-node">containerMatcher semantics</a> to get more information about containerMatchers itself.)</p>
+<p>The container matcher matches packages provided by the type <code>com.capgemini.cobigen.javaplugin.inputreader.to.PackageFolder</code> with a regular expression stated in the <code>value</code> attribute. (See <a href="cobigen-core_configuration.html#containermatcher-node"><code>containerMatcher</code> semantics</a> to get more information about <code>containerMatchers</code> itself.)</p>
 </div>
 </li>
 </ul>
 </div>
 </div>
 <div class="sect2">
-<h3 id="cobigen-javaplugin.asciidoc_variableassignment-types">VariableAssignment types</h3>
+<h3 id="cobigen-javaplugin.asciidoc_variable-assignment-types">Variable Assignment types</h3>
 <div class="paragraph">
 <p>Furthermore, it provides the ability to extract information from each input for further processing in the templates. The values assigned by variable assignments will be made available in template and the <code>destinationPath</code> of context.xml through the namespace <code>variables.&lt;key&gt;</code>. The Java Plug-in currently provides two different mechanisms:</p>
 </div>
@@ -291,7 +291,7 @@
 <div class="ulist">
 <ul>
 <li>
-<p><strong>classObject</strong> ('Class' :: Class object of the Java input)</p>
+<p><strong><code>classObject</code></strong> ('Class' :: Class object of the Java input)</p>
 </li>
 <li>
 <p><strong>pojo</strong></p>
@@ -304,36 +304,36 @@
 <p><strong>package</strong> ('String' :: Package name of the input class)</p>
 </li>
 <li>
-<p><strong>canonicalName</strong> ('String' :: Full qualified name of the input class)</p>
+<p><strong><code>canonicalName</code></strong> ('String' :: Full qualified name of the input class)</p>
 </li>
 <li>
 <p><strong>annotations</strong> ('Map&lt;String, Object&gt;' :: Annotations, which will be represented by a mapping of the full qualified type of an annotation to its value. To gain template compatibility, the key will be stored with '_' instead of '.' in the full qualified annotation type. Furthermore, the annotation might be recursively defined and thus be accessed using the same type of mapping. Example <code>${pojo.annotations.javax_persistence_Id}</code>)</p>
 </li>
 <li>
-<p><strong>javaDoc</strong> ('Map&lt;String, Object&gt;') :: A generic way of addressing all available javaDoc doclets and comments. The only fixed variable is <code>comment</code> (see below). All other provided variables depend on the doclets found while parsing. The value of a doclet can be accessed by the doclets name (e.g. <code>${&#8230;&#8203;javaDoc.author}</code>). In case of doclet tags that can be declared multiple times (currently <code>@param</code> and <code>@throws</code>), you will get a map, which you access in a specific way (see below).</p>
+<p><strong>JavaDoc</strong> ('Map&lt;String, Object&gt;') :: A generic way of addressing all available JavaDoc doclets and comments. The only fixed variable is <code>comment</code> (see below). All other provided variables depend on the doclets found while parsing. The value of a doclet can be accessed by the doclets name (e.g. <code>${&#8230;&#8203;JavaDoc.author}</code>). In case of doclet tags that can be declared multiple times (currently <code>@param</code> and <code>@throws</code>), you will get a map, which you access in a specific way (see below).</p>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>comment</strong> ('String' :: javaDoc comment, which does not include any doclets)</p>
+<p><strong>comment</strong> ('String' :: JavaDoc comment, which does not include any doclets)</p>
 </li>
 <li>
-<p><strong>params</strong> ('Map&lt;String,String&gt; :: javaDoc parameter info. If the comment follows proper conventions, the key will be the name of the parameter and the value being its description. You can also access the parameters by their number, as in <code>arg0</code>, <code>arg1</code> etc, following the order of declaration in the signature, not in order of javadoc)</p>
+<p><strong>params</strong> ('Map&lt;String,String&gt; :: JavaDoc parameter info. If the comment follows proper conventions, the key will be the name of the parameter and the value being its description. You can also access the parameters by their number, as in <code>arg0</code>, <code>arg1</code> etc, following the order of declaration in the signature, not in order of javadoc)</p>
 </li>
 <li>
-<p><strong>throws</strong> ('Map&lt;String,String&gt; :: javaDoc exception info. If the comment follows proper conventions, the key will be the name of the thrown exception and the value being its description)</p>
+<p><strong>throws</strong> ('Map&lt;String,String&gt; :: JavaDoc exception info. If the comment follows proper conventions, the key will be the name of the thrown exception and the value being its description)</p>
 </li>
 </ul>
 </div>
 </li>
 <li>
-<p><strong>extendedType</strong> ('Map&lt;String, Object&gt;' :: The supertype, represented by a set of mappings <em>(since cobigen-javaplugin v1.1.0)</em></p>
+<p><strong><code>extendedType</code></strong> ('Map&lt;String, Object&gt;' :: The supertype, represented by a set of mappings <em>(since cobigen-javaplugin v1.1.0)</em></p>
 <div class="ulist">
 <ul>
 <li>
 <p><strong>name</strong> ('String' :: Simple name of the supertype)</p>
 </li>
 <li>
-<p><strong>canonicalName</strong> ('String' :: Full qualified name of the supertype)</p>
+<p><strong><code>canonicalName</code></strong> ('String' :: Full qualified name of the supertype)</p>
 </li>
 <li>
 <p><strong>package</strong> ('String' :: Package name of the supertype)</p>
@@ -342,7 +342,7 @@
 </div>
 </li>
 <li>
-<p><strong>implementedTypes</strong> ('List&lt;Map&lt;String, Object&gt;&gt;' :: A list of all implementedTypes (interfaces) represented by a set of mappings <em>(since cobigen-javaplugin v1.1.0)</em></p>
+<p><code><strong>implementedTypes</strong></code> ('List&lt;Map&lt;String, Object&gt;&gt;' :: A list of all <code>implementedTypes</code> (interfaces) represented by a set of mappings <em>(since cobigen-javaplugin v1.1.0)</em></p>
 <div class="ulist">
 <ul>
 <li>
@@ -353,7 +353,7 @@
 <p><strong>name</strong> ('String' :: Simple name of the interface)</p>
 </li>
 <li>
-<p><strong>canonicalName</strong> ('String' :: Full qualified name of the interface)</p>
+<p><strong><code>canonicalName</code></strong> ('String' :: Full qualified name of the interface)</p>
 </li>
 <li>
 <p><strong>package</strong> ('String' :: Package name of the interface)</p>
@@ -379,13 +379,13 @@
 <p><strong>type</strong> ('String' :: Type of the Java field)</p>
 </li>
 <li>
-<p><strong>canonicalType</strong> ('String' :: Full qualified type declaration of the Java field&#8217;s type)</p>
+<p><code><strong>canonicalType</strong></code> ('String' :: Full qualified type declaration of the Java field&#8217;s type)</p>
 </li>
 <li>
-<p>'<strong>isId</strong>' ('Deprecated' :: 'boolean' :: true if the Java field or its setter or its getter is annotated with the javax.persistence.Id annotation, false otherwise. Equivalent to <code>${pojo.attributes[i].annotations.javax_persistence_Id?has_content}</code>)</p>
+<p>'<strong><code>isId</code></strong>' ('Deprecated' :: 'boolean' :: true if the Java field or its setter or its getter is annotated with the javax.persistence.Id annotation, false otherwise. Equivalent to <code>${pojo.attributes[i].annotations.javax_persistence_Id?has_content}</code>)</p>
 </li>
 <li>
-<p><strong>javaDoc</strong> (see pojo.javaDoc)</p>
+<p><strong>JavaDoc</strong> (see pojo.JavaDoc)</p>
 </li>
 <li>
 <p><strong>annotations</strong> (see pojo.annotations with the remark, that for fields all annotations of its setter and getter will also be collected)</p>
@@ -397,11 +397,11 @@
 </div>
 </li>
 <li>
-<p><strong>methodAccessibleFields</strong> ('List&lt;Map&lt;String, Object&gt;&gt;' :: List of fields of the input class or its inherited classes, which are accessible using setter and getter methods)</p>
+<p><code><strong>methodAccessibleFields</strong></code> ('List&lt;Map&lt;String, Object&gt;&gt;' :: List of fields of the input class or its inherited classes, which are accessible using setter and getter methods)</p>
 <div class="ulist">
 <ul>
 <li>
-<p>same as for <em>field</em> (but without javaDoc!)</p>
+<p>same as for <em>field</em> (but without JavaDoc!)</p>
 </li>
 </ul>
 </div>
@@ -418,7 +418,7 @@
 <p><strong>name</strong> ('String' :: Name of the method)</p>
 </li>
 <li>
-<p><strong>javaDoc</strong> (see pojo.javaDoc)</p>
+<p><strong>JavaDoc</strong> (see pojo.JavaDoc)</p>
 </li>
 <li>
 <p><strong>annotations</strong> (see pojo.annotations)</p>
@@ -451,7 +451,7 @@
 <div class="sect3">
 <h4 id="cobigen-javaplugin.asciidoc_model-restrictions">Model Restrictions</h4>
 <div class="paragraph">
-<p>As stated before both inputs (<code>Class&lt;?&gt;</code> objects and <code>JavaClass</code> objects ) have their restrictions according to model building. In the following these restrictions are listed for both models, the ParsedJava Model which results from an <code>JavaClass</code> input and the ReflectedJava Model, which results from a Class&lt;?&gt;` input.</p>
+<p>As stated before both inputs (<code>Class&lt;?&gt;</code> objects and <code>JavaClass</code> objects ) have their restrictions according to model building. In the following these restrictions are listed for both models, the <code>ParsedJava</code> Model which results from an <code>JavaClass</code> input and the <code>ReflectedJava</code> Model, which results from a Class&lt;?&gt; input.</p>
 </div>
 <div class="paragraph">
 <p>It is important to understand, that these restrictions are only present if you work with either Parsed Model <strong>OR</strong> the Reflected Model. If you use the <em>Maven Build Plug-in</em> or <em>Eclipse Plug-in</em> these two models are merged together so that they can mutually compensate their weaknesses.</p>
@@ -657,7 +657,7 @@
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-11-23 07:46:25 UTC
+Last updated 2021-11-23 08:53:18 UTC
 </sub></div>
 </div>
 </div>

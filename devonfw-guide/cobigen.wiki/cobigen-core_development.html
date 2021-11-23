@@ -104,7 +104,7 @@
 <li><a href="#cobigen-core_development.asciidoc_extension-mechanism">Extension Mechanism</a></li>
 <li><a href="#cobigen-core_development.asciidoc_plugin-registry">Plugin Registry</a>
 <ul class="sectlevel2">
-<li><a href="#cobigen-core_development.asciidoc_loadplugin">LoadPlugin</a></li>
+<li><a href="#cobigen-core_development.asciidoc_load-plugin">Load Plugin</a></li>
 </ul>
 </li>
 <li><a href="#cobigen-core_development.asciidoc_cobigen-initialization">CobiGen Initialization</a>
@@ -189,32 +189,32 @@
 <h2 id="cobigen-core_development.asciidoc_extension-mechanism">Extension Mechanism</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The <strong>extension</strong> package from the API project contains the interfaces to be implemented if necessary by the sub plugins:</p>
+<p>The <strong>extension</strong> package from the <code>API</code> project contains the interfaces to be implemented if necessary by the sub plugins:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><strong><em>GeneratorPluginActivator.java</em></strong></p>
+<p><strong><em>`GeneratorPluginActivator.java`</em></strong></p>
 </li>
 <li>
-<p><strong><em>InputReader.java</em></strong></p>
+<p><strong><em>`InputReader.java`</em></strong></p>
 </li>
 <li>
-<p><strong><em>MatcherInterpreter.java</em></strong></p>
+<p><strong><em>`MatcherInterpreter.java`</em></strong></p>
 </li>
 <li>
 <p><strong><em>Merger.java</em></strong></p>
 </li>
 <li>
-<p><strong><em>TriggerInterpreter.java</em></strong></p>
+<p><strong><em>`TriggerInterpreter.java`</em></strong></p>
 </li>
 <li>
-<p><strong><em>ModelBuilder.java</em></strong></p>
+<p><strong><em>`ModelBuilder.java`</em></strong></p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>The ModelBuilder is an interface for accessing the internal model builder instance. Is implemented by <strong><em>ModelBuilder.java</em></strong> from the <strong>model</strong> package from the implementation project that provides the methods to call the <code>createModel()</code> from the correspondent input reader from the correspondent trigger interpreter to create the object models for a given object.</p>
+<p>The <code>ModelBuilder</code> is an interface for accessing the internal model builder instance. Is implemented by <strong><em>`ModelBuilder.java`</em></strong> from the <strong>model</strong> package from the implementation project that provides the methods to call the <code>createModel()</code> from the correspondent input reader from the correspondent trigger interpreter to create the object models for a given object.</p>
 </div>
 <div class="paragraph">
 <p>The <strong>to</strong> package have the transfer objects of <code>template</code>, <code>matcher</code>, <code>increment</code> and <code>variable assignment</code> classes that will be used as "communication channel" between the core and sub plug-ins methods</p>
@@ -225,27 +225,27 @@
 <h2 id="cobigen-core_development.asciidoc_plugin-registry">Plugin Registry</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The core must load all the sub plugins to get their Merger, Matcher, TriggerInterpreter and InputReader. That elements must implement their respective interfaces from the core.</p>
+<p>The core must load all the sub plugins to get their Merger, Matcher, <code>TriggerInterpreter</code> and <code>InputReader</code>. That elements must implement their respective interfaces from the core.</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><a class="image" href="images/howtos/cobigen-core/core_01.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/cobigen-core/core_01.png" alt="Diagram 1" width="450"></a></span></p>
 </div>
 <div class="paragraph">
-<p>Is important to note that not all the sub plug-ins need to have implemented a Matcher and/or an InputReader (advanced information <a href="https://github.com/devonfw/cobigen/wiki/new_plugin">here</a>)</p>
+<p>Is important to note that not all the sub plug-ins need to have implemented a Matcher and/or an <code>InputReader</code> (advanced information <a href="https://github.com/devonfw/cobigen/wiki/new_plugin">here</a>)</p>
 </div>
 <div class="sect2">
-<h3 id="cobigen-core_development.asciidoc_loadplugin">LoadPlugin</h3>
+<h3 id="cobigen-core_development.asciidoc_load-plugin">Load Plugin</h3>
 <div class="paragraph">
 <p>The process of loading plugins to the core is done at the <a href="https://github.com/devonfw/cobigen/wiki/eclipse-plugin_development#1-1-activator-java">eclipse-plugin initialization</a>.</p>
 </div>
 <div class="paragraph">
-<p>Each sub plugin has an activator class that extends the <strong><em>GeneratorPluginActivator</em></strong> interface from the <strong>extension</strong> package. That class implements the methods <code>bindMerger()</code> and <code>bindTriggerInterpreter()</code>.</p>
+<p>Each sub plugin has an activator class that extends the <strong><em>`GeneratorPluginActivator`</em></strong> interface from the <strong>extension</strong> package. That class implements the methods <code>bindMerger()</code> and <code>bindTriggerInterpreter()</code>.</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><a class="image" href="images/howtos/cobigen-core/core_02.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/cobigen-core/core_02.png" alt="Diagram 2" width="450"></a></span></p>
 </div>
 <div class="paragraph">
-<p>This is the class passed as argument to the <code>loadPlugin()</code> method of <strong><em>PluginRegister.java</em></strong> of the <strong>pluginmanager</strong> package.</p>
+<p>This is the class passed as argument to the <code>loadPlugin()</code> method of <strong><em>`PluginRegister.java`</em></strong> of the <strong>pluginmanager</strong> package.</p>
 </div>
 <div class="paragraph">
 <p>This method registers the mergers and the trigger interpreter of the sub plugins to the core.
@@ -286,12 +286,12 @@ freeMarkerConfig.setObjectWrapper(new DefaultObjectWrapperBuilder(Configuration.
 freeMarkerConfig.clearEncodingMap();
 freeMarkerConfig.setDefaultEncoding("UTF-8");
 freeMarkerConfig.setLocalizedLookup(false);
-freeMarkerConfig.setTemplateLoader(new NioFileSystemTemplateLoader(configFolder));</code></pre>
+freeMarkerConfig.setTemplateLoader(new NioFileSystemTemplateLoader(`configFolder`));</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Using the <strong><em>FileSystemUtil</em></strong> from the <strong>util</strong> package the URI of the root folder containing the <code>context.xml</code> and all templates, configurations etc&#8230;&#8203; is converted to a Path object passing it as argument to the <strong><em>ContextConfiguration</em></strong> constructor.
-The <strong><em>ContextConfiguration</em></strong> creates a new ContextConfiguration from the <strong>config</strong> package with the contents initially loaded from the <code>context.xml</code></p>
+<p>Using the <code><strong><em>FileSystemUtil</em></strong></code> from the <strong>util</strong> package the <code>URI</code> of the root folder containing the <code>context.xml</code> and all templates, configurations etc&#8230;&#8203; is converted to a Path object passing it as argument to the <code><strong><em>ContextConfiguration</em></strong></code> constructor.
+The <code><strong><em>ContextConfiguration</em></strong></code> creates a new <code>ContextConfiguration</code> from the <strong>config</strong> package with the contents initially loaded from the <code>context.xml</code></p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -301,18 +301,18 @@ The <strong><em>ContextConfiguration</em></strong> creates a new ContextConfigur
 </td>
 <td class="content">
 <div class="paragraph">
-<p>How the ContextConfiguration works explained deeply <a href="https://github.com/devonfw/cobigen/wiki/Core-Development#4-1-contextconfiguration">here</a>.</p>
+<p>How the <code>ContextConfiguration</code> works explained deeply <a href="https://github.com/devonfw/cobigen/wiki/Core-Development#4-1-contextconfiguration">here</a>.</p>
 </div>
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>The Configuration initialization requires the version of Freemarker to be used and at the ObjectWrapper initialization as well.
-The <strong><em>DefaultObjectWrapperBuilder</em></strong> creates an <strong><em>DefaultObjectWrapper</em></strong> object that maps Java objects to the type-system of FreeMarker Template Language (FTL) with the given <code>incompatibleImprovements</code> specified by the version used as argument.</p>
+<p>The Configuration initialization requires the version of FreeMarker to be used and at the <code>ObjectWrapper</code> initialization as well.
+The <code><strong><em>DefaultObjectWrapperBuilder</em></strong></code> creates an <code><strong><em>DefaultObjectWrapper</em></strong></code> object that maps Java objects to the type-system of FreeMarker Template Language (<code>FTL</code>) with the given <code>incompatibleImprovements</code> specified by the version used as argument.</p>
 </div>
 <div class="paragraph">
-<p>The configuration of Freemarker requires to specify to a <em>TemplateLoader</em>. A <em>TemplateLoader</em> is an interface provided by Freemarker library that the developer should implement to fit the needs. The <em>TemplateLoader</em> implementation at CobiGen is the class <strong><em>NioFileSystemTemplateLoader.java</em></strong> from the <strong>config.nio</strong> package.</p>
+<p>The configuration of FreeMarker requires to specify to a <em>`TemplateLoader`</em>. A <em>`TemplateLoader`</em> is an interface provided by FreeMarker library that the developer should implement to fit the needs. The <em>`TemplateLoader`</em> implementation at CobiGen is the class <strong><em>`NioFileSystemTemplateLoader.java`</em></strong> from the <strong>config.nio</strong> package.</p>
 </div>
 <div class="paragraph">
 <p><span class="image"><a class="image" href="images/howtos/cobigen-core/core_03.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/howtos/cobigen-core/core_03.png" alt="Diagram 5" width="450"></a></span></p>
@@ -321,7 +321,7 @@ The <strong><em>DefaultObjectWrapperBuilder</em></strong> creates an <strong><em
 <div class="sect2">
 <h3 id="cobigen-core_development.asciidoc_context-configuration">Context Configuration</h3>
 <div class="paragraph">
-<p>The context configuration reads the <code>context.xml</code> file from the template project (default: <strong>CobiGen_Templates</strong>)  passing the path as argument to the constructor. At the constructor, it is created an instance of <strong><em>ContextConfigurationReader.java</em></strong> from the <strong>config.reader</strong> package.</p>
+<p>The context configuration reads the <code>context.xml</code> file from the template project (default: <strong>CobiGen_Templates</strong>)  passing the path as argument to the constructor. At the constructor, it is created an instance of <code><strong><em>ContextConfigurationReader.java</em></strong></code> from the <strong>config.reader</strong> package.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -343,7 +343,8 @@ The <strong><em>DefaultObjectWrapperBuilder</em></strong> creates an <strong><em
 <div class="sect3">
 <h4 id="cobigen-core_development.asciidoc_jaxb">JAXB</h4>
 <div class="paragraph">
-<p>JAXB auto generates the Java object within the JAXBContext specified at the <code>xmlns</code> attribute of the <code>contextConfiguration</code> field from the <code>context.xml</code> file</p>
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+JAXB auto generates the Java object within the <code>JAXBContext</code> specified at the <code>xmlns</code> attribute of the <code>contextConfiguration</code> field from the <code>context.xml</code> file</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -435,10 +436,10 @@ public class Trigger {
 <div class="sect3">
 <h4 id="cobigen-core_development.asciidoc_version-validation">Version Validation</h4>
 <div class="paragraph">
-<p>If the version retrieved after the <code>unmarshal</code> process is null, an <strong>InvalidConfigurationException</strong> defined at <strong>exceptions</strong> package will be thrown.</p>
+<p>If the version retrieved after the <code>unmarshal</code> process is null, an <strong><code>InvalidConfigurationException</code></strong> defined at <strong>exceptions</strong> package will be thrown.</p>
 </div>
 <div class="paragraph">
-<p>If it is not null, will be compared using the <code>validate()</code> method from <strong><em>VersionValidator.java</em></strong> from <strong>config.versioning</strong> package with the project version retrieved by the <strong><em>MavenMetadata.java</em></strong>. The <strong><em>MavenMetadata.java</em></strong> file is provided by the POM while building the <code>JAR</code> file</p>
+<p>If it is not null, will be compared using the <code>validate()</code> method from <strong><em>`VersionValidator.java`</em></strong> from <strong>config.versioning</strong> package with the project version retrieved by the <strong><em>`MavenMetadata.java`</em></strong>. The <strong><em>`MavenMetadata.java`</em></strong> file is provided by the POM while building the <code>JAR</code> file</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -465,7 +466,7 @@ public class Trigger {
 </div>
 </div>
 <div class="paragraph">
-<p><strong>MavenMetadata</strong> gets the current CobiGen version by reading the <code>&lt;version&gt;</code> label inside the <code>&lt;project&gt;</code> label from the POM file</p>
+<p><strong><code>MavenMetadata</code></strong> gets the current CobiGen version by reading the <code>&lt;version&gt;</code> label inside the <code>&lt;project&gt;</code> label from the POM file</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -496,10 +497,11 @@ public class Trigger {
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Versions are equal &#8594; Valid</p>
+<p>Versions are equal &#8594; Valid
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</p>
 </li>
 <li>
-<p><code>context.xml</code> version is greater than current CobiGen version &#8594; <strong>InvalidConfigurationException</strong></p>
+<p><code>context.xml</code> version is greater than current CobiGen version &#8594; <strong><code>InvalidConfigurationException</code></strong></p>
 </li>
 <li>
 <p>Current CobiGen version is greater that <code>context.xml</code> version &#8594; Compatible if there not exists a version step (breaking change) in between, otherwise, throw an error.</p>
@@ -526,7 +528,7 @@ try (
 </div>
 </div>
 <div class="sect3">
-<h4 id="cobigen-core_development.asciidoc_load-triggers">Load Triggers, Matchers, containerMatcher, AccumulationTypes and VariableAssigments</h4>
+<h4 id="cobigen-core_development.asciidoc_load-triggers">Load Triggers, Matchers, container Matcher, Accumulation Types and Variable Assignments</h4>
 <div class="paragraph">
 <p>To finish the context configuration initialization, the, trigger, matchers, container matchers, accumulation types and variables assignments are retrieved from the correspondent Java objects generated by JAXB.</p>
 </div>
@@ -546,7 +548,7 @@ private List&lt;VariableAssignment&gt; loadVariableAssignments(Matcher matcher)<
 <h2 id="cobigen-core_development.asciidoc_perform-generation">Perform Generation</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Depending on the input, the generation process can begin from two different <code>generate()</code> methods called at the <strong>CobiGenWrapper</strong> from the eclipse-plugin:</p>
+<p>Depending on the input, the generation process can begin from two different <code>generate()</code> methods called at the <code><strong>CobiGenWrapper</strong></code> from the eclipse-plugin:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -566,8 +568,10 @@ private List&lt;VariableAssignment&gt; loadVariableAssignments(Matcher matcher)<
 <div class="sect2">
 <h3 id="cobigen-core_development.asciidoc_single-non-container-input">Single Non Container Input</h3>
 <div class="paragraph">
-<p>If the input is a single non container input, first step is to create the model, then allow customization by the user (<code>adaptModel()</code>) and finally call the <code>generate()</code> method from CobiGen using the input, template, model and the boolean forceOverride.
-The generation process in this case will follow this main steps:</p>
+<p>If the input is a single non container input, first step is to create the model, then allow customization by the user (<code>adaptModel()</code>) and finally call the <code>generate()</code> method from CobiGen using the input, template, model and the boolean <code>forceOverride</code>.</p>
+</div>
+<div class="paragraph">
+<p>The generation process in this case will follow this main steps:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -589,14 +593,14 @@ This only can be possible in the case of java inputs. As the input is a single n
 </li>
 <li>
 <p>Check if the model parameter is null and if it is, create a new model<br>
-As the model has been created at the <strong>CobiGenWrapper</strong>, there is no need to create it again.</p>
+As the model has been created at the <code><strong>CobiGenWrapper</strong></code>, there is no need to create it again.</p>
 </li>
 <li>
 <p>Get the destination file.</p>
 </li>
 <li>
 <p>Check if the destination file already exists<br>
-If it exists, but the forceOverride is set to <code>true</code> or the merge strategy of the template is null, the file will be overwritten, not merged. Otherwise, first generate output into a writter object, get the merger and merge the original file with the writter and write the file with the merge result.</p>
+If it exists, but the <code>forceOverride</code> is set to <code>true</code> or the merge strategy of the template is null, the file will be overwritten, not merged. Otherwise, first generate output into a writter object, get the merger and merge the original file with the writter and write the file with the merge result.</p>
 </li>
 <li>
 <p>If the file does not exist, simple write the file.</p>
@@ -734,7 +738,7 @@ If it exists, but the forceOverride is set to <code>true</code> or the merge str
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-11-23 07:46:22 UTC
+Last updated 2021-11-23 08:53:16 UTC
 </sub></div>
 </div>
 </div>
