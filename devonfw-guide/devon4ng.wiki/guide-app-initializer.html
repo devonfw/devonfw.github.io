@@ -99,11 +99,11 @@
 <div class="toc2">
 <div class="title">Table of Contents</div>
 <ul class="sectlevel0">
-<li><a href="#guide-app-initializer.asciidoc">APP_INITIALIZER</a>
+<li><a href="#guide-app-initializer.asciidoc"><code>APP_INITIALIZER</code></a>
 <ul class="sectlevel1">
-<li><a href="#guide-app-initializer.asciidoc_what-is-the-app_initializer-pattern">What is the APP_INITIALIZER pattern</a></li>
-<li><a href="#guide-app-initializer.asciidoc_what-is-app_initializer">What is APP_INITIALIZER</a></li>
-<li><a href="#guide-app-initializer.asciidoc_creating-a-app_initializer-configuration">Creating a APP_INITIALIZER configuration</a></li>
+<li><a href="#guide-app-initializer.asciidoc_what-is-the-app_initializer-pattern">What is the <code>APP_INITIALIZER</code> pattern</a></li>
+<li><a href="#guide-app-initializer.asciidoc_what-is-app_initializer">What is <code>APP_INITIALIZER</code></a></li>
+<li><a href="#guide-app-initializer.asciidoc_creating-a-app_initializer-configuration">Creating a <code>APP_INITIALIZER</code> configuration</a></li>
 <li><a href="#guide-app-initializer.asciidoc_setting-up-the-config-files">Setting up the config files</a>
 <ul class="sectlevel2">
 <li><a href="#guide-app-initializer.asciidoc_docker-external-configuration-optional">Docker external configuration (Optional)</a></li>
@@ -116,7 +116,7 @@
 <li><a href="#guide-app-initializer.asciidoc_external-configuration">External Configuration</a></li>
 </ul>
 </li>
-<li><a href="#guide-app-initializer.asciidoc_adding-the-loadexternalconfig-boolean-to-the-environments">Adding the loadExternalConfig boolean to the environments</a></li>
+<li><a href="#guide-app-initializer.asciidoc_adding-the-loadexternalconfig-boolean-to-the-environments">Adding the <code>loadExternalConfig</code> boolean to the environments</a></li>
 <li><a href="#guide-app-initializer.asciidoc_creating-core-configuration-service">Creating core configuration service</a>
 <ul class="sectlevel2">
 <li><a href="#guide-app-initializer.asciidoc_using-the-config-service">Using the Config Service</a></li>
@@ -126,20 +126,20 @@
 </ul>
 </li>
 </ul>
-<h1 id="guide-app-initializer.asciidoc" class="sect0">APP_INITIALIZER</h1>
+<h1 id="guide-app-initializer.asciidoc" class="sect0"><code>APP_INITIALIZER</code></h1>
 <div class="sect1">
-<h2 id="guide-app-initializer.asciidoc_what-is-the-app_initializer-pattern">What is the APP_INITIALIZER pattern</h2>
+<h2 id="guide-app-initializer.asciidoc_what-is-the-app_initializer-pattern">What is the <code>APP_INITIALIZER</code> pattern</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The APP_INITIALIZER pattern allows an application to choose which configuration is going to be used in the start of the application, this is useful because it allows to setup different configurations, for example, for docker or a remote configuration. This provides benefits since this is done on <code>runtime</code>, so there&#8217;s no need to recompile the whole application to switch from configuration.</p>
+<p>The <code>APP_INITIALIZER</code> pattern allows an application to choose which configuration is going to be used in the start of the application, this is useful because it allows to setup different configurations, for example, for docker or a remote configuration. This provides benefits since this is done on <code>runtime</code>, so there&#8217;s no need to recompile the whole application to switch from configuration.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="guide-app-initializer.asciidoc_what-is-app_initializer">What is APP_INITIALIZER</h2>
+<h2 id="guide-app-initializer.asciidoc_what-is-app_initializer">What is <code>APP_INITIALIZER</code></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>APP_INITIALIZER allows to provide a service in the initialization of the application in a <code>@NgModule</code>. It also allows to use a factory, allowing to create a singleton in the same service. An example can be found in MyThaiStar <code>/core/config/config.module.ts</code>:</p>
+<p><code>APP_INITIALIZER</code> allows to provide a service in the initialization of the application in a <code>@NgModule</code>. It also allows to use a factory, allowing to create a singleton in the same service. An example can be found in <code>MyThaiStar</code> <code>/core/config/config.module.ts</code>:</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -178,7 +178,7 @@ export class ConfigModule {}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>This is going to allow the creation of a <code>ConfigService</code> where, using a singleton, the service is going to load an external config depending on a route. This dependence with a route, allows to setup diferent configuration for docker etc. This is seen in the <code>ConfigService</code> of MyThaiStar:</p>
+<p>This is going to allow the creation of a <code>ConfigService</code> where, using a singleton, the service is going to load an external config depending on a route. This dependence with a route, allows to setup different configuration for docker etc. This is seen in the <code>ConfigService</code> of <code>MyThaiStar</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -224,7 +224,7 @@ export class ConfigService {
 </div>
 </div>
 <div class="paragraph">
-<p>As it is mentioned earlier, you can see the use of a factory to create a singleton at the start. After that, <code>loadExternalConfig</code> is going to look for a boolean inside the corresponding environment file inside the path <code>src/environments/</code>, this boolean <code>loadExternalConfig</code> is going to easily allow to switch to a external config. If it is true, it generates a promise that overwrites the parameters of the local config, allowing to load the external config. Finally, the last method <code>getValues()</code> is going to allow to return the file config with the values (overwritten or not). The local <code>config</code> file from MyThaiStar can be seen here:</p>
+<p>As it is mentioned earlier, you can see the use of a factory to create a singleton at the start. After that, <code>loadExternalConfig</code> is going to look for a boolean inside the corresponding environment file inside the path <code>src/environments/</code>, this boolean <code>loadExternalConfig</code> is going to easily allow to switch to a external config. If it is true, it generates a promise that overwrites the parameters of the local config, allowing to load the external config. Finally, the last method <code>getValues()</code> is going to allow to return the file config with the values (overwritten or not). The local <code>config</code> file from <code>MyThaiStar</code> can be seen here:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -300,7 +300,7 @@ export const environment: {
 </div>
 </div>
 <div class="sect1">
-<h2 id="guide-app-initializer.asciidoc_creating-a-app_initializer-configuration">Creating a APP_INITIALIZER configuration</h2>
+<h2 id="guide-app-initializer.asciidoc_creating-a-app_initializer-configuration">Creating a <code>APP_INITIALIZER</code> configuration</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>This section is going to be used to create a new <code>APP_INITIALIZER</code> basic example. For this, a basic app with angular is going to be generated using <code>ng new "appname"</code> substituting <code>appname</code> for the name of the app opted.</p>
@@ -313,7 +313,7 @@ export const environment: {
 <div class="sect2">
 <h3 id="guide-app-initializer.asciidoc_docker-external-configuration-optional">Docker external configuration (Optional)</h3>
 <div class="paragraph">
-<p>This section is only done if theres a docker configuration in the app you are setting up this type of configuration.</p>
+<p>This section is only done if there is a docker configuration in the app you are setting up this type of configuration.</p>
 </div>
 <div class="paragraph">
 <p>1.- Create in the root folder <code>/docker-external-config.json</code>. This external config is going to be used when the application is loaded with docker (if the boolean to load the external configuration is set to true). Here you need to add all the config parameter you want to load with docker:</p>
@@ -433,10 +433,10 @@ COPY docker-external-config.json /usr/share/nginx/html/docker-external-config.js
 </div>
 </div>
 <div class="sect1">
-<h2 id="guide-app-initializer.asciidoc_adding-the-loadexternalconfig-boolean-to-the-environments">Adding the loadExternalConfig boolean to the environments</h2>
+<h2 id="guide-app-initializer.asciidoc_adding-the-loadexternalconfig-boolean-to-the-environments">Adding the <code>loadExternalConfig</code> boolean to the environments</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In order to load an external config we need to add the loadExternalConfig boolean to the environments. To do so, inside the folder <code>environments/</code> the files are going to get modified adding this boolean to each environment that is going to be used. In this case, only two environments are going to be modified (<code>environment.ts</code> and <code>environment.prod.ts</code>). Down below theres an example of the modification being done in the <code>environment.prod.ts</code>:</p>
+<p>In order to load an external config we need to add the <code>loadExternalConfig</code> boolean to the environments. To do so, inside the folder <code>environments/</code> the files are going to get modified adding this boolean to each environment that is going to be used. In this case, only two environments are going to be modified (<code>environment.ts</code> and <code>environment.prod.ts</code>). Down below there is an example of the modification being done in the <code>environment.prod.ts</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -447,7 +447,7 @@ COPY docker-external-config.json /usr/share/nginx/html/docker-external-config.js
 </div>
 </div>
 <div class="paragraph">
-<p>In the file in first instance theres the declaration of the types of the variables. After that, theres the definition of those variables. This variable <code>loadExternalConfig</code> is going to be used by the service, allowing to setup a external config just by switching the <code>loadExternalConfig</code> to true.</p>
+<p>In the file in first instance there is the declaration of the types of the variables. After that, there is the definition of those variables. This variable <code>loadExternalConfig</code> is going to be used by the service, allowing to setup a external config just by switching the <code>loadExternalConfig</code> to true.</p>
 </div>
 </div>
 </div>
@@ -733,7 +733,7 @@ export class AppComponent {
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-11-29 15:02:46 UTC
+Last updated 2021-11-30 10:17:40 UTC
 </sub></div>
 </div>
 </div>

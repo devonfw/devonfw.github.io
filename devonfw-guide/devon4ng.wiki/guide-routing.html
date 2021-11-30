@@ -110,8 +110,8 @@
 <li><a href="#guide-routing.asciidoc_triggering-route-changes">Triggering Route Changes</a></li>
 <li><a href="#guide-routing.asciidoc_guards">Guards</a>
 <ul class="sectlevel2">
-<li><a href="#guide-routing.asciidoc_example-1---canactivate-and-canactivatechild-guards">Example 1 - CanActivate and CanActivateChild guards</a></li>
-<li><a href="#guide-routing.asciidoc_example-2---canload-guard">Example 2 - CanLoad guard</a></li>
+<li><a href="#guide-routing.asciidoc_example-1---canactivate-and-canactivatechild-guards">Example 1 - <code>CanActivate</code> and <code>CanActivateChild</code> guards</a></li>
+<li><a href="#guide-routing.asciidoc_example-2---canload-guard">Example 2 - <code>CanLoad</code> guard</a></li>
 </ul>
 </li>
 </ul>
@@ -128,9 +128,9 @@
 <h2 id="guide-routing.asciidoc_defining-routes">Defining Routes</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>For each feature module and the app module all routes should be defined in a seperate module with the suffix <code>RoutingModule</code>.
+<p>For each feature module and the app module all routes should be defined in a separate module with the suffix <code>RoutingModule</code>.
 This way the routing modules are the only place where routes are defined.
-This pattern achieves a clear seperation of concernes.
+This pattern achieves a clear separation of concerns.
 The following figure illustrates this.</p>
 </div>
 <div class="imageblock">
@@ -145,7 +145,7 @@ The following figure illustrates this.</p>
 <div class="sect2">
 <h3 id="guide-routing.asciidoc_example-1---no-lazy-loading">Example 1 - No Lazy Loading</h3>
 <div class="paragraph">
-<p>In this example two modules need to be configured with routes - AppModule and FlightModule.</p>
+<p>In this example two modules need to be configured with routes - <code>AppModule</code> and <code>FlightModule</code>.</p>
 </div>
 <div class="paragraph">
 <p>The following routes will be configured</p>
@@ -156,16 +156,16 @@ The following figure illustrates this.</p>
 <p><code>/</code> will redirect to <code>/search</code></p>
 </li>
 <li>
-<p><code>/search</code> displays FlightSearchComponent (FlightModule)</p>
+<p><code>/search</code> displays <code>FlightSearchComponent</code> (<code>FlightModule</code>)</p>
 </li>
 <li>
-<p><code>/search/print/:flightId/:date</code> displays FlightPrintComponent (FlightModule)</p>
+<p><code>/search/print/:flightId/:date</code> displays <code>FlightPrintComponent</code> (<code>FlightModule</code>)</p>
 </li>
 <li>
-<p><code>/search/details/:flightId/:date</code> displays FlightDetailsComponent (FlightModule)</p>
+<p><code>/search/details/:flightId/:date</code> displays <code>FlightDetailsComponent</code> (<code>FlightModule</code>)</p>
 </li>
 <li>
-<p>All other routes will display ErrorPage404 (AppModule)</p>
+<p>All other routes will display <code>ErrorPage404</code> (<code>AppModule</code>)</p>
 </li>
 </ul>
 </div>
@@ -211,8 +211,8 @@ export class FlightSearchRoutingModule { }</code></pre>
 <i class="icon-tip" title=""></i>
 </td>
 <td class="content">
-The import order inside AppModule is important.
-AppRoutingModule needs to be imported <strong>after</strong> FlightModule.
+The import order inside <code>AppModule</code> is important.
+<code>AppRoutingModule</code> needs to be imported <strong>after</strong> <code>FlightModule</code>.
 </td>
 </tr>
 </table>
@@ -225,7 +225,7 @@ AppRoutingModule needs to be imported <strong>after</strong> FlightModule.
 Or at least he might not need every dialog up front.</p>
 </div>
 <div class="paragraph">
-<p>The following example will configure the same routes as example 1 but will lazy load FlightModule.</p>
+<p>The following example will configure the same routes as example 1 but will lazy load <code>FlightModule</code>.</p>
 </div>
 <div class="listingblock">
 <div class="title">Listing 3. app-routing.module.ts</div>
@@ -284,11 +284,11 @@ export class FlightSearchRoutingModule { }</code></pre>
 <div class="paragraph">
 <p>On the one hand, architecture-wise it is a much cleaner solution to trigger route changes in <em>Smart Components</em>.
 This way you have every UI event that should trigger a navigation handled in one place - in a <em>Smart Component</em>.
-It becomes very easy to look inside the code for every navigation, that can occure.
+It becomes very easy to look inside the code for every navigation, that can occur.
 Refactoring is also much easier, as there are no navigation events "hidden" in the HTML templates</p>
 </div>
 <div class="paragraph">
-<p>On the other hand, in terms of accessibility and SEO it is a better solution to rely on bindings in the view - e.g. by using Angulars router-link directive.
+<p>On the other hand, in terms of accessibility and <code>SEO</code> it is a better solution to rely on bindings in the view - e.g. by using Angular router-link directive.
 This way screen readers and the Google crawler can move through the page easily.</p>
 </div>
 <div class="admonitionblock tip">
@@ -298,8 +298,8 @@ This way screen readers and the Google crawler can move through the page easily.
 <i class="icon-tip" title=""></i>
 </td>
 <td class="content">
-If you do not have to support accessibility (screen readers, etc.) and to care about SEO (Google rank, etc.),
-then you should aim for triggering navigations only in <em>Smart Components</em>.
+If you do not have to support accessibility (screen readers, etc.) and to care about <code>SEO</code> (Google rank, etc.),
+then you should aim for triggering navigation only in <em>Smart Components</em>.
 </td>
 </tr>
 </table>
@@ -316,24 +316,24 @@ then you should aim for triggering navigations only in <em>Smart Components</em>
 <h2 id="guide-routing.asciidoc_guards">Guards</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Guards are Angular services implemented on routes which determines whether a user can naviagate to/from the route. There are examples below which will explain things better. We have the following types of Guards:</p>
+<p>Guards are Angular services implemented on routes which determines whether a user can navigate to/from the route. There are examples below which will explain things better. We have the following types of Guards:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>CanActivate</strong>: It is used to determine whether a user can visit a route. The most common scenario for this guard is to check if the user is authenticated. For example, if we want only logged in users to be able to go to a particular route, we will implement the <code>CanActivate</code> guard on this route.</p>
+<p><strong><code>CanActivate</code></strong>: It is used to determine whether a user can visit a route. The most common scenario for this guard is to check if the user is authenticated. For example, if we want only logged in users to be able to go to a particular route, we will implement the <code>CanActivate</code> guard on this route.</p>
 </li>
 <li>
-<p><strong>CanActivateChild</strong>: Same as above, only implemented on child routes.</p>
+<p><code><strong>CanActivateChild</strong></code>: Same as above, only implemented on child routes.</p>
 </li>
 <li>
-<p><strong>CanDeactivate</strong>: It is used to determine if a user can naviagate away from a route. Most common example is when a user tries to go to a different page after filling up a form and does not save/submit the changes, we can use this guard to confirm whether the user really wants to leave the page without saving/submiting.</p>
+<p><strong><code>CanDeactivate</code></strong>: It is used to determine if a user can navigate away from a route. Most common example is when a user tries to go to a different page after filling up a form and does not save/submit the changes, we can use this guard to confirm whether the user really wants to leave the page without saving/submitting.</p>
 </li>
 <li>
 <p><strong>Resolve</strong>: For resolving dynamic data.</p>
 </li>
 <li>
-<p><strong>CanLoad</strong>: It is used to determine whether an <em>Angular module</em> can be loaded lazily. Example below will be helpful to understand it.</p>
+<p><strong><code>CanLoad</code></strong>: It is used to determine whether an <em>Angular module</em> can be loaded lazily. Example below will be helpful to understand it.</p>
 </li>
 </ul>
 </div>
@@ -341,14 +341,14 @@ then you should aim for triggering navigations only in <em>Smart Components</em>
 <p>Let&#8217;s have a look at some examples.</p>
 </div>
 <div class="sect2">
-<h3 id="guide-routing.asciidoc_example-1---canactivate-and-canactivatechild-guards">Example 1 - CanActivate and CanActivateChild guards</h3>
+<h3 id="guide-routing.asciidoc_example-1---canactivate-and-canactivatechild-guards">Example 1 - <code>CanActivate</code> and <code>CanActivateChild</code> guards</h3>
 <div class="sect3">
-<h4 id="guide-routing.asciidoc_canactivate-guard">CanActivate guard</h4>
+<h4 id="guide-routing.asciidoc_canactivate-guard"><code>CanActivate</code> guard</h4>
 <div class="paragraph">
-<p>As mentioned earlier, a guard is an Angular service and services are simply TypeScript classes. So we begin by creating a class. This class has to implement the <code>CanActivate</code> interface (imported from <code>angular/router</code>), and therefore, must have a <code>canActivate</code> function. The logic of this function determines whether the requested route can be navigated to or not. It returns either a <code>boolean</code> value or an <code>Observable</code> or a <code>Promise</code> which resolves to a <code>boolean</code> value. If it is true, the route is loaded, else not.</p>
+<p>As mentioned earlier, a guard is an Angular service and services are simply <code>TypeScript</code> classes. So we begin by creating a class. This class has to implement the <code>CanActivate</code> interface (imported from <code>angular/router</code>), and therefore, must have a <code>canActivate</code> function. The logic of this function determines whether the requested route can be navigated to or not. It returns either a <code>boolean</code> value or an <code>Observable</code> or a <code>Promise</code> which resolves to a <code>boolean</code> value. If it is true, the route is loaded, else not.</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing 5. CanActivate example</div>
+<div class="title">Listing 5. <code>CanActivate</code> example</div>
 <div class="content">
 <pre class="highlight"><code class="ts language-ts">...
 import {CanActivate} from "@angular/router";
@@ -370,7 +370,7 @@ class ExampleAuthGuard implements CanActivate {
 </div>
 <div class="paragraph">
 <p>In the above example, let&#8217;s assume we have a <code>AuthService</code> which has a <code>isLoggedIn()</code> method which returns a boolean value depending on whether the user is logged in. We use it to return <code>true</code> or <code>false</code> from the <code>canActivate</code> function.
-The <code>canActivate</code> function accepts two parameters (provided by Angular). The first parameter of type <code>ActivatedRouterSnapshot</code> is the snapshot of the route the user is trying to naviagate to (where the guard is implemented); we can extract the route parameters from this instance. The second parameter of type <code>RouterStateSnapshot</code> is a snapshot of the router state the user is trying to naviagate to; we can fetch the URL from it&#8217;s <code>url</code> property.</p>
+The <code>canActivate</code> function accepts two parameters (provided by Angular). The first parameter of type <code>ActivatedRouterSnapshot</code> is the snapshot of the route the user is trying to navigate to (where the guard is implemented); we can extract the route parameters from this instance. The second parameter of type <code>RouterStateSnapshot</code> is a snapshot of the router state the user is trying to navigate to; we can fetch the <code>URL</code> from it&#8217;s <code>url</code> property.</p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -379,7 +379,7 @@ The <code>canActivate</code> function accepts two parameters (provided by Angula
 <i class="icon-tip" title=""></i>
 </td>
 <td class="content">
-We can also redirect the user to another page (maybe a login page) if the <code>authService</code> returns false. To do that, inject <code>Router</code> and use it&#8217;s <code>naviagate</code> function to redirect to the appropriate page.
+We can also redirect the user to another page (maybe a login page) if the <code>authService</code> returns false. To do that, inject <code>Router</code> and use it&#8217;s <code>navigate</code> function to redirect to the appropriate page.
 </td>
 </tr>
 </table>
@@ -418,7 +418,7 @@ const routes: Routes = [
 </div>
 </div>
 <div class="sect3">
-<h4 id="guide-routing.asciidoc_canactivatechild-guard">CanActivateChild guard</h4>
+<h4 id="guide-routing.asciidoc_canactivatechild-guard"><code>CanActivateChild</code> guard</h4>
 <div class="paragraph">
 <p>To use the guard on nested (children) routes, we add it to the <code>canActivateChild</code> property like so:</p>
 </div>
@@ -439,12 +439,12 @@ const routes: Routes = [
 </div>
 </div>
 <div class="sect2">
-<h3 id="guide-routing.asciidoc_example-2---canload-guard">Example 2 - CanLoad guard</h3>
+<h3 id="guide-routing.asciidoc_example-2---canload-guard">Example 2 - <code>CanLoad</code> guard</h3>
 <div class="paragraph">
 <p>Similar to <code>CanActivate</code>, to use this guard we implement the <code>CanLoad</code> interface and overwrite it&#8217;s <code>canLoad</code> function. Again, this function returns either a boolean value or an <code>Observable</code> or a <code>Promise</code> which resolves to a boolean value. The fundamental difference between <code>CanActivate</code> and <code>CanLoad</code> is that <code>CanLoad</code> is used to determine whether an entire module can be lazily loaded or not. If the guard returns <code>false</code> for a module protected by <code>CanLoad</code>, the entire module is not loaded.</p>
 </div>
 <div class="listingblock">
-<div class="title">Listing 9. CanLoad example</div>
+<div class="title">Listing 9. <code>CanLoad</code> example</div>
 <div class="content">
 <pre class="highlight"><code class="ts language-ts">...
 import {CanLoad, Route} from "@angular/router";
@@ -608,7 +608,7 @@ const routes: Routes = [
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-11-29 15:03:22 UTC
+Last updated 2021-11-30 10:18:12 UTC
 </sub></div>
 </div>
 </div>
