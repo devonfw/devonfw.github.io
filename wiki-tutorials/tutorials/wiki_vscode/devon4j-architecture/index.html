@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>devon4j architecture in practice</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Ubuntu Font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400&display=swap" rel="stylesheet">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+
+<script src="/website/components/header/search-engine/bundle.js"></script>
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body id="index.asciidoc" class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"
+      autocomplete="off"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="sect1">
+<h2 id="prerequisites">Prerequisites</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Java programming knowledge</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="learning-goals">Learning goals</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This tutorial aims to explain concepts and principles of devon4j architecture with help of an sample application named JumpTheQueue. Below are the steps we will go through to understand it clearly.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Clone JumpTheQueue repository</p>
+</li>
+<li>
+<p>Understand devon4j application structure</p>
+</li>
+<li>
+<p>Understand Key and architectural principles followed by devon4j</p>
+</li>
+<li>
+<p>Understand devon4j application architecture</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>By end of this tutorial you will have detailed understanding of principles followed by devon4j application as well as its structure and architecture.</p>
+</div>
+<div class="paragraph">
+<p>The definition of each step of this tutorial can be found at <a href="https://github.com/devonfw-tutorials/tutorials/tree/main/devon4j-architecture/" class="bare">https://github.com/devonfw-tutorials/tutorials/tree/main/devon4j-architecture/</a>.</p>
+</div>
+<div class="paragraph">
+<p>Feel free to report any errors to us or fix them yourself. Errors can be reported by creating an issue in the <a href="https://github.com/devonfw-tutorials/tutorials/issues">tutorials repository</a>. To fix the error fork the repository and create a pull request. Errors in the wiki can be reported and fixed in the <a href="https://github.com/devonfw-tutorials/tutorial-compiler">Tutorial-compiler repository</a>.
+You can find a description of what to look for when creating a pull request at the devonfw contribution guide: <a href="https://devonfw.com/website/pages/community/community.html#community.asciidoc_contributing-to-devonfw" class="bare">https://devonfw.com/website/pages/community/community.html#community.asciidoc_contributing-to-devonfw</a>. If you want to create a tutorial you can start with the <a href="https://katacoda.com/devonfw/scenarios/create-your-own-tutorial">katacoda tutorial</a> and read the description for creating your own tutorials: <a href="https://github.com/devonfw-tutorials/tutorials/wiki/Development" class="bare">https://github.com/devonfw-tutorials/tutorials/wiki/Development</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_devonfw-setup">devonfw setup</h3>
+
+</div>
+<div class="sect2">
+<h3 id="setup-environment">setup environment</h3>
+<div class="paragraph">
+<p>We will start by setting up development environment.</p>
+</div>
+<div class="paragraph">
+<p>If you already installed the devonfw IDE, you can skip this step.</p>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>You need to have a tool to extract <code>.tar.gz</code> files. On Windows lower Windows 10 use can use <a href="https://www.7-zip.org/7-zip">7-Zip</a>. The most other platforms support this feature by default.</p>
+</li>
+<li>
+<p>You need to have <a href="https://git-scm.com/">Git</a> and <a href="https://curl.se/">Curl</a> installed. On Windows you have to install <a href="https://git-scm.com/download/win">Git for Windows</a>. On Linux systems you might need to install the following tools in case they are not present (<code>sudo apt-get install git curl</code> or <code>sudo yum install git-core curl</code>)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Create a new directory in the location where you want to install the devonfw IDE. If you are using the terminal, navigate to this location and run <code>mkdir devonfw</code> and <code>cd devonfw</code> to create the directory and navigate into it.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_download">Download</h4>
+<div class="paragraph">
+<p>Now you have to download the latest release of the devonfw IDE. You can download it from <a href="https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=LATEST&amp;p=tar.gz">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>In the Terminal execute <code>Invoke-WebRequest -OutFile devonfw-ide-scripts.tar.gz 'https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=LATEST&amp;p=tar.gz'</code> if you are using Windows.</p>
+</div>
+<div class="paragraph">
+<p>On Linux use <code>wget -c 'https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=LATEST&amp;p=tar.gz' -O devonfw-ide-scripts.tar.gz -</code>.</p>
+</div>
+<div class="paragraph">
+<p>On MacOS, depending on your setup, you can either use the same <code>wget</code> command specified for the Linux installation (install wget via homebrew <code>brew install wget</code>) or use any other available download command i.e. <code>curl -o devonfw-ide-scripts.tar.gz <a href="https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=LATEST&amp;p=tar.gz" class="bare">https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=LATEST&amp;p=tar.gz</a></code>.</p>
+</div>
+<div class="paragraph">
+<p>After that you need to extract the downloaded file. To do this, run <code>tar -xvzf devonfw-ide-scripts.tar.gz</code>. Or you can simply use a tool (e.g. 7-Zip) for this.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_setup">Setup</h4>
+<div class="paragraph">
+<p>First, you need to prepare a settings repository to specify the tools to be installed within the devonfw IDE. Normally this is done by your project. If you just want to test the devonfw IDE, you can use the default URL, which is <a href="https://github.com/devonfw/ide-settings" class="bare">https://github.com/devonfw/ide-settings</a>.</p>
+</div>
+<div class="paragraph">
+<p>For now clone the repository on <a href="https://github.com/devonfw/ide-settings" class="bare">https://github.com/devonfw/ide-settings</a> or your own fork of it.
+For this tutorial you have to write <code>DEVON_IDE_TOOLS=(java vscode)</code> into the devon.properties file of the cloned settings repository. These settings will now be passed into the installation process of the devonfw-ide.
+Start the setup process by executing <code>.\setup 'path/to/settings'</code> (Windows) or <code>bash setup path/to/settings.git</code> (Linux).</p>
+</div>
+<div class="paragraph">
+<p>You can also just execute <code>.\setup</code> (Windows) or <code>bash setup</code> (Linux) and press Enter when the setup assistent asks for the URL to the settings repository. This will also download the default settings and install the default tools within the devonfw IDE.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_clone-repository">Clone Repository</h3>
+
+</div>
+<div class="sect2">
+<h3 id="clone-jump-the-queue-repository">Clone jump the queue repository</h3>
+<div class="paragraph">
+<p>First, clone the Jump-The-Queue Repository.Jump the queue is a sample devonfw application.</p>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>You need to have Git installed. You can download Git <a href="https://git-scm.com/downloads">here</a> for your OS and install it by following the instructions.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_download">Download</h4>
+<div class="paragraph">
+<p>Open a terminal in your current workspace.</p>
+</div>
+<div class="paragraph">
+<p>Firstly, you have to move to the directory where the repository should be cloned to.
+If the directory does not exist yet, you can create it by using the <code>mkdir</code> command in the terminal.
+In this case execute <code>mkdir -p C:\devonfw\workspaces\main\tutorial-compiler\build\working\devonfw\workspaces\main</code>.</p>
+</div>
+<div class="paragraph">
+<p>After that, move to the target directory by executing <code>cd  C:\devonfw\workspaces\main\tutorial-compiler\build\working\devonfw\workspaces\main</code> in the terminal.</p>
+</div>
+<div class="paragraph">
+<p>To clone a Git repository execute <code>git clone <a href="https://github.com/devonfw/jump-the-queue.git" class="bare">https://github.com/devonfw/jump-the-queue.git</a></code> in the terminal.</p>
+</div>
+<div class="paragraph">
+<p>Once project is cloned switch to next tab of IDE. In IDE explorer you will be able to see folder structure like devonfw&#8594; workspaces&#8594;main&#8594;jump-the-queue&#8594; java&#8594;jtqj</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_devon4j-application-architecture">devon4j application architecture</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="devon4j-application-structure">devon4j application structure</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/jtqj_app_structure.jpg" alt="jtqj app structure">
+</div>
+</div>
+<div class="paragraph">
+<p>As shown above, jump-the-queue contains 3 modules i.e api, core and server.</p>
+</div>
+<div class="paragraph">
+<p><strong>api</strong>: It contains API for sampleapp.The API contains the required artifacts to interact with your application via remote services. This can be REST service interfaces, transfer-objects with their interfaces and datatypes but also OpenAPI or gRPC contracts.</p>
+</div>
+<div class="paragraph">
+<p><strong>core</strong>: It is the core of the application.In this module you can write actual business logic with service implementation, as well as entire logic layer and dataaccess layer.</p>
+</div>
+<div class="paragraph">
+<p><strong>batch</strong>: optional module for batch layer. In this example we have not created it.</p>
+</div>
+<div class="paragraph">
+<p><strong>server</strong>: This module bundles the entire app (core with optional batch) typically as a bootified WAR file.</p>
+</div>
+<div class="paragraph">
+<p>If you want to know more about modules and project structure refer [here](<a href="https://github.com/devonfw/devon4j/blob/master/documentation/guide-structure.asciidoc#project-structure" class="bare">https://github.com/devonfw/devon4j/blob/master/documentation/guide-structure.asciidoc#project-structure</a>).</p>
+</div>
+<div class="paragraph">
+<p>devon4j application follows [multilayered architecture](<a href="https://en.wikipedia.org/wiki/Multitier_architecture" class="bare">https://en.wikipedia.org/wiki/Multitier_architecture</a>). We will understand more about it in next step.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_devon4j-application-layers">devon4j application layers</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="devon4j-layers-explained">devon4j layers explained</h3>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/jtqj_detailed_app_structure.jpg" alt="jtqj detailed app structure">
+</div>
+</div>
+<div class="paragraph">
+<p>Above image display detailed structure of devon4j application. As shown above jump-the-queue application contains different components like queuemanagement, visitormanagement etc</p>
+</div>
+<div class="paragraph">
+<p>Each component is divided into following layers:
+* [client layer](<a href="https://github.com/devonfw/devon4j/blob/master/documentation/guide-client-layer.asciidoc" class="bare">https://github.com/devonfw/devon4j/blob/master/documentation/guide-client-layer.asciidoc</a>) for the front-end (GUI).</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>[service layer](<a href="https://github.com/devonfw/devon4j/blob/master/documentation/guide-service-layer.asciidoc" class="bare">https://github.com/devonfw/devon4j/blob/master/documentation/guide-service-layer.asciidoc</a>) for the services used to expose functionality of the back-end to the client or other consumers.
+For example, in jtqj-api&#8594;queuemangement&#8594;service&#8594;api&#8594; rest contains interfaces for rest services. In core module jtqj-core&#8594;queuemanagement&#8594;service&#8594;impl&#8594; rest you will be able to see implementation of service.</p>
+</li>
+<li>
+<p>[batch layer](<a href="https://github.com/devonfw/devon4j/blob/master/documentation/guide-batch-layer.asciidoc" class="bare">https://github.com/devonfw/devon4j/blob/master/documentation/guide-batch-layer.asciidoc</a>) for exposing functionality in batch-processes (e.g. mass imports).</p>
+</li>
+<li>
+<p>[logic layer](<a href="https://github.com/devonfw/devon4j/blob/master/documentation/guide-logic-layer.asciidoc" class="bare">https://github.com/devonfw/devon4j/blob/master/documentation/guide-logic-layer.asciidoc</a>) for the business logic.
+For example, in jtqj-api&#8594;queuemangement&#8594;logic&#8594;api contains ETO(Entity Transfer Object) , CTO(Composite Transfer object), some logic interfaces. In core module jtqj-core&#8594;queuemanagement&#8594;logic&#8594;impl you will be able to see usecase implementation.</p>
+</li>
+<li>
+<p>[data-access layer](<a href="https://github.com/devonfw/devon4j/blob/master/documentation/guide-dataaccess-layer.asciidoc" class="bare">https://github.com/devonfw/devon4j/blob/master/documentation/guide-dataaccess-layer.asciidoc</a>) for the data access (esp. persistence).
+For example, in jtqj-api&#8594;queuemangement&#8594;dataaccess&#8594;core contains entities, spring data repositories etc</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_understand-devon4j-application-architecture">Understand devon4j application architecture</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="key-principles">Key Principles:</h3>
+<div class="paragraph">
+<p>devon4j application follows some fundamental principles  for all decisions about architecture, design, or choosing standards, libraries, and frameworks.
+It follows key principles such as KISS, open,patterns, solid. More detils can be found [here](<a href="https://github.com/devonfw/devon4j/blob/master/documentation/architecture.asciidoc#key-principles" class="bare">https://github.com/devonfw/devon4j/blob/master/documentation/architecture.asciidoc#key-principles</a>).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="architecture-principles">Architecture Principles:</h3>
+<div class="paragraph">
+<p>Additionally devon4j architecture is based on [architecture principles](<a href="https://github.com/devonfw/devon4j/blob/master/documentation/architecture.asciidoc#architecture-principles" class="bare">https://github.com/devonfw/devon4j/blob/master/documentation/architecture.asciidoc#architecture-principles</a>) such as Component Oriented Design, Homogeneity.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="application-architecture">Application Architecture:</h3>
+<div class="paragraph">
+<p>For the architecture of an application we distinguish the following views:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <strong>Business Architecture</strong> describes an application from the business perspective. It divides the application into business components and with full abstraction of technical aspects.</p>
+</li>
+<li>
+<p>The <strong>Technical Architecture</strong> describes an application from the technical implementation perspective. It divides the application into technical layers and defines which technical products and frameworks are used to support these layers.</p>
+</li>
+<li>
+<p>The <strong>Infrastructure Architecture</strong> describes an application from the operational infrastructure perspective. It defines the nodes used to run the application including clustering, load-balancing and networking. This view is not explored further in this guide.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Detailed description about devon4j business and technical architecture can be found [here](<a href="https://github.com/devonfw/devon4j/blob/master/documentation/architecture.asciidoc#application-architecture" class="bare">https://github.com/devonfw/devon4j/blob/master/documentation/architecture.asciidoc#application-architecture</a>)</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_conclusion">Conclusion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>#
+## Conclusion</p>
+</div>
+<div class="paragraph">
+<p>To summarize, in this tutorial we learned about devon4j architecture and key principle it follows. with help of example we also learned about devon4j different modules such as api, core ,server and its multilayered architecture.</p>
+</div>
+<div class="paragraph">
+<p>Next you can visit following tutorials to know more about devon4j:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Java backend code generation using CobiGen (Code Generator)</p>
+</li>
+<li>
+<p>devon4j- contract first code generation</p>
+</li>
+<li>
+<p>devon4j-Kafka</p>
+</li>
+<li>
+<p>devon4j-security</p>
+</li>
+<li>
+<p>devon4j with Spring JPA</p>
+</li>
+<li>
+<p>devon4j rest services</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html#introduction-why-should-i-use-devonfw.asciidoc">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devon4j.wiki_asciidoc_architecture.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-ide-support.asciidoc.html#LICENSE.asciidoc">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2021-12-02 12:12:23 UTC
+</sub></div>
+</div>
+</div>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+<script>
+  var internalUrls = ["https://cginternal.devonfw.com/websitesnippets/"];
+  $(".internal").each(function(){
+    internalUrls.forEach((internalUrl, index) => {
+      $.ajax({url: internalUrl + $(this).text() + "/index.html" })
+      .then(r => {
+        var leftDiv = $('<div class="info"><span class="infoText">Internal</span><img class="infoImage" src="' + internalUrl + 'logo.png"/></div>');
+        var rightFirstDiv = $('<div class="message">This is only visible inside of the corporate network.</div>');
+        var rightLastDiv = $('<div class="content"></div>');
+        rightLastDiv.html(r);
+        var rightDiv = $('<div class="right"></div>');
+        rightDiv.append(rightFirstDiv);
+        rightDiv.append(rightLastDiv);
+        $(this).html(leftDiv);
+        $(this).append(rightDiv);
+        $(this).addClass("internal-active");
+        $(this).removeClass("internal");
+      })
+    });
+	});
+</script>
+</body>
+</html>

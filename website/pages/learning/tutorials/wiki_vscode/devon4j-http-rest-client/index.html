@@ -1,0 +1,1620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Develop a devon4j CXF REST Client using Synchronous call</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Ubuntu Font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400&display=swap" rel="stylesheet">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+
+<script src="/website/components/header/search-engine/bundle.js"></script>
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body id="index.asciidoc" class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"
+      autocomplete="off"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>REST (REpresentational State Transfer) is an inter-operable protocol for services that is more lightweight than SOAP. We give best practices that lead to simple, easy and pragmatic &#34;HTTP APIs&#34;.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="prerequisites">Prerequisites</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>User should have development experience in JAVA.</p>
+</li>
+<li>
+<p>Basic knowledge of REST.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="learning-goal">Learning Goal</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Here in this tutorial you will learn the following things:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>JAX-RS standard for REST service implementation proposed by devonfw.</p>
+</li>
+<li>
+<p>How to create REST client with devon4j using Synchronous call.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Let&#39;s get started!!</p>
+</div>
+<div class="paragraph">
+<p>The definition of each step of this tutorial can be found at <a href="https://github.com/devonfw-tutorials/tutorials/tree/main/devon4j-http-rest-client/" class="bare">https://github.com/devonfw-tutorials/tutorials/tree/main/devon4j-http-rest-client/</a>.</p>
+</div>
+<div class="paragraph">
+<p>Feel free to report any errors to us or fix them yourself. Errors can be reported by creating an issue in the <a href="https://github.com/devonfw-tutorials/tutorials/issues">tutorials repository</a>. To fix the error fork the repository and create a pull request. Errors in the wiki can be reported and fixed in the <a href="https://github.com/devonfw-tutorials/tutorial-compiler">Tutorial-compiler repository</a>.
+You can find a description of what to look for when creating a pull request at the devonfw contribution guide: <a href="https://devonfw.com/website/pages/community/community.html#community.asciidoc_contributing-to-devonfw" class="bare">https://devonfw.com/website/pages/community/community.html#community.asciidoc_contributing-to-devonfw</a>. If you want to create a tutorial you can start with the <a href="https://katacoda.com/devonfw/scenarios/create-your-own-tutorial">katacoda tutorial</a> and read the description for creating your own tutorials: <a href="https://github.com/devonfw-tutorials/tutorials/wiki/Development" class="bare">https://github.com/devonfw-tutorials/tutorials/wiki/Development</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_devonfw-setup">devonfw setup</h3>
+<div class="paragraph">
+<p>If you already installed the devonfw IDE, you can skip this step.</p>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>You need to have a tool to extract <code>.tar.gz</code> files. On Windows lower Windows 10 use can use <a href="https://www.7-zip.org/7-zip">7-Zip</a>. The most other platforms support this feature by default.</p>
+</li>
+<li>
+<p>You need to have <a href="https://git-scm.com/">Git</a> and <a href="https://curl.se/">Curl</a> installed. On Windows you have to install <a href="https://git-scm.com/download/win">Git for Windows</a>. On Linux systems you might need to install the following tools in case they are not present (<code>sudo apt-get install git curl</code> or <code>sudo yum install git-core curl</code>)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Create a new directory in the location where you want to install the devonfw IDE. If you are using the terminal, navigate to this location and run <code>mkdir devonfw</code> and <code>cd devonfw</code> to create the directory and navigate into it.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_download">Download</h4>
+<div class="paragraph">
+<p>Now you have to download the latest release of the devonfw IDE. You can download it from <a href="https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=LATEST&amp;p=tar.gz">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>In the Terminal execute <code>Invoke-WebRequest -OutFile devonfw-ide-scripts.tar.gz 'https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=LATEST&amp;p=tar.gz'</code> if you are using Windows.</p>
+</div>
+<div class="paragraph">
+<p>On Linux use <code>wget -c 'https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=LATEST&amp;p=tar.gz' -O devonfw-ide-scripts.tar.gz -</code>.</p>
+</div>
+<div class="paragraph">
+<p>On MacOS, depending on your setup, you can either use the same <code>wget</code> command specified for the Linux installation (install wget via homebrew <code>brew install wget</code>) or use any other available download command i.e. <code>curl -o devonfw-ide-scripts.tar.gz <a href="https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=LATEST&amp;p=tar.gz" class="bare">https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=LATEST&amp;p=tar.gz</a></code>.</p>
+</div>
+<div class="paragraph">
+<p>After that you need to extract the downloaded file. To do this, run <code>tar -xvzf devonfw-ide-scripts.tar.gz</code>. Or you can simply use a tool (e.g. 7-Zip) for this.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_setup">Setup</h4>
+<div class="paragraph">
+<p>First, you need to prepare a settings repository to specify the tools to be installed within the devonfw IDE. Normally this is done by your project. If you just want to test the devonfw IDE, you can use the default URL, which is <a href="https://github.com/devonfw/ide-settings" class="bare">https://github.com/devonfw/ide-settings</a>.</p>
+</div>
+<div class="paragraph">
+<p>For now clone the repository on <a href="https://github.com/devonfw/ide-settings" class="bare">https://github.com/devonfw/ide-settings</a> or your own fork of it.
+For this tutorial you have to write <code>DEVON_IDE_TOOLS=(java vscode)</code> into the devon.properties file of the cloned settings repository. These settings will now be passed into the installation process of the devonfw-ide.
+Start the setup process by executing <code>.\setup 'path/to/settings'</code> (Windows) or <code>bash setup path/to/settings.git</code> (Linux).</p>
+</div>
+<div class="paragraph">
+<p>You can also just execute <code>.\setup</code> (Windows) or <code>bash setup</code> (Linux) and press Enter when the setup assistent asks for the URL to the settings repository. This will also download the default settings and install the default tools within the devonfw IDE.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_rest">REST</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>REST (REpresentational State Transfer) is an inter-operable protocol for services that is more lightweight than SOAP.</p>
+</div>
+<div class="paragraph">
+<p>For implementing REST services we use the JAX-RS standard. As an implementation we recommend CXF. For JSON bindings we use Jackson while XML binding works out-of-the-box with JAXB. To implement a service you write an interface with JAX-RS annotations for the API and a regular implementation class annotated with @Named to make it a spring-bean.</p>
+</div>
+<div class="paragraph">
+<p>The REST service implementation is a regular CDI bean that can use dependency injection. The separation of the API as a Java interface allows to use it for service client calls.</p>
+</div>
+<div class="paragraph">
+<p><strong>Why</strong> <strong>Should</strong> <strong>you</strong> <strong>prefer</strong> <strong>devon4j</strong> <strong>client</strong> <strong>over</strong> <strong>other</strong> <strong>clients?</strong></p>
+</div>
+<div class="paragraph">
+<p>devon4j supports flexible configuration, adding headers for authentication, mapping of errors from server, logging success/errors with duration for performance analysis, support for synchronous and asynchronous invocations. Easy invocation of service inside a micro-service.
+For more details on REST visit <a href="https://devonfw.com/website/pages/docs/devon4j.asciidoc_guides.html#guide-rest.asciidoc" class="bare">https://devonfw.com/website/pages/docs/devon4j.asciidoc_guides.html#guide-rest.asciidoc</a></p>
+</div>
+<div class="paragraph">
+<p>For more details on devon4j Service Client <a href="https://devonfw.com/website/pages/docs/devon4j.asciidoc_guides.html#guide-service-client.asciidoc" class="bare">https://devonfw.com/website/pages/docs/devon4j.asciidoc_guides.html#guide-service-client.asciidoc</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="create-the-devon4j-rest-server">Create the devon4j REST SERVER</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As explained in REST document, With JAX-RS it is important to make sure that each service method is annotated with the proper HTTP annotation(@GET, @POST, etc).
+Let&#8217;s create devon4j server.</p>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="paragraph">
+<p>In order to create a new application you must use the archetype provided by devon4j which uses the <a href="https://maven.apache.org/guides/introduction/introduction-to-archetypes.html">maven archetype functionality</a>.</p>
+</div>
+<div class="paragraph">
+<p>To create a new application, you should have installed devonfw-ide. Follow the <a href="https://devonfw.com/website/pages/docs/devonfw-ide-introduction.asciidoc.html">devonfw-ide</a> documentation to install the same.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_create-the-project">Create the project</h4>
+<div class="paragraph">
+<p>Now you can use devonfw to setup a java project for you by executing the following devon command in terminal.</p>
+</div>
+<div class="paragraph">
+<p><code>devon java create com.example.application.httprestserver</code></p>
+</div>
+<div class="paragraph">
+<p>There is also is also an alternative way, where you can customize the project setup with optional parameters. More informations you will find <a href="https://devonfw.com/website/pages/docs/devon4j.asciidoc_tutorials.html">here</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_what-is-generated">What is generated?</h4>
+<div class="paragraph">
+<p>The application template (archetype) generates a Maven multi-module project. It has the following modules:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>api</strong>: module with the API (REST service interfaces, transfer-objects, datatypes, etc.) to be imported by other apps as a maven dependency in order to invoke and consume the offered (micro)services.</p>
+</li>
+<li>
+<p><strong>core</strong>: maven module containing the core of the application.</p>
+</li>
+<li>
+<p><strong>batch</strong>: optional module for batch(es)</p>
+</li>
+<li>
+<p><strong>server</strong>: module that bundles the entire app (core with optional batch) as a WAR file.</p>
+</li>
+<li>
+<p><strong>ear</strong>: optional maven module is responsible to packaging the application as a EAR file.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The toplevel pom.xml of the generated project has the following features:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Properties definition: Spring-boot version, Java version, etc.</p>
+</li>
+<li>
+<p>Modules definition for the modules (described above)</p>
+</li>
+<li>
+<p>Dependency management: define versions for dependencies of the technology stack that are recommended and work together in a compatible way.</p>
+</li>
+<li>
+<p>Maven plugins with desired versions and configuration</p>
+</li>
+<li>
+<p>Profiles for <a href="https://devonfw.com/website/pages/docs/devon4j.asciidoc_guides.html#guide-testing.asciidoc">test stages</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In next step, you will add configuration to allow basic authentication.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_add-configuration-to-allow-basic-authentication">Add configuration to allow basic authentication</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now, You have to modify BaseWebSecurityConfig file to allow application for basic authentication.</p>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_changing-of-the-basewebsecurityconfig.java-file">Changing of the BaseWebSecurityConfig.java File</h3>
+<div class="paragraph">
+<p>Now, You have to modify BaseWebSecurityConfig file to allow application for basic authentication.</p>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>VS Code Editor (can be installed in your devonfw environment).</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_changing-of-basewebsecurityconfig.java-in-the-vs-code-editor">Changing of BaseWebSecurityConfig.java in the VS Code Editor</h4>
+<div class="paragraph">
+<p>To change the file BaseWebSecurityConfig.java, you have to open it in VS Code first.
+Open VS Code and choose in the <strong>File</strong> context menu in the top left corner right next to the VS Code symbol <strong>Open File&#8230;&#8203;</strong> or just use the keyboard shortcut ctrl+o.
+Based on your operating system a window with the file explorer opens. You have to navigate to BaseWebSecurityConfig.java and select it. Choose the right folder manually by selecting the folders from the path <code>devonfw/workspaces/main/httprestserver/core/src/main/java/com/example/application/httprestserver/general/service/impl/config</code> and select the file <code>BaseWebSecurityConfig.java</code>.
+You can confirm this with the <strong>Open</strong> button in the bottom right corner and BaseWebSecurityConfig.java will be opened in a new VS Code editor window.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">package com.example.application.httprestserver.general.service.impl.config;
+
+import javax.inject.Inject;
+import javax.servlet.Filter;
+
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import com.devonfw.module.security.common.api.config.WebSecurityConfigurer;
+import com.devonfw.module.security.common.impl.rest.AuthenticationSuccessHandlerSendingOkHttpStatusCode;
+import com.devonfw.module.security.common.impl.rest.JsonUsernamePasswordAuthenticationFilter;
+import com.devonfw.module.security.common.impl.rest.LogoutSuccessHandlerReturningOkHttpStatusCode;
+
+/**
+ * This type serves as a base class for extensions of the {@code WebSecurityConfigurerAdapter} and provides a default
+ * configuration. &lt;br/&gt;
+ * Security configuration is based on {@link WebSecurityConfigurerAdapter}. This configuration is by purpose designed
+ * most simple for two channels of authentication: simple login form and rest-url.
+ */
+public abstract class BaseWebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+  @Inject
+  private UserDetailsService userDetailsService;
+
+  @Inject
+  private PasswordEncoder passwordEncoder;
+
+  @Inject
+  private WebSecurityConfigurer webSecurityConfigurer;
+
+
+
+  /**
+   * Configure spring security to enable a simple webform-login + a simple rest login.
+   */
+  @Override
+  public void configure(HttpSecurity http) throws Exception {
+
+    String[] unsecuredResources = new String[] { "/login", "/security/**", "/services/rest/login",
+    "/services/rest/logout" };
+
+    // disable CSRF protection by default, use csrf starter to override.
+    http = http.httpBasic().and().csrf().disable();
+    // load starters as pluggins.
+    http = this.webSecurityConfigurer.configure(http);
+
+    http
+        //
+        .userDetailsService(this.userDetailsService)
+        // define all urls that are not to be secured
+        .authorizeRequests().antMatchers(unsecuredResources).permitAll().anyRequest().authenticated().and()
+        // configure parameters for simple form login (and logout)
+        .formLogin().successHandler(new SimpleUrlAuthenticationSuccessHandler()).defaultSuccessUrl("/")
+        .failureUrl("/login.html?error").loginProcessingUrl("/j_spring_security_login").usernameParameter("username")
+        .passwordParameter("password").and()
+        // logout via POST is possible
+        .logout().logoutSuccessUrl("/login.html").and()
+        // register login and logout filter that handles rest logins
+        .addFilterAfter(getSimpleRestAuthenticationFilter(), BasicAuthenticationFilter.class)
+        .addFilterAfter(getSimpleRestLogoutFilter(), LogoutFilter.class);
+  }
+
+  /**
+   * Create a simple filter that allows logout on a REST Url /services/rest/logout and returns a simple HTTP status 200
+   * ok.
+   *
+   * @return the filter.
+   */
+  protected Filter getSimpleRestLogoutFilter() {
+
+    LogoutFilter logoutFilter = new LogoutFilter(new LogoutSuccessHandlerReturningOkHttpStatusCode(),
+        new SecurityContextLogoutHandler());
+
+    // configure logout for rest logouts
+    logoutFilter.setLogoutRequestMatcher(new AntPathRequestMatcher("/services/rest/logout"));
+
+    return logoutFilter;
+  }
+
+  /**
+   * Create a simple authentication filter for REST logins that reads user-credentials from a json-parameter and returns
+   * status 200 instead of redirect after login.
+   *
+   * @return the {@link JsonUsernamePasswordAuthenticationFilter}.
+   * @throws Exception if something goes wrong.
+   */
+  protected JsonUsernamePasswordAuthenticationFilter getSimpleRestAuthenticationFilter() throws Exception {
+
+    JsonUsernamePasswordAuthenticationFilter jsonFilter = new JsonUsernamePasswordAuthenticationFilter(
+        new AntPathRequestMatcher("/services/rest/login"));
+    jsonFilter.setPasswordParameter("j_password");
+    jsonFilter.setUsernameParameter("j_username");
+    jsonFilter.setAuthenticationManager(authenticationManager());
+    // set failurehandler that uses no redirect in case of login failure; just HTTP-status: 401
+    jsonFilter.setAuthenticationManager(authenticationManagerBean());
+    jsonFilter.setAuthenticationFailureHandler(new SimpleUrlAuthenticationFailureHandler());
+    // set successhandler that uses no redirect in case of login success; just HTTP-status: 200
+    jsonFilter.setAuthenticationSuccessHandler(new AuthenticationSuccessHandlerSendingOkHttpStatusCode());
+    return jsonFilter;
+  }
+
+  @SuppressWarnings("javadoc")
+  @Inject
+  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+    auth.inMemoryAuthentication().withUser("admin").password(this.passwordEncoder.encode("admin")).authorities("Admin");
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the opened BaseWebSecurityConfig.java.
+The final step is to save the file by selecting <strong>Save</strong> in the file context menu or by using the keyboard shortcut ctrl+s and BaseWebSecurityConfig.java has been changed.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_create-service-for-rest-server">Create service for REST server</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now, you will create VisitormanagementRestService to provide functionality using JAX-RS standard.</p>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Existing folder you want to create the file. (If the folder doesn&#8217;t exist you can create it from with the editor).</p>
+</li>
+<li>
+<p>VS Code Editor (can be installed in your devonfw environment).</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_creating-visitormanagementrestservice.java-in-the-vs-code-editor">Creating VisitormanagementRestService.java in the VS Code Editor</h4>
+<div class="paragraph">
+<p>Create VisitormanagementRestService.java in the VS Code editor and insert the following data into it.</p>
+</div>
+<div class="paragraph">
+<p>Opening a new file can be done by going to the file context menu in the top left corner right next to the VS Code symbol and selecting <strong>New File</strong> or use the keyboard shortcut ctrl+n. A new VS Code editor window will be opened with an untitled-1 filename.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">package com.example.application.httprestserver.visitormanagement.service.api.rest;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+@Path("/visitormanagement/v1")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+public interface VisitormanagementRestService {
+
+  @GET
+  @Path("/clientrequest/")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public String returnResponseToClient();
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the new file.</p>
+</div>
+<div class="paragraph">
+<p>The next step is to save the file by selecting <strong>Save</strong> or <strong>Save as</strong> in the file context menu or by using the keyboard shortcut ctrl+s.
+A file explorer window opens.
+You should check if you are currently in the right directory where you want to save <strong>devonfw/workspaces/main/httprestserver/api/src/main/java/com/example/application/httprestserver/visitormanagement/service/api/rest/VisitormanagementRestService.java</strong>.
+Select the directory <code>devonfw/workspaces/main/httprestserver/api/src/main/java/com/example/application/httprestserver/visitormanagement/service/api/rest</code>. If the directory does not exist, create the missing folders or run through the previous steps from the wiki again.
+To save the file specify the name of the file. Paste <code>VisitormanagementRestService.java</code> in the text field <strong>File name:</strong>.
+The last step is to save the file with the <strong>Save</strong> button in the bottom right corner and VisitormanagementRestService.java has been created and filled with some content.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_create-implementation-class-for-service">Create implementation class for Service</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now, you will create VisitormanagementRestServiceImpl, the implementation class of VisitormanagementRestService using JAX-RS standard.</p>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Existing folder you want to create the file. (If the folder doesn&#8217;t exist you can create it from with the editor).</p>
+</li>
+<li>
+<p>VS Code Editor (can be installed in your devonfw environment).</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_creating-visitormanagementrestserviceimpl.java-in-the-vs-code-editor">Creating VisitormanagementRestServiceImpl.java in the VS Code Editor</h4>
+<div class="paragraph">
+<p>Create VisitormanagementRestServiceImpl.java in the VS Code editor and insert the following data into it.</p>
+</div>
+<div class="paragraph">
+<p>Opening a new file can be done by going to the file context menu in the top left corner right next to the VS Code symbol and selecting <strong>New File</strong> or use the keyboard shortcut ctrl+n. A new VS Code editor window will be opened with an untitled-1 filename.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">package com.example.application.httprestserver.visitormanagement.service.impl.rest;
+
+import javax.inject.Named;
+
+import com.example.application.httprestserver.visitormanagement.service.api.rest.VisitormanagementRestService;
+
+@Named("VisitormanagementRestService")
+public class VisitormanagementRestServiceImpl implements VisitormanagementRestService {
+
+  @Override
+  public String returnResponseToClient() {
+
+    return "Welcome to REST API world";
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the new file.</p>
+</div>
+<div class="paragraph">
+<p>The next step is to save the file by selecting <strong>Save</strong> or <strong>Save as</strong> in the file context menu or by using the keyboard shortcut ctrl+s.
+A file explorer window opens.
+You should check if you are currently in the right directory where you want to save <strong>devonfw/workspaces/main/httprestserver/core/src/main/java/com/example/application/httprestserver/visitormanagement/service/impl/rest/VisitormanagementRestServiceImpl.java</strong>.
+Select the directory <code>devonfw/workspaces/main/httprestserver/core/src/main/java/com/example/application/httprestserver/visitormanagement/service/impl/rest</code>. If the directory does not exist, create the missing folders or run through the previous steps from the wiki again.
+To save the file specify the name of the file. Paste <code>VisitormanagementRestServiceImpl.java</code> in the text field <strong>File name:</strong>.
+The last step is to save the file with the <strong>Save</strong> button in the bottom right corner and VisitormanagementRestServiceImpl.java has been created and filled with some content.</p>
+</div>
+<div class="paragraph">
+<p>Here , you can see "VisitormanagementRestServiceImpl.java" is annotated with @Named to make it a spring-bean. To get return response to client "returnResponseToClient()" can be accessed via HTTP GET under the URL path "/visitormanagement/v1/clientrequest". It will return its result (String) as JSON (see @Produces in VisitormanagementRestService).</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_modify-properties-files">Modify properties files</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now, you will configure port in application properties.</p>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_changing-of-the-application.properties-file">Changing of the application.properties File</h3>
+<div class="paragraph">
+<p>Now, you will configure port in application properties.</p>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>VS Code Editor (can be installed in your devonfw environment).</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_changing-of-application.properties-in-the-vs-code-editor">Changing of application.properties in the VS Code Editor</h4>
+<div class="paragraph">
+<p>To change the file application.properties, you have to open it in VS Code first.
+Open VS Code and choose in the <strong>File</strong> context menu in the top left corner right next to the VS Code symbol <strong>Open File&#8230;&#8203;</strong> or just use the keyboard shortcut ctrl+o.
+Based on your operating system a window with the file explorer opens. You have to navigate to application.properties and select it. Choose the right folder manually by selecting the folders from the path <code>devonfw/workspaces/main/httprestserver/core/src/main/resources</code> and select the file <code>application.properties</code>.
+You can confirm this with the <strong>Open</strong> button in the bottom right corner and application.properties will be opened in a new VS Code editor window.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code># This is the configuration file shipped with the application that contains reasonable defaults.
+# Environment specific configurations are configured in config/application.properties.
+# If you are running in a servlet container you may add this to lib/config/application.properties in case you do not
+# want to touch the WAR file.
+
+server.port=8081
+server.servlet.context-path=/httprestserver
+spring.application.name=httprestserver
+
+security.expose.error.details=false
+
+spring.jpa.hibernate.ddl-auto=validate
+
+# Datasource for accessing the database
+# https://github.com/spring-projects/spring-boot/blob/d3c34ee3d1bfd3db4a98678c524e145ef9bca51c/spring-boot-project/spring-boot/src/main/java/org/springframework/boot/jdbc/DatabaseDriver.java
+spring.jpa.database=h2
+# spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+# spring.datasource.driver-class-name=org.h2.Driver
+spring.datasource.username=sa
+
+# Hibernate NamingStrategy has been deprecated and then removed in favor of two step naming strategy ImplicitNamingStrategy and PhysicalNamingStrategy
+spring.jpa.hibernate.naming.implicit-strategy=org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
+spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+# https://github.com/devonfw/devon4j/issues/65
+# https://vladmihalcea.com/the-open-session-in-view-anti-pattern/
+spring.jpa.open-in-view=false
+
+# to prevent that Spring Boot launches batch jobs on startup
+# might otherwise lead to errors if job parameters are needed (or lead to unwanted modifications and longer startup times)
+# see http://stackoverflow.com/questions/22318907/how-to-stop-spring-batch-scheduled-jobs-from-running-at-first-time-when-executin
+spring.batch.job.enabled=false
+
+# Flyway for Database Setup and Migrations
+spring.flyway.locations=classpath:db/migration</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the opened application.properties.
+The final step is to save the file by selecting <strong>Save</strong> in the file context menu or by using the keyboard shortcut ctrl+s and application.properties has been changed.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>VS Code Editor (can be installed in your devonfw environment).</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_changing-of-application.properties-in-the-vs-code-editor">Changing of application.properties in the VS Code Editor</h4>
+<div class="paragraph">
+<p>To change the file application.properties, you have to open it in VS Code first.
+Open VS Code and choose in the <strong>File</strong> context menu in the top left corner right next to the VS Code symbol <strong>Open File&#8230;&#8203;</strong> or just use the keyboard shortcut ctrl+o.
+Based on your operating system a window with the file explorer opens. You have to navigate to application.properties and select it. Choose the right folder manually by selecting the folders from the path <code>devonfw/workspaces/main/httprestserver/core/src/main/resources/config</code> and select the file <code>application.properties</code>.
+You can confirm this with the <strong>Open</strong> button in the bottom right corner and application.properties will be opened in a new VS Code editor window.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code># This is the spring boot configuration file for development. It will not be included into the application.
+# In order to set specific configurations in a regular installed environment create an according file
+# config/application.properties in the server. If you are deploying the application to a servlet container as untouched
+# WAR file you can locate this config folder in ${symbol_dollar}{CATALINA_BASE}/lib. If you want to deploy multiple applications to
+# the same container (not recommended by default) you need to ensure the WARs are extracted in webapps folder and locate
+# the config folder inside the WEB-INF/classes folder of the webapplication.
+
+server.port=8081
+server.servlet.context-path=/httprestserver
+
+# Datasource for accessing the database
+# See https://github.com/devonfw/devon4j/blob/develop/documentation/guide-configuration.asciidoc#security-configuration
+#jasypt.encryptor.password=none
+#spring.datasource.password=ENC(7CnHiadYc0Wh2FnWADNjJg==)
+spring.datasource.password=
+spring.datasource.url=jdbc:h2:./.httprestserver;
+
+# print SQL to console for debugging (e.g. detect N+1 issues)
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+
+# Enable JSON pretty printing
+spring.jackson.serialization.INDENT_OUTPUT=true
+
+# Flyway for Database Setup and Migrations
+spring.flyway.enabled=true
+spring.flyway.clean-on-validation-error=true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the opened application.properties.
+The final step is to save the file by selecting <strong>Save</strong> in the file context menu or by using the keyboard shortcut ctrl+s and application.properties has been changed.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_build-and-start-devon4j-rest-server">Build and Start devon4j REST Server</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You have successfully built the REST-server. Now, you have to start the build and then, start the server as mentioned below.</p>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>You need to have Maven installed. If not already installed, you can download it <a href="https://maven.apache.org/download.cgi">here</a>. Alternativly, you can make use of the devonfw-ide, where you can install Maven directly to your workspace. For more details on how to do that, see the <a href="https://devonfw.com/website/pages/docs/devonfw-ide-introduction.asciidoc.html#setup.asciidoc">devonfw-ide setup</a>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_execution">Execution</h4>
+<div class="paragraph">
+<p>Now move to your project directory manually or by executing <code>cd C:\devonfw\workspaces\main\tutorial-compiler\build\working\devonfw\workspaces\main\httprestserver</code> in the terminal.
+Next, use the following command to build the java project.</p>
+</div>
+<div class="paragraph">
+<p><code>mvn clean install -Dmaven.test.skip=true</code></p>
+</div>
+<div class="paragraph">
+<p>The maven command 'clean' will clear the target directory beforehand. So your build will start from a clean state.
+Install will then compile, test and package your Java project and copy your built .jar/.war file into your local Maven repository.</p>
+</div>
+<div class="paragraph">
+<p>We do not need to execute the test cases, so we can skip them by using the option '-Dmaven.test.skip=true'.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_run-java-server">Run Java Server</h3>
+
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_prerequisites">Prerequisites</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Maven (can be included in your devonfw environment)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_starting-the-server">Starting the server</h3>
+<div class="paragraph">
+<p>First, change the current working directory to where your server is located, i.e. <code>cd C:\devonfw\workspaces\main\tutorial-compiler\build\working\devonfw\workspaces\main\httprestserver\server</code>.</p>
+</div>
+<div class="paragraph">
+<p>Afterwards, use maven to start the server: <code>mvn spring-boot:run</code>.
+This command will start the Java server.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_startup-assertion">Startup Assertion</h3>
+<div class="paragraph">
+<p>You can check if the server is running correctly by checking if <code>localhost:8081/httprestserver</code> is accessible by either using a tool like <code>curl</code>, <code>Postman</code> or simply accessing the service via your webbrowser.</p>
+</div>
+<div class="paragraph">
+<p>Example: <code>curl -Is localhost:8081/ | head -n 1</code></p>
+</div>
+<div class="paragraph">
+<p>This command should return an <code>200 OK</code> header if the service is available.</p>
+</div>
+<div class="paragraph">
+<p>Once, Java server starts running. To test REST-server follow below steps:
+* Click on "+" next to terminal tab
+* Select "select port to view host"
+* Enter the port number "8081"
+* In the url, append "/httprestserver/services/rest/visitormanagement/v1/clientrequest/"
+* Enter username as "admin" and password as "admin"
+* You will be able to see response "Welcome to REST API world"
+In next step, You have to create devon4j service Client.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_create-devon4j-rest-client">Create devon4j REST Client</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To create devon4j service Client. First, You need to create a sample devon4j project.</p>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="paragraph">
+<p>In order to create a new application you must use the archetype provided by devon4j which uses the <a href="https://maven.apache.org/guides/introduction/introduction-to-archetypes.html">maven archetype functionality</a>.</p>
+</div>
+<div class="paragraph">
+<p>To create a new application, you should have installed devonfw-ide. Follow the <a href="https://devonfw.com/website/pages/docs/devonfw-ide-introduction.asciidoc.html">devonfw-ide</a> documentation to install the same.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_create-the-project">Create the project</h4>
+<div class="paragraph">
+<p>Now you can use devonfw to setup a java project for you by executing the following devon command in terminal.</p>
+</div>
+<div class="paragraph">
+<p><code>devon java create com.example.application.httprestclient</code></p>
+</div>
+<div class="paragraph">
+<p>There is also is also an alternative way, where you can customize the project setup with optional parameters. More informations you will find <a href="https://devonfw.com/website/pages/docs/devon4j.asciidoc_tutorials.html">here</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_what-is-generated">What is generated?</h4>
+<div class="paragraph">
+<p>The application template (archetype) generates a Maven multi-module project. It has the following modules:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>api</strong>: module with the API (REST service interfaces, transfer-objects, datatypes, etc.) to be imported by other apps as a maven dependency in order to invoke and consume the offered (micro)services.</p>
+</li>
+<li>
+<p><strong>core</strong>: maven module containing the core of the application.</p>
+</li>
+<li>
+<p><strong>batch</strong>: optional module for batch(es)</p>
+</li>
+<li>
+<p><strong>server</strong>: module that bundles the entire app (core with optional batch) as a WAR file.</p>
+</li>
+<li>
+<p><strong>ear</strong>: optional maven module is responsible to packaging the application as a EAR file.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The toplevel pom.xml of the generated project has the following features:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Properties definition: Spring-boot version, Java version, etc.</p>
+</li>
+<li>
+<p>Modules definition for the modules (described above)</p>
+</li>
+<li>
+<p>Dependency management: define versions for dependencies of the technology stack that are recommended and work together in a compatible way.</p>
+</li>
+<li>
+<p>Maven plugins with desired versions and configuration</p>
+</li>
+<li>
+<p>Profiles for <a href="https://devonfw.com/website/pages/docs/devon4j.asciidoc_guides.html#guide-testing.asciidoc">test stages</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Then, You need to add required dependency to your application.</p>
+</div>
+<div class="paragraph">
+<p>Since in this tutorial you will build client on Synchronous call so, you have to add dependency for synchronous consuming REST services via Apache CXF (Java8+)
+You will add below dependency in core folder pom.xml</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>&lt;dependency&gt;
+  &lt;groupId&gt;com.devonfw.java.starters&lt;/groupId&gt;
+  &lt;artifactId&gt;devon4j-starter-cxf-client-rest&lt;/artifactId&gt;
+&lt;/dependency&gt;</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_modify-pom-file">Modify POM file</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Modify pom.xml as below:</p>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_changing-of-the-pom.xml-file">Changing of the pom.xml File</h3>
+<div class="paragraph">
+<p>Modify pom.xml as below:</p>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>VS Code Editor (can be installed in your devonfw environment).</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_changing-of-pom.xml-in-the-vs-code-editor">Changing of pom.xml in the VS Code Editor</h4>
+<div class="paragraph">
+<p>To change the file pom.xml, you have to open it in VS Code first.
+Open VS Code and choose in the <strong>File</strong> context menu in the top left corner right next to the VS Code symbol <strong>Open File&#8230;&#8203;</strong> or just use the keyboard shortcut ctrl+o.
+Based on your operating system a window with the file explorer opens. You have to navigate to pom.xml and select it. Choose the right folder manually by selecting the folders from the path <code>devonfw/workspaces/main/httprestclient/core</code> and select the file <code>pom.xml</code>.
+You can confirm this with the <strong>Open</strong> button in the bottom right corner and pom.xml will be opened in a new VS Code editor window.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>&lt;dependencies&gt;
+&lt;dependency&gt;
+  &lt;groupId&gt;com.devonfw.java.starters&lt;/groupId&gt;
+  &lt;artifactId&gt;devon4j-starter-cxf-client-rest&lt;/artifactId&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To replace the content with a specific placeholder you have to locate the placeholder in the file. The fastest way is to search through the opened file and replace <strong>&lt;dependencies&gt;</strong> with the new content.</p>
+</div>
+<div class="paragraph">
+<p>The final step is to save the file by selecting <strong>Save</strong> in the file context menu or by using the keyboard shortcut ctrl+s and pom.xml has been changed.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_create-service-to-invoke-server">Create service to invoke server</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now, You will create a Java interface VisitormanagementRestService to invoke inside client.</p>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Existing folder you want to create the file. (If the folder doesn&#8217;t exist you can create it from with the editor).</p>
+</li>
+<li>
+<p>VS Code Editor (can be installed in your devonfw environment).</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_creating-visitormanagementrestservice.java-in-the-vs-code-editor">Creating VisitormanagementRestService.java in the VS Code Editor</h4>
+<div class="paragraph">
+<p>Create VisitormanagementRestService.java in the VS Code editor and insert the following data into it.</p>
+</div>
+<div class="paragraph">
+<p>Opening a new file can be done by going to the file context menu in the top left corner right next to the VS Code symbol and selecting <strong>New File</strong> or use the keyboard shortcut ctrl+n. A new VS Code editor window will be opened with an untitled-1 filename.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">package com.example.application.httprestclient.general.service.api.rest;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+@Path("/visitormanagement/v1")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+public interface VisitormanagementRestService {
+
+  @GET
+  @Path("/clientrequest/")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public String returnResponseToClient();
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the new file.</p>
+</div>
+<div class="paragraph">
+<p>The next step is to save the file by selecting <strong>Save</strong> or <strong>Save as</strong> in the file context menu or by using the keyboard shortcut ctrl+s.
+A file explorer window opens.
+You should check if you are currently in the right directory where you want to save <strong>devonfw/workspaces/main/httprestclient/api/src/main/java/com/example/application/httprestclient/general/service/api/rest/VisitormanagementRestService.java</strong>.
+Select the directory <code>devonfw/workspaces/main/httprestclient/api/src/main/java/com/example/application/httprestclient/general/service/api/rest</code>. If the directory does not exist, create the missing folders or run through the previous steps from the wiki again.
+To save the file specify the name of the file. Paste <code>VisitormanagementRestService.java</code> in the text field <strong>File name:</strong>.
+The last step is to save the file with the <strong>Save</strong> button in the bottom right corner and VisitormanagementRestService.java has been created and filled with some content.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_create-service-for-cxf-rest-client">Create service for CXF REST Client</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now, you will create service for client i.e. TestRestService.java to provide functionality using JAX-RS standard.</p>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Existing folder you want to create the file. (If the folder doesn&#8217;t exist you can create it from with the editor).</p>
+</li>
+<li>
+<p>VS Code Editor (can be installed in your devonfw environment).</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_creating-testrestservice.java-in-the-vs-code-editor">Creating TestRestService.java in the VS Code Editor</h4>
+<div class="paragraph">
+<p>Create TestRestService.java in the VS Code editor and insert the following data into it.</p>
+</div>
+<div class="paragraph">
+<p>Opening a new file can be done by going to the file context menu in the top left corner right next to the VS Code symbol and selecting <strong>New File</strong> or use the keyboard shortcut ctrl+n. A new VS Code editor window will be opened with an untitled-1 filename.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">package com.example.application.httprestclient.general.service.api.rest;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+@Path("/testrest/v1")
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
+public interface TestRestService {
+
+  @GET
+  @Path("/response/")
+  public String showResponse();
+
+  @GET
+  @Path("/verify/")
+  public String verifyServiceWork();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the new file.</p>
+</div>
+<div class="paragraph">
+<p>The next step is to save the file by selecting <strong>Save</strong> or <strong>Save as</strong> in the file context menu or by using the keyboard shortcut ctrl+s.
+A file explorer window opens.
+You should check if you are currently in the right directory where you want to save <strong>devonfw/workspaces/main/httprestclient/api/src/main/java/com/example/application/httprestclient/general/service/api/rest/TestRestService.java</strong>.
+Select the directory <code>devonfw/workspaces/main/httprestclient/api/src/main/java/com/example/application/httprestclient/general/service/api/rest</code>. If the directory does not exist, create the missing folders or run through the previous steps from the wiki again.
+To save the file specify the name of the file. Paste <code>TestRestService.java</code> in the text field <strong>File name:</strong>.
+The last step is to save the file with the <strong>Save</strong> button in the bottom right corner and TestRestService.java has been created and filled with some content.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_create-implementation-class-for-clients-service">Create implementation class for client&#8217;s service</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now, you will create TestRestServiceImpl, the implementation class of TestRestService using JAX-RS standard.</p>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Existing folder you want to create the file. (If the folder doesn&#8217;t exist you can create it from with the editor).</p>
+</li>
+<li>
+<p>VS Code Editor (can be installed in your devonfw environment).</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_creating-testrestserviceimpl.java-in-the-vs-code-editor">Creating TestRestServiceImpl.java in the VS Code Editor</h4>
+<div class="paragraph">
+<p>Create TestRestServiceImpl.java in the VS Code editor and insert the following data into it.</p>
+</div>
+<div class="paragraph">
+<p>Opening a new file can be done by going to the file context menu in the top left corner right next to the VS Code symbol and selecting <strong>New File</strong> or use the keyboard shortcut ctrl+n. A new VS Code editor window will be opened with an untitled-1 filename.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">package com.example.application.httprestclient.general.service.impl.rest;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import com.devonfw.module.service.common.api.client.ServiceClientFactory;
+import com.devonfw.module.service.common.api.client.config.ServiceClientConfigBuilder;
+import com.example.application.httprestclient.general.service.api.rest.TestRestService;
+import com.example.application.httprestclient.general.service.api.rest.VisitormanagementRestService;
+
+@Named("TestRestService")
+public class TestRestServiceImpl implements TestRestService {
+
+  @Inject
+  private ServiceClientFactory serviceClientFactory;
+
+  @Override
+  public String showResponse() {
+
+    String result = callSynchronous();
+    System.out.println("**********inside client method***********");
+    System.out.println(result);
+    System.out.println("************Thank you for choosing devon4j ****************");
+    return result;
+
+  }
+
+  private String callSynchronous() {
+
+    System.out.println("***********inside synchronous call************");
+    VisitormanagementRestService visitormanagementRestService = this.serviceClientFactory.create(
+        VisitormanagementRestService.class,
+        new ServiceClientConfigBuilder().authBasic().userLogin("admin").userPassword("admin").buildMap());
+    // call of service over the wire, synchronously blocking until result is received or error occurred
+    String resultFromAPICall = visitormanagementRestService.returnResponseToClient();
+    System.out.println("************************got result from api" + resultFromAPICall + "***************");
+    return resultFromAPICall;
+  }
+
+  @Override
+  public String verifyServiceWork() {
+
+    return "Verified... service is working";
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the new file.</p>
+</div>
+<div class="paragraph">
+<p>The next step is to save the file by selecting <strong>Save</strong> or <strong>Save as</strong> in the file context menu or by using the keyboard shortcut ctrl+s.
+A file explorer window opens.
+You should check if you are currently in the right directory where you want to save <strong>devonfw/workspaces/main/httprestclient/core/src/main/java/com/example/application/httprestclient/general/service/impl/rest/TestRestServiceImpl.java</strong>.
+Select the directory <code>devonfw/workspaces/main/httprestclient/core/src/main/java/com/example/application/httprestclient/general/service/impl/rest</code>. If the directory does not exist, create the missing folders or run through the previous steps from the wiki again.
+To save the file specify the name of the file. Paste <code>TestRestServiceImpl.java</code> in the text field <strong>File name:</strong>.
+The last step is to save the file with the <strong>Save</strong> button in the bottom right corner and TestRestServiceImpl.java has been created and filled with some content.</p>
+</div>
+<div class="paragraph">
+<p>As you can see synchronous invocation of a service is very simple and type-safe. The actual call of showResponse will technically call the remote service(i.e. VisitormanagementRestService) over the wire ( via HTTP) including marshaling the arguments (converting String to JSON) and un-marshalling the result (e.g. converting the received JSON to String).
+Here in TestRestServiceImpl, there is a method "callSynchronous" which will call the VisitormanagementRestService and return the object of VisitormanagementRestService to visitormanagementRestService.
+With visitormanagementRestService, it is calling the method "returnResponseToClient()" of server.
+The response from server will be stored in "resultFromAPICall" as the return type of result is String.
+After getting response, you can handle the response further in your implementation. Here, you can see that response is getting handled in "showResponse" method.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_modify-properties-for-server-configuration">Modify properties for server configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>An application needs to be configurable in order to allow internal setup but also to allow externalized configuration of a deployed package (e.g. integration into runtime environment).
+Now, You need to modify the content of existing properties files and add configuration for Server.</p>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_changing-of-the-application.properties-file">Changing of the application.properties File</h3>
+<div class="paragraph">
+<p>An application needs to be configurable in order to allow internal setup but also to allow externalized configuration of a deployed package (e.g. integration into runtime environment).
+Now, You need to modify the content of existing properties files and add configuration for Server.</p>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>VS Code Editor (can be installed in your devonfw environment).</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_changing-of-application.properties-in-the-vs-code-editor">Changing of application.properties in the VS Code Editor</h4>
+<div class="paragraph">
+<p>To change the file application.properties, you have to open it in VS Code first.
+Open VS Code and choose in the <strong>File</strong> context menu in the top left corner right next to the VS Code symbol <strong>Open File&#8230;&#8203;</strong> or just use the keyboard shortcut ctrl+o.
+Based on your operating system a window with the file explorer opens. You have to navigate to application.properties and select it. Choose the right folder manually by selecting the folders from the path <code>devonfw/workspaces/main/httprestclient/core/src/main/resources</code> and select the file <code>application.properties</code>.
+You can confirm this with the <strong>Open</strong> button in the bottom right corner and application.properties will be opened in a new VS Code editor window.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code># This is the configuration file shipped with the application that contains reasonable defaults.
+# Environment specific configurations are configured in config/application.properties.
+# If you are running in a servlet container you may add this to lib/config/application.properties in case you do not
+# want to touch the WAR file.
+
+server.port=8080
+spring.application.name=httprestclient
+server.servlet.context-path=/httprestclient
+
+security.expose.error.details=false
+
+spring.jpa.hibernate.ddl-auto=validate
+
+# Datasource for accessing the database
+# https://github.com/spring-projects/spring-boot/blob/d3c34ee3d1bfd3db4a98678c524e145ef9bca51c/spring-boot-project/spring-boot/src/main/java/org/springframework/boot/jdbc/DatabaseDriver.java
+spring.jpa.database=h2
+# spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
+# spring.datasource.driver-class-name=org.h2.Driver
+spring.datasource.username=sa
+
+# Hibernate NamingStrategy has been deprecated and then removed in favor of two step naming strategy ImplicitNamingStrategy and PhysicalNamingStrategy
+spring.jpa.hibernate.naming.implicit-strategy=org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
+spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+# https://github.com/devonfw/devon4j/issues/65
+# https://vladmihalcea.com/the-open-session-in-view-anti-pattern/
+spring.jpa.open-in-view=false
+
+# to prevent that Spring Boot launches batch jobs on startup
+# might otherwise lead to errors if job parameters are needed (or lead to unwanted modifications and longer startup times)
+# see http://stackoverflow.com/questions/22318907/how-to-stop-spring-batch-scheduled-jobs-from-running-at-first-time-when-executin
+spring.batch.job.enabled=false
+
+# Flyway for Database Setup and Migrations
+spring.flyway.locations=classpath:db/migration
+
+# rest client setup
+service.client.default.url=https://[[index.asciidoc_HOST_SUBDOMAIN]]-8081-[[index.asciidoc_KATACODA_HOST]].environments.katacoda.com/httprestserver/services/rest
+service.client.app.httprestserver.url=https://[[index.asciidoc_HOST_SUBDOMAIN]]-8081-[[index.asciidoc_KATACODA_HOST]].environments.katacoda.com/httprestserver/services/rest
+service.client.default.timeout.connection=120
+service.client.default.timeout.response=3600
+service.client.app.httprestserver.auth=basic
+service.client.app.httprestserver.user.login=admin
+service.client.app.httprestserver.user.password=admin</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the opened application.properties.
+The final step is to save the file by selecting <strong>Save</strong> in the file context menu or by using the keyboard shortcut ctrl+s and application.properties has been changed.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>VS Code Editor (can be installed in your devonfw environment).</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_changing-of-application.properties-in-the-vs-code-editor">Changing of application.properties in the VS Code Editor</h4>
+<div class="paragraph">
+<p>To change the file application.properties, you have to open it in VS Code first.
+Open VS Code and choose in the <strong>File</strong> context menu in the top left corner right next to the VS Code symbol <strong>Open File&#8230;&#8203;</strong> or just use the keyboard shortcut ctrl+o.
+Based on your operating system a window with the file explorer opens. You have to navigate to application.properties and select it. Choose the right folder manually by selecting the folders from the path <code>devonfw/workspaces/main/httprestclient/core/src/main/resources/config</code> and select the file <code>application.properties</code>.
+You can confirm this with the <strong>Open</strong> button in the bottom right corner and application.properties will be opened in a new VS Code editor window.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code># This is the spring boot configuration file for development. It will not be included into the application.
+# In order to set specific configurations in a regular installed environment create an according file
+# config/application.properties in the server. If you are deploying the application to a servlet container as untouched
+# WAR file you can locate this config folder in ${symbol_dollar}{CATALINA_BASE}/lib. If you want to deploy multiple applications to
+# the same container (not recommended by default) you need to ensure the WARs are extracted in webapps folder and locate
+# the config folder inside the WEB-INF/classes folder of the webapplication.
+
+server.port=8080
+server.servlet.context-path=/httprestclient
+
+# Datasource for accessing the database
+# See https://github.com/devonfw/devon4j/blob/develop/documentation/guide-configuration.asciidoc#security-configuration
+#jasypt.encryptor.password=none
+#spring.datasource.password=ENC(7CnHiadYc0Wh2FnWADNjJg==)
+spring.datasource.password=
+spring.datasource.url=jdbc:h2:./.httprestclient;
+
+# print SQL to console for debugging (e.g. detect N+1 issues)
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+
+# Enable JSON pretty printing
+spring.jackson.serialization.INDENT_OUTPUT=true
+
+# Flyway for Database Setup and Migrations
+spring.flyway.enabled=true
+spring.flyway.clean-on-validation-error=true
+
+# rest client setup
+service.client.default.url=https://[[index.asciidoc_HOST_SUBDOMAIN]]-8081-[[index.asciidoc_KATACODA_HOST]].environments.katacoda.com/httprestserver/services/rest
+service.client.app.httprestserver.url=https://[[index.asciidoc_HOST_SUBDOMAIN]]-8081-[[index.asciidoc_KATACODA_HOST]].environments.katacoda.com/httprestserver/services/rest
+service.client.default.timeout.connection=120
+service.client.default.timeout.response=3600
+service.client.app.httprestserver.auth=basic
+service.client.app.httprestserver.user.login=admin
+service.client.app.httprestserver.user.password=admin</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the opened application.properties.
+The final step is to save the file by selecting <strong>Save</strong> in the file context menu or by using the keyboard shortcut ctrl+s and application.properties has been changed.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="service-discovery">Service Discovery</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>service.client.default.url</strong> :- It is used to set the default url of server and it is added for service discovery.</p>
+</div>
+<div class="paragraph">
+<p><strong>service.client.app.httprestserver.url</strong> :- This property provide base url of REST in your application. It follows format such as "service.client.app.«application».url". Here, «application» refers to the technical name of the application providing the service.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="timeouts">Timeouts</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>service.client.default.timeout.connection</strong> :- It is used to set the default timeout for particular connection.</p>
+</div>
+<div class="paragraph">
+<p><strong>service.client.default.timeout.response</strong> :- It is used to set the default timeout for particular response.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="headers">Headers</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>service.client.app.httprestserver.auth</strong> :- It is used for customization of Service Header. Here it is used for basic authentication.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="authentication">Authentication</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>service.client.app.httprestserver.user.login</strong> :- It is used to set username of server for authentication.</p>
+</div>
+<div class="paragraph">
+<p><strong>service.client.app.httprestserver.user.password</strong> :- It is used to set password.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_build-devon4j-cxf-rest-client">Build devon4j CXF REST Client</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now, Let&#8217;s build and start the service client application.
+This might take some time for application to start.</p>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>You need to have Maven installed. If not already installed, you can download it <a href="https://maven.apache.org/download.cgi">here</a>. Alternativly, you can make use of the devonfw-ide, where you can install Maven directly to your workspace. For more details on how to do that, see the <a href="https://devonfw.com/website/pages/docs/devonfw-ide-introduction.asciidoc.html#setup.asciidoc">devonfw-ide setup</a>.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_execution">Execution</h4>
+<div class="paragraph">
+<p>Now move to your project directory manually or by executing <code>cd C:\devonfw\workspaces\main\tutorial-compiler\build\working\devonfw\workspaces\main\httprestclient</code> in the terminal.
+Next, use the following command to build the java project.</p>
+</div>
+<div class="paragraph">
+<p><code>mvn clean install -Dmaven.test.skip=true</code></p>
+</div>
+<div class="paragraph">
+<p>The maven command 'clean' will clear the target directory beforehand. So your build will start from a clean state.
+Install will then compile, test and package your Java project and copy your built .jar/.war file into your local Maven repository.</p>
+</div>
+<div class="paragraph">
+<p>We do not need to execute the test cases, so we can skip them by using the option '-Dmaven.test.skip=true'.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Once, application builds successfully. Open new terminal by clicking "+" and wait for it to load.</p>
+</li>
+<li>
+<p>Now, Copy and execute below command to navigate into client server.
+<code>cd devonfw/workspaces/main/httprestclient/server</code></p>
+</li>
+<li>
+<p>Now, Copy and execute below command to start the application.
+<code>devon mvn spring-boot:run</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To test Synchronous method, follow below steps.
+* Click on "+" next to terminal tab
+* Select "select port to view host"
+* Enter the port number "8080"
+* In the url, append "/httprestclient/services/rest/testrest/v1/response/"
+* Enter username as "admin" and password as "admin"
+* You will be able to see response "Welcome to REST API world"</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_conclusion">Conclusion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You have successfully created devon4j CXF REST Client.
+For more details on devon4j follow <a href="https://devonfw.com/website/pages/docs/devon4j.asciidoc.html" class="bare">https://devonfw.com/website/pages/docs/devon4j.asciidoc.html</a></p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html#introduction-why-should-i-use-devonfw.asciidoc">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devon4j.wiki_asciidoc_architecture.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-ide-support.asciidoc.html#LICENSE.asciidoc">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2021-12-02 12:19:46 UTC
+</sub></div>
+</div>
+</div>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+<script>
+  var internalUrls = ["https://cginternal.devonfw.com/websitesnippets/"];
+  $(".internal").each(function(){
+    internalUrls.forEach((internalUrl, index) => {
+      $.ajax({url: internalUrl + $(this).text() + "/index.html" })
+      .then(r => {
+        var leftDiv = $('<div class="info"><span class="infoText">Internal</span><img class="infoImage" src="' + internalUrl + 'logo.png"/></div>');
+        var rightFirstDiv = $('<div class="message">This is only visible inside of the corporate network.</div>');
+        var rightLastDiv = $('<div class="content"></div>');
+        rightLastDiv.html(r);
+        var rightDiv = $('<div class="right"></div>');
+        rightDiv.append(rightFirstDiv);
+        rightDiv.append(rightLastDiv);
+        $(this).html(leftDiv);
+        $(this).append(rightDiv);
+        $(this).addClass("internal-active");
+        $(this).removeClass("internal");
+      })
+    });
+	});
+</script>
+</body>
+</html>

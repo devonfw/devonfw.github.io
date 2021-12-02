@@ -1,38 +1,166 @@
 name: previewPR
 
+env:
+  PR_NUMBER: ${{github.event.number}}
+  
 on:
-  pull_request   
+  pull_request_target 
+  
+  
   
 jobs:
-  previewPR:
+  setup-matrix:
     runs-on: ubuntu-latest
-    steps:
     
-      - name: Clone new architecture
-        uses: actions/checkout@v1
+    
+    steps:
+      - name: Checkout architectures
+        uses: actions/checkout@v2
+      - name: Install node environment
+        uses: actions/setup-node@v2-beta
+      - name: npm install
+        run: npm install
+          
+      - name: Select Changed Files
+        id: changedfiles
+        run: | 
+            npm install @actions/core
+            npm install @actions/github
+            node changedFilesArchitectures.js
+        env:
+          PR_OWNER: ${{github.event.pull_request.head.repo.owner.login}}
+          PR_REPO: ${{github.event.pull_request.head.repo.name}}
+        
+      - name: Setup matrix combinations
+        id: setup-matrix-combinations
+        run: |
+          dirs=()
+          for changed_file in ${{ steps.changedfiles.outputs.changedFiles }}; do
+            dir="$(echo $changed_file | cut -d/ -f2)"
+            check="$(echo $changed_file | cut -d/ -f1)"
+            if [[ ! " ${dirs[@]} " =~ " ${dir} " ]]; then
+              if [[ "$check" ==  *"solution"* ]]; then
+                  MATRIX_PARAMS_COMBINATIONS=$MATRIX_PARAMS_COMBINATIONS'{"solution": "'$dir'"},'
+                  dirs+=($dir)
+              fi
+            fi
+          done
+          echo ::set-output name=matrix-combinations::{\"include\":[$MATRIX_PARAMS_COMBINATIONS]}
+          
+    outputs:
+      matrix-combinations: ${{ steps.setup-matrix-combinations.outputs.matrix-combinations }}
+      
+      
+      
+      
+  build:
+    runs-on: ubuntu-latest
+    needs: setup-matrix
+    strategy:
+      matrix: ${{ fromJson(needs.setup-matrix.outputs.matrix-combinations) }}
+    steps:
+      
+      
+      - name: Clone
+        uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          repository: devonfw/devonfw.github.io
+          ref: develop
           
+      - name: Add new architectures
+        uses: actions/checkout@v2
+        with:
+          ref: ${{github.event.pull_request.head.ref}}
+          repository: ${{github.event.pull_request.head.repo.full_name}}
+          path: architectures
           
-      - name: Run maven generate
+      - name: Setup Node
+        uses: actions/setup-node@v2
+
+      - name: Solutions from Stack repositories
+        run: |        
+          cd architectures/scripts
+          npm install
+          node copySolutionsFromStack.js ../../devonfw-guide
+          cd ../../
+
+      - name: Copy pom files for architectures
         run: |
-              mkdir PR_preview
-              cp -r solutions PR_preview
-              cp -a PRfiles/. PR_preview
-              cd PR_preview
-              mvn clean package
+          chmod +x architectures/scripts/copyPomFiles.sh
+          architectures/scripts/copyPomFiles.sh
+
+      - name: npm install for architectures
+        run: |
+          cd architectures/scripts
+          npm install
+          cd ../../
+          
+      - name: Compile sass for architectures
+        uses: gha-utilities/sass-build@v0.4.2
+        with:
+          source: architectures/index.scss
+          destination: architectures/index.css
+          
+      - name: Remove files that are breaking the build
+        run: |
+          rm architectures/README.md || true
+          rm architectures/index.scss || true
+
+      - name: Build
+        run: mvn -s ./.m2/unblock-rubygem-proxy-settings.xml clean package
+
+      - name: Create output for architectures
+        run: |
+          chmod +x architectures/scripts/createOutput.sh
+          architectures/scripts/createOutput.sh
+
+      - name: Copy output of architectures
+        run: cp -avr architectures/target/generated-docs/ target/generated-docs/website/pages/architectures/
+          
       - name: Run image generate
-        run: |
-              cd PR_preview
-              npm install node-html-to-image-cli -g
-              cd target/generated-docs
-              node-html-to-image-cli index.html image.png              
-        
-        
-      - name: Artifact build
+        run: |                           
+              mv target/generated-docs/website/pages/architectures/solutions/${{ matrix.solution }}/index.html  target/generated-docs/website/pages/architectures/solutions/${{ matrix.solution }}/${{ matrix.solution }}.html
+              cd target/generated-docs/website/pages/architectures/solutions/${{ matrix.solution }}
+              
+              npm install --global pageres-cli
+              pageres ${{ matrix.solution }}.html 1280x800 --format=png --filename="${{ matrix.solution }}"
+              
+      - name: Artifact build upload
         uses: actions/upload-artifact@v2
         with: 
-          name: download-asset
-          path: |
-                PR_preview/target/generated-docs/image.png
-                PR_preview/target/generated-docs/index.html
+          name: my-artifact
+          path: target/generated-docs/website/pages/architectures/solutions/${{ matrix.solution }}/${{ matrix.solution }}.png
+          
+          
+          
+          
+  comment:
+      needs: build
+      runs-on: ubuntu-latest
+      steps:
+      
+      
+      - name: Download Artifact
+        uses: actions/download-artifact@master
+        with:
+          name: my-artifact
+          path: allArtifacts
+          
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{github.event.pull_request.head.repo.owner.login}}/${{github.event.pull_request.head.repo.name}}
+          event-type: my-event
+          client-payload: '{"prnumber": "${{ github.event.number }}", "checkrunid": "${{ github.run_id }}"}'
+          
+      - name: Upload Comment
+        uses: mshick/add-pr-comment@v1
+        with:
+          message: |
+            The artifact is build and you can see it at: Actions - choose your workflow - below you can download your generated artifact
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token-user-login: 'github-actions[bot]' # The user.login for temporary GitHub tokens
+          allow-repeats: false # This is the default
+      
+        

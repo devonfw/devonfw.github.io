@@ -57,6 +57,11 @@ jobs:
         run: |
           chmod +x architectures/scripts/copyPomFiles.sh
           architectures/scripts/copyPomFiles.sh
+          
+      - name: Copy pom files for tutorials
+        run: |
+          chmod +x wiki-tutorials/scripts/copyPomFiles.sh
+          wiki-tutorials/scripts/copyPomFiles.sh
 
       - name: npm install for architectures
         run: |
@@ -69,6 +74,12 @@ jobs:
         with:
           source: architectures/index.scss
           destination: architectures/index.css
+          
+      - name: Compile sass for tutorials
+        uses: gha-utilities/sass-build@v0.4.2
+        with:
+          source: wiki-tutorials/index.scss
+          destination: wiki-tutorials/index.css
 
       # asciidoctor tries to load gems dynamically to convert md and scss files.
       # As this gems are not installed this is breaking the build.
@@ -76,6 +87,8 @@ jobs:
         run: |
           rm architectures/README.md || true
           rm architectures/index.scss || true
+          rm wiki-tutorials/README.md || true
+          rm wiki-tutorials/index.scss || true
 
       - name: npm install for asciidoctor-stylesheet
         run: |
@@ -124,6 +137,15 @@ jobs:
       - name: Copy output of architectures
         run: |
           cp -avr architectures/target/generated-docs/ target/generated-docs/website/pages/architectures/
+
+      - name: Create output for tutorials
+        run: |
+          chmod +x wiki-tutorials/scripts/createOutput.sh
+          wiki-tutorials/scripts/createOutput.sh
+
+      - name: Copy output of tutorials
+        run: |
+          cp -avr wiki-tutorials/target/generated-docs/ target/generated-docs/website/pages/learning/
 
       - name: Build and test search engine
         run: |

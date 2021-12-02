@@ -476,7 +476,7 @@ public interface DishmanagementRestService {
 <div class="sect2">
 <h3 id="java-design.asciidoc_service-impl">Service impl</h3>
 <div class="paragraph">
-<p>Once the service <em>api</em> is defined we need to implement it using the <em>Java interface</em> as reference. We will add the <em>service implementation</em> class to the <em>impl.rest</em> package and implement the <em>RestService interface</em>.</p>
+<p>Once the service <em>api</em> is defined we need to implement it using the <em>Java interface</em> as reference. We will add the <em>service implementation</em> class to the <em>impl.rest</em> package and implement the <code><em>RestService interface</em></code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -564,7 +564,7 @@ public class DishmanagementImpl extends AbstractComponentFacade implements Dishm
 </div>
 </div>
 <div class="paragraph">
-<p>The <em>BeanMapper</em> will provide the needed transformations between <em>entity</em> and <em>transfer objects</em>.</p>
+<p>The <code><em>BeanMapper</em></code> will provide the needed transformations between <em>entity</em> and <em>transfer objects</em>.</p>
 </div>
 <div class="paragraph">
 <p>Also, the <em>logic</em> layer is the place to add validation for <em>Authorization</em> based on <em>roles</em> as we will see later.</p>
@@ -626,7 +626,7 @@ public class DishmanagementImpl extends AbstractComponentFacade implements Dishm
 <div class="sect3">
 <h4 id="java-design.asciidoc_authentication">Authentication</h4>
 <div class="paragraph">
-<p>Based on the <em>Spring Security</em> approach, we will implement a class extending <em>WebSecurityConfigurerAdapter</em> (<em>Devon4j</em> already provides the <em>BaseWebSecurityConfig</em> class) to define the security <em>entry point</em> and filters. Also, as <em>My Thai Star</em> is a mainly <em>public</em> application, we will define here the resources that won&#8217;t be secured.</p>
+<p>Based on the <em>Spring Security</em> approach, we will implement a class extending <code><em>WebSecurityConfigurerAdapter</em></code> (<em>Devon4j</em> already provides the <code><em>BaseWebSecurityConfig</em></code> class) to define the security <em>entry point</em> and filters. Also, as <em>My Thai Star</em> is a mainly <em>public</em> application, we will define here the resources that won&#8217;t be secured.</p>
 </div>
 <div class="paragraph">
 <p>List of <em>unsecured resources</em>:</p>
@@ -654,7 +654,7 @@ public class DishmanagementImpl extends AbstractComponentFacade implements Dishm
 </ul>
 </div>
 <div class="paragraph">
-<p>To configure the <em>login</em> we will set up the <em>HttpSecurity</em> object in the <em>configure</em> method of the class. We will define a <em>JWTLoginFilter</em> class that will handle the requests to the <code>/login</code> <em>endpoint</em>.</p>
+<p>To configure the <em>login</em> we will set up the <code><em>HttpSecurity</em></code> object in the <em>configure</em> method of the class. We will define a <em>JWTLoginFilter</em> class that will handle the requests to the <code>/login</code> <em>endpoint</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -662,15 +662,15 @@ public class DishmanagementImpl extends AbstractComponentFacade implements Dishm
 </div>
 </div>
 <div class="paragraph">
-<p>In the same <em>HttpSecurity</em> object we will set up the filter for the rest of the requests, to check the presence of the JWT token in the header. First we will need to create a <em>JWTAuthenticationFilter</em> class extending the <em>GenericFilterBean</em> class. Then we can add the filter to the <em>HttpSecurity</em> object</p>
+<p>In the same <code><em>HttpSecurity</em></code> object we will set up the filter for the rest of the requests, to check the presence of the JWT token in the header. First we will need to create a <code><em>JWTAuthenticationFilter</em></code> class extending the <code><em>GenericFilterBean</em></code> class. Then we can add the filter to the <code><em>HttpSecurity</em></code> object</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="java language-java">http.[...].addFilterBefore(new JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);</code></pre>
+<pre class="highlight"><code class="java language-java">http.[...].addFilterBefore(new `JWTAuthenticationFilter()`, UsernamePasswordAuthenticationFilter.class);</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Finally, as default users to start using the <em>My Thai Star</em> app we are going to define two profiles using the <em>inMemoryAuthentication</em> of the <em>Spring Security</em> framework. In the <code>configure(AuthenticationManagerBuilder auth)</code> method we will create:</p>
+<p>Finally, as default users to start using the <em>My Thai Star</em> app we are going to define two profiles using the <code><em>inMemoryAuthentication</em></code> of the <em>Spring Security</em> framework. In the <code>configure(AuthenticationManagerBuilder auth)</code> method we will create:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -708,7 +708,7 @@ public class DishmanagementImpl extends AbstractComponentFacade implements Dishm
 <div class="ulist">
 <ul>
 <li>
-<p><em>Secret</em>: Used as part of the signature of the token, acting as a private key. For the showcase purposes we will use simply "ThisIsASecret".</p>
+<p><em>Secret</em>: Used as part of the signature of the token, acting as a private key. For the showcase purposes we will use simply <code>"ThisIsASecret"</code>.</p>
 </li>
 <li>
 <p><em>Token Prefix</em> schema: Bearer. The token will look like <code>Bearer &lt;token&gt;</code></p>
@@ -727,13 +727,13 @@ public class DishmanagementImpl extends AbstractComponentFacade implements Dishm
 <p><em>subject</em>: "sub". The username.</p>
 </li>
 <li>
-<p><em>issuer</em>: "iss". Who creates the token. We could use the <em>url</em> of our service but, as this is a showcase app, we simply will use "MyThaiStarApp"</p>
+<p><em>issuer</em>: <code>"iss"</code>. Who creates the token. We could use the <em>url</em> of our service but, as this is a showcase app, we simply will use <code>"MyThaiStarApp"</code></p>
 </li>
 <li>
 <p><em>expiration date</em>: "exp". Defines when the token expires.</p>
 </li>
 <li>
-<p><em>creation date</em>: "iat". Defines when the token has been created.</p>
+<p><em>creation date</em>: <code>"iat"</code>. Defines when the token has been created.</p>
 </li>
 <li>
 <p><em>scope</em>: "scope". Array of strings to store the user roles.</p>
@@ -799,11 +799,11 @@ public class SecurityRestServiceImpl {
 <p>As part of the token we are providing the user <em>Role</em>. So, when validating the token, we can obtain that same information and build a <code>UsernamePasswordAuthenticationToken</code> with username and the roles as collection of <em>Granted Authorities</em>.</p>
 </div>
 <div class="paragraph">
-<p>Doing so, afterwards, in the implementation class of the <em>logic</em> layer we can set up the related methods with the <em>java security</em> '@RolesAllowed' annotation to block the access to the resource to users that does not match the expected roles.</p>
+<p>Doing so, afterwards, in the implementation class of the <em>logic</em> layer we can set up the related methods with the <em>java security</em> <code>'@RolesAllowed'</code> annotation to block the access to the resource to users that does not match the expected roles.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="java language-java">@RolesAllowed(Roles.WAITER)
+<pre class="highlight"><code class="java language-java">`@RolesAllowed(Roles.WAITER)`
 public PaginatedListTo&lt;BookingEto&gt; findBookings(BookingSearchCriteriaTo criteria) {
   return findBookings(criteria);
 }</code></pre>
@@ -847,7 +847,7 @@ public PaginatedListTo&lt;BookingEto&gt; findBookings(BookingSearchCriteriaTo cr
 <p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
 </li>
 <li>
-<p><a href="/website/pages/docs/devon4j.asciidoc_architecture.html">Architecture</a></p>
+<p><a href="/website/pages/docs/devon4j.wiki_asciidoc_architecture.html">Architecture</a></p>
 </li>
 <li>
 <p><a href="/website/pages/resources/resources.html">Resources</a></p>
@@ -935,7 +935,7 @@ public PaginatedListTo&lt;BookingEto&gt; findBookings(BookingSearchCriteriaTo cr
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-12-01 14:22:42 UTC
+Last updated 2021-12-02 12:10:32 UTC
 </sub></div>
 </div>
 </div>

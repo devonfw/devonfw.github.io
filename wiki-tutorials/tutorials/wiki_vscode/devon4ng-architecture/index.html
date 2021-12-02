@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="[[index.asciidoc_understand-the-architecture-principles-followed-by-devon4ng-the-angular-asset-of-devonfw]]">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>devon4ng architecture</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Ubuntu Font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400&display=swap" rel="stylesheet">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+
+<script src="/website/components/header/search-engine/bundle.js"></script>
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body id="index.asciidoc" class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"
+      autocomplete="off"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="sect1">
+<h2 id="prerequisites">Prerequisites</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Basic Angular knowledge</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="learning-goals">Learning goals</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This tutorial aims to explain concepts and principles of devon4ng architecture by refering an Angular application template. Below are the steps we will go through to understand it clearly.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Understand Angular architectural terminology (components and modules)</p>
+</li>
+<li>
+<p>Different layers of an Angular application</p>
+</li>
+<li>
+<p>Different types of modules - feature, core, shared</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You will be refering a devon4ng application while going through the theoretical aspects of the tutorial.</p>
+</div>
+<div class="paragraph">
+<p>By end of this tutorial you will have detailed understanding of principles followed by devon4ng application as well as its structure and architecture.</p>
+</div>
+<div class="paragraph">
+<p>The definition of each step of this tutorial can be found at <a href="https://github.com/devonfw-tutorials/tutorials/tree/main/devon4ng-architecture/" class="bare">https://github.com/devonfw-tutorials/tutorials/tree/main/devon4ng-architecture/</a>.</p>
+</div>
+<div class="paragraph">
+<p>Feel free to report any errors to us or fix them yourself. Errors can be reported by creating an issue in the <a href="https://github.com/devonfw-tutorials/tutorials/issues">tutorials repository</a>. To fix the error fork the repository and create a pull request. Errors in the wiki can be reported and fixed in the <a href="https://github.com/devonfw-tutorials/tutorial-compiler">Tutorial-compiler repository</a>.
+You can find a description of what to look for when creating a pull request at the devonfw contribution guide: <a href="https://devonfw.com/website/pages/community/community.html#community.asciidoc_contributing-to-devonfw" class="bare">https://devonfw.com/website/pages/community/community.html#community.asciidoc_contributing-to-devonfw</a>. If you want to create a tutorial you can start with the <a href="https://katacoda.com/devonfw/scenarios/create-your-own-tutorial">katacoda tutorial</a> and read the description for creating your own tutorials: <a href="https://github.com/devonfw-tutorials/tutorials/wiki/Development" class="bare">https://github.com/devonfw-tutorials/tutorials/wiki/Development</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_devonfw-setup">devonfw setup</h3>
+<div class="paragraph">
+<p>If you already installed the devonfw IDE, you can skip this step.</p>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>You need to have a tool to extract <code>.tar.gz</code> files. On Windows lower Windows 10 use can use <a href="https://www.7-zip.org/7-zip">7-Zip</a>. The most other platforms support this feature by default.</p>
+</li>
+<li>
+<p>You need to have <a href="https://git-scm.com/">Git</a> and <a href="https://curl.se/">Curl</a> installed. On Windows you have to install <a href="https://git-scm.com/download/win">Git for Windows</a>. On Linux systems you might need to install the following tools in case they are not present (<code>sudo apt-get install git curl</code> or <code>sudo yum install git-core curl</code>)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Create a new directory in the location where you want to install the devonfw IDE. If you are using the terminal, navigate to this location and run <code>mkdir devonfw</code> and <code>cd devonfw</code> to create the directory and navigate into it.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_download">Download</h4>
+<div class="paragraph">
+<p>Now you have to download the latest release of the devonfw IDE. You can download it from <a href="https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=LATEST&amp;p=tar.gz">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>In the Terminal execute <code>Invoke-WebRequest -OutFile devonfw-ide-scripts.tar.gz 'https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=LATEST&amp;p=tar.gz'</code> if you are using Windows.</p>
+</div>
+<div class="paragraph">
+<p>On Linux use <code>wget -c 'https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=LATEST&amp;p=tar.gz' -O devonfw-ide-scripts.tar.gz -</code>.</p>
+</div>
+<div class="paragraph">
+<p>On MacOS, depending on your setup, you can either use the same <code>wget</code> command specified for the Linux installation (install wget via homebrew <code>brew install wget</code>) or use any other available download command i.e. <code>curl -o devonfw-ide-scripts.tar.gz <a href="https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=LATEST&amp;p=tar.gz" class="bare">https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=LATEST&amp;p=tar.gz</a></code>.</p>
+</div>
+<div class="paragraph">
+<p>After that you need to extract the downloaded file. To do this, run <code>tar -xvzf devonfw-ide-scripts.tar.gz</code>. Or you can simply use a tool (e.g. 7-Zip) for this.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_setup">Setup</h4>
+<div class="paragraph">
+<p>First, you need to prepare a settings repository to specify the tools to be installed within the devonfw IDE. Normally this is done by your project. If you just want to test the devonfw IDE, you can use the default URL, which is <a href="https://github.com/devonfw/ide-settings" class="bare">https://github.com/devonfw/ide-settings</a>.</p>
+</div>
+<div class="paragraph">
+<p>For now clone the repository on <a href="https://github.com/devonfw/ide-settings" class="bare">https://github.com/devonfw/ide-settings</a> or your own fork of it.
+For this tutorial you have to write <code>DEVON_IDE_TOOLS=(npm ng vscode)</code> into the devon.properties file of the cloned settings repository. These settings will now be passed into the installation process of the devonfw-ide.
+Start the setup process by executing <code>.\setup 'path/to/settings'</code> (Windows) or <code>bash setup path/to/settings.git</code> (Linux).</p>
+</div>
+<div class="paragraph">
+<p>You can also just execute <code>.\setup</code> (Windows) or <code>bash setup</code> (Linux) and press Enter when the setup assistent asks for the URL to the settings repository. This will also download the default settings and install the default tools within the devonfw IDE.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_run-a-setup-script">Run a setup script</h3>
+<div class="paragraph">
+<p>Run a Script to setup the enviroment for the Tutorial.</p>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Any Editor that can edit files.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_create-the-setupscript">Create the Setupscript</h4>
+<div class="paragraph">
+<p>Open a editor and create a new file by going to the file context menu in the top left corner of the editor and select <strong>New</strong> or <strong>New File</strong> or mostly also the keyboard shortcut ctrl+n will also work.</p>
+</div>
+<div class="olist arabic">
+<div class="title">Operating system</div>
+<ol class="arabic">
+<li>
+<p>Windows<br>
+The editor opens a new editor window for an untitled file where you should insert the following text.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="powershell language-powershell">cd devonfw/workspaces/main
+git clone https://github.com/devonfw/devon4ng-application-template.git</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Save the file by selecting <strong>Save</strong> or <strong>Save as</strong> in the file context menu or by using the keyboard shortcut ctrl+s.
+A file explorer window opens where you should set the filename to <strong>cloneProject.ps1</strong> and save it to your current directory.</p>
+</div>
+</li>
+<li>
+<p>Linux and macOS<br>
+The editor opens a new editor window for an untitled file where you can insert the following text.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">cd devonfw/workspaces/main
+git clone https://github.com/devonfw/devon4ng-application-template.git</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Save the file by selecting <strong>Save</strong> or <strong>Save as</strong> in the file context menu or by using the keyboard shortcut ctrl+s.
+A file explorer window opens where you should set the filename to <strong>cloneProject.sh</strong> and save it to your current directory.</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_run-the-setup-script">Run the setup script</h4>
+<div class="olist arabic">
+<div class="title">Operating system</div>
+<ol class="arabic">
+<li>
+<p>Windows<br>
+Open the PowerShell in your current workspace and execute the command <code>./cloneProject.ps1</code> to run the script.</p>
+</li>
+<li>
+<p>Linux and macOS<br>
+Open the Terminal in your current workspace and execute the command <code>bash cloneProject.ps1</code> to run the script.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_overview">Overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>An Angular application is component based like [devon4j](<a href="https://github.com/devonfw/devon4j" class="bare">https://github.com/devonfw/devon4j</a>), but different terminology is used as compared to devon4j. Primarily the term used is <strong>module</strong> instead of <strong>component</strong>.
+To clarify this:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A <strong>component</strong> describes an UI element containing HTML, CSS and JavaScript - structure, design and logic encapsulated inside a reusable container called component.</p>
+</li>
+<li>
+<p>A <strong>module</strong> describes an applications feature area. The application flight-app may have a module called booking.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>An application developed using Angular consists of multiple modules. There are feature modules and special modules - <strong>core</strong> and <strong>shared</strong>. Angular or Angular Styleguide give no guidance on how to structure a module internally. This is where this architecture comes in.</p>
+</div>
+<div class="paragraph">
+<p>We will refer a devon4ng application for better understanding. But before that, let us understand the Architectural Layers of a devon4ng application.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_architectural-layers">Architectural Layers</h2>
+<div class="sectionbody">
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/architecture-layers.png" alt="architecture layers">
+</div>
+</div>
+<div class="paragraph">
+<p>The architecture describes two layers:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>[Components Layer](<a href="https://devonfw.com/website/pages/docs/master-devon4ng.asciidoc_layers.html#components-layer.asciidoc" class="bare">https://devonfw.com/website/pages/docs/master-devon4ng.asciidoc_layers.html#components-layer.asciidoc</a>) encapsulates components which present the current application state. Components are separated into [Smart and Dumb Components](<a href="https://devonfw.com/website/pages/docs/master-devon4ng.asciidoc_layers.html#components-layer.asciidoc_smart-and-dumb-components" class="bare">https://devonfw.com/website/pages/docs/master-devon4ng.asciidoc_layers.html#components-layer.asciidoc_smart-and-dumb-components</a>). The only logic present is view logic inside Smart Components.</p>
+</li>
+<li>
+<p>[Services Layer](<a href="https://devonfw.com/website/pages/docs/master-devon4ng.asciidoc_layers.html#services-layer.asciidoc" class="bare">https://devonfw.com/website/pages/docs/master-devon4ng.asciidoc_layers.html#services-layer.asciidoc</a>) is more or less what we call &#39;business logic layer&#39; on the server side. The layer defines the applications state, the transitions between state and classic business logic. Stores contain application state over time to which Smart Components subscribe to. Adapters are used to perform XHRs, WebSocket connections, etc. The business model is described inside the module. Use case services perform business logic needed for use cases. A use case services interacts with the store and adapters. Methods of use case services are the API for Smart Components. Those methods are Actions in reactive terminology.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Let us refer the application to understand the above concepts.</p>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_architectural-layers-explained">Architectural Layers explained</h3>
+<div class="paragraph">
+<p>The application you see here is a clone of devon4ng-application-template. You can find it [here](<a href="https://github.com/devonfw/devon4ng-application-template" class="bare">https://github.com/devonfw/devon4ng-application-template</a>)</p>
+</div>
+<div class="paragraph">
+<p>The <code>SampleDataModule</code> is a nice example of the different layers explained. It holds some components (representing the <strong>components</strong> layer) and also has a <code>SampleDataService</code> (representing the <strong>service</strong> layer) which is imported in the required components.</p>
+</div>
+<div class="paragraph">
+<p>The service acts as the adapter element explained earlier (used to make XHR calls).</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_modules">Modules</h2>
+<div class="sectionbody">
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/architecture-modules.png" alt="architecture modules">
+</div>
+</div>
+<div class="paragraph">
+<p>Every Angular application requires a module called app which is the main entrance to an application at runtime - this module gets bootstrapped. Angular Styleguide defines feature modules and two special modules - core and shared.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A <strong>feature</strong> module is basically a vertical cut through both layers.</p>
+</li>
+<li>
+<p>The <strong>shared</strong> module consists of components shared across feature modules.</p>
+</li>
+<li>
+<p>The <strong>core</strong> module holds services shared across modules.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>So core module is a module only having a services layer and shared module is a module only having a components layer.</p>
+</div>
+<div class="paragraph">
+<p>The <code>SampleDataModule</code> which we visitied earlier is a typical example of a <strong>feature</strong> module</p>
+</div>
+<div class="paragraph">
+<p>Let us refer the application again for examples on <strong>core</strong> module and <strong>shared</strong> module.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_core-module">Core module</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the <code>CoreModule</code>, you can see services like <code>TranslocoRootModule</code> (translation service), <code>HttpRequestInterceptorService</code> (HTTP interceptor sesrvice) and Angular Material related modules being part of this core module. This core module is then imported into every other module as the services are used throughout the application.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_shared-module">Shared module</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the <code>LayoutModule</code>, you can see components like <code>NavBar</code> and <code>Header</code> being part of this module. This module is comparable to a <strong>shared</strong> module which holds common components used throughout the application. The shared module is imported into other (feature) modules where the common components will be used.</p>
+</div>
+<div class="paragraph">
+<p>You can study in more detail about Angular architecture by following [this document](<a href="https://devonfw.com/website/pages/docs/master-devon4ng.asciidoc_architecture.html#meta-architecture.asciidoc_devonfw-reference-client-architecture" class="bare">https://devonfw.com/website/pages/docs/master-devon4ng.asciidoc_architecture.html#meta-architecture.asciidoc_devonfw-reference-client-architecture</a>).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_conclusion">Conclusion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Conclusion</p>
+</div>
+<div class="paragraph">
+<p>To conclude, in this tutorial you learned</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the concepts of modules and components</p>
+</li>
+<li>
+<p>the layers of the architecture - components and services</p>
+</li>
+<li>
+<p>the different types of modules - core, shared and feature</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Then we referred a devon4ng application by cloning it and traversing through its files. You can study in more detail about Angular architecture by following [this document](<a href="https://devonfw.com/website/pages/docs/master-devon4ng.asciidoc_architecture.html#meta-architecture.asciidoc_devonfw-reference-client-architecture" class="bare">https://devonfw.com/website/pages/docs/master-devon4ng.asciidoc_architecture.html#meta-architecture.asciidoc_devonfw-reference-client-architecture</a>).</p>
+</div>
+<div class="paragraph">
+<p>The idea with devon4ng is to define an architecture which is a compromise between, on the one hand, leveraging the best practices and latest trends like reactive style development, on the other hand, providing a short onboarding time while still using an architecture that helps us scale and be productive at the same time.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html#introduction-why-should-i-use-devonfw.asciidoc">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devon4j.wiki_asciidoc_architecture.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-ide-support.asciidoc.html#LICENSE.asciidoc">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2021-12-02 12:12:31 UTC
+</sub></div>
+</div>
+</div>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+<script>
+  var internalUrls = ["https://cginternal.devonfw.com/websitesnippets/"];
+  $(".internal").each(function(){
+    internalUrls.forEach((internalUrl, index) => {
+      $.ajax({url: internalUrl + $(this).text() + "/index.html" })
+      .then(r => {
+        var leftDiv = $('<div class="info"><span class="infoText">Internal</span><img class="infoImage" src="' + internalUrl + 'logo.png"/></div>');
+        var rightFirstDiv = $('<div class="message">This is only visible inside of the corporate network.</div>');
+        var rightLastDiv = $('<div class="content"></div>');
+        rightLastDiv.html(r);
+        var rightDiv = $('<div class="right"></div>');
+        rightDiv.append(rightFirstDiv);
+        rightDiv.append(rightLastDiv);
+        $(this).html(leftDiv);
+        $(this).append(rightDiv);
+        $(this).addClass("internal-active");
+        $(this).removeClass("internal");
+      })
+    });
+	});
+</script>
+</body>
+</html>

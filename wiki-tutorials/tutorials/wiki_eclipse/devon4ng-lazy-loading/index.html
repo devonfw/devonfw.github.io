@@ -1,0 +1,1809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="author" content="[[index.asciidoc_learn-how-to-defer-initialization-of-modules-in-angular-until-it-is-needed]]">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Boost Angular’s Performance by Lazy Loading your Modules with devon4ng</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Ubuntu Font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400&display=swap" rel="stylesheet">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+
+<script src="/website/components/header/search-engine/bundle.js"></script>
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body id="index.asciidoc" class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"
+      autocomplete="off"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In single-page-applications as the application size increases its loading speed decreases (since typically the entire application is loaded at once). Lazy loading is a design pattern that defers initialization of objects until it is needed. Angular handles lazy loading through the routing module which redirects to requested pages. Those pages can be loaded at start or on demand. In this tutorial you will build a simple app to understand how lazyloading is implemented in Angular.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="prerequisites">Prerequisites</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Basic Angular knowledge</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="learning-goals">Learning goals</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this tutorial you will learn how to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>create an Angular application using the devon command</p>
+</li>
+<li>
+<p>look how all modules are loaded by an application at the begining (eager loading)</p>
+</li>
+<li>
+<p>implement lazy loading and understand its concept and advantages</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The definition of each step of this tutorial can be found at <a href="https://github.com/devonfw-tutorials/tutorials/tree/main/devon4ng-lazy-loading/" class="bare">https://github.com/devonfw-tutorials/tutorials/tree/main/devon4ng-lazy-loading/</a>.</p>
+</div>
+<div class="paragraph">
+<p>Feel free to report any errors to us or fix them yourself. Errors can be reported by creating an issue in the <a href="https://github.com/devonfw-tutorials/tutorials/issues">tutorials repository</a>. To fix the error fork the repository and create a pull request. Errors in the wiki can be reported and fixed in the <a href="https://github.com/devonfw-tutorials/tutorial-compiler">Tutorial-compiler repository</a>.
+You can find a description of what to look for when creating a pull request at the devonfw contribution guide: <a href="https://devonfw.com/website/pages/community/community.html#community.asciidoc_contributing-to-devonfw" class="bare">https://devonfw.com/website/pages/community/community.html#community.asciidoc_contributing-to-devonfw</a>. If you want to create a tutorial you can start with the <a href="https://katacoda.com/devonfw/scenarios/create-your-own-tutorial">katacoda tutorial</a> and read the description for creating your own tutorials: <a href="https://github.com/devonfw-tutorials/tutorials/wiki/Development" class="bare">https://github.com/devonfw-tutorials/tutorials/wiki/Development</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_devonfw-setup">devonfw setup</h3>
+<div class="paragraph">
+<p>If you already installed the devonfw IDE, you can skip this step.</p>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>You need to have a tool to extract <code>.tar.gz</code> files. On Windows lower Windows 10 use can use <a href="https://www.7-zip.org/7-zip">7-Zip</a>. The most other platforms support this feature by default.</p>
+</li>
+<li>
+<p>You need to have <a href="https://git-scm.com/">Git</a> and <a href="https://curl.se/">Curl</a> installed. On Windows you have to install <a href="https://git-scm.com/download/win">Git for Windows</a>. On Linux systems you might need to install the following tools in case they are not present (<code>sudo apt-get install git curl</code> or <code>sudo yum install git-core curl</code>)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Create a new directory in the location where you want to install the devonfw IDE. If you are using the terminal, navigate to this location and run <code>mkdir devonfw</code> and <code>cd devonfw</code> to create the directory and navigate into it.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_download">Download</h4>
+<div class="paragraph">
+<p>Now you have to download the latest release of the devonfw IDE. You can download it from <a href="https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=LATEST&amp;p=tar.gz">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>In the Terminal execute <code>Invoke-WebRequest -OutFile devonfw-ide-scripts.tar.gz 'https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=LATEST&amp;p=tar.gz'</code> if you are using Windows.</p>
+</div>
+<div class="paragraph">
+<p>On Linux use <code>wget -c 'https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=LATEST&amp;p=tar.gz' -O devonfw-ide-scripts.tar.gz -</code>.</p>
+</div>
+<div class="paragraph">
+<p>On MacOS, depending on your setup, you can either use the same <code>wget</code> command specified for the Linux installation (install wget via homebrew <code>brew install wget</code>) or use any other available download command i.e. <code>curl -o devonfw-ide-scripts.tar.gz <a href="https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=LATEST&amp;p=tar.gz" class="bare">https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=LATEST&amp;p=tar.gz</a></code>.</p>
+</div>
+<div class="paragraph">
+<p>After that you need to extract the downloaded file. To do this, run <code>tar -xvzf devonfw-ide-scripts.tar.gz</code>. Or you can simply use a tool (e.g. 7-Zip) for this.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_setup">Setup</h4>
+<div class="paragraph">
+<p>First, you need to prepare a settings repository to specify the tools to be installed within the devonfw IDE. Normally this is done by your project. If you just want to test the devonfw IDE, you can use the default URL, which is <a href="https://github.com/devonfw/ide-settings" class="bare">https://github.com/devonfw/ide-settings</a>.</p>
+</div>
+<div class="paragraph">
+<p>For now clone the repository on <a href="https://github.com/devonfw/ide-settings" class="bare">https://github.com/devonfw/ide-settings</a> or your own fork of it.
+For this tutorial you have to write <code>DEVON_IDE_TOOLS=(npm ng vscode)</code> into the devon.properties file of the cloned settings repository. These settings will now be passed into the installation process of the devonfw-ide.
+Start the setup process by executing <code>.\setup 'path/to/settings'</code> (Windows) or <code>bash setup path/to/settings.git</code> (Linux).</p>
+</div>
+<div class="paragraph">
+<p>You can also just execute <code>.\setup</code> (Windows) or <code>bash setup</code> (Linux) and press Enter when the setup assistent asks for the URL to the settings repository. This will also download the default settings and install the default tools within the devonfw IDE.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_enable-routing-with-router-outlet">Enable routing with router-outlet</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the file app.component.html delete all the content and put in the <code>router-outlet</code> tag.</p>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Any editor that can edit files</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_changing-of-app.component.html-in-any-editor">Changing of app.component.html in any Editor</h4>
+<div class="paragraph">
+<p>To change the file app.component.html, you have to open it in any editor.
+Open the editor and choose in the file context menu in the top left corner <strong>Open &#8230;&#8203;</strong> mostly also keyboard shortcut ctrl+o works.
+Based on your operating system a window with the file explorer opens. You have to navigate to app.component.html and select it.  Select the right folder manually by selecting the folders from the path <code>devonfw/workspaces/main/level-app/src/app</code> and select the file <code>app.component.html</code>.
+You confirm this with the <strong>Open</strong> button in the bottom right corner app.component.html will be opened in a new editor window.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>&lt;router-outlet&gt;&lt;/router-outlet&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the opened app.component.html.
+The final step is to save the file by selecting <strong>Save</strong> in the file context menu or by using the keyboard shortcut ctrl+s and app.component.html has been changed.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_create-the-modules-and-their-components">Create the modules and their components</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Next you will create the feature modules and components for the app. You will follow the structure shown in the image in the first step. You can use the CLI command <code>devon ng generate module</code> along with the <code>--routing</code> flag to generate the modules, and <code>devon ng generate component</code> command to generate the components.</p>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Existing folder you want to create the file. (If the folder doesn&#8217;t exist you can create it from with the editor).</p>
+</li>
+<li>
+<p>Any Editor that can edit files</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_creating-first-routing.module.ts-in-any-editor">Creating first-routing.module.ts in any Editor</h4>
+<div class="paragraph">
+<p>Create first-routing.module.ts in any Editor and insert the following data into it. .</p>
+</div>
+<div class="paragraph">
+<p>Opening a new file can be done by going to the file context menu in the top left corner of the editor and select <strong>New</strong> or <strong>New File</strong> or mostly also the keyboard shortcut ctrl+n will also work.
+The editor opens a new editor window for an untitled file that can be edited now.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+
+const routes: Routes = [];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class FirstRoutingModule { }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the new file.</p>
+</div>
+<div class="paragraph">
+<p>The next step is to save the file by selecting <strong>Save</strong> or <strong>Save as</strong> in the file context menu or by using the keyboard shortcut ctrl+s.
+A file explorer window opens.
+You should check if you are currently in the right directory where you want to save <strong>devonfw/workspaces/main/level-app/src/app/first/first-routing.module.ts</strong>.
+Select the directory <code>devonfw/workspaces/main/level-app/src/app/first</code>. If the directory does not exist, create the missing folders or run through the previous steps from the wiki again.
+To save the file specify the name of the file. Paste <code>first-routing.module.ts</code> in the text field <strong>File name:</strong>.
+The last step is to save the file with the <strong>Save</strong> button in the bottom right corner and first-routing.module.ts has been created and filled with some data.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_create-the-file-first.module.ts">Create the file first.module.ts</h3>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Existing folder you want to create the file. (If the folder doesn&#8217;t exist you can create it from with the editor).</p>
+</li>
+<li>
+<p>Any Editor that can edit files</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_creating-first.module.ts-in-any-editor">Creating first.module.ts in any Editor</h4>
+<div class="paragraph">
+<p>Create first.module.ts in any Editor and insert the following data into it. .</p>
+</div>
+<div class="paragraph">
+<p>Opening a new file can be done by going to the file context menu in the top left corner of the editor and select <strong>New</strong> or <strong>New File</strong> or mostly also the keyboard shortcut ctrl+n will also work.
+The editor opens a new editor window for an untitled file that can be edited now.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+import { FirstRoutingModule } from './first-routing.module';
+
+
+@NgModule({
+  declarations: [],
+  imports: [
+    CommonModule,
+    FirstRoutingModule
+  ]
+})
+export class FirstModule { }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the new file.</p>
+</div>
+<div class="paragraph">
+<p>The next step is to save the file by selecting <strong>Save</strong> or <strong>Save as</strong> in the file context menu or by using the keyboard shortcut ctrl+s.
+A file explorer window opens.
+You should check if you are currently in the right directory where you want to save <strong>devonfw/workspaces/main/level-app/src/app/first/first.module.ts</strong>.
+Select the directory <code>devonfw/workspaces/main/level-app/src/app/first</code>. If the directory does not exist, create the missing folders or run through the previous steps from the wiki again.
+To save the file specify the name of the file. Paste <code>first.module.ts</code> in the text field <strong>File name:</strong>.
+The last step is to save the file with the <strong>Save</strong> button in the bottom right corner and first.module.ts has been created and filled with some data.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_create-the-file-second-left-routing.module.ts">Create the file second-left-routing.module.ts</h3>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Existing folder you want to create the file. (If the folder doesn&#8217;t exist you can create it from with the editor).</p>
+</li>
+<li>
+<p>Any Editor that can edit files</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_creating-second-left-routing.module.ts-in-any-editor">Creating second-left-routing.module.ts in any Editor</h4>
+<div class="paragraph">
+<p>Create second-left-routing.module.ts in any Editor and insert the following data into it. .</p>
+</div>
+<div class="paragraph">
+<p>Opening a new file can be done by going to the file context menu in the top left corner of the editor and select <strong>New</strong> or <strong>New File</strong> or mostly also the keyboard shortcut ctrl+n will also work.
+The editor opens a new editor window for an untitled file that can be edited now.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+
+const routes: Routes = [];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class SecondLeftRoutingModule { }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the new file.</p>
+</div>
+<div class="paragraph">
+<p>The next step is to save the file by selecting <strong>Save</strong> or <strong>Save as</strong> in the file context menu or by using the keyboard shortcut ctrl+s.
+A file explorer window opens.
+You should check if you are currently in the right directory where you want to save <strong>devonfw/workspaces/main/level-app/src/app/first/second-left/second-left-routing.module.ts</strong>.
+Select the directory <code>devonfw/workspaces/main/level-app/src/app/first/second-left</code>. If the directory does not exist, create the missing folders or run through the previous steps from the wiki again.
+To save the file specify the name of the file. Paste <code>second-left-routing.module.ts</code> in the text field <strong>File name:</strong>.
+The last step is to save the file with the <strong>Save</strong> button in the bottom right corner and second-left-routing.module.ts has been created and filled with some data.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_create-the-file-second-left.module.ts">Create the file second-left.module.ts</h3>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Existing folder you want to create the file. (If the folder doesn&#8217;t exist you can create it from with the editor).</p>
+</li>
+<li>
+<p>Any Editor that can edit files</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_creating-second-left.module.ts-in-any-editor">Creating second-left.module.ts in any Editor</h4>
+<div class="paragraph">
+<p>Create second-left.module.ts in any Editor and insert the following data into it. .</p>
+</div>
+<div class="paragraph">
+<p>Opening a new file can be done by going to the file context menu in the top left corner of the editor and select <strong>New</strong> or <strong>New File</strong> or mostly also the keyboard shortcut ctrl+n will also work.
+The editor opens a new editor window for an untitled file that can be edited now.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+import { SecondLeftRoutingModule } from './second-left-routing.module';
+import { ContentComponent } from './content/content.component';
+
+
+@NgModule({
+  declarations: [ContentComponent],
+  imports: [
+    CommonModule,
+    SecondLeftRoutingModule
+  ]
+})
+export class SecondLeftModule { }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the new file.</p>
+</div>
+<div class="paragraph">
+<p>The next step is to save the file by selecting <strong>Save</strong> or <strong>Save as</strong> in the file context menu or by using the keyboard shortcut ctrl+s.
+A file explorer window opens.
+You should check if you are currently in the right directory where you want to save <strong>devonfw/workspaces/main/level-app/src/app/first/second-left/second-left.module.ts</strong>.
+Select the directory <code>devonfw/workspaces/main/level-app/src/app/first/second-left</code>. If the directory does not exist, create the missing folders or run through the previous steps from the wiki again.
+To save the file specify the name of the file. Paste <code>second-left.module.ts</code> in the text field <strong>File name:</strong>.
+The last step is to save the file with the <strong>Save</strong> button in the bottom right corner and second-left.module.ts has been created and filled with some data.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_create-the-file-second-right-routing.module.ts">Create the file second-right-routing.module.ts</h3>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Existing folder you want to create the file. (If the folder doesn&#8217;t exist you can create it from with the editor).</p>
+</li>
+<li>
+<p>Any Editor that can edit files</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_creating-second-right-routing.module.ts-in-any-editor">Creating second-right-routing.module.ts in any Editor</h4>
+<div class="paragraph">
+<p>Create second-right-routing.module.ts in any Editor and insert the following data into it. .</p>
+</div>
+<div class="paragraph">
+<p>Opening a new file can be done by going to the file context menu in the top left corner of the editor and select <strong>New</strong> or <strong>New File</strong> or mostly also the keyboard shortcut ctrl+n will also work.
+The editor opens a new editor window for an untitled file that can be edited now.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+
+const routes: Routes = [];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class SecondRightRoutingModule { }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the new file.</p>
+</div>
+<div class="paragraph">
+<p>The next step is to save the file by selecting <strong>Save</strong> or <strong>Save as</strong> in the file context menu or by using the keyboard shortcut ctrl+s.
+A file explorer window opens.
+You should check if you are currently in the right directory where you want to save <strong>devonfw/workspaces/main/level-app/src/app/first/second-right/second-right-routing.module.ts</strong>.
+Select the directory <code>devonfw/workspaces/main/level-app/src/app/first/second-right</code>. If the directory does not exist, create the missing folders or run through the previous steps from the wiki again.
+To save the file specify the name of the file. Paste <code>second-right-routing.module.ts</code> in the text field <strong>File name:</strong>.
+The last step is to save the file with the <strong>Save</strong> button in the bottom right corner and second-right-routing.module.ts has been created and filled with some data.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_create-the-file-second-right.module.ts">Create the file second-right.module.ts</h3>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Existing folder you want to create the file. (If the folder doesn&#8217;t exist you can create it from with the editor).</p>
+</li>
+<li>
+<p>Any Editor that can edit files</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_creating-second-right.module.ts-in-any-editor">Creating second-right.module.ts in any Editor</h4>
+<div class="paragraph">
+<p>Create second-right.module.ts in any Editor and insert the following data into it. .</p>
+</div>
+<div class="paragraph">
+<p>Opening a new file can be done by going to the file context menu in the top left corner of the editor and select <strong>New</strong> or <strong>New File</strong> or mostly also the keyboard shortcut ctrl+n will also work.
+The editor opens a new editor window for an untitled file that can be edited now.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+import { SecondRightRoutingModule } from './second-right-routing.module';
+import { ContentComponent } from './content/content.component';
+
+
+@NgModule({
+  declarations: [ContentComponent],
+  imports: [
+    CommonModule,
+    SecondRightRoutingModule
+  ]
+})
+export class SecondRightModule { }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the new file.</p>
+</div>
+<div class="paragraph">
+<p>The next step is to save the file by selecting <strong>Save</strong> or <strong>Save as</strong> in the file context menu or by using the keyboard shortcut ctrl+s.
+A file explorer window opens.
+You should check if you are currently in the right directory where you want to save <strong>devonfw/workspaces/main/level-app/src/app/first/second-right/second-right.module.ts</strong>.
+Select the directory <code>devonfw/workspaces/main/level-app/src/app/first/second-right</code>. If the directory does not exist, create the missing folders or run through the previous steps from the wiki again.
+To save the file specify the name of the file. Paste <code>second-right.module.ts</code> in the text field <strong>File name:</strong>.
+The last step is to save the file with the <strong>Save</strong> button in the bottom right corner and second-right.module.ts has been created and filled with some data.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_create-the-file-first.component.html">Create the file first.component.html</h3>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Existing folder you want to create the file. (If the folder doesn&#8217;t exist you can create it from with the editor).</p>
+</li>
+<li>
+<p>Any Editor that can edit files</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_creating-first.component.html-in-any-editor">Creating first.component.html in any Editor</h4>
+<div class="paragraph">
+<p>Create first.component.html in any Editor and insert the following data into it. .</p>
+</div>
+<div class="paragraph">
+<p>Opening a new file can be done by going to the file context menu in the top left corner of the editor and select <strong>New</strong> or <strong>New File</strong> or mostly also the keyboard shortcut ctrl+n will also work.
+The editor opens a new editor window for an untitled file that can be edited now.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>&lt;div style="text-align:center"&gt;
+  &lt;h1&gt;
+    Welcome to 1st level module
+  &lt;/h1&gt;
+  &lt;img
+    width="300"
+    alt="Angular Logo"
+    src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg=="
+  /&gt;
+&lt;/div&gt;
+&lt;div style="display: flex; align-items: center; justify-content: center"&gt;
+  &lt;button routerLink="./second-left"&gt;Go to left module&lt;/button&gt;
+  &lt;button routerLink="./second-right"&gt;Go to right module&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the new file.</p>
+</div>
+<div class="paragraph">
+<p>The next step is to save the file by selecting <strong>Save</strong> or <strong>Save as</strong> in the file context menu or by using the keyboard shortcut ctrl+s.
+A file explorer window opens.
+You should check if you are currently in the right directory where you want to save <strong>devonfw/workspaces/main/level-app/src/app/first/first/first.component.html</strong>.
+Select the directory <code>devonfw/workspaces/main/level-app/src/app/first/first</code>. If the directory does not exist, create the missing folders or run through the previous steps from the wiki again.
+To save the file specify the name of the file. Paste <code>first.component.html</code> in the text field <strong>File name:</strong>.
+The last step is to save the file with the <strong>Save</strong> button in the bottom right corner and first.component.html has been created and filled with some data.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_create-the-file-first.component.scss">Create the file first.component.scss</h3>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Existing folder you want to create the file. (If the folder doesn&#8217;t exist you can create it from with the editor).</p>
+</li>
+<li>
+<p>Any Editor that can edit files</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_creating-first.component.scss-in-any-editor">Creating first.component.scss in any Editor</h4>
+<div class="paragraph">
+<p>Create first.component.scss in any Editor and insert the following data into it. .</p>
+</div>
+<div class="paragraph">
+<p>Opening a new file can be done by going to the file context menu in the top left corner of the editor and select <strong>New</strong> or <strong>New File</strong> or mostly also the keyboard shortcut ctrl+n will also work.
+The editor opens a new editor window for an untitled file that can be edited now.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the new file.</p>
+</div>
+<div class="paragraph">
+<p>The next step is to save the file by selecting <strong>Save</strong> or <strong>Save as</strong> in the file context menu or by using the keyboard shortcut ctrl+s.
+A file explorer window opens.
+You should check if you are currently in the right directory where you want to save <strong>devonfw/workspaces/main/level-app/src/app/first/first/first.component.scss</strong>.
+Select the directory <code>devonfw/workspaces/main/level-app/src/app/first/first</code>. If the directory does not exist, create the missing folders or run through the previous steps from the wiki again.
+To save the file specify the name of the file. Paste <code>first.component.scss</code> in the text field <strong>File name:</strong>.
+The last step is to save the file with the <strong>Save</strong> button in the bottom right corner and first.component.scss has been created and filled with some data.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_create-the-file-first.component.ts">Create the file first.component.ts</h3>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Existing folder you want to create the file. (If the folder doesn&#8217;t exist you can create it from with the editor).</p>
+</li>
+<li>
+<p>Any Editor that can edit files</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_creating-first.component.ts-in-any-editor">Creating first.component.ts in any Editor</h4>
+<div class="paragraph">
+<p>Create first.component.ts in any Editor and insert the following data into it. .</p>
+</div>
+<div class="paragraph">
+<p>Opening a new file can be done by going to the file context menu in the top left corner of the editor and select <strong>New</strong> or <strong>New File</strong> or mostly also the keyboard shortcut ctrl+n will also work.
+The editor opens a new editor window for an untitled file that can be edited now.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-first',
+  templateUrl: './first.component.html',
+  styleUrls: ['./first.component.scss']
+})
+export class FirstComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the new file.</p>
+</div>
+<div class="paragraph">
+<p>The next step is to save the file by selecting <strong>Save</strong> or <strong>Save as</strong> in the file context menu or by using the keyboard shortcut ctrl+s.
+A file explorer window opens.
+You should check if you are currently in the right directory where you want to save <strong>devonfw/workspaces/main/level-app/src/app/first/first/first.component.ts</strong>.
+Select the directory <code>devonfw/workspaces/main/level-app/src/app/first/first</code>. If the directory does not exist, create the missing folders or run through the previous steps from the wiki again.
+To save the file specify the name of the file. Paste <code>first.component.ts</code> in the text field <strong>File name:</strong>.
+The last step is to save the file with the <strong>Save</strong> button in the bottom right corner and first.component.ts has been created and filled with some data.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_create-the-file-content.component.html">Create the file content.component.html</h3>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Existing folder you want to create the file. (If the folder doesn&#8217;t exist you can create it from with the editor).</p>
+</li>
+<li>
+<p>Any Editor that can edit files</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_creating-content.component.html-in-any-editor">Creating content.component.html in any Editor</h4>
+<div class="paragraph">
+<p>Create content.component.html in any Editor and insert the following data into it. .</p>
+</div>
+<div class="paragraph">
+<p>Opening a new file can be done by going to the file context menu in the top left corner of the editor and select <strong>New</strong> or <strong>New File</strong> or mostly also the keyboard shortcut ctrl+n will also work.
+The editor opens a new editor window for an untitled file that can be edited now.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>&lt;div style="text-align:center"&gt;
+  &lt;h1&gt;
+    Welcome to 2nd level module (left)
+  &lt;/h1&gt;
+  &lt;img
+    width="300"
+    alt="Angular Logo"
+    src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg=="
+  /&gt;
+&lt;/div&gt;
+&lt;div style="display: flex; align-items: center; justify-content: center"&gt;
+  &lt;button routerLink="/first"&gt;Go back&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the new file.</p>
+</div>
+<div class="paragraph">
+<p>The next step is to save the file by selecting <strong>Save</strong> or <strong>Save as</strong> in the file context menu or by using the keyboard shortcut ctrl+s.
+A file explorer window opens.
+You should check if you are currently in the right directory where you want to save <strong>devonfw/workspaces/main/level-app/src/app/first/second-left/content/content.component.html</strong>.
+Select the directory <code>devonfw/workspaces/main/level-app/src/app/first/second-left/content</code>. If the directory does not exist, create the missing folders or run through the previous steps from the wiki again.
+To save the file specify the name of the file. Paste <code>content.component.html</code> in the text field <strong>File name:</strong>.
+The last step is to save the file with the <strong>Save</strong> button in the bottom right corner and content.component.html has been created and filled with some data.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_create-the-file-content.component.scss">Create the file content.component.scss</h3>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Existing folder you want to create the file. (If the folder doesn&#8217;t exist you can create it from with the editor).</p>
+</li>
+<li>
+<p>Any Editor that can edit files</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_creating-content.component.scss-in-any-editor">Creating content.component.scss in any Editor</h4>
+<div class="paragraph">
+<p>Create content.component.scss in any Editor and insert the following data into it. .</p>
+</div>
+<div class="paragraph">
+<p>Opening a new file can be done by going to the file context menu in the top left corner of the editor and select <strong>New</strong> or <strong>New File</strong> or mostly also the keyboard shortcut ctrl+n will also work.
+The editor opens a new editor window for an untitled file that can be edited now.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the new file.</p>
+</div>
+<div class="paragraph">
+<p>The next step is to save the file by selecting <strong>Save</strong> or <strong>Save as</strong> in the file context menu or by using the keyboard shortcut ctrl+s.
+A file explorer window opens.
+You should check if you are currently in the right directory where you want to save <strong>devonfw/workspaces/main/level-app/src/app/first/second-left/content/content.component.scss</strong>.
+Select the directory <code>devonfw/workspaces/main/level-app/src/app/first/second-left/content</code>. If the directory does not exist, create the missing folders or run through the previous steps from the wiki again.
+To save the file specify the name of the file. Paste <code>content.component.scss</code> in the text field <strong>File name:</strong>.
+The last step is to save the file with the <strong>Save</strong> button in the bottom right corner and content.component.scss has been created and filled with some data.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_create-the-file-content.component.ts">Create the file content.component.ts</h3>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Existing folder you want to create the file. (If the folder doesn&#8217;t exist you can create it from with the editor).</p>
+</li>
+<li>
+<p>Any Editor that can edit files</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_creating-content.component.ts-in-any-editor">Creating content.component.ts in any Editor</h4>
+<div class="paragraph">
+<p>Create content.component.ts in any Editor and insert the following data into it. .</p>
+</div>
+<div class="paragraph">
+<p>Opening a new file can be done by going to the file context menu in the top left corner of the editor and select <strong>New</strong> or <strong>New File</strong> or mostly also the keyboard shortcut ctrl+n will also work.
+The editor opens a new editor window for an untitled file that can be edited now.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-content',
+  templateUrl: './content.component.html',
+  styleUrls: ['./content.component.scss']
+})
+export class ContentComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the new file.</p>
+</div>
+<div class="paragraph">
+<p>The next step is to save the file by selecting <strong>Save</strong> or <strong>Save as</strong> in the file context menu or by using the keyboard shortcut ctrl+s.
+A file explorer window opens.
+You should check if you are currently in the right directory where you want to save <strong>devonfw/workspaces/main/level-app/src/app/first/second-left/content/content.component.ts</strong>.
+Select the directory <code>devonfw/workspaces/main/level-app/src/app/first/second-left/content</code>. If the directory does not exist, create the missing folders or run through the previous steps from the wiki again.
+To save the file specify the name of the file. Paste <code>content.component.ts</code> in the text field <strong>File name:</strong>.
+The last step is to save the file with the <strong>Save</strong> button in the bottom right corner and content.component.ts has been created and filled with some data.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_create-the-file-content.component.html">Create the file content.component.html</h3>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Existing folder you want to create the file. (If the folder doesn&#8217;t exist you can create it from with the editor).</p>
+</li>
+<li>
+<p>Any Editor that can edit files</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_creating-content.component.html-in-any-editor">Creating content.component.html in any Editor</h4>
+<div class="paragraph">
+<p>Create content.component.html in any Editor and insert the following data into it. .</p>
+</div>
+<div class="paragraph">
+<p>Opening a new file can be done by going to the file context menu in the top left corner of the editor and select <strong>New</strong> or <strong>New File</strong> or mostly also the keyboard shortcut ctrl+n will also work.
+The editor opens a new editor window for an untitled file that can be edited now.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>&lt;div style="text-align: center"&gt;
+  &lt;h1&gt;Welcome to 2nd level module (right)&lt;/h1&gt;
+  &lt;img
+    width="300"
+    alt="Angular Logo"
+    src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg=="
+  /&gt;
+&lt;/div&gt;
+&lt;div style="display: flex; align-items: center; justify-content: center"&gt;
+  &lt;button routerLink="/first"&gt;Go back&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the new file.</p>
+</div>
+<div class="paragraph">
+<p>The next step is to save the file by selecting <strong>Save</strong> or <strong>Save as</strong> in the file context menu or by using the keyboard shortcut ctrl+s.
+A file explorer window opens.
+You should check if you are currently in the right directory where you want to save <strong>devonfw/workspaces/main/level-app/src/app/first/second-right/content/content.component.html</strong>.
+Select the directory <code>devonfw/workspaces/main/level-app/src/app/first/second-right/content</code>. If the directory does not exist, create the missing folders or run through the previous steps from the wiki again.
+To save the file specify the name of the file. Paste <code>content.component.html</code> in the text field <strong>File name:</strong>.
+The last step is to save the file with the <strong>Save</strong> button in the bottom right corner and content.component.html has been created and filled with some data.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_create-the-file-content.component.scss">Create the file content.component.scss</h3>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Existing folder you want to create the file. (If the folder doesn&#8217;t exist you can create it from with the editor).</p>
+</li>
+<li>
+<p>Any Editor that can edit files</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_creating-content.component.scss-in-any-editor">Creating content.component.scss in any Editor</h4>
+<div class="paragraph">
+<p>Create content.component.scss in any Editor and insert the following data into it. .</p>
+</div>
+<div class="paragraph">
+<p>Opening a new file can be done by going to the file context menu in the top left corner of the editor and select <strong>New</strong> or <strong>New File</strong> or mostly also the keyboard shortcut ctrl+n will also work.
+The editor opens a new editor window for an untitled file that can be edited now.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the new file.</p>
+</div>
+<div class="paragraph">
+<p>The next step is to save the file by selecting <strong>Save</strong> or <strong>Save as</strong> in the file context menu or by using the keyboard shortcut ctrl+s.
+A file explorer window opens.
+You should check if you are currently in the right directory where you want to save <strong>devonfw/workspaces/main/level-app/src/app/first/second-right/content/content.component.scss</strong>.
+Select the directory <code>devonfw/workspaces/main/level-app/src/app/first/second-right/content</code>. If the directory does not exist, create the missing folders or run through the previous steps from the wiki again.
+To save the file specify the name of the file. Paste <code>content.component.scss</code> in the text field <strong>File name:</strong>.
+The last step is to save the file with the <strong>Save</strong> button in the bottom right corner and content.component.scss has been created and filled with some data.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_create-the-file-content.component.ts">Create the file content.component.ts</h3>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Existing folder you want to create the file. (If the folder doesn&#8217;t exist you can create it from with the editor).</p>
+</li>
+<li>
+<p>Any Editor that can edit files</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_creating-content.component.ts-in-any-editor">Creating content.component.ts in any Editor</h4>
+<div class="paragraph">
+<p>Create content.component.ts in any Editor and insert the following data into it. .</p>
+</div>
+<div class="paragraph">
+<p>Opening a new file can be done by going to the file context menu in the top left corner of the editor and select <strong>New</strong> or <strong>New File</strong> or mostly also the keyboard shortcut ctrl+n will also work.
+The editor opens a new editor window for an untitled file that can be edited now.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-content',
+  templateUrl: './content.component.html',
+  styleUrls: ['./content.component.scss']
+})
+export class ContentComponent implements OnInit {
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the new file.</p>
+</div>
+<div class="paragraph">
+<p>The next step is to save the file by selecting <strong>Save</strong> or <strong>Save as</strong> in the file context menu or by using the keyboard shortcut ctrl+s.
+A file explorer window opens.
+You should check if you are currently in the right directory where you want to save <strong>devonfw/workspaces/main/level-app/src/app/first/second-right/content/content.component.ts</strong>.
+Select the directory <code>devonfw/workspaces/main/level-app/src/app/first/second-right/content</code>. If the directory does not exist, create the missing folders or run through the previous steps from the wiki again.
+To save the file specify the name of the file. Paste <code>content.component.ts</code> in the text field <strong>File name:</strong>.
+The last step is to save the file with the <strong>Save</strong> button in the bottom right corner and content.component.ts has been created and filled with some data.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_configure-routing">Configure routing</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To move between the components you will now configure the routes. You can refer the image in the first step to understand how you will configure the routes.
+In <code>app-routing.module.ts</code> you will add a path 'first' to <code>FirstComponent</code> and a redirection from '' to 'first'. And then import the <code>FirstModule</code> in the main <code>app.module.ts</code></p>
+</div>
+<div class="paragraph">
+<p>Next, for the feature modules, you will add the routes 'first/second-left' and 'first/second-right' pointing to their respective <code>ContentComponent</code> in <code>first-routing.module.ts</code>. And then import <code>SecondLeftModule</code> and <code>SecondRightModule</code> in <code>first.module.ts</code></p>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Any editor that can edit files</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_changing-of-app-routing.module.ts-in-any-editor">Changing of app-routing.module.ts in any Editor</h4>
+<div class="paragraph">
+<p>To change the file app-routing.module.ts, you have to open it in any editor.
+Open the editor and choose in the file context menu in the top left corner <strong>Open &#8230;&#8203;</strong> mostly also keyboard shortcut ctrl+o works.
+Based on your operating system a window with the file explorer opens. You have to navigate to app-routing.module.ts and select it.  Select the right folder manually by selecting the folders from the path <code>devonfw/workspaces/main/level-app/src/app</code> and select the file <code>app-routing.module.ts</code>.
+You confirm this with the <strong>Open</strong> button in the bottom right corner app-routing.module.ts will be opened in a new editor window.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { FirstComponent } from './first/first/first.component';
+
+const routes: Routes = [
+  {
+    path: 'first',
+    component: FirstComponent
+  },
+  {
+    path: '',
+    redirectTo: 'first',
+    pathMatch: 'full',
+  },
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the opened app-routing.module.ts.
+The final step is to save the file by selecting <strong>Save</strong> in the file context menu or by using the keyboard shortcut ctrl+s and app-routing.module.ts has been changed.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_changing-of-the-app.module.ts-file">Changing of the app.module.ts File</h3>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Any editor that can edit files</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_changing-of-app.module.ts-in-any-editor">Changing of app.module.ts in any Editor</h4>
+<div class="paragraph">
+<p>To change the file app.module.ts, you have to open it in any editor.
+Open the editor and choose in the file context menu in the top left corner <strong>Open &#8230;&#8203;</strong> mostly also keyboard shortcut ctrl+o works.
+Based on your operating system a window with the file explorer opens. You have to navigate to app.module.ts and select it.  Select the right folder manually by selecting the folders from the path <code>devonfw/workspaces/main/level-app/src/app</code> and select the file <code>app.module.ts</code>.
+You confirm this with the <strong>Open</strong> button in the bottom right corner app.module.ts will be opened in a new editor window.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { FirstModule } from './first/first.module';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FirstModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the opened app.module.ts.
+The final step is to save the file by selecting <strong>Save</strong> in the file context menu or by using the keyboard shortcut ctrl+s and app.module.ts has been changed.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_changing-of-the-first-routing.module.ts-file">Changing of the first-routing.module.ts File</h3>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Any editor that can edit files</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_changing-of-first-routing.module.ts-in-any-editor">Changing of first-routing.module.ts in any Editor</h4>
+<div class="paragraph">
+<p>To change the file first-routing.module.ts, you have to open it in any editor.
+Open the editor and choose in the file context menu in the top left corner <strong>Open &#8230;&#8203;</strong> mostly also keyboard shortcut ctrl+o works.
+Based on your operating system a window with the file explorer opens. You have to navigate to first-routing.module.ts and select it.  Select the right folder manually by selecting the folders from the path <code>devonfw/workspaces/main/level-app/src/app/first</code> and select the file <code>first-routing.module.ts</code>.
+You confirm this with the <strong>Open</strong> button in the bottom right corner first-routing.module.ts will be opened in a new editor window.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { ContentComponent as ContentLeft} from './second-left/content/content.component';
+import { ContentComponent as ContentRight} from './second-right/content/content.component';
+import { FirstComponent } from './first/first.component';
+
+const routes: Routes = [
+  {
+    path: '',
+    component: FirstComponent
+  },
+  {
+    path: 'first/second-left',
+    component: ContentLeft
+  },
+  {
+    path: 'first/second-right',
+    component: ContentRight
+  }
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class FirstRoutingModule { }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the opened first-routing.module.ts.
+The final step is to save the file by selecting <strong>Save</strong> in the file context menu or by using the keyboard shortcut ctrl+s and first-routing.module.ts has been changed.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_changing-of-the-first.module.ts-file">Changing of the first.module.ts File</h3>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Any editor that can edit files</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_changing-of-first.module.ts-in-any-editor">Changing of first.module.ts in any Editor</h4>
+<div class="paragraph">
+<p>To change the file first.module.ts, you have to open it in any editor.
+Open the editor and choose in the file context menu in the top left corner <strong>Open &#8230;&#8203;</strong> mostly also keyboard shortcut ctrl+o works.
+Based on your operating system a window with the file explorer opens. You have to navigate to first.module.ts and select it.  Select the right folder manually by selecting the folders from the path <code>devonfw/workspaces/main/level-app/src/app/first</code> and select the file <code>first.module.ts</code>.
+You confirm this with the <strong>Open</strong> button in the bottom right corner first.module.ts will be opened in a new editor window.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+import { FirstRoutingModule } from './first-routing.module';
+import { FirstComponent } from './first/first.component';
+
+import { SecondLeftModule } from './second-left/second-left.module';
+import { SecondRightModule } from './second-right/second-right.module';
+
+@NgModule({
+  declarations: [FirstComponent],
+  imports: [
+    CommonModule,
+    FirstRoutingModule,
+    SecondLeftModule,
+    SecondRightModule,
+  ]
+})
+export class FirstModule { }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the opened first.module.ts.
+The final step is to save the file by selecting <strong>Save</strong> in the file context menu or by using the keyboard shortcut ctrl+s and first.module.ts has been changed.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_eager-loading-vs-lazy-loading">Eager loading vs Lazy Loading</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you run the project at this point you can see in the terminal that just the main file is built.
+![compile-eager](./assets/compile-eager.png)</p>
+</div>
+<div class="paragraph">
+<p>Go to port 4200 and check the Network tab in the Developer Tools. We can see a document named "first" is loaded. If you click on [Go to right module] a second level module opens, but there is no 'second-right' document.
+![second-lvl-right-eager](./assets/second-lvl-right-eager.png)</p>
+</div>
+<div class="paragraph">
+<p>Now we will modify the app to lazily load the modules. Modifying an angular application to load its modules lazily is easy, you have to change the routing configuration of the desired module (for example <code>FirstModule</code>). Instead of loading a component, you dynamically import it in a <code>loadChildren</code> attribute because modules acts as gates to access components "inside" them. Updating this app to load lazily has four consecuences: no component attribute, no import of <code>FirstComponent</code>, <code>FirstModule</code> import has to be removed from the imports array at <code>app.module.ts</code>, and change of context.</p>
+</div>
+<div class="paragraph">
+<p>Also, in <code>first-routing.module.ts</code> you can change the path for the <code>ContentComponent`s from `first/second-left</code> and <code>first/second-right</code> to simply <code>second-left</code> and <code>second-right</code> respectively,  because it aquires the context set by AppRoutingModule.</p>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Any editor that can edit files</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_changing-of-app-routing.module.ts-in-any-editor">Changing of app-routing.module.ts in any Editor</h4>
+<div class="paragraph">
+<p>To change the file app-routing.module.ts, you have to open it in any editor.
+Open the editor and choose in the file context menu in the top left corner <strong>Open &#8230;&#8203;</strong> mostly also keyboard shortcut ctrl+o works.
+Based on your operating system a window with the file explorer opens. You have to navigate to app-routing.module.ts and select it.  Select the right folder manually by selecting the folders from the path <code>devonfw/workspaces/main/level-app/src/app</code> and select the file <code>app-routing.module.ts</code>.
+You confirm this with the <strong>Open</strong> button in the bottom right corner app-routing.module.ts will be opened in a new editor window.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+
+const routes: Routes = [
+  {
+    path: 'first',
+    loadChildren: () =&gt; import('./first/first.module').then(m =&gt; m.FirstModule),
+  },
+  {
+    path: '',
+    redirectTo: 'first',
+    pathMatch: 'full',
+  },
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the opened app-routing.module.ts.
+The final step is to save the file by selecting <strong>Save</strong> in the file context menu or by using the keyboard shortcut ctrl+s and app-routing.module.ts has been changed.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_changing-of-the-app.module.ts-file">Changing of the app.module.ts File</h3>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Any editor that can edit files</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_changing-of-app.module.ts-in-any-editor">Changing of app.module.ts in any Editor</h4>
+<div class="paragraph">
+<p>To change the file app.module.ts, you have to open it in any editor.
+Open the editor and choose in the file context menu in the top left corner <strong>Open &#8230;&#8203;</strong> mostly also keyboard shortcut ctrl+o works.
+Based on your operating system a window with the file explorer opens. You have to navigate to app.module.ts and select it.  Select the right folder manually by selecting the folders from the path <code>devonfw/workspaces/main/level-app/src/app</code> and select the file <code>app.module.ts</code>.
+You confirm this with the <strong>Open</strong> button in the bottom right corner app.module.ts will be opened in a new editor window.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the opened app.module.ts.
+The final step is to save the file by selecting <strong>Save</strong> in the file context menu or by using the keyboard shortcut ctrl+s and app.module.ts has been changed.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_changing-of-the-first-routing.module.ts-file">Changing of the first-routing.module.ts File</h3>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Any editor that can edit files</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_changing-of-first-routing.module.ts-in-any-editor">Changing of first-routing.module.ts in any Editor</h4>
+<div class="paragraph">
+<p>To change the file first-routing.module.ts, you have to open it in any editor.
+Open the editor and choose in the file context menu in the top left corner <strong>Open &#8230;&#8203;</strong> mostly also keyboard shortcut ctrl+o works.
+Based on your operating system a window with the file explorer opens. You have to navigate to first-routing.module.ts and select it.  Select the right folder manually by selecting the folders from the path <code>devonfw/workspaces/main/level-app/src/app/first</code> and select the file <code>first-routing.module.ts</code>.
+You confirm this with the <strong>Open</strong> button in the bottom right corner first-routing.module.ts will be opened in a new editor window.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { ContentComponent as ContentLeft} from './second-left/content/content.component';
+import { ContentComponent as ContentRight} from './second-right/content/content.component';
+import { FirstComponent } from './first/first.component';
+
+const routes: Routes = [
+  {
+    path: '',
+    component: FirstComponent
+  },
+  {
+    path: 'second-left',
+    component: ContentLeft
+  },
+  {
+    path: 'second-right',
+    component: ContentRight
+  }
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class FirstRoutingModule { }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the opened first-routing.module.ts.
+The final step is to save the file by selecting <strong>Save</strong> in the file context menu or by using the keyboard shortcut ctrl+s and first-routing.module.ts has been changed.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_lazily-load-the-second-left-module">Lazily load the second left module</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now when you check the terminal running the app, you could see the lazy loaded modules getting generated along with the main bundle. Also, if you check the Network tab in the developer tools, you could see the (lazy) modules getting loaded when needed. Since, <code>FirstModule</code> is the first path we visit, it is getting loaded at first only.
+![compile-first-lazy](./assets/compile-first-lazy.png)
+![first-lvl-lazy](./assets/first-lvl-lazy.png)</p>
+</div>
+<div class="paragraph">
+<p>Now, lets make the SecondLeftModule load lazily. For this, you need to change <code>component</code> to <code>loadChildren</code> and refer <code>SecondLeftModule</code> in the file <code>first-routing.module.ts</code>. Next, you need to remove <code>SecondLeftModule</code> from the <code>imports</code> array of <code>first.module.ts</code>. After that you need to route the <code>ContentComponent</code> within the <code>second-left-routing.module.ts</code>.</p>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Any editor that can edit files</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_changing-of-first-routing.module.ts-in-any-editor">Changing of first-routing.module.ts in any Editor</h4>
+<div class="paragraph">
+<p>To change the file first-routing.module.ts, you have to open it in any editor.
+Open the editor and choose in the file context menu in the top left corner <strong>Open &#8230;&#8203;</strong> mostly also keyboard shortcut ctrl+o works.
+Based on your operating system a window with the file explorer opens. You have to navigate to first-routing.module.ts and select it.  Select the right folder manually by selecting the folders from the path <code>devonfw/workspaces/main/level-app/src/app/first</code> and select the file <code>first-routing.module.ts</code>.
+You confirm this with the <strong>Open</strong> button in the bottom right corner first-routing.module.ts will be opened in a new editor window.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { ContentComponent as ContentLeft} from './second-left/content/content.component';
+import { ContentComponent as ContentRight} from './second-right/content/content.component';
+import { FirstComponent } from './first/first.component';
+
+const routes: Routes = [
+  {
+    path: '',
+    component: FirstComponent
+  },
+  {
+    path: 'second-left',
+    loadChildren: () =&gt; import('./second-left/second-left.module').then(m =&gt; m.SecondLeftModule),
+  },
+  {
+    path: 'second-right',
+    component: ContentRight
+  }
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class FirstRoutingModule { }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the opened first-routing.module.ts.
+The final step is to save the file by selecting <strong>Save</strong> in the file context menu or by using the keyboard shortcut ctrl+s and first-routing.module.ts has been changed.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_changing-of-the-first.module.ts-file">Changing of the first.module.ts File</h3>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Any editor that can edit files</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_changing-of-first.module.ts-in-any-editor">Changing of first.module.ts in any Editor</h4>
+<div class="paragraph">
+<p>To change the file first.module.ts, you have to open it in any editor.
+Open the editor and choose in the file context menu in the top left corner <strong>Open &#8230;&#8203;</strong> mostly also keyboard shortcut ctrl+o works.
+Based on your operating system a window with the file explorer opens. You have to navigate to first.module.ts and select it.  Select the right folder manually by selecting the folders from the path <code>devonfw/workspaces/main/level-app/src/app/first</code> and select the file <code>first.module.ts</code>.
+You confirm this with the <strong>Open</strong> button in the bottom right corner first.module.ts will be opened in a new editor window.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+import { FirstRoutingModule } from './first-routing.module';
+import { FirstComponent } from './first/first.component';
+
+import { SecondRightModule } from './second-right/second-right.module';
+
+@NgModule({
+  declarations: [FirstComponent],
+  imports: [
+    CommonModule,
+    FirstRoutingModule,
+    SecondRightModule,
+  ]
+})
+export class FirstModule { }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the opened first.module.ts.
+The final step is to save the file by selecting <strong>Save</strong> in the file context menu or by using the keyboard shortcut ctrl+s and first.module.ts has been changed.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_changing-of-the-second-left-routing.module.ts-file">Changing of the second-left-routing.module.ts File</h3>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Any editor that can edit files</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_changing-of-second-left-routing.module.ts-in-any-editor">Changing of second-left-routing.module.ts in any Editor</h4>
+<div class="paragraph">
+<p>To change the file second-left-routing.module.ts, you have to open it in any editor.
+Open the editor and choose in the file context menu in the top left corner <strong>Open &#8230;&#8203;</strong> mostly also keyboard shortcut ctrl+o works.
+Based on your operating system a window with the file explorer opens. You have to navigate to second-left-routing.module.ts and select it.  Select the right folder manually by selecting the folders from the path <code>devonfw/workspaces/main/level-app/src/app/first/second-left</code> and select the file <code>second-left-routing.module.ts</code>.
+You confirm this with the <strong>Open</strong> button in the bottom right corner second-left-routing.module.ts will be opened in a new editor window.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { ContentComponent } from './content/content.component';
+
+const routes: Routes = [
+  {
+    path: '',
+    component: ContentComponent
+  }
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class SecondLeftRoutingModule { }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the opened second-left-routing.module.ts.
+The final step is to save the file by selecting <strong>Save</strong> in the file context menu or by using the keyboard shortcut ctrl+s and second-left-routing.module.ts has been changed.</p>
+</div>
+<div class="paragraph">
+<p>If you now check the terminal, you could also see <code>second-left-second-left-module</code> along with the <code>first-first-module</code> and the <code>main</code> bundle getting generated.
+![second-lvl-lazy](./assets/second-lvl-lazy.png)</p>
+</div>
+<div class="paragraph">
+<p>Also, in the Network tab of the developer tools, you could see the <code>second-left-second-left-module.js</code> is only loading when we click on the [Go to left module] button
+![second-lvl-left-lazy](./assets/second-lvl-left-lazy.png)</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_conclusion">Conclusion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Lazy loading is a pattern useful when new features are added, these features are usually identified as modules which can be loaded only if needed as shown in this tutorial, reducing the time spent loading an application.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html#introduction-why-should-i-use-devonfw.asciidoc">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devon4j.wiki_asciidoc_architecture.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-ide-support.asciidoc.html#LICENSE.asciidoc">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2021-12-02 12:12:08 UTC
+</sub></div>
+</div>
+</div>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+<script>
+  var internalUrls = ["https://cginternal.devonfw.com/websitesnippets/"];
+  $(".internal").each(function(){
+    internalUrls.forEach((internalUrl, index) => {
+      $.ajax({url: internalUrl + $(this).text() + "/index.html" })
+      .then(r => {
+        var leftDiv = $('<div class="info"><span class="infoText">Internal</span><img class="infoImage" src="' + internalUrl + 'logo.png"/></div>');
+        var rightFirstDiv = $('<div class="message">This is only visible inside of the corporate network.</div>');
+        var rightLastDiv = $('<div class="content"></div>');
+        rightLastDiv.html(r);
+        var rightDiv = $('<div class="right"></div>');
+        rightDiv.append(rightFirstDiv);
+        rightDiv.append(rightLastDiv);
+        $(this).html(leftDiv);
+        $(this).append(rightDiv);
+        $(this).addClass("internal-active");
+        $(this).removeClass("internal");
+      })
+    });
+	});
+</script>
+</body>
+</html>

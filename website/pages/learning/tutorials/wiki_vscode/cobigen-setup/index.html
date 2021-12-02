@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Setting up devonfw Code Generator(i.e. CobiGen)</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Ubuntu Font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400&display=swap" rel="stylesheet">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+
+<script src="/website/components/header/search-engine/bundle.js"></script>
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+</head>
+<body id="index.asciidoc" class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"
+      autocomplete="off"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>CobiGen is a generic incremental code generator. It allows you to generate application code based on the devonfw architecture including all software layers.
+There is also a CobiGen Command Line Interface(CLI) where you can start the setup following the generation of code.</p>
+</div>
+<div class="paragraph">
+<p>This tutorial mainly focuses on the setup of CobiGen along with various commands to execute the generations.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="prerequisites">Prerequisites</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>devonfw IDE</p>
+</li>
+<li>
+<p>User should have development experience of any language.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="learning-goals">Learning goals.</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Here in this tutorial you will learn</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>To setup CobiGen</p>
+</li>
+<li>
+<p>To use commands on CobiGen CLI</p>
+</li>
+<li>
+<p>To integrate Eclipse with CobiGen</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The definition of each step of this tutorial can be found at <a href="https://github.com/devonfw-tutorials/tutorials/tree/main/cobigen-setup/" class="bare">https://github.com/devonfw-tutorials/tutorials/tree/main/cobigen-setup/</a>.</p>
+</div>
+<div class="paragraph">
+<p>Feel free to report any errors to us or fix them yourself. Errors can be reported by creating an issue in the <a href="https://github.com/devonfw-tutorials/tutorials/issues">tutorials repository</a>. To fix the error fork the repository and create a pull request. Errors in the wiki can be reported and fixed in the <a href="https://github.com/devonfw-tutorials/tutorial-compiler">Tutorial-compiler repository</a>.
+You can find a description of what to look for when creating a pull request at the devonfw contribution guide: <a href="https://devonfw.com/website/pages/community/community.html#community.asciidoc_contributing-to-devonfw" class="bare">https://devonfw.com/website/pages/community/community.html#community.asciidoc_contributing-to-devonfw</a>. If you want to create a tutorial you can start with the <a href="https://katacoda.com/devonfw/scenarios/create-your-own-tutorial">katacoda tutorial</a> and read the description for creating your own tutorials: <a href="https://github.com/devonfw-tutorials/tutorials/wiki/Development" class="bare">https://github.com/devonfw-tutorials/tutorials/wiki/Development</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_devonfw-setup">devonfw setup</h3>
+<div class="paragraph">
+<p>If you already installed the devonfw IDE, you can skip this step.</p>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>You need to have a tool to extract <code>.tar.gz</code> files. On Windows lower Windows 10 use can use <a href="https://www.7-zip.org/7-zip">7-Zip</a>. The most other platforms support this feature by default.</p>
+</li>
+<li>
+<p>You need to have <a href="https://git-scm.com/">Git</a> and <a href="https://curl.se/">Curl</a> installed. On Windows you have to install <a href="https://git-scm.com/download/win">Git for Windows</a>. On Linux systems you might need to install the following tools in case they are not present (<code>sudo apt-get install git curl</code> or <code>sudo yum install git-core curl</code>)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Create a new directory in the location where you want to install the devonfw IDE. If you are using the terminal, navigate to this location and run <code>mkdir devonfw</code> and <code>cd devonfw</code> to create the directory and navigate into it.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_download">Download</h4>
+<div class="paragraph">
+<p>Now you have to download version 2020.08.001 of the devonfw IDE. You can download it from <a href="https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=2020.08.001&amp;p=tar.gz">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>In the Terminal execute <code>Invoke-WebRequest -OutFile devonfw-ide-scripts.tar.gz 'https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=2020.08.001&amp;p=tar.gz'</code> if you are using Windows.</p>
+</div>
+<div class="paragraph">
+<p>On Linux use <code>wget -c 'https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=2020.08.001&amp;p=tar.gz' -O devonfw-ide-scripts.tar.gz -</code>.</p>
+</div>
+<div class="paragraph">
+<p>On MacOS, depending on your setup, you can either use the same <code>wget</code> command specified for the Linux installation (install wget via homebrew <code>brew install wget</code>) or use any other available download command i.e. <code>curl -o devonfw-ide-scripts.tar.gz <a href="https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=2020.08.001&amp;p=tar.gz" class="bare">https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=2020.08.001&amp;p=tar.gz</a></code>.</p>
+</div>
+<div class="paragraph">
+<p>After that you need to extract the downloaded file. To do this, run <code>tar -xvzf devonfw-ide-scripts.tar.gz</code>. Or you can simply use a tool (e.g. 7-Zip) for this.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_setup">Setup</h4>
+<div class="paragraph">
+<p>First, you need to prepare a settings repository to specify the tools to be installed within the devonfw IDE. Normally this is done by your project. If you just want to test the devonfw IDE, you can use the default URL, which is <a href="https://github.com/devonfw/ide-settings" class="bare">https://github.com/devonfw/ide-settings</a>.</p>
+</div>
+<div class="paragraph">
+<p>For now clone the repository on <a href="https://github.com/devonfw/ide-settings" class="bare">https://github.com/devonfw/ide-settings</a> or your own fork of it.
+For this tutorial you have to write <code>DEVON_IDE_TOOLS=(java mvn)</code> into the devon.properties file of the cloned settings repository. These settings will now be passed into the installation process of the devonfw-ide.
+Start the setup process by executing <code>.\setup 'path/to/settings'</code> (Windows) or <code>bash setup path/to/settings.git</code> (Linux).</p>
+</div>
+<div class="paragraph">
+<p>You can also just execute <code>.\setup</code> (Windows) or <code>bash setup</code> (Linux) and press Enter when the setup assistent asks for the URL to the settings repository. This will also download the default settings and install the default tools within the devonfw IDE.</p>
+</div>
+<div class="paragraph">
+<p>The installer will also ask you if you want to enter secrets for your maven repository. You can simply skip this by pressing 'Enter'.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_cobigen-setup">CobiGen Setup</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>devonfw IDE has been installed for you.</p>
+</div>
+<div class="paragraph">
+<p>CobiGen CLI is installed inside your devonfw distribution. In order to execute it follow the next steps:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Execute the below command to navigate to devonfw installation directory repository.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><code>cd devonfw</code>{{execute T1}}</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Execute below command to install CobiGen.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><code>devon cobigen</code>{{execute T1}}</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Execute below command to setup devon environment.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><code>devon</code>{{execute T1}}</p>
+</div>
+<div class="paragraph">
+<p>You have successfully setup CobiGen.
+Execute the below command to verify the installation.</p>
+</div>
+<div class="paragraph">
+<p><code>cobigen -V</code>{{execute T1}}</p>
+</div>
+<div class="paragraph">
+<p>In next step, you will learn about CobiGen CLI commands.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_cobigen-cli-commands-and-options">CobiGen CLI Commands and Options</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this step, you will learn CobiGen commands.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Execute the below command to know available CobiGen Commands</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>`cobigen `{{execute T1}}</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>[generate, g]: Command used for code generation.
+To know more about implementation of this command you can follow <a href="https://katacoda.com/devonfw/scenarios/cobigen" class="bare">https://katacoda.com/devonfw/scenarios/cobigen</a>.</p>
+</li>
+<li>
+<p>[adapt-templates, a]: Generates a new templates folder next to the Cobigen CLI and stores its location inside a configuration file. After executing this command, the CLI will attempt to use the specified Templates folder.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><code>cobigen a</code>{{execute T1}}</p>
+</div>
+<div class="paragraph">
+<p>To get more information about rest of all the command visit on <a href="https://devonfw.com/website/pages/docs/master-cobigen.asciidoc_cobigen-cli.html" class="bare">https://devonfw.com/website/pages/docs/master-cobigen.asciidoc_cobigen-cli.html</a></p>
+</div>
+<div class="paragraph">
+<p>In next step, you will learn about how to integrate CobiGen with Eclipse.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_integrate-eclipse-with-cobigen">Integrate Eclipse with CobiGen</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Note: CobiGen comes preinstalled with devonfw IDE.</p>
+</div>
+<div class="paragraph">
+<p>1.1  Preconditions
+    - Eclipse 4.x</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Atleast Java 7 Runtime (for starting eclipse with CobiGen). This is independent from the target version of your developed code</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>1.2. Installation steps
+    * Open the eclipse installation dialog
+    menu bar → Help → Install new Software</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/wiki-tutorials/tutorials/wiki_vscode/cobigen-setup/target/generated-docs/images/01-install-new-software.png" alt="01 install new software">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_select-update-site">Select Update Site</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Here you can select the updates.
+    2. Open CobiGen’s update site</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/wiki-tutorials/tutorials/wiki_vscode/cobigen-setup/target/generated-docs/images/02-select-update-site.png" alt="02 select update site">
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Insert the update site of your interest into the filed Work with and press Add
+Stable releases: https://dl.bintray.com/devonfw/cobigen.p2/</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Follow the installation wizard
+Select CobiGen Eclipse Plug-in → Next → Next → accept the license → Finish → OK → Yes</p>
+</li>
+<li>
+<p>Once installed, a new menu entry named &#34;CobiGen&#34; will show up in the Package Explorer’s context menu. In the sub menu there will the Generate​ command, which may ask you to update the templates, and then you can start the generation wizard of CobiGen.</p>
+</li>
+<li>
+<p>You can adapt the templates by clicking on Adapt Templates which will give you the possibility to import the CobiGen_Templates automatically so that you can modified them.</p>
+</li>
+<li>
+<p>Checkout (clone) your project’s templates folder or use the current templates released with CobiGen (<a href="https://github.com/devonfw/cobigen/tree/master/cobigen-templates" class="bare">https://github.com/devonfw/cobigen/tree/master/cobigen-templates</a>) and then choose
+Import &#8594; General &#8594; Existing Projects into Workspace to import the templates into your workspace.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_cobigen-usage---simple-mode">CobiGen Usage - Simple Mode</h2>
+<div class="sectionbody">
+<div class="literalblock">
+<div class="content">
+<pre>Selecting the menu entry Generate​ the generation wizard will be opened.</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>The left side of the wizard shows all available increments, which can be selected to be generated. Increments are a container like concept encompassing multiple files to be generated, which should result in a semantically closed generation output. The type of modification of each file will be encoded into following color scheme if the files are selected for generation:</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>green: files, which are currently non-existent in the file system. These files will be created during generation</p>
+</li>
+<li>
+<p>yellow: files, which are currently existent in the file system and which are configured to be merged with generated contents.</p>
+</li>
+<li>
+<p>red: files, which are currently existent in the file system. These files will be overwritten if manually selected.</p>
+</li>
+<li>
+<p>no color: files, which are currently existent in the file system. Additionally files, which were unselected and thus will be ignored during generation.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/wiki-tutorials/tutorials/wiki_vscode/cobigen-setup/target/generated-docs/images/03-simple-mode-usage.png" alt="03 simple mode usage">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_cobigen-usage---batch-mode">CobiGen Usage - Batch Mode</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If there are multiple input elements selected, e.g., Java files, CobiGen will be started in batch mode. The generation preview will be constrained to the first selected input element. It does not preview the generation for each element of the selection or of a complex input. The selection of the files to be generated will be generated for each input element analogously afterwards.</p>
+</div>
+<div class="paragraph">
+<p>Thus the color encoding differs also a little bit:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>yellow: files, which are configured to be merged.</p>
+</li>
+<li>
+<p>red: files, which are not configured with any merge strategy and thus will be created if the file does not exist or overwritten if the file already exists</p>
+</li>
+<li>
+<p>no color: files, which will be ignored during generation</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/wiki-tutorials/tutorials/wiki_vscode/cobigen-setup/target/generated-docs/images/04-batch-mode-usage.png" alt="04 batch mode usage">
+</div>
+</div>
+<div id="index.asciidoc_" class="paragraph">
+<p>==</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="health-check">Health Check</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>However, you might face some errors while using CobiGen. So, we recommend to perform a Health Check for CobiGen Templates for better experience.</p>
+</div>
+<div class="paragraph">
+<p>To get more information on Health Check for CobiGen Templates visit on <a href="https://devonfw.com/website/pages/docs/master-cobigen.asciidoc_eclipse-integration.html#cobigen-eclipse_usage.asciidoc_health-check" class="bare">https://devonfw.com/website/pages/docs/master-cobigen.asciidoc_eclipse-integration.html#cobigen-eclipse_usage.asciidoc_health-check</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="troubleshooting-cli">Troubleshooting CLI</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When generating code from a Java file, CobiGen makes use of Java reflection for generating templates. In order to do that, the CLI needs to find the compiled source code of your project.</p>
+</div>
+<div class="paragraph">
+<p>If you find an error like Compiled class foo\bar\EmployeeEntity.java has not been found, it means you need to run &#34;mvn clean install&#34; on the input project so that a new target folder gets created with the needed compiled sources.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="conclusion">Conclusion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>From this tutorial you have learned the following:
+* You can do CobiGen set up in your system.
+* You can use the CobiGen CLI commands to generate the code.
+* You can now integrate CobiGen with Eclipse and generate your crud services.
+* Now you know how to use CobiGen in a particular project with Eclipse as well as CLI.</p>
+</div>
+<div class="paragraph">
+<p>More information about CobiGen on <a href="https://devonfw.com/website/pages/docs/master-cobigen.asciidoc.html" class="bare">https://devonfw.com/website/pages/docs/master-cobigen.asciidoc.html</a></p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html#introduction-why-should-i-use-devonfw.asciidoc">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devon4j.wiki_asciidoc_architecture.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-ide-support.asciidoc.html#LICENSE.asciidoc">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2021-12-02 12:19:23 UTC
+</sub></div>
+</div>
+</div>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+<script>
+  var internalUrls = ["https://cginternal.devonfw.com/websitesnippets/"];
+  $(".internal").each(function(){
+    internalUrls.forEach((internalUrl, index) => {
+      $.ajax({url: internalUrl + $(this).text() + "/index.html" })
+      .then(r => {
+        var leftDiv = $('<div class="info"><span class="infoText">Internal</span><img class="infoImage" src="' + internalUrl + 'logo.png"/></div>');
+        var rightFirstDiv = $('<div class="message">This is only visible inside of the corporate network.</div>');
+        var rightLastDiv = $('<div class="content"></div>');
+        rightLastDiv.html(r);
+        var rightDiv = $('<div class="right"></div>');
+        rightDiv.append(rightFirstDiv);
+        rightDiv.append(rightLastDiv);
+        $(this).html(leftDiv);
+        $(this).append(rightDiv);
+        $(this).addClass("internal-active");
+        $(this).removeClass("internal");
+      })
+    });
+	});
+</script>
+</body>
+</html>
