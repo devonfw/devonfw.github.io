@@ -95,6 +95,10 @@ const editLinksModule = (function(window) {
               value: 'documentation'
           },
           {
+              re: /architectures\//,
+              value: ''
+          },
+          {
               re: /architectures\/(solutions\/[^\/]*)/,
               index: 1
           }
