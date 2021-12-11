@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2021-12-11 19:03:58 UTC">
+<meta name="author" content="Updated at 2021-12-11 19:11:56 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -517,7 +517,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2021-12-11 19:12:27 UTC</span><br>
+<span id="author" class="author">Updated at 2021-12-11 19:19:06 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -2750,9 +2750,11 @@ Our recommendation in devonfw is to use <a href="https://istio.io/">istio</a>. T
 <div class="sect4">
 <h5 id="guide-testing.asciidoc_test-automation-technology-stack">Test Automation Technology Stack</h5>
 <div class="paragraph">
-<p>For test automation we use <a href="http://junit.org/">JUnit</a>. However, we are strictly doing all assertions with <a href="http://joel-costigliola.github.io/assertj/">AssertJ</a>. For <a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-testing.asciidoc_test-doubles">mocking</a> we use <a href="http://mockito.org/">mockito</a>.
-In order to mock remote connections we use <a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-testing.asciidoc_wiremock">wiremock</a>.
-For testing entire components or sub-systems we recommend to use <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-testing.html">spring-boot-starter-test</a> as lightweight and fast testing infrastructure that is already shipped with <code>devon4j-test</code>.</p>
+<p>For test automation we use <a href="http://junit.org/">JUnit</a>. However, we are strictly doing all assertions with <a href="http://joel-costigliola.github.io/assertj/">AssertJ</a>. For <a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-testing.asciidoc_test-doubles">mocking</a> we use <a href="http://mockito.org/">Mockito</a>.
+In order to mock remote connections we use <a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-testing.asciidoc_wiremock">WireMock</a>.</p>
+</div>
+<div class="paragraph">
+<p>For testing entire components or sub-systems we recommend to use for Spring stack <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-testing.html">spring-boot-starter-test</a> as lightweight and fast testing infrastructure that is already shipped with <code>devon4j-test</code>. For Quarkus, you can add the necessary extensions manually such as <code>quarkus-junit5</code>, <code>quarkus-junit5-mockito</code>, <code>assertj-core</code> etc.</p>
 </div>
 <div class="paragraph">
 <p>In case you have to use a full blown JEE application server, we recommend to use <a href="http://arquillian.org/">arquillian</a>. To get started with arquillian, look <a href="http://arquillian.org/guides/getting_started/index.html#add_the_arquillian_apis">here</a>.</p>
@@ -2821,9 +2823,9 @@ For testing entire components or sub-systems we recommend to use <a href="https:
 </div>
 </div>
 <div class="sect5">
-<h6 id="guide-testing.asciidoc_wiremock">Wiremock</h6>
+<h6 id="guide-testing.asciidoc_wiremock">WireMock</h6>
 <div class="paragraph">
-<p>If you need to mock remote connections such as HTTP-Servers, wiremock offers easy to use functionality. For a full description see the <a href="http://wiremock.org/">homepage</a> or the <a href="https://github.com/tomakehurst/wiremock">github repository</a>. Wiremock can be used either as a JUnit Rule, in Java outside of JUnit or as a standalone process. The mocked server can be configured to respond to specific requests in a given way via a fluent Java API, JSON files and JSON over HTTP. An example as an integration to JUnit can look as follows.</p>
+<p>If you need to mock remote connections such as HTTP-Servers, WireMock offers easy to use functionality. For a full description see the <a href="http://wiremock.org/">homepage</a> or the <a href="https://github.com/tomakehurst/wiremock">github repository</a>. Wiremock can be used either as a JUnit Rule, in Java outside of JUnit or as a standalone process. The mocked server can be configured to respond to specific requests in a given way via a fluent Java API, JSON files and JSON over HTTP. An example as an integration to JUnit can look as follows.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2940,12 +2942,13 @@ The boxes in the picture contain parenthesized numbers. These numbers depict the
 <h6 id="guide-testing.asciidoc_level-2-component-test">Level 2 Component Test</h6>
 <div class="paragraph">
 <p>A <a href="http://istqbexamcertification.com/what-is-component-testing/"><em>component test</em></a> aims to test components or component parts as a unit.
-These tests typically run with a (light-weight) infrastructure such as spring-boot-starter-test and can access resources such as a database (e.g. for DAO tests).
+These tests can access resources such as a database (e.g. for DAO tests).
 Further, no remote communication is intended here. Access to external systems shall be replaced by a <a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-testing.asciidoc_test-doubles">test double</a>.</p>
 </div>
-<div class="paragraph">
-<p>With devon4j and spring you can write a component-test as easy as illustrated in the following example:</p>
-</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For Spring stack, they are typically run with a (light-weight) infrastructure such as spring-boot-starter-test. A component-test is illustrated in the following example:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@SpringBootTest(classes = { MySpringBootApp.class }, webEnvironment = WebEnvironment.NONE)
@@ -2974,8 +2977,23 @@ public class UcFindCountryTest extends ComponentTest {
 <div class="paragraph">
 <p>This test will start the entire spring-context of your app (<code>MySpringBootApp</code>). Within the test spring will inject according spring-beans into all your fields annotated with <code>@Inject</code>. In the test methods you can use these spring-beans and perform your actual tests. This pattern can be used for testing DAOs/Repositories, Use-Cases, or any other spring-bean with its entire configuration including database and transactions.</p>
 </div>
+</li>
+<li>
+<p>For Quarkus, you can similarly inject the CDI beans and perform tests. An example is shown below:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@QuarkusTest
+public class UcFindCountryTest {
+  @Inject
+  private UcFindCountry ucFindCountry;
+  ...</code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
 <div class="paragraph">
-<p>When you are testing use-cases your <a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-access-control.asciidoc_configuration-on-java-method-level">authorization</a> will also be in place. Therefore, you have to simulate a logon in advance what is done via the <code>login</code> method in the above example.  The test-infrastructure will automatically do a <code>logout</code> for you after each test method in <code>doTearDown</code>.</p>
+<p>When you are testing use-cases your <a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-access-control.asciidoc_configuration-on-java-method-level">authorization</a> will also be in place. Therefore, you have to simulate a logon in advance what is done via the <code>login</code> method in the above Spring example.  The test-infrastructure will automatically do a <code>logout</code> for you after each test method in <code>doTearDown</code>.</p>
 </div>
 </div>
 <div class="sect5">
@@ -2983,9 +3001,10 @@ public class UcFindCountryTest extends ComponentTest {
 <div class="paragraph">
 <p>A <em>subsystem test</em> runs against the external interfaces (e.g. HTTP service) of the integrated subsystem. Subsystem tests of the client subsystem are described in the <a href="https://github.com/devonfw/devon4ng/blob/master/documentation/guide-testing">devon4ng testing guide</a>. In devon4j the server (JEE application) is the subsystem under test. The tests act as a client (e.g. service consumer) and the server has to be integrated and started in a container.</p>
 </div>
-<div class="paragraph">
-<p>With devon4j and spring you can write a subsystem-test as easy as illustrated in the following example:</p>
-</div>
+<div class="ulist">
+<ul>
+<li>
+<p>With devon4j and Spring you can write a subsystem-test as easy as illustrated in the following example:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-java" data-lang="java">@SpringBootTest(classes = { MySpringBootApp.class }, webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -3015,6 +3034,9 @@ public class CountryRestServiceTest extends SubsystemTest {
 <div class="paragraph">
 <p>Even though not obvious on the first look this test will start your entire application as a server on a free random port (so that it works in CI with parallel builds for different branches) and tests the invocation of a (REST) service including (un)marshalling of data (e.g. as JSON) and transport via HTTP (all in the invocation of the <code>findCountry</code> method).</p>
 </div>
+</li>
+</ul>
+</div>
 <div class="paragraph">
 <p>Do not confuse a <em>subsystem test</em> with a <a href="http://istqbexamcertification.com/what-is-system-integration-testing/">system integration test</a>. A system integration test validates the interaction of several systems where we do not recommend test automation.</p>
 </div>
@@ -3031,7 +3053,7 @@ public class CountryRestServiceTest extends SubsystemTest {
 <div class="sect5">
 <h6 id="guide-testing.asciidoc_classifying-integration-levels">Classifying Integration-Levels</h6>
 <div class="paragraph">
-<p>devon4j defines <a href="https://github.com/devonfw/devon4j/tree/develop/modules/test/src/main/java/com/devonfw/module/test/common/api/category">Category-Interfaces</a> that shall be used as <a href="https://github.com/junit-team/junit/wiki/Categories">JUnit Categories</a>.
+<p>For Spring stack, devon4j defines <a href="https://github.com/devonfw/devon4j/tree/develop/modules/test/src/main/java/com/devonfw/module/test/common/api/category">Category-Interfaces</a> that shall be used as <a href="https://github.com/junit-team/junit/wiki/Categories">JUnit Categories</a>.
 Also devon4j provides <a href="https://github.com/devonfw/devon4j/tree/develop/modules/test/src/main/java/com/devonfw/module/test/common/base">abstract base classes</a> that you may extend in your test-cases if you like.</p>
 </div>
 <div class="paragraph">
@@ -3042,86 +3064,8 @@ Also devon4j provides <a href="https://github.com/devonfw/devon4j/tree/develop/m
 <div class="sect4">
 <h5 id="guide-testing.asciidoc_implementation">Implementation</h5>
 <div class="paragraph">
-<p>This section introduces how to implement tests on the different levels with the given devonfw infrastructure and the proposed frameworks.</p>
-</div>
-<div class="sect5">
-<h6 id="guide-testing.asciidoc_module-test">Module Test</h6>
-<div class="paragraph">
-<p>In devon4j you can extend the abstract class <a href="https://github.com/devonfw/devon4j/blob/develop/modules/test/src/main/java/com/devonfw/module/test/common/base/ModuleTest.java">ModuleTest</a> to basically get access to assertions. In order to test classes embedded in dependencies  and external services one needs to provide mocks for that. As the <a href="devon4j.wiki_devon4j.asciidoc_guides.html#guide-testing.asciidoc_test-automation-technology-stack">technology stack</a> recommends we use the Mockito framework to offer this functionality. The following example shows how to implement Mockito into a JUnit test.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.mock;
-...
-
-public class StaffmanagementImplTest extends ModuleTest {
-  @Rule
-  public MockitoRule rule = MockitoJUnit.rule();
-
-  @Test
-  public void testFindStaffMember() {
-  ...}
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Note that the test class does not use the <code>@SpringApplicationConfiguration</code> annotation. In a module test one does not use the whole application.
-The JUnit rule is the best solution to use in order to get all needed functionality of Mockito. Static imports are a convenient option to enhance readability within Mockito tests.
-You can define mocks with the <code>@Mock</code> annotation or the <code>mock(*.class)</code> call. To inject the mocked objects into your class under test you can use the <code>@InjectMocks</code> annotation. This automatically uses the setters of <code>StaffmanagementImpl</code> to inject the defined mocks into the <em>class under test (CUT)</em> when there is a setter available. In this case the <code>beanMapper</code> and the <code>staffMemberDao</code> are injected. Of course it is possible to do this manually if you need more control.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">  @Mock
-  private BeanMapper beanMapper;
-  @Mock
-  private StaffMemberEntity staffMemberEntity;
-  @Mock
-  private StaffMemberEto staffMemberEto;
-  @Mock
-  private StaffMemberDao staffMemberDao;
-  @InjectMocks
-  StaffmanagementImpl staffmanagementImpl = new StaffmanagementImpl();</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The mocked objects do not provide any functionality at the time being. To define what happens on a method call on a mocked dependency in the CUT one can use <code>when(<em>condition</em>).thenReturn(<em>result</em>)</code>. In this case we want to test <code>findStaffMember(Long id)</code> in the StaffmanagementImpl.java.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">public StaffMemberEto findStaffMember(Long id) {
-  return getBeanMapper().map(getStaffMemberDao().find(id), StaffMemberEto.class);
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In this simple example one has to stub two calls on the CUT as you can see below. For example the method call of the CUT <code>staffMemberDao.find(id)</code> is stubbed for returning a mock object <code>staffMemberEntity</code> that is also defined as mock.</p>
-</div>
-</div>
-<div class="sect5">
-<h6 id="guide-testing.asciidoc_subsystem-test">Subsystem Test</h6>
-<div class="paragraph">
-<p>devon4j provides a simple test infrastructure to aid with the implementation of subsystem tests.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-java" data-lang="java">//given
-long id = 1L;
-Class&lt;StaffMemberEto&gt; targetClass = StaffMemberEto.class;
-when(this.staffMemberDao.find(id)).thenReturn(this.staffMemberEntity);
-when(this.beanMapper.map(this.staffMemberEntity, targetClass)).thenReturn(this.staffMemberEto);
-
-//when
-StaffMemberEto resultEto = this.staffmanagementImpl.findStaffMember(id);
-
-//then
-assertThat(resultEto).isNotNull();
-assertThat(resultEto).isEqualTo(this.staffMemberEto);</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>After the test method call one can verify the expected results. Mockito can check whether a mocked method call was indeed called. This can be done using Mockito <code>verify</code>. Note that it does not generate any value if you check for method calls that are needed to reach the asserted result anyway. Call verification can be useful e.g. when you want to assure that statistics are written out without actually testing them.</p>
-</div>
+<p>This section introduces how to implement tests on the different levels with the given devonfw infrastructure and the proposed frameworks.
+For Spring, see <a href="#spring/guide-spring-testing.asciidoc_implementation">Spring Test Implementation</a></p>
 </div>
 </div>
 <div class="sect4">
@@ -3154,6 +3098,16 @@ Because devon4j should fit to different project types - from agile to waterfall 
 <h5 id="guide-testing.asciidoc_test-configuration">Test Configuration</h5>
 <div class="paragraph">
 <p>This section covers test configuration in general without focusing on integration levels as in the first chapter.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>For Spring, see <a href="#spring/guide-spring-testing.asciidoc_configure-test-specific-beans">Configure Test Specific Beans</a></p>
+</li>
+<li>
+<p>For Quarkus, see <a href="#quarkus/guide-quarkus-testing.asciidoc_configuration">here</a></p>
+</li>
+</ul>
 </div>
 <div class="sect5">
 <h6 id="guide-testing.asciidoc_configure-test-specific-beans">Configure Test Specific Beans</h6>
@@ -4260,7 +4214,7 @@ With spring we can simply use <a href="https://docs.spring.io/spring-framework/d
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-12-11 18:59:16 UTC
+Last updated 2021-12-11 19:08:02 UTC
 </sub></div>
 
 

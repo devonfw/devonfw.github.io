@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Testing</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Ubuntu Font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400&display=swap" rel="stylesheet">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+
+<script src="/website/components/header/search-engine/bundle.js"></script>
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+
+<link rel="stylesheet" type="text/css" href="https://cginternal.devonfw.com/websitesnippets/main.css">
+<script src="https://cginternal.devonfw.com/websitesnippets/main.js"></script>
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"
+      autocomplete="off"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-spring-testing.asciidoc">Testing</a>
+<ul class="sectlevel1">
+<li><a href="#guide-spring-testing.asciidoc_implementation">Implementation</a>
+<ul class="sectlevel2">
+<li><a href="#guide-spring-testing.asciidoc_module-test">Module Test</a></li>
+<li><a href="#guide-spring-testing.asciidoc_subsystem-test">Subsystem Test</a></li>
+</ul>
+</li>
+<li><a href="#guide-spring-testing.asciidoc_configuration">Configuration</a>
+<ul class="sectlevel2">
+<li><a href="#guide-spring-testing.asciidoc_configure-test-specific-beans">Configure Test Specific Beans</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-spring-testing.asciidoc" class="sect0">Testing</h1>
+<div class="sect1">
+<h2 id="guide-spring-testing.asciidoc_implementation">Implementation</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="guide-spring-testing.asciidoc_module-test">Module Test</h3>
+<div class="paragraph">
+<p>In devon4j you can extend the abstract class <a href="https://github.com/devonfw/devon4j/blob/develop/modules/test/src/main/java/com/devonfw/module/test/common/base/ModuleTest.java">ModuleTest</a> to basically get access to assertions. In order to test classes embedded in dependencies  and external services one needs to provide mocks for that. As the <a href="#guide-spring-testing.asciidoc_test-automation-technology-stack">technology stack</a> recommends we use the Mockito framework to offer this functionality. The following example shows how to implement Mockito into a JUnit test.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
+...
+
+public class StaffmanagementImplTest extends ModuleTest {
+  @Rule
+  public MockitoRule rule = MockitoJUnit.rule();
+
+  @Test
+  public void testFindStaffMember() {
+  ...}
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that the test class does not use the <code>@SpringApplicationConfiguration</code> annotation. In a module test one does not use the whole application.
+The JUnit rule is the best solution to use in order to get all needed functionality of Mockito. Static imports are a convenient option to enhance readability within Mockito tests.
+You can define mocks with the <code>@Mock</code> annotation or the <code>mock(*.class)</code> call. To inject the mocked objects into your class under test you can use the <code>@InjectMocks</code> annotation. This automatically uses the setters of <code>StaffmanagementImpl</code> to inject the defined mocks into the <em>class under test (CUT)</em> when there is a setter available. In this case the <code>beanMapper</code> and the <code>staffMemberDao</code> are injected. Of course it is possible to do this manually if you need more control.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">  @Mock
+  private BeanMapper beanMapper;
+  @Mock
+  private StaffMemberEntity staffMemberEntity;
+  @Mock
+  private StaffMemberEto staffMemberEto;
+  @Mock
+  private StaffMemberDao staffMemberDao;
+  @InjectMocks
+  StaffmanagementImpl staffmanagementImpl = new StaffmanagementImpl();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The mocked objects do not provide any functionality at the time being. To define what happens on a method call on a mocked dependency in the CUT one can use <code>when(<em>condition</em>).thenReturn(<em>result</em>)</code>. In this case we want to test <code>findStaffMember(Long id)</code> in the <a href="https://github.com/oasp/oasp4j/blob/master/samples/core/src/main/java/io/oasp/gastronomy/restaurant/staffmanagement/logic/impl/StaffmanagementImpl.java">StaffmanagementImpl</a>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public StaffMemberEto findStaffMember(Long id) {
+  return getBeanMapper().map(getStaffMemberDao().find(id), StaffMemberEto.class);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this simple example one has to stub two calls on the CUT as you can see below. For example the method call of the CUT <code>staffMemberDao.find(id)</code> is stubbed for returning a mock object <code>staffMemberEntity</code> that is also defined as mock.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-spring-testing.asciidoc_subsystem-test">Subsystem Test</h3>
+<div class="paragraph">
+<p>devon4j provides a simple test infrastructure to aid with the implementation of subsystem tests. It becomes available by simply subclassing <a href="https://github.com/oasp/oasp4j/blob/master/samples/core/src/test/java/io/oasp/gastronomy/restaurant/general/common/base/AbstractRestServiceTest.java">AbstractRestServiceTest.java</a>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">//given
+long id = 1L;
+Class&lt;StaffMemberEto&gt; targetClass = StaffMemberEto.class;
+when(this.staffMemberDao.find(id)).thenReturn(this.staffMemberEntity);
+when(this.beanMapper.map(this.staffMemberEntity, targetClass)).thenReturn(this.staffMemberEto);
+
+//when
+StaffMemberEto resultEto = this.staffmanagementImpl.findStaffMember(id);
+
+//then
+assertThat(resultEto).isNotNull();
+assertThat(resultEto).isEqualTo(this.staffMemberEto);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After the test method call one can verify the expected results. Mockito can check whether a mocked method call was indeed called. This can be done using Mockito <code>verify</code>. Note that it does not generate any value if you check for method calls that are needed to reach the asserted result anyway. Call verification can be useful e.g. when you want to assure that statistics are written out without actually testing them.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-spring-testing.asciidoc_configuration">Configuration</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="guide-spring-testing.asciidoc_configure-test-specific-beans">Configure Test Specific Beans</h3>
+<div class="paragraph">
+<p>Sometimes it can become handy to provide other or differently configured bean implementations via CDI than those available in production. For example, when creating beans using <code>@Bean</code>-annotated methods they are usually configured within those methods. <a href="https://github.com/oasp/oasp4j/blob/master/samples/core/src/main/java/io/oasp/gastronomy/restaurant/general/service/impl/config/WebSecurityBeansConfig.java">WebSecurityBeansConfig</a> shows an example of such methods.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Configuration
+public class WebSecurityBeansConfig {
+  //...
+  @Bean
+  public AccessControlSchemaProvider accessControlSchemaProvider() {
+    // actually no additional configuration is shown here
+    return new AccessControlSchemaProviderImpl();
+  }
+  //...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>AccessControlSchemaProvider</code> allows to programmatically access data defined in some XML file, e.g. <code>access-control-schema.xml</code>. Now, one can imagine that it would be helpful if <code>AccessControlSchemaProvider</code> would point to some other file than the default within a test class. That file could provide content that differs from the default.
+The question is: how can I change resource path of <code>AccessControlSchemaProviderImpl</code> within a test?</p>
+</div>
+<div class="paragraph">
+<p>One very helpful solution is to use <strong>static inner classes</strong>.
+Static inner classes can contain <code>@Bean</code> -annotated methods, and by placing them in the <code>classes</code> parameter in <code>@SpringBootTest(classes = { /* place class here*/ })</code> annotation the beans returned by these methods are placed in the application context during test execution. Combining this feature with inheritance allows to override methods defined in other configuration classes as shown in the following listing where <code>TempWebSecurityConfig</code> extends <code>WebSecurityBeansConfig</code>. This relationship allows to override <code>public AccessControlSchemaProvider accessControlSchemaProvider()</code>. Here we are able to configure the instance of type <code>AccessControlSchemaProviderImpl</code> before returning it (and, of course, we could also have used a completely different implementation of the <code>AccessControlSchemaProvider</code> interface). By overriding the method the implementation of the super class is ignored, hence, only the new implementation is called at runtime. Other methods defined in <code>WebSecurityBeansConfig</code> which are not overridden by the subclass are still dispatched to <code>WebSecurityBeansConfig</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">//... Other testing related annotations
+@SpringBootTest(classes = { TempWebSecurityConfig.class })
+public class SomeTestClass {
+
+  public static class TempWebSecurityConfig extends WebSecurityBeansConfig {
+
+    @Override
+    @Bean
+    public AccessControlSchemaProvider accessControlSchemaProvider() {
+
+      ClassPathResource resource = new ClassPathResource(locationPrefix + "access-control-schema3.xml");
+      AccessControlSchemaProviderImpl accessControlSchemaProvider = new AccessControlSchemaProviderImpl();
+      accessControlSchemaProvider.setAccessControlSchema(resource);
+      return accessControlSchemaProvider;
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following <a href="http://docs.spring.io/spring/docs/current/spring-framework-reference/htmlsingle/#testcontext-ctx-management-javaconfig">chapter of the Spring framework documentation</a> explains issue, but uses a slightly different way to obtain the configuration.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html#introduction-why-should-i-use-devonfw.asciidoc">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devon4j.wiki_architecture.asciidoc.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-ide-support.asciidoc.html#LICENSE.asciidoc">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2021-12-11 19:04:28 UTC
+</sub></div>
+</div>
+</div>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+<script>
+  var internalUrls = ["https://cginternal.devonfw.com/websitesnippets/"];
+  $(".internal").each(function(){
+    internalUrls.forEach((internalUrl, index) => {
+      $.ajax({url: internalUrl + $(this).text() + "/index.html" })
+      .then(r => {
+        var leftDiv = $('<div class="info"><span class="infoText">Internal</span><img class="infoImage" src="' + internalUrl + 'logo.png"/></div>');
+        var rightFirstDiv = $('<div class="message">This is only visible inside of the corporate network.</div>');
+        var rightLastDiv = $('<div class="content"></div>');
+        rightLastDiv.html(r);
+        var rightDiv = $('<div class="right"></div>');
+        rightDiv.append(rightFirstDiv);
+        rightDiv.append(rightLastDiv);
+        $(this).html(leftDiv);
+        $(this).append(rightDiv);
+        $(this).addClass("internal-active");
+        $(this).removeClass("internal");
+      })
+    });
+	});
+</script>
+</body>
+</html>
