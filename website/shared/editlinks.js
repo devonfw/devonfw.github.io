@@ -9,7 +9,11 @@ const editLinksModule = (function(window) {
           if(matches){
               if(rule.index !== undefined){
                   result = matches[rule.index];
-              } else {
+              }
+              else if(rule.rule !== undefined){
+                  result = rule.rule(matches);
+              }
+              else {
                   result = rule.value;
               }
               return true;
@@ -60,8 +64,8 @@ const editLinksModule = (function(window) {
               index: 2
           },
           {
-              re: /architectures\//,
-              value: 'architectures'
+              re: /solutions\//,
+              value: 'solutions'
           }
       ];
       return executeRules(rules); 
@@ -95,8 +99,12 @@ const editLinksModule = (function(window) {
               value: 'documentation'
           },
           {
-              re: /architectures\/(solutions\/[^\/]*)/,
-              index: 1
+              re: /solutions\/(solution\/[^\/]*)/,
+              rule: (matches) => matches[1].replace('solution/','solutions/')
+          },
+          {
+              re: /solutions\//,
+              value: ''
           }
       ];
       return executeRules(rules); 
@@ -146,7 +154,7 @@ const editLinksModule = (function(window) {
               value: 'master'
           },
           {
-              re: /architectures\//,
+              re: /solutions\//,
               value: 'master'
           }
       ];
