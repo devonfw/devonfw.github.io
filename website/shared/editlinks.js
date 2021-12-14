@@ -9,7 +9,11 @@ const editLinksModule = (function(window) {
           if(matches){
               if(rule.index !== undefined){
                   result = matches[rule.index];
-              } else {
+              }
+              else if(rule.rule !== undefined){
+                  result = rule.rule(matches);
+              }
+              else {
                   result = rule.value;
               }
               return true;
@@ -96,7 +100,7 @@ const editLinksModule = (function(window) {
           },
           {
               re: /solutions\/(solution\/[^\/]*)/,
-              index: 1
+              rule: (matches) => matches[1].replace('solution/','solutions/')
           },
           {
               re: /solutions\//,
@@ -199,7 +203,6 @@ const editLinksModule = (function(window) {
       if(repoName) {
           let folderName = getFolderName();
           let branchName = getBranchName();
-          folderName = folderName.replace('solution/','solutions/');
           let urlPrefix = "https://github.com/devonfw/" + repoName + "/edit/" + branchName + "/" + folderName + "/";
           $('h2,h3,h4,h5').each(function() {
               let headline = $( this );
