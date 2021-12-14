@@ -104,7 +104,7 @@ function renderSolutions(solutions, current) {
             countSolutions++;
             if (countSolutions >= startData && countSolutions <= endData) {
                 const solution = solutions[solutionKey];
-                var solutionDiv = $('<div id="solution_' + solutionKey + '" class="solution"></div>');
+                var solutionDiv = $('<div id="solution_' + solutionKey + '" class="solution col-12 col-md-6"></div>');
                 var solutionHeadlineDiv = $('<div id="solution_' + solutionKey + '_headline" class="solutionheadline"></div>');
                 var solutionHeadlineLink = $('<a id="solution_' + solutionKey + '_headline_link" class="solutionheadlinelink" href="' + solution.path + '"></a>');
                 solutionHeadlineLink.text(solution.headline);
@@ -329,13 +329,14 @@ async function main() {
     console.log(solutionsJson);
 
     $("head").append('<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">');
-    var paginationDiv = $('<div id="pagination" class = "pagination"></div>');
-    $("#content").append(paginationDiv);
-    var seachFieldDiv = '<div class="search-bar"><input id="search-field-solutions" type="search" class="form-control mr-sm-2" placeholder="Search by keyword(s)..." aria-label="Search" style="height: auto;"/>';
-    $('#content').append(seachFieldDiv);
+    var flexDiv = $('<div id="solutioncontent" class="row"></div>');
+    $("#content").append(flexDiv);
+
+    var seachFieldDiv = '<div class="search-bar col-12"><input id="search-field-solutions" type="search" class="form-control mr-sm-2" placeholder="Search by keyword(s)..." aria-label="Search" style="height: auto;"/>';
+    $('#solutioncontent').append(seachFieldDiv);
     var parameters = getParameters();
 
-    var filterspanel = $('<div id="filterspanel" class="filterspanel"></div>');
+    var filterspanel = $('<div id="filterspanel" class="filterspanel col-12 col-sm-3"></div>');
     var filterMaturityComplete = Object.keys(filterSolutions(solutionsJson, MATURITY_LEVEL, MATURITY_LEVEL_COMPLETE));
     for (const filter in tagsJson) {
         if (Object.hasOwnProperty.call(tagsJson, filter)) {
@@ -379,9 +380,13 @@ async function main() {
             }
         }
     }
-    $("#content").append(filterspanel);
-    var resultspanel = $('<div id="resultspanel" class="resultspanel"></div>');
-    $("#content").append(resultspanel);
+    $("#solutioncontent").append(filterspanel);
+    var resultspanel = $('<div id="resultspanel" class="resultspanel col-12 col-sm-9 row"></div>');
+    $("#solutioncontent").append(resultspanel);
+
+    var paginationDiv = $('<div id="pagination" class="col-12"></div>');
+    $("#solutioncontent").append(paginationDiv);
+
     for (const filterName of parameters.keys()) {
         if (filterName == 'search') {
             document.getElementById('search-field-solutions').value = parameters.get('search')[0];
