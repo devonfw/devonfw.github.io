@@ -60,8 +60,8 @@ const editLinksModule = (function(window) {
               index: 2
           },
           {
-              re: /architectures\//,
-              value: 'architectures'
+              re: /solutions\//,
+              value: 'solutions'
           }
       ];
       return executeRules(rules); 
@@ -95,11 +95,11 @@ const editLinksModule = (function(window) {
               value: 'documentation'
           },
           {
-              re: /architectures\//,
+              re: /solutions\//,
               value: ''
           },
           {
-              re: /architectures\/(solutions\/[^\/]*)/,
+              re: /solutions\/(solution\/[^\/]*)/,
               index: 1
           }
       ];
@@ -150,7 +150,7 @@ const editLinksModule = (function(window) {
               value: 'master'
           },
           {
-              re: /architectures\//,
+              re: /solutions\//,
               value: 'master'
           }
       ];
