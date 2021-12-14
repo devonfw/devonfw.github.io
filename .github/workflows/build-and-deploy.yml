@@ -48,32 +48,32 @@ jobs:
 
       - name: Solutions from Stack repositories
         run: |
-          cd architectures/scripts
+          cd solutions/scripts
           npm install 
           node copySolutionsFromStack.js ../../devonfw-guide
           cd ../../
 
-      - name: Copy pom files for architectures
+      - name: Copy pom files for solutions
         run: |
-          chmod +x architectures/scripts/copyPomFiles.sh
-          architectures/scripts/copyPomFiles.sh
+          chmod +x solutions/scripts/copyPomFiles.sh
+          solutions/scripts/copyPomFiles.sh
           
       - name: Copy pom files for tutorials
         run: |
           chmod +x wiki-tutorials/scripts/copyPomFiles.sh
           wiki-tutorials/scripts/copyPomFiles.sh
 
-      - name: npm install for architectures
+      - name: npm install for solutions
         run: |
-          cd architectures/scripts
+          cd solutions/scripts
           npm install
           cd ../../
 
-      - name: Compile sass for architectures
+      - name: Compile sass for solutions
         uses: gha-utilities/sass-build@v0.4.2
         with:
-          source: architectures/index.scss
-          destination: architectures/index.css
+          source: solutions/index.scss
+          destination: solutions/index.css
           
       - name: Compile sass for tutorials
         uses: gha-utilities/sass-build@v0.4.2
@@ -85,8 +85,8 @@ jobs:
       # As this gems are not installed this is breaking the build.
       - name: Remove files that are breaking the build
         run: |
-          rm architectures/README.md || true
-          rm architectures/index.scss || true
+          rm solutions/README.md || true
+          rm solutions/index.scss || true
           rm wiki-tutorials/README.md || true
           rm wiki-tutorials/index.scss || true
 
@@ -129,14 +129,15 @@ jobs:
           node highlight-current.js ../target/generated-docs/website
           cd ..
 
-      - name: Create output for architectures
+      - name: Create output for solutions
         run: |
-          chmod +x architectures/scripts/createOutput.sh
-          architectures/scripts/createOutput.sh
+          chmod +x solutions/scripts/createOutput.sh
+          solutions/scripts/createOutput.sh
 
-      - name: Copy output of architectures
+      - name: Copy output of solutions
         run: |
-          cp -avr architectures/target/generated-docs/ target/generated-docs/website/pages/architectures/
+          cp -avr solutions/target/generated-docs/ target/generated-docs/website/pages/solutions/
+          mv target/generated-docs/website/pages/solutions/solutions target/generated-docs/website/pages/solutions/solution
 
       - name: Create output for tutorials
         run: |
@@ -161,7 +162,7 @@ jobs:
         run: |
           cd search-engine
           npm install
-          node ./converter.js ../target/generated-docs/website/pages/docs/  ../architectures/solutions/ ../target/generated-docs/website/components/header/search-engine
+          node ./converter.js ../target/generated-docs/website/pages/docs/  ../solutions/solutions/ ../target/generated-docs/website/components/header/search-engine
           ls -al ../target/generated-docs/website/components/header/search-engine
           cd ../
 

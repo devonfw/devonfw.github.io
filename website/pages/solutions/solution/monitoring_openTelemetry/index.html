@@ -1,0 +1,376 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Monitoring your microservices with openTelemetry</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Ubuntu Font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400&amp;display=swap" rel="stylesheet">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+
+<script src="/website/components/header/search-engine/bundle.js"></script>
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+
+<link rel="stylesheet" type="text/css" href="https://cginternal.devonfw.com/websitesnippets/main.css">
+<script src="https://cginternal.devonfw.com/websitesnippets/main.js"></script>
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt="">
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input id="search-field" type="search" class="form-control mr-sm-2" placeholder="Search by keyword(s)..." aria-label="Search" style="height: auto;" autocomplete="off">
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width="auto" height="auto" alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="sect1">
+<h2 id="index.asciidoc_monitoring-your-microservices-with-opentelemetry">Monitoring your microservices with openTelemetry</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="index.asciidoc_where-is-the-problem">Where is the problem?</h3>
+<div class="paragraph">
+<p>With the complexity and size of microservice systems, which include hundreds of small services, keeping an overview can be quite challenging. Usually one monolitic application can be scanned for potential errors, as failures in the system directly reference this one application. With microservices the area to search in could be narrowed down, but never to an extend adressing one specific service being the root cause. Therefore, to keep track of runtime problems and the fullfillment of nonfunctional reqirements corresponding to specififc microservices advanced monitoring needs emerge.</p>
+</div>
+<div class="paragraph">
+<p>There are different proposals for collecting this telemetry data consisting of logs, traces and metrics with each proposal having their own benefits and disadvantages leading to a heterogenous landscape of these solutions special for each microservice. As these are configured on their own and little to no replacability options without nudging big change efforts are given, flexibility is limited blocking possibly better solutions. Concluding, overall and in the microservice teams there is not a central repository for looking up your microservices telemetry data but again a numerous amount of different hardly replacable solutions for different microservices making it difficult to gain a central overview e.g. via Grafana.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_the-value-for-the-customer">The value for the customer</h3>
+<div class="paragraph">
+<p>Monitoring in microservice settings generally benefits nonfunctional requirements such as performance, availability or security through transparent insights, while enabling proactive but also reactive handling of issues. By having all the telemetry data centrally stored and providing exchangeable solutions for the different types of data, no restrictions to design decisions is made and the customer can gain a fast overview over a great amount of microservices.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_introducing-opentelemetry">Introducing OpenTelemetry</h3>
+<div class="paragraph">
+<p><a href="https://opentelemetry.io/">OpenTelemetry</a> forms the combination of OpenTracing and OpenCensus collecting different telemetry data (metrics, logs, traces) for understanding the applications behavior and performance. Because of the standardization for processing telemetry data, OpenTelemetry acts as a central collector for whole application landscapes monitoring data, which is able to communicate with replacable logging-, tracing- or metrics-backends without changing configurations in the applications code.</p>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_addressing-your-business">Addressing your business</h4>
+<div class="paragraph">
+<p>OpenTelemetry can be used in various use cases, but is best suited in the microservice context. Therefore, any business apllication relying on microservices would be a suited domain for applying an OpenTelemetry solution.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="index.asciidoc_opentelemetry-architecture">OpenTelemetry architecture</h4>
+<div class="imageblock">
+<div class="content">
+<img src="openTelemetry_architecture.svg" alt="OpenTelemetry architecture">
+</div>
+</div>
+<div class="paragraph">
+<p>The above example shows a reference architecture of multiple hosts (environments/applications).</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="1">
+<li>
+<p>Traces and logs are automatically collected at each JAX-RS service. Other additionally defined metrics, traces or logs are also collected.</p>
+</li>
+<li>
+<p>These applications send data directly to a otel-agent configured to use fewer resources. An otel-agent is a collector instance running with the application or on the same host as the application.</p>
+</li>
+<li>
+<p>The agent then forwards the data to a collector that receives data from multiple agents. Collectors on this layer typically are allowed to use more resources and queue more data.</p>
+</li>
+<li>
+<p>The collector then sends the data to the appropriate backend, in the solution provided by Jaeger, Zipkin or VictoriaMetrics. The VictoriaMetrics backend serves metrics while Jaeger and Zipkin are two alternatives for tracing.</p>
+</li>
+<li>
+<p>Additionally all the telemetry data can be visualized in a tool like Grafana.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The OpenTelemetry collector is an instance that makes it possible to receive telemetry data, optionally transform it and send the data on. Receiving, transforming and sending data is done via pipelines. A pipeline consists of a set of receivers, a set of optional processors and a set of exporters.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="otel_collector_pipeline.png" alt="OpenTelemetry collector pipeline">
+</div>
+</div>
+<div class="paragraph">
+<p>A reveiver transfers the telemetry data into the collector, which then can be processed on a processor. Finally, an exporter can send the data to a corresponding backend/destination. Further information can be found <a href="https://opentelemetry.io/docs/collector/configuration/"><strong>here</strong></a></p>
+</div>
+<div class="paragraph">
+<p>List of available receivers, processors and exporters:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/open-telemetry/opentelemetry-collector/tree/main/receiver"><strong>reveivers</strong></a></p>
+</li>
+<li>
+<p><a href="https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor"><strong>processors</strong></a></p>
+</li>
+<li>
+<p><a href="https://github.com/open-telemetry/opentelemetry-collector/tree/main/exporter"><strong>exporters</strong></a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In addition, extensions (<a href="https://github.com/open-telemetry/opentelemetry-collector/blob/main/extension/README.md"><strong>Health Check, Performance Profiler, zPages</strong></a>) are provided that can be added to the collector to extend the primary functionality of the collector. These do not require direct access to telemetry data and enable additional functionality outside the usual pipeline.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_deployment">Deployment</h3>
+<div class="paragraph">
+<p>You can find a template for an OpenTelemetry Kubernetes deployment in the <a href="https://github.com/devonfw/architectures/tree/master/solutions/monitoring_openTelemetry/helm">GitHub repository of this article</a> with deployment files for an OpenTelemetry agent and collector as well as Jaeger, VictoriaMetrics, and Grafana.
+For an example of how to use these files, see the <a href="https://github.com/devonfw-sample/devon4quarkus-reference">devon4j Quarkus reference application</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_related-documentations">Related documentations</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/open-telemetry/opentelemetry-collector"><strong>OpenTelemetry Collector</strong></a></p>
+</li>
+<li>
+<p><a href="https://opentelemetry.io/docs/java/"><strong>OpenTelemetry Java documentation</strong></a></p>
+</li>
+<li>
+<p><a href="https://www.jaegertracing.io/"><strong>Jaeger</strong></a></p>
+</li>
+<li>
+<p><a href="https://zipkin.io/"><strong>Zipkin</strong></a></p>
+</li>
+<li>
+<p><a href="https://github.com/VictoriaMetrics/VictoriaMetrics"><strong>VictoriaMetrics</strong></a></p>
+</li>
+<li>
+<p><a href="https://grafana.com/"><strong>Grafana</strong></a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="index.asciidoc_related-architectures-and-alternatives">Related Architectures and Alternatives</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://opentracing.io/"><strong>openTracing</strong></a></p>
+</li>
+<li>
+<p><a href="https://opencensus.io/"><strong>openCensus</strong></a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html#introduction-why-should-i-use-devonfw.asciidoc">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devon4j.wiki_architecture.asciidoc.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-ide-support.asciidoc.html#LICENSE.asciidoc">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<div class="footnote"><sub>
+
+Last updated 2021-12-14 13:31:40 UTC
+</sub></div>
+
+
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+<script>
+  var internalUrls = ["https://cginternal.devonfw.com/websitesnippets/"];
+  $(".internal").each(function(){
+    internalUrls.forEach((internalUrl, index) => {
+      $.ajax({url: internalUrl + $(this).text() + "/index.html" })
+      .then(r => {
+        var leftDiv = $('<div class="info"><span class="infoText">Internal</span><img class="infoImage" src="' + internalUrl + 'logo.png"/></div>');
+        var rightFirstDiv = $('<div class="message">This is only visible inside of the corporate network.</div>');
+        var rightLastDiv = $('<div class="content"></div>');
+        rightLastDiv.html(r);
+        var rightDiv = $('<div class="right"></div>');
+        rightDiv.append(rightFirstDiv);
+        rightDiv.append(rightLastDiv);
+        $(this).html(leftDiv);
+        $(this).append(rightDiv);
+        $(this).addClass("internal-active");
+        $(this).removeClass("internal");
+      })
+    });
+	});
+</script>
+
+</body></html>
