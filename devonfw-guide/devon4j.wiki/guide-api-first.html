@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>API first development guide</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Ubuntu Font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400&display=swap" rel="stylesheet">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+
+<script src="/website/components/header/search-engine/bundle.js"></script>
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+
+<link rel="stylesheet" type="text/css" href="https://cginternal.devonfw.com/websitesnippets/main.css">
+<script src="https://cginternal.devonfw.com/websitesnippets/main.js"></script>
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">DOCS</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"
+      autocomplete="off"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-api-first.asciidoc">API first development guide</a>
+<ul class="sectlevel1">
+<li><a href="#guide-api-first.asciidoc_api-first-strategy">API first strategy</a></li>
+<li><a href="#guide-api-first.asciidoc_api-first-provider">API first provider</a>
+<ul class="sectlevel2">
+<li><a href="#guide-api-first.asciidoc_openapi-generator-maven-plugin">OpenAPI Generator maven plugin</a></li>
+<li><a href="#guide-api-first.asciidoc_generate-once-vs-generate-always">Generate once vs generate always</a></li>
+<li><a href="#guide-api-first.asciidoc_implement-the-generated-interfaces">Implement the generated interfaces</a></li>
+<li><a href="#guide-api-first.asciidoc_serving-api-docs--swagger-ui">Serving API docs / Swagger-UI</a></li>
+<li><a href="#guide-api-first.asciidoc_advanced-topics">Advanced topics</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-api-first.asciidoc" class="sect0">API first development guide</h1>
+<div class="paragraph">
+<p>Cloud native promotes the use of microservices, which are loosely coupled and self-contained. These services communicate with each other using a well-defined interface or API, and no consumer needs to be aware of any implementation details of the provider. There could even be multiple providers of the same API, or we can decide to swap existing implementation for a new one, without disrupting our clients - all because we adhere to a well defined API.
+This guide focuses on HTTP interfaces following RESTful design principles.</p>
+</div>
+<div class="sect1">
+<h2 id="guide-api-first.asciidoc_api-first-strategy">API first strategy</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>API first strategy treats APIs as first class citizens in the delivery model.
+The APIs are modeled/designed first (usually as <a href="#guide-openapi.asciidoc">OpenAPI specification</a>), often in a collaborative process between providers and consumers, and only once the APIs are defined do we start with development of the provider service.
+This requires a bit more time upfront, but also provides opportunity to think about the behaviour of the system before it gets implemented. Several other advatages of this approach:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>provider and client implementation can run in parallel - we have the contract, client does not need to wait for provider to finish implementation</p>
+</li>
+<li>
+<p>support for automation and great ecosystem - we can easily generate stubs and clients for most languages/frameworks, generate documentation and API catalogues using one of the many opensource and commercial tools</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-api-first.asciidoc_api-first-provider">API first provider</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>After careful planning, we defined our future API. Now we would like to implement a provider of this API.
+We could manually create all the <a href="#guide-rest.asciidoc_jax-rs">JAX-RS</a> endpoints based on the schema and then test whether the actually provided interface conforms with the API schema. However, it is an error prone and laborious process, especially if the API gets big.
+Luckily, we can use great open source tooling to generate JAX-RS interfaces that conform to 100% with the schema, and then we simply implement them.</p>
+</div>
+<div class="paragraph">
+<p>There are many open source tools, that allow code generation from OpenAPI schema files, for example <a href="https://openapi-generator.tech/">OpenAPI Generator</a> or <a href="https://github.com/swagger-api/swagger-codegen">Swagger codegen</a>. Both are based on Java and even provide maven plugins to integrate them in our build.</p>
+</div>
+<div class="sect2">
+<h3 id="guide-api-first.asciidoc_openapi-generator-maven-plugin">OpenAPI Generator maven plugin</h3>
+<div class="paragraph">
+<p>If we already have our backend maven project, using the maven plugin will be easiest for us. Lets define a new maven profile and add the OpenAPI generator plugin:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;profile&gt;
+  &lt;id&gt;apigen&lt;/id&gt;
+  &lt;activation&gt;&lt;activeByDefault&gt;true&lt;/activeByDefault&gt;&lt;/activation&gt;
+  &lt;build&gt;
+    &lt;plugins&gt;
+      &lt;plugin&gt;
+        &lt;groupId&gt;org.openapitools&lt;/groupId&gt;
+        &lt;artifactId&gt;openapi-generator-maven-plugin&lt;/artifactId&gt;
+        &lt;version&gt;5.1.0&lt;/version&gt;
+        &lt;executions&gt;
+          &lt;execution&gt;
+            &lt;goals&gt;
+              &lt;goal&gt;generate&lt;/goal&gt;
+            &lt;/goals&gt;
+            &lt;configuration&gt;
+              &lt;!-- input spec can be a url, or a local file --&gt;
+              &lt;inputSpec&gt;https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/examples/v3.0/petstore.yaml&lt;/inputSpec&gt;
+              &lt;!-- &lt;inputSpec&gt;${project.basedir}/src/main/resources/api.yaml&lt;/inputSpec&gt; --&gt;
+              &lt;generatorName&gt;jaxrs-spec&lt;/generatorName&gt;
+              &lt;apiPackage&gt;com.petclinic.api&lt;/apiPackage&gt;
+              &lt;modelPackage&gt;com.petclinic.api.model&lt;/modelPackage&gt;
+              &lt;!-- &lt;library&gt;quarkus&lt;/library&gt; --&gt;
+              &lt;configOptions&gt;
+                &lt;sourceFolder&gt;src/gen/java/main&lt;/sourceFolder&gt;
+                &lt;useSwaggerAnnotations&gt;false&lt;/useSwaggerAnnotations&gt;
+                &lt;useTags&gt;true&lt;/useTags&gt;
+                &lt;interfaceOnly&gt;true&lt;/interfaceOnly&gt;
+                &lt;generatePom&gt;false&lt;/generatePom&gt;
+              &lt;/configOptions&gt;
+            &lt;/configuration&gt;
+          &lt;/execution&gt;
+        &lt;/executions&gt;
+      &lt;/plugin&gt;
+    &lt;/plugins&gt;
+  &lt;/build&gt;
+&lt;/profile&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>OpenAPI generator project includes support for many languages and frameworks - in our case we picked <code>jaxrs-spec</code> server generator.
+Many of the generator templates have further sub-generators, for example for your specific framework. We could, for example use <code>quarkus</code> sub-generator to bootstrap a full working Quarkus maven project, but in our case, we want to have more control over the process, therefore we opt for standard <code>jaxrs</code> template and pass some additional configuration:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>apiPackage</code> = generated package name for our endpoint interfaces</p>
+</li>
+<li>
+<p><code>modelPackage</code> = generated package name for our API models (DTOs)</p>
+</li>
+<li>
+<p><code>sourceFolder</code> = where do we want to output the generated files, relative to the <code>output</code> folder - if we regenerate the files with every build, then it is recommended to put them in <code>${project.build.directory}/generated-sources/openapi</code> (default, can be changed via <code>output</code> plugin attribute). Final location of our generated Java files will then be <code>${project.build.directory}/generated-sources/openapi/src/gen/java/main</code></p>
+</li>
+<li>
+<p><code>useTags</code> = group the generated endpoints by schema <code>tag</code> attribute</p>
+</li>
+<li>
+<p><code>interfaceOnly</code> = we want to implement the endpoint logic ourselves, so we only want JAX-RS interfaces</p>
+</li>
+<li>
+<p><code>generatePom</code> = we are generating the files into existing project, so we dont want to generate additional maven pom</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s run the plugin now using <code>mvn clean compile</code>. If everything went well, we end up with something like this:</p>
+</div>
+<div id="guide-api-first.asciidoc_img-generated-sources" class="imageblock" style="text-align: center;">
+<div class="content">
+<a class="image" href="https://devonfw.com/website/pages/docs/images/apifirst-generated-sources.png"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/apifirst-generated-sources.png" alt="Generated sources by OpenAPI generator"></a>
+</div>
+<div class="title">Figure 1. Generated sources by OpenAPI generator</div>
+</div>
+<div class="paragraph">
+<p>Depending on the configuration of your code generator, you might need to add some additional dependencies to your <code>pom.xml</code>, for example for bean validation or Jackson annotations.</p>
+</div>
+<div class="paragraph">
+<p>The OpenAPI generator has many more configuration options that are outside the scope of this guide. You can find full documentation of the codegen plugin in the <a href="https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-maven-plugin">projects GitHub repository</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-api-first.asciidoc_generate-once-vs-generate-always">Generate once vs generate always</h3>
+<div class="paragraph">
+<p>Depending on our needs, we may either want to generate the interfaces and models once and afterwards copy them to our project as general source code files, or treat them as immutable generated assets, that we generate anew with every build.
+Both scenarios have their pros and cons, and you&#8217;ll need to find out what best suits your project. In the example above, we use a profile with <code>activeByDefault=true</code>, which will cause the generator to run with every build. The generated files will be included as sources in our project, so we can import them in any other java class without issues.</p>
+</div>
+<div class="paragraph">
+<p>In case you only want to generate your API resources once and version them afterwards in SCM, simply run the generator, outputting to some temporary location, then, copy them to <code>src/main/java</code> and you are done. Be careful if you manually modify the generated files afterwards and you want to re-generate them after an API schema update, you will lose any manual changes.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-api-first.asciidoc_implement-the-generated-interfaces">Implement the generated interfaces</h3>
+<div class="paragraph">
+<p>To implement the generated interfaces, we simply create an impl class - rest controller bean - that implements the interface from our <code>gen</code> package:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">package org.acme.rest.controller;
+
+import java.util.List;
+
+import com.petclinic.api.PetsApi;
+import com.petclinic.api.model.Pet;
+
+public class PetClinicController implements PetsApi {
+
+    @Override
+    public void createPets() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public List&lt;Pet&gt; listPets(Integer limit) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Pet showPetById(String petId) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And now we can invoke our API endpoint as usual: <code><a href="http://localhost:8080/pets" class="bare">http://localhost:8080/pets</a></code> - because <code>/pets</code> is the <code>@Path</code> annotation value in the generated <code>PetsApi</code> interface.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-api-first.asciidoc_serving-api-docs--swagger-ui">Serving API docs / Swagger-UI</h3>
+<div class="paragraph">
+<p>A common requirement is that our backend API provider should also provide an endpoint with the schema or a Swagger-UI application with that schema.
+In our example, we decided to generate the JAX-RS interface without Swagger/OpenAPI annotations, therefore the schema can not be re-constructed 1:1 from our code (missing method documentation, error handling, etc.).</p>
+</div>
+<div class="paragraph">
+<p>When having a Quarkus application and using the <a href="#guide-openapi.asciidoc_smallrye-openapi">Smallrye OpenAPI extension</a>, we can tell Quarkus to serve a static version of the API as our openapi schema (the same file we used to generate the interfaces and models) and to disable the auto-generating of the schema. Follow the <a href="https://quarkus.io/guides/openapi-swaggerui#openapi">Quarkus OpenAPI documentation</a> for more info.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-api-first.asciidoc_advanced-topics">Advanced topics</h3>
+<div class="paragraph">
+<p>In some cases, we may have specific requirements or API extensions that are not supported by the existing generators. OpenAPI generator project allows us to define <a href="https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator-maven-plugin#custom-generator">custom genererator</a>, or to extend the existing <a href="https://openapi-generator.tech/docs/templating">generator templates</a>. We can also selectively generate subset of the models or API endpoints, generate test code and much more.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html#introduction-why-should-i-use-devonfw.asciidoc">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devon4j.wiki_architecture.asciidoc.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-ide-support.asciidoc.html#LICENSE.asciidoc">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2021-12-15 21:01:58 UTC
+</sub></div>
+</div>
+</div>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+<script>
+  var internalUrls = ["https://cginternal.devonfw.com/websitesnippets/"];
+  $(".internal").each(function(){
+    internalUrls.forEach((internalUrl, index) => {
+      $.ajax({url: internalUrl + $(this).text() + "/index.html" })
+      .then(r => {
+        var leftDiv = $('<div class="info"><span class="infoText">Internal</span><img class="infoImage" src="' + internalUrl + 'logo.png"/></div>');
+        var rightFirstDiv = $('<div class="message">This is only visible inside of the corporate network.</div>');
+        var rightLastDiv = $('<div class="content"></div>');
+        rightLastDiv.html(r);
+        var rightDiv = $('<div class="right"></div>');
+        rightDiv.append(rightFirstDiv);
+        rightDiv.append(rightLastDiv);
+        $(this).html(leftDiv);
+        $(this).append(rightDiv);
+        $(this).addClass("internal-active");
+        $(this).removeClass("internal");
+      })
+    });
+	});
+</script>
+</body>
+</html>
