@@ -120,18 +120,18 @@
 </ul>
 <h1 id="devon4j-layers.asciidoc" class="sect0">devon4j Component Layers</h1>
 <div class="paragraph">
-<p>As we already mentioned in the <a href="devon4j-layers.asciidoc_devon4j-overview#devon4j-architecture-overview">introduction to devon4j</a> the components of our <em>Java</em> backend apps will be divided into three layers: <em>service</em>, <em>logic</em> and <em>dataaccess</em>.</p>
+<p>As we already mentioned in the <a href="devon4j-layers.asciidoc_devon4j-overview#devon4j-architecture-overview">introduction to devon4j</a> the components of our <em>Java</em> back-end apps will be divided into three layers: <code>service</code>, <code>logic</code> and <code>dataaccess</code>.</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>service</strong>: The layer that contains the REST services to exchange information with the client applications.</p>
+<p><code>service</code>: The layer that contains the REST services to exchange information with the client applications.</p>
 </li>
 <li>
-<p><strong>logic</strong>: The layer hosting the logic of the application (validations, authorization control, business logic, etc.).</p>
+<p><code>logic</code>: The layer hosting the logic of the application (validations, authorization control, business logic, etc.).</p>
 </li>
 <li>
-<p><strong>dataaccess</strong>: The layer that communicates with the database.</p>
+<p><code>dataaccess</code>: The layer that communicates with the database.</p>
 </li>
 </ul>
 </div>
@@ -163,7 +163,7 @@
 <div class="ulist">
 <ul>
 <li>
-<p>Separation of API and implementation: Inside each layer we will separate the elements in different packages: <em>api</em> and <em>impl</em>. The <em>api</em> will store the <em>interface</em> with the methods definition and inside the <em>impl</em> we will store the class that implements the <em>interface</em>:</p>
+<p>Separation of API and implementation: Inside each layer we will separate the elements in different packages: <code>api</code> and <code>impl</code>. The <code>api</code> will store the <code>interface</code> with the methods definition and inside the <code>impl</code> we will store the class that implements the <code>interface</code>:</p>
 </li>
 </ul>
 </div>
@@ -181,7 +181,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="java language-java">@Named
+<pre class="highlight"><code>@Named
 public class MyBeanImpl implements MyBean {
 
   @Inject
@@ -213,7 +213,7 @@ public class MyBeanImpl implements MyBean {
 <h4 id="devon4j-layers.asciidoc_service-layer---logic-layer">Service Layer - Logic Layer</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="java language-java">import javax.inject.Inject;
+<pre class="highlight"><code>import javax.inject.Inject;
 import javax.inject.Named;
 
 import com.devonfw.application.mtsj.bookingmanagement.logic.api.Bookingmanagement;
@@ -239,7 +239,7 @@ public class BookingmanagementRestServiceImpl implements BookingmanagementRestSe
 <h4 id="devon4j-layers.asciidoc_logic-layer---data-access-layer">Logic Layer - Data Access Layer</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="java language-java">import javax.inject.Inject;
+<pre class="highlight"><code>import javax.inject.Inject;
 import javax.inject.Named;
 import javax.transaction.Transactional;
 
@@ -285,7 +285,7 @@ public class BookingmanagementImpl extends AbstractComponentFacade implements Bo
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="java language-java">@Path("/bookingmanagement/v1")
+<pre class="highlight"><code>@Path("/bookingmanagement/v1")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public interface BookingmanagementRestService {
@@ -313,10 +313,10 @@ public interface BookingmanagementRestService {
 <p><strong><em>@GET</em></strong>: Annotation for the <em>HTTP GET</em> method.</p>
 </li>
 <li>
-<p><strong><em>@Path</em></strong>: The path definition for the <em>getBooking</em> resource.</p>
+<p><strong><em>@Path</em></strong>: The path definition for the <code>getBooking</code> resource.</p>
 </li>
 <li>
-<p><strong><em>@PathParam</em></strong>: Annotation to configure the <em>id</em> received in the <em>url</em> as a parameter.</p>
+<p><code><strong><em>@PathParam</em></strong></code>: Annotation to configure the <em>id</em> received in the <em>url</em> as a parameter.</p>
 </li>
 </ul>
 </div>
@@ -328,7 +328,7 @@ public interface BookingmanagementRestService {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="java language-java">@Named("BookingmanagementRestService")
+<pre class="highlight"><code>@Named("BookingmanagementRestService")
 public class BookingmanagementRestServiceImpl implements BookingmanagementRestService {
 
   @Inject
@@ -383,7 +383,7 @@ public class BookingmanagementRestServiceImpl implements BookingmanagementRestSe
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="java language-java">public interface Bookingmanagement {
+<pre class="highlight"><code>public interface Bookingmanagement {
 
   BookingCto findBooking(Long id);
   ...
@@ -398,7 +398,7 @@ public class BookingmanagementRestServiceImpl implements BookingmanagementRestSe
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="java language-java">@Named
+<pre class="highlight"><code>@Named
 @Transactional
 public class BookingmanagementImpl extends AbstractComponentFacade implements Bookingmanagement {
 
@@ -450,7 +450,7 @@ public class BookingmanagementImpl extends AbstractComponentFacade implements Bo
 <div class="sect2">
 <h3 id="devon4j-layers.asciidoc_transfer-objects">Transfer Objects</h3>
 <div class="paragraph">
-<p>In the code examples of the <em>logic</em> layer section you may have seen a <em>BookingCto</em> object. This is one of the <a href="https://github.com/devonfw/devon4j/wiki/guide-transferobject">transfer objects</a> defined in <em>devon4j</em>. It is used to transfer data between the layers.</p>
+<p>In the code examples of the <em>logic</em> layer section you may have seen a <code>BookingCto</code> object. This is one of the <a href="https://github.com/devonfw/devon4j/wiki/guide-transferobject">transfer objects</a> defined in <em>devon4j</em>. It is used to transfer data between the layers.</p>
 </div>
 <div class="paragraph">
 <p>The main benefits of using <em>Transfer Objects</em> are:</p>
@@ -516,17 +516,17 @@ public class BookingmanagementImpl extends AbstractComponentFacade implements Bo
 <p>For mapping Java objects to the database, <em>devon4j</em> use the <em>Java Persistence API</em> (<a href="https://www.oracle.com/technetwork/java/javaee/tech/persistence-jsp-140049.html">JPA</a>). Explicitly, the JPA implementation <em>devon4j</em> uses is <a href="http://hibernate.org/orm/">Hibernate</a>.</p>
 </div>
 <div class="paragraph">
-<p>Apart from the <em>Entities</em> of components, we are going to find the same elements, that we saw in other layers, in the <em>dataaccess</em> layer: a definition (i.e. an <em>interface</em>) and an implementation (a class that implements that interface).</p>
+<p>Apart from the <em>Entities</em> of components, we are going to find the same elements, that we saw in other layers, in the <code>dataaccess</code> layer: a definition (i.e. an <code>interface</code>) and an implementation (a class that implements that interface).</p>
 </div>
 <div class="paragraph">
-<p>However, in this layer the implementation is slightly different: The <code>[Target]Repository</code> extends <code>com.devonfw.module.jpa.dataaccess.api.data.DefaultRepository</code>, which provides us with the basic <em>dataaccess</em> methods: <code>save(Entity)</code>, <code>findOne(id)</code>, <code>findAll(ids)</code>, <code>delete(id)</code>, etc.</p>
+<p>However, in this layer the implementation is slightly different: The <code>[Target]Repository</code> extends <code>com.devonfw.module.jpa.dataaccess.api.data.DefaultRepository</code>, which provides us with the basic <code>dataaccess</code> methods: <code>save(Entity)</code>, <code>findOne(id)</code>, <code>findAll(ids)</code>, <code>delete(id)</code>, etc.</p>
 </div>
 <div class="paragraph">
-<p>Because of that, in the <code>[Target]Repository</code> implementation of the layer, we only need to add the <em>custom</em> methods that are not implemented yet. Following the <em>MyThaiStar</em> component example (<em>bookingmanagement</em>), we will only find the paginated <em>findBookings</em> implementation here:</p>
+<p>Because of that, in the <code>[Target]Repository</code> implementation of the layer, we only need to add the <em>custom</em> methods that are not implemented yet. Following the <em>MyThaiStar</em> component example (<em>bookingmanagement</em>), we will only find the paginated <code>findBookings</code> implementation here:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="java language-java">import org.springframework.data.jpa.repository.Query;
+<pre class="highlight"><code>import org.springframework.data.jpa.repository.Query;
 import com.querydsl.jpa.impl.JPAQuery;
 
 ...
@@ -547,7 +547,7 @@ public interface BookingRepository extends DefaultRepository&lt;BookingEntity&gt
 </div>
 </div>
 <div class="paragraph">
-<p>The implementation of <em>findBookings</em> uses <a href="https://github.com/devonfw/devon4j/blob/develop/documentation/guide-repository">Spring Data</a> and <a href="http://www.querydsl.com/">QueryDSL</a> to manage dynamic queries.</p>
+<p>The implementation of <code>findBookings</code> uses <a href="https://github.com/devonfw/devon4j/blob/develop/documentation/guide-repository">Spring Data</a> and <a href="http://www.querydsl.com/">QueryDSL</a> to manage dynamic queries.</p>
 </div>
 </div>
 <div class="sect2">
@@ -572,22 +572,22 @@ public interface BookingRepository extends DefaultRepository&lt;BookingEntity&gt
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Definition for <em>dataaccess</em> layer repository.</p>
+<p>Definition for <code>dataaccess</code> layer repository.</p>
 </li>
 <li>
 <p>The entity that we created to be used by <em>CobiGen</em> to generate the component structure.</p>
 </li>
 <li>
-<p>Definition of <em>abstract usecase</em> in the <em>logic</em> layer.</p>
+<p>Definition of <em>abstract usecase</em> in the <code>logic</code> layer.</p>
 </li>
 <li>
-<p>Implementation of the <em>usecasefind</em> layer in the <em>logic</em> layer.</p>
+<p>Implementation of the <code>usecasefind</code> layer in the <code>logic</code> layer.</p>
 </li>
 <li>
-<p>Implementation of the <em>usecasemanage</em> layer in the <em>logic</em> layer.</p>
+<p>Implementation of the <code>usecasemanage</code> layer in the <code>logic</code> layer.</p>
 </li>
 <li>
-<p>Implementation of the <em>logic</em> layer.</p>
+<p>Implementation of the <code>logic</code> layer.</p>
 </li>
 <li>
 <p>Implementation of the <em>rest service</em>.</p>
@@ -605,22 +605,22 @@ public interface BookingRepository extends DefaultRepository&lt;BookingEntity&gt
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>definition for <em>entity</em> in the api layer.</p>
+<p>definition for <em>entity</em> in the <code>api</code> layer.</p>
 </li>
 <li>
-<p>Entity Transfer Object located in the api layer.</p>
+<p>Entity Transfer Object located in the <code>api</code> layer.</p>
 </li>
 <li>
-<p>Search Criteria Transfer Object located in the api layer.</p>
+<p>Search Criteria Transfer Object located in the <code>api</code> layer.</p>
 </li>
 <li>
-<p>Definition of <em>usecasefind</em> in the <em>logic</em> layer.</p>
+<p>Definition of <code>usecasefind</code> in the <code>logic</code> layer.</p>
 </li>
 <li>
-<p>Definition of <em>usecasemanage</em> in the <em>logic</em> layer.</p>
+<p>Definition of <code>usecasemanage</code> in the <code>logic</code> layer.</p>
 </li>
 <li>
-<p>Definition of the <em>logic</em> layer.</p>
+<p>Definition of the <code>logic</code> layer.</p>
 </li>
 <li>
 <p>Definition of the <em>rest service</em> of the component.</p>
@@ -683,7 +683,7 @@ public interface BookingRepository extends DefaultRepository&lt;BookingEntity&gt
 <div class="sect3">
 <h4 id="devon4j-layers.asciidoc_simple-call">Simple Call</h4>
 <div class="paragraph">
-<p>If you remember, we added some <a href="devon4j-layers.asciidoc_devon4j-components#mock-data">mock data</a> previously, to have some visitor info available. Let&#8217;s try to retrieve a visitor&#8217;s information by using our <em>visitormanagement service</em>.</p>
+<p>If you remember, we added some <a href="devon4j-layers.asciidoc_devon4j-components#mock-data">mock data</a> previously, to have some visitor info available. Let&#8217;s try to retrieve a visitor&#8217;s information by using our <code>visitormanagement service</code>.</p>
 </div>
 <div class="paragraph">
 <p>Select the service <strong>GET</strong> and send:<br>
@@ -708,7 +708,7 @@ public interface BookingRepository extends DefaultRepository&lt;BookingEntity&gt
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="java language-java">@Override
+<pre class="highlight"><code>@Override
 public void configure(HttpSecurity http) throws Exception {
 
   http.authorizeRequests().anyRequest().permitAll().and().csrf().disable();
@@ -724,7 +724,7 @@ public void configure(HttpSecurity http) throws Exception {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="java language-java">security.cors.enabled=true</code></pre>
+<pre class="highlight"><code>security.cors.enabled=true</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -746,7 +746,7 @@ public void configure(HttpSecurity http) throws Exception {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="java language-java">	@Path("/visitor/search")
+<pre class="highlight"><code>	@Path("/visitor/search")
 	@POST
 	public Page&lt;VisitorEto&gt; findVisitors(VisitorSearchCriteriaTo searchCriteriaTo);</code></pre>
 </div>
@@ -762,11 +762,11 @@ public void configure(HttpSecurity http) throws Exception {
 <code><a href="http://localhost:8081/jumpthequeue/services/rest/visitormanagement/v1/visitor/search" class="bare">http://localhost:8081/jumpthequeue/services/rest/visitormanagement/v1/visitor/search</a></code></p>
 </div>
 <div class="paragraph">
-<p>In the 'Body' tab, below the address bar, we&#8217;ll have to define a <em>SearchCriteria</em> object, which will have a <em>pageable</em> defined (make sure, the 'raw' option is selected):</p>
+<p>In the 'Body' tab, below the address bar, we&#8217;ll have to define a <code>SearchCriteria</code> object, which will have a <em>pageable</em> defined (make sure, the 'raw' option is selected):</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="json language-json">{
+<pre class="highlight"><code>{
 	"pageable" : {
 		"pageNumber" : "0",
 		"pageSize": "10",
@@ -786,7 +786,7 @@ public void configure(HttpSecurity http) throws Exception {
 </td>
 <td class="content">
 <div class="paragraph">
-<p>You can see the definition of the <em>VisitorSearchCriteriaTo</em> in:
+<p>You can see the definition of the <code>VisitorSearchCriteriaTo</code> in:
 <code>visitormanagement/logic/api/to/VisitorSearchCriteriaTo.java</code></p>
 </div>
 </td>
@@ -806,7 +806,7 @@ public void configure(HttpSecurity http) throws Exception {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="json language-json">{
+<pre class="highlight"><code>{
 	"username": "test1@mail.com",
 	"pageable" : {
 		"pageNumber" : "0",
@@ -841,7 +841,7 @@ public void configure(HttpSecurity http) throws Exception {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="java language-java">@Named
+<pre class="highlight"><code>@Named
 @Validated
 @Transactional
 public class UcManageVisitorImpl extends AbstractVisitorUc implements UcManageVisitor {
@@ -850,7 +850,7 @@ public class UcManageVisitorImpl extends AbstractVisitorUc implements UcManageVi
 </div>
 </div>
 <div class="paragraph">
-<p>To save a visitor we only need to use the <em>REST</em> resource <code>/services/rest/visitormanagement/v1/visitor</code> and provide the visitor definition for <em>VisitorEto</em> in the body.</p>
+<p>To save a visitor we only need to use the <em>REST</em> resource <code>/services/rest/visitormanagement/v1/visitor</code> and provide the visitor definition for <code>VisitorEto</code> in the body.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -860,7 +860,7 @@ public class UcManageVisitorImpl extends AbstractVisitorUc implements UcManageVi
 </td>
 <td class="content">
 <div class="paragraph">
-<p>You can see the definition for <em>VisitorEto</em> in:
+<p>You can see the definition for <code>VisitorEto</code> in:
 <code>visitormanagement/logic/api/to/VisitorEto.java</code></p>
 </div>
 </td>
@@ -876,7 +876,7 @@ public class UcManageVisitorImpl extends AbstractVisitorUc implements UcManageVi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="json language-json">{
+<pre class="highlight"><code>{
 	"username": "mary@mail.com",
 	"name": "Mary",
 	"phoneNumber": "1234567",
@@ -1031,7 +1031,7 @@ public class UcManageVisitorImpl extends AbstractVisitorUc implements UcManageVi
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-12-15 21:05:59 UTC
+Last updated 2021-12-16 13:35:00 UTC
 </sub></div>
 </div>
 </div>
