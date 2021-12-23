@@ -1,0 +1,65 @@
+name: Create GitHub Release
+
+on:
+  workflow_call:
+    secrets:
+      GHA_TOKEN:
+        required: true
+    inputs:
+      TAG_NAME:
+        description: The tag name to create a release for. Will be also the name of the release.
+        type: string
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1.9.0
+        with:
+          generateReleaseNotes: true
+          tag: ${{ inputs.TAG_NAME }}
+          token: ${{ secrets.GHA_TOKEN }}
+          
+      - name: Close Milestone with Release Name
+        uses: adlerhsieh/prepare-release@0.1.2
+        env: 
+          GITHUB_TOKEN: ${{ secrets.GHA_TOKEN }}
+          REPO_OWNER: ${{ github.event.repository.owner }}
+          REPO: ${{ github.event.repository.name }}
+          IGNORE_MILESTONE_NOT_FOUND: true
+          
+      - name: 'Get Previous tag'
+        id: previoustag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GHA_TOKEN }}"
+      
+      - name: 'Get next patch version'
+        id: nextversion
+        run: |
+          SED_OUT="$(echo ${{ steps.previoustag.outputs.tag }} | sed -r -E -n 's@v?([0-9]+)\.([0-9]+)\.([0-9]+)@\3@p')"
+          SED_OUT=$(trim $SED_OUT)
+          if [[ -z "$SED_OUT" ]]
+          then
+            echo -e "\e[91m  !ERR! could not identify release revision in /pom.xml\e[39m"
+            exit 1
+          else
+            SED_OUT=$((SED_OUT+1))
+            NEW_PATCH=$(printf "%03d\n" $SED_OUT)
+            VERSION_PREFIX="$(echo ${{ steps.previoustag.outputs.tag }} | sed -r -E -n 's@(v?)([0-9]+)\.([0-9]+)\.([0-9]+)@\1\2.\3.@p')"
+            VERSION_PREFIX=$(trim $VERSION_PREFIX)
+            NEW_VERSION="$VERSION_PREFIX$NEW_PATCH"
+            ::set-output "name=NEW_VERSION::$NEW_VERSION"
+          fi
+      
+      - name: 'Create new milestone'
+        id: createmilestone
+        uses: "WyriHaximus/github-action-create-milestone@v1"
+        with:
+          title: ${{ steps.nextversion.outputs.NEW_VERSION }}
+        env:
+          GITHUB_TOKEN: "${{ secrets.GHA_TOKEN }}"
