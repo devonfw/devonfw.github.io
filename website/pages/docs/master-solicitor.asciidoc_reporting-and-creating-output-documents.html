@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2021-12-23 13:34:09 UTC">
+<meta name="author" content="Updated at 2021-12-23 15:22:43 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -523,7 +523,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2021-12-23 13:42:16 UTC</span><br>
+<span id="author" class="author">Updated at 2021-12-23 15:28:47 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -785,7 +785,34 @@ correlations keys.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-sql" data-lang="sql">Unresolved directive in solicitor.wiki/master-solicitor.asciidoc - include::../src/main/resources/com/devonfw/tools/solicitor/sql/allden_normalizedlicenses.sql[]</code></pre>
+<pre class="highlight"><code class="language-sql" data-lang="sql">-- SPDX-License-Identifier: Apache-2.0
+--
+-- generate all NormalizedLicenses in denormalized form including all hierachical data  (allden -&gt; "all denormalized")
+select
+    CONCAT(NVL(a."applicationName",'-'),NVL(ac."groupId",'-'),NVL(ac."artifactId",'-'),NVL(ac."version",'-'),NVL(l."normalizedLicense",'-')) as CORR_KEY_0,
+    CONCAT(NVL(a."applicationName",'-'),NVL(ac."groupId",'-'),NVL(ac."artifactId",'-'),NVL(l."normalizedLicense",'-')) as CORR_KEY_1,
+    CONCAT(NVL(a."applicationName",'-'),NVL(ac."groupId",'-'),NVL(ac."artifactId",'-'),NVL(ac."version",'-')) as CORR_KEY_2,
+    CONCAT(NVL(a."applicationName",'-'),NVL(ac."groupId",'-'),NVL(ac."artifactId",'-')) as CORR_KEY_3,
+	e.*,
+	a.*,
+	ac.*,
+	l.*
+from
+	ENGAGEMENT e,
+	APPLICATION a,
+	APPLICATIONCOMPONENT ac,
+	NORMALIZEDLICENSE l
+where
+	e.ID_ENGAGEMENT = a.PARENT_APPLICATION AND
+	a.ID_APPLICATION = ac.PARENT_APPLICATIONCOMPONENT AND
+	ac.ID_APPLICATIONCOMPONENT = l.PARENT_NORMALIZEDLICENSE
+order by
+	UPPER("ID_APPLICATION"), -- sort by ID so assuring we have the same order as defined in config
+	UPPER("groupId"),
+	UPPER("artifactId"),
+	UPPER("version"),
+	UPPER("effectiveNormalizedLicense"),
+	UPPER("normalizedLicense")</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -1003,7 +1030,7 @@ as follows when using the XLS templating:</p>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-12-23 13:29:17 UTC
+Last updated 2021-12-23 15:19:16 UTC
 </sub></div>
 
 
