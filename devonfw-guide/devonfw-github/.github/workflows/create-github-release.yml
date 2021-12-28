@@ -6,22 +6,29 @@ on:
       GHA_TOKEN:
         required: true
     inputs:
-      TAG_NAME:
-        description: The tag name to create a release for. Will be also the name of the release.
+      RELEASE_STATUS:
+        description: The status of the release (outcome of the release job).
         type: string
         required: true
 
 jobs:
-  build:
+  github-release:
+    if: inputs.RELEASE_STATUS == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+  
+      - name: 'Get Latest tag'
+        id: previoustag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GHA_TOKEN }}"
 
       - name: Create Release
         uses: ncipollo/release-action@v1.9.0
         with:
           generateReleaseNotes: true
-          tag: ${{ inputs.TAG_NAME }}
+          tag: ${{ steps.get_tag.outputs.tagname }}
           token: ${{ secrets.GHA_TOKEN }}
           
       - name: Close Milestone with Release Name
@@ -31,12 +38,6 @@ jobs:
           REPO_OWNER: ${{ github.event.repository.owner }}
           REPO: ${{ github.event.repository.name }}
           IGNORE_MILESTONE_NOT_FOUND: true
-          
-      - name: 'Get Previous tag'
-        id: previoustag
-        uses: "WyriHaximus/github-action-get-previous-tag@v1"
-        env:
-          GITHUB_TOKEN: "${{ secrets.GHA_TOKEN }}"
       
       - name: 'Get next patch version'
         id: nextversion
@@ -55,7 +56,7 @@ jobs:
             NEW_VERSION="$VERSION_PREFIX$NEW_PATCH"
             ::set-output "name=NEW_VERSION::$NEW_VERSION"
           fi
-      
+
       - name: 'Create new milestone'
         id: createmilestone
         uses: "WyriHaximus/github-action-create-milestone@v1"

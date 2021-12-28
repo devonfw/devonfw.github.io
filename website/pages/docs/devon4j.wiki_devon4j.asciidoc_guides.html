@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2021-12-28 21:45:28 UTC">
+<meta name="author" content="Updated at 2021-12-28 21:50:25 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -523,7 +523,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2021-12-28 21:53:39 UTC</span><br>
+<span id="author" class="author">Updated at 2021-12-28 21:57:57 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -2045,7 +2045,7 @@ org.springframework.*</code></pre>
 <div class="ulist">
 <ul>
 <li>
-<p>We only use exceptions for <em>exceptional</em> situations and not for programming control flows, etc. Creating an exception in Java is expensive and hence you should not do it just for testing if something is present, valid or permitted. In the latter case design your API to return this as a regular result.</p>
+<p>We only use exceptions for <em>exceptional</em> situations and not for programming control flows, etc. Creating an exception in Java is expensive and hence should not be done for simply testing whether something is present, valid or permitted. In the latter case design your API to return this as a regular result.</p>
 </li>
 <li>
 <p>We use unchecked exceptions (RuntimeException) <sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
@@ -2055,10 +2055,10 @@ org.springframework.*</code></pre>
 <div class="ulist">
 <ul>
 <li>
-<p>Internal exceptions have technical reasons. For unexpected and exotic situations it is sufficient to throw existing exceptions such as IllegalStateException. For common scenarios a own exception class is reasonable.</p>
+<p>Internal exceptions have technical reasons. For unexpected and exotic situations, it is sufficient to throw existing exceptions such as IllegalStateException. For common scenarios a own exception class is reasonable.</p>
 </li>
 <li>
-<p>User exceptions contain a message explaining the problem for end users. Therefore we always define our own exception classes with a clear, brief but detailed message.</p>
+<p>User exceptions contain a message explaining the problem for end users. Therefore, we always define our own exception classes with a clear, brief, but detailed message.</p>
 </li>
 </ul>
 </div>
@@ -2085,7 +2085,11 @@ org.springframework.*</code></pre>
 </ul>
 </div>
 <div class="paragraph">
-<p>All this is offered by <a href="http://m-m-m.sourceforge.net/apidocs/net/sf/mmm/util/exception/api/package-summary.html#documentation">mmm-util-core</a> that we propose as solution.</p>
+<p>All this is offered by <a href="http://m-m-m.sourceforge.net/apidocs/net/sf/mmm/util/exception/api/package-summary.html#documentation">mmm-util-core</a>, which we propose as a solution.
+If you use the <a href="https://github.com/devonfw/devon4j/tree/master/modules/rest">devon4j-rest module</a>, this is already included. For Quarkus applications, you need to add the dependency manually.</p>
+</div>
+<div class="paragraph">
+<p>If you want to avoid additional dependencies, you can implement your own solution for this by creating an abstract exception class <code>ApplicationBusinessException</code> extending from <code>RuntimeException</code>. For an example of this, see our <a href="https://github.com/devonfw-sample/devon4quarkus-reference">Quarkus reference application</a>.</p>
 </div>
 </div>
 <div class="sect4">
@@ -2163,14 +2167,15 @@ org.springframework.*</code></pre>
 <p>If we catch an exception and throw a new one, we always <strong>have</strong> to provide the original exception as <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/Throwable.html#getCause%28%29">cause</a> to the constructor of the new exception.</p>
 </li>
 <li>
-<p>At the entry points of the application (e.g. a service operation) we have to catch and handle all throwables. This is done via the <em>exception-facade-pattern</em> via an explicit facade or aspect. The <code>devon4j-rest</code> module already provides ready-to-use implementations for this such as <a href="https://github.com/devonfw/devon4j/blob/develop/modules/rest/src/main/java/com/devonfw/module/rest/service/impl/RestServiceExceptionFacade.java">RestServiceExceptionFacade</a>. The exception facade has to …​</p>
+<p>At the entry points of the application (e.g. a service operation) we have to catch and handle all throwables. This is done via the <em>exception-facade-pattern</em> via an explicit facade or aspect. The <code>devon4j-rest</code> module already provides ready-to-use implementations for this such as <a href="https://github.com/devonfw/devon4j/blob/develop/modules/rest/src/main/java/com/devonfw/module/rest/service/impl/RestServiceExceptionFacade.java">RestServiceExceptionFacade</a> that you can use in your Spring application. For Quarkus, follow the <a href="#quarkus/guide-exception-handling.asciidoc">Quarkus guide on exception handling</a>.<br>
+The exception facade has to …​</p>
 <div class="ulist">
 <ul>
 <li>
 <p>log all errors (user errors on info and technical errors on error level)</p>
 </li>
 <li>
-<p>ensure the entire exception is passed to the logger (not only the message) so that the logger can capture the entire stacktrace and the root cause is not lost.</p>
+<p>ensure that the entire exception is passed to the logger (not only the message) so that the logger can capture the entire stacktrace and the root cause is not lost.</p>
 </li>
 <li>
 <p>convert the error to a result appropriable for the client and secure for <a href="https://www.owasp.org/index.php/Top_10_2013-A6-Sensitive_Data_Exposure">Sensitive Data Exposure</a>. Especially for security exceptions only a generic security error code or message may be revealed but the details shall only be logged but <strong>not</strong> be exposed to the client. All <em>internal exceptions</em> are converted to a generic error with a message like:</p>
@@ -2322,7 +2327,7 @@ For I18N of text messages we are suggesting
 <p><strong>Quarkus</strong></p>
 </div>
 <div class="paragraph">
-<p>For Quarkus, we recommend to follow the the official <a href="https://quarkus.io/guides/rest-client">Quarkus rest-client guide</a></p>
+<p>For Quarkus, we recommend to follow the official <a href="https://quarkus.io/guides/rest-client">Quarkus rest-client guide</a></p>
 </div>
 <div style="page-break-after: always;"></div>
 <!-- toc disabled -->
@@ -3859,7 +3864,7 @@ With spring we can simply use <a href="https://docs.spring.io/spring-framework/d
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-12-28 21:40:37 UTC
+Last updated 2021-12-28 21:45:49 UTC
 </sub></div>
 
 
