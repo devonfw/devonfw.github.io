@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+  labels:
+    app: keycloak
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak
+  template:
+    metadata:
+      labels:
+        app: keycloak
+    spec:
+      containers:
+      - name: keycloak
+        image: {{ .Values.keycloak.image.name }}:{{ .Values.keycloak.image.version }}
+        env:
+        - name: KEYCLOAK_USER
+          value: "admin"
+        - name: KEYCLOAK_PASSWORD
+          value: "admin"
+        - name: KEYCLOAK_LOGLEVEL
+          value: DEBUG
+        - name: WILDFLY_LOGLEVEL
+          value: DEBUG
+        ports:
+        - name: http
+          containerPort: {{ .Values.keycloak.ports.http }}
+        - name: https
+          containerPort: {{ .Values.keycloak.ports.https }}
+        readinessProbe:
+          httpGet:
+            path: /auth/realms/master
+            port: {{ .Values.keycloak.ports.http }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak
+  labels:
+    app: keycloak
+spec:
+  ports:
+  - name: http
+    port: {{ .Values.keycloak.service.port }}
+    targetPort: {{ .Values.keycloak.service.targetport }}
+  selector:
+    app: keycloak
+  type: ClusterIP

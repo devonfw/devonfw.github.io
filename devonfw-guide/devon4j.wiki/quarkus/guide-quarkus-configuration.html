@@ -117,9 +117,12 @@
 <li><a href="#guide-quarkus-configuration.asciidoc_database-logging">Database Logging</a></li>
 </ul>
 </li>
-<li><a href="#guide-quarkus-configuration.asciidoc_security">Security</a>
+<li><a href="#guide-quarkus-configuration.asciidoc_secrets-and-environment-specific-configurations">Secrets and environment specific configurations</a>
 <ul class="sectlevel2">
-<li><a href="#guide-quarkus-configuration.asciidoc_password-encryption">Password Encryption</a></li>
+<li><a href="#guide-quarkus-configuration.asciidoc_environment-variables">Environment variables</a></li>
+<li><a href="#guide-quarkus-configuration.asciidoc_custom-config-sources">Custom config sources</a></li>
+<li><a href="#guide-quarkus-configuration.asciidoc_credential-encryption">Credential encryption</a></li>
+<li><a href="#guide-quarkus-configuration.asciidoc_hashicorp-vault">HashiCorp Vault</a></li>
 </ul>
 </li>
 </ul>
@@ -184,26 +187,101 @@ quarkus.hibernate-orm.log.bind-parameters=true</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="guide-quarkus-configuration.asciidoc_security">Security</h2>
+<h2 id="guide-quarkus-configuration.asciidoc_secrets-and-environment-specific-configurations">Secrets and environment specific configurations</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="guide-quarkus-configuration.asciidoc_password-encryption">Password Encryption</h3>
+<h3 id="guide-quarkus-configuration.asciidoc_environment-variables">Environment variables</h3>
 <div class="paragraph">
-<p>There is also some libraries to make Jasypt work with Quarkus such as <a href="https://camel.apache.org/camel-quarkus/latest/reference/extensions/jasypt.html">Camel Quarkus Jasypt</a>. Unfortunately, this feature only works in JVM mode and not in native mode.</p>
+<p>Quarkus reads configuration values from several locations, ordered by a certain priority. An overview of these can be found at the official  <a href="https://quarkus.io/guides/config-extending-support">Quarkus config guide</a>.</p>
 </div>
 <div class="paragraph">
-<p>Quarkus supports many credentials provider with official extensions such as HashiCorp Vault.</p>
+<p>Environment variables have a higher ordinal number and are therefore higher prioritized than e.g. the <code>application.properties</code> file.
+So instead of storing secrets in plain text in the configuration files, it is better to use environment variables for critical values to configure the application.</p>
+</div>
+<div class="paragraph">
+<p>Environment variables also have the advantage that they can be easily integrated into a containerized environment.
+When using Kubernetes, the secrets can be stored as <em>Kubernetes secret</em> and then passed to the containers as an environment variable.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-quarkus-configuration.asciidoc_custom-config-sources">Custom config sources</h3>
+<div class="paragraph">
+<p>Quarkus provides the possability to add custom config sources, which can be used to retrieve configuration values from custom locations.
+For a description of this feature, see the <a href="https://quarkus.io/guides/config-extending-support#custom-config-source">corresponding Quarkus guide</a>.</p>
+</div>
+<div class="sect3">
+<h4 id="guide-quarkus-configuration.asciidoc_config-interceptors">Config interceptors</h4>
+<div class="paragraph">
+<p>Quarkus also allows with the concept of interceptors to hook into the resolution of configuration values. This can be useful when configuration values are encrypted or need to be extracted.
+To do this, you have to implement a <code>ConfigSourceInterceptor</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>&lt;dependency&gt;
-  &lt;groupId&gt;io.quarkus&lt;/groupId&gt;
-  &lt;artifactId&gt;quarkus-vault&lt;/artifactId&gt;
-&lt;/dependency&gt;</code></pre>
+<pre class="highlight"><code class="Java language-Java">public class CustomConfigInterceptor implements ConfigSourceInterceptor {
+
+  @Override
+  public ConfigValue getValue(ConfigSourceInterceptorContext context, String name) {
+
+    ConfigValue configValue = context.proceed(name);
+    if (name.equals("config-value-to-resolve")) {
+      configValue = new ConfigValue.ConfigValueBuilder()
+          .withName(name)
+          .withValue(resolveConfigurationValue(name))
+          .build();
+    }
+
+    return configValue;
+  }
+
+  private String resolveConfigurationValue(String name) {
+    ...
+  }
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>A detailed guide can be found <a href="https://quarkus.io/guides/vault">here</a> and <a href="https://quarkus.io/guides/credentials-provider">here</a>.</p>
+<p>To use the Interceptor, you must register it. To do this, create a file  <code>io.smallrye.config.ConfigSourceInterceptor</code> in the folder <code>src/main/resources/META-INF/services</code> and register the interceptor register the interceptor by writing the fully qualified class name to this file.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-quarkus-configuration.asciidoc_credential-encryption">Credential encryption</h3>
+<div class="paragraph">
+<p>As for <a href="#../spring/guide-spring-configuration.asciidoc_security">Spring</a>, there are also some libraries that let Jasypt work with Quarkus such as <a href="https://camel.apache.org/camel-quarkus/latest/reference/extensions/jasypt.html">Camel Quarkus Jasypt</a>. Unfortunately, this feature only works in JVM mode and not in native mode, so it is not a suitable approach.</p>
+</div>
+<div class="paragraph">
+<p>If you want to store usernames or passwords in encrypted form or retrieve them from a custom store, you can use a custom <code>CredentialsProvider</code> for this purpose.
+Consider the use case where you want to store your database credentials in encrypted form rather than in plain text. Then you can implement a credentials provider as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="Java language-Java">@ApplicationScoped
+@Unremovable
+public class DatabaseCredentialsProvider implements CredentialsProvider {
+
+  @Override
+  public Map&lt;String, String&gt; getCredentials(String credentialsProviderName) {
+
+    Map&lt;String, String&gt; properties = new HashMap&lt;&gt;();
+    properties.put(USER_PROPERTY_NAME, decryptUsername());
+    properties.put(PASSWORD_PROPERTY_NAME, decryptPassword());
+    return properties;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the <code>application.properties</code> file you need to set <code>quarkus.datasource.credentials-provider=custom</code>.
+For more information about the credentials provider, see the official <a href="https://quarkus.io/guides/credentials-provider">Quarkus guide</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-quarkus-configuration.asciidoc_hashicorp-vault">HashiCorp Vault</h3>
+<div class="paragraph">
+<p>For centralized management of secrets and other critical configuration values, you can use <a href="https://www.vaultproject.io/">HashiCorp Vault</a> as external management tool.</p>
+</div>
+<div class="paragraph">
+<p>For detailed instructions on how to integrate Vault into your Quarkus application, see the official <a href="https://quarkus.io/guides/vault">Quarkus guide</a>.</p>
 </div>
 </div>
 </div>
@@ -330,7 +408,7 @@ quarkus.hibernate-orm.log.bind-parameters=true</code></pre>
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-12-27 10:26:25 UTC
+Last updated 2021-12-28 21:32:16 UTC
 </sub></div>
 </div>
 </div>

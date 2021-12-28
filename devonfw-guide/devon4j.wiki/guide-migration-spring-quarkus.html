@@ -135,15 +135,15 @@ This guide will focus more on the devon4j specific aspects. We assume that a wor
 <div class="sectionbody">
 <div class="paragraph">
 <p>We start with an empty Quarkus project. You can create the project with Maven on the command line or use the <a href="https://code.quarkus.io/">online generator</a>. The advantage of the online generator is that you have a pre-selection of dependencies to use in your project.
-For starters, let&#8217;s select the basic dependencies needed to develop a REST service with database connectivity (you can use one of the links in the <a href="#quarkus/quarkus-template.asciidoc">Quarkus template guide</a>): <em>RESTEasy JAX-RS, RESTEasy Jackson, Hibernate ORM, Spring Data JPA API, JDBC Driver (choose the type of database you need), Flyway (if you have database migration schemas), SmallRye Health (optional for Health Monitoring)</em></p>
+For starters, let&#8217;s select the basic dependencies required to develop a REST service with database connectivity (you can use one of the links in the <a href="#quarkus/quarkus-template.asciidoc">Quarkus template guide</a>): <em>RESTEasy JAX-RS, RESTEasy Jackson, Hibernate ORM, Spring Data JPA API, JDBC Driver (choose the type of database you need), Flyway (if you have database migration schemas), SmallRye Health (optional for Health Monitoring)</em></p>
 </div>
 <div class="paragraph">
-<p>The list does not include all required dependencies. We will add more dependencies to the project later. So for now generate the application with these dependencies.</p>
+<p>The list does not include all required dependencies. We will add more dependencies to the project later. For now, generate the application with these dependencies.</p>
 </div>
 <div class="sect2">
 <h3 id="guide-migration-spring-quarkus.asciidoc_migration-toolkit-from-red-hat">Migration Toolkit from Red Hat</h3>
 <div class="paragraph">
-<p>Red Hat provides a migration toolkit (<a href="https://developers.redhat.com/products/mta/overview">MTA, Migration Toolkit for Applications</a>), that supports you migrating a Spring application to a Quarkus application. There are several versions of this toolkit (e.g., a web console, a Maven plugin, or an IDE plugin).
+<p>Red Hat provides a migration toolkit (<a href="https://developers.redhat.com/products/mta/overview">MTA, Migration Toolkit for Applications</a>), that supports migration of a Spring to a Quarkus application. There are several versions of this toolkit (e.g., a web console, a Maven plugin, or an IDE plugin).
 The MTA analyzes your existing application and generates a report with hints and instructions for migrating from Spring to Quarkus. For example, it gives you an indication of which dependencies are not supported in your project for a Quarkus application and which dependencies you need to swap them with. The analysis is rule-based, and you can also add your own rules that will be checked during analysis.</p>
 </div>
 </div>
@@ -153,7 +153,7 @@ The MTA analyzes your existing application and generates a report with hints and
 <h2 id="guide-migration-spring-quarkus.asciidoc_entities">Entities</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>There is nothing special to consider when creating the entities. In most cases, you can simply take the code from your Spring application and use it for your Quarkus application. Usually, the entities extend a superclass <code>ApplicationPersistenceEntity</code> containing for example the <code>id</code> property. You can also take this class from your Spring application and reuse it.</p>
+<p>There is nothing special to consider when creating the entities. In most cases, you can simply take the code from your Spring application and use it for your Quarkus application. Usually, the entities extend a superclass <code>ApplicationPersistenceEntity</code> containing, for example, the <code>id</code> property. You can also take this class from your Spring application and reuse it.</p>
 </div>
 </div>
 </div>
@@ -164,7 +164,7 @@ The MTA analyzes your existing application and generates a report with hints and
 <p>The next step is to create the appropriate transfer objects for the entities. In a devon4j Spring application, we would use CobiGen to create these classes. Since CobiGen is not usable for this purpose in Quarkus applications yet, we have to create the classes manually.</p>
 </div>
 <div class="paragraph">
-<p>First we create some abstract base classes for the search criteria and DTO classes. Normally these would also be created by CobiGen.</p>
+<p>First, we create some abstract base classes for the search criteria and DTO classes. Normally, these would also be created by CobiGen.</p>
 </div>
 <div class="listingblock">
 <div class="title"><strong>AbstractSearchCriteriaTo</strong></div>
@@ -205,10 +205,10 @@ The MTA analyzes your existing application and generates a report with hints and
 </div>
 </div>
 <div class="paragraph">
-<p>The class <code>AbstractTo</code>, the other classes extend, would be provided by the <a href="https://github.com/devonfw/devon4j/tree/master/modules/basic"><code>devon4j-basic</code></a> module in a devon4j Spring application. You can take the code from <a href="https://github.com/devonfw/devon4j/blob/master/modules/basic/src/main/java/com/devonfw/module/basic/common/api/to/AbstractTo.java">here</a> and reuse it in your Quarkus project.</p>
+<p>The class <code>AbstractTo</code>, extended by other classes, would be provided by the <a href="https://github.com/devonfw/devon4j/tree/master/modules/basic"><code>devon4j-basic</code></a> module in a devon4j Spring application. You can take the code from <a href="https://github.com/devonfw/devon4j/blob/master/modules/basic/src/main/java/com/devonfw/module/basic/common/api/to/AbstractTo.java">here</a> and reuse it in your Quarkus project.</p>
 </div>
 <div class="paragraph">
-<p>Now you can create your transfer objects. Most of the code of the transfer objects of your Spring application should be reusable. For Quarkus, we recommend (as mentioned <a href="#guide-dto.asciidoc">here</a>) to use <code>*Dto</code> instead of <code>*Eto</code> classes. So be sure to change the names of the classes accordingly.</p>
+<p>Now you can create your transfer objects. Most of the code of the transfer objects of your Spring application should be reusable. For Quarkus, we recommend (as mentioned <a href="#guide-dto.asciidoc">here</a>) to use <code>*Dto</code> instead of <code>*Eto</code> classes. Be sure to change the names of the classes accordingly.</p>
 </div>
 </div>
 </div>
@@ -216,7 +216,7 @@ The MTA analyzes your existing application and generates a report with hints and
 <h2 id="guide-migration-spring-quarkus.asciidoc_data-access-layer">Data Access Layer</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>In devon4j, we propose to use <a href="#guide-repository.asciidoc">Spring Data JPA</a> to build the data access layer using repositories and QueryDSL to build <a href="#guide-jpa-query.asciidoc_dynamic-queries">dynamic queries</a>. We will also use this approach for Quarkus applications, but we need to change the implementation because the devon4j modules are based on reflection, which is not suitable for Quarkus.
+<p>In devon4j, we propose to use <a href="#guide-repository.asciidoc">Spring Data JPA</a> to build the data access layer using repositories and Querydsl to build <a href="#guide-jpa-query.asciidoc_dynamic-queries">dynamic queries</a>. We will also use this approach for Quarkus applications, but we need to change the implementation because the devon4j modules are based on reflection, which is not suitable for Quarkus.
 In Quarkus we will use Querydsl using code generation. So for this layer, more changes are required and we can&#8217;t just take the existing code.</p>
 </div>
 <div class="paragraph">
@@ -378,7 +378,7 @@ public class YourComponentRestService {
 <div class="sectionbody">
 <div class="paragraph">
 <p>As you have seen, some parts hardly differ when migrating a Spring application to a Quarkus application, while other parts differ more. The above sections describe the parts needed for simple applications that provide REST services with a data access layer.
-If you add more functionality, more customization and other frameworks/dependencies may be required. If that is the case, take a look at the corresponding guide on the topic in the devon4j documentation or check if there is a tutorial on the official <a href="https://quarkus.io/guides/">Quarkus website</a>.</p>
+If you add more functionality, more customization and other frameworks, dependencies may be required. If that is the case, take a look at the corresponding guide on the topic in the devon4j documentation or check if there is a tutorial on the official <a href="https://quarkus.io/guides/">Quarkus website</a>.</p>
 </div>
 <div class="paragraph">
 <p>Furthermore, we can summarize that migrating from a Spring application to a Quarkus representative is not complex. Although Quarkus is a very young framework (release 1.0 was in 2019), it brings a lot of proven standards and libraries that you can integrate into your application.
@@ -508,7 +508,7 @@ This makes it easy to migrate and reuse code from existing (Spring) applications
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-12-27 10:26:03 UTC
+Last updated 2021-12-28 21:31:58 UTC
 </sub></div>
 </div>
 </div>
