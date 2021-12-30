@@ -117,6 +117,7 @@
 <ul class="sectlevel2">
 <li><a href="#guide-repository.asciidoc_example">Example</a></li>
 <li><a href="#guide-repository.asciidoc_integration-of-spring-data-in-devon4j-spring">Integration of Spring Data in devon4j-spring</a></li>
+<li><a href="#guide-repository.asciidoc_custom-methods-without-fragment-approach">Custom methods without fragment approach</a></li>
 </ul>
 </li>
 <li><a href="#guide-repository.asciidoc_drawbacks">Drawbacks</a></li>
@@ -302,6 +303,63 @@ In Quarkus, native and named queries via the <code>@Query</code> annotation are 
 <p>For Spring applications, devon4j offers a proprietary solution that integrates seamlessly with QueryDSL and uses default methods instead of the fragment approach. A separate guide for this can be found <a href="#spring/guide-devon4j-spring-repository.asciidoc">here</a>.</p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="guide-repository.asciidoc_custom-methods-without-fragment-approach">Custom methods without fragment approach</h3>
+<div class="paragraph">
+<p>The fragment approach is a bit laborious, as three types (repository interface, fragment interface and fragment implementation) are always needed to implement custom methods.
+We cannot simply use default methods within the repository because we cannot inject the <code>EntityManager</code> directly into the repository interface.</p>
+</div>
+<div class="paragraph">
+<p>As a workaround, you can create a <code>GenericRepository</code> interface, as is done in the <a href="https://github.com/devonfw/devon4j/tree/master/modules/jpa-spring-data/src/main/java/com/devonfw/module/jpa/dataaccess/impl/data">devon4j jpa-spring-data module</a>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public interface GenericRepository&lt;E&gt; {
+
+  EntityManager getEntityManager();
+
+  ...
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public class GenericRepositoryImpl&lt;E&gt; implements GenericRepository&lt;E&gt; {
+
+  @Inject
+  EntityManager entityManager;
+
+  @Override
+  public EntityManager getEntityManager() {
+
+    return this.entityManager;
+  }
+
+  ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then, all your repository interfaces can extend the <code>GenericRepository</code> and you can implement queries directly in the repository interface using default methods:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">public interface ProductRepository extends JpaRepository&lt;ProductEntity, Long&gt;, GenericRepository&lt;ProductEntity&gt; {
+
+  default Page&lt;ProductEntity&gt; findByTitle(Title title) {
+
+    EntityManager entityManager = getEntityManager();
+    Query query = entityManager.createNativeQuery("select * from Product where title = :title", ProductEntity.class);
+    query.setParameter("title", title);
+    List&lt;ProductEntity&gt; products = query.getResultList();
+    return new PageImpl&lt;&gt;(products);
+  }
+
+  ...
+}</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -459,7 +517,7 @@ In Quarkus, native and named queries via the <code>@Query</code> annotation are 
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-12-28 21:41:13 UTC
+Last updated 2021-12-30 20:20:22 UTC
 </sub></div>
 </div>
 </div>

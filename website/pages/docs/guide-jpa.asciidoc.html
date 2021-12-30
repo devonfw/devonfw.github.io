@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2021-12-28 21:50:25 UTC">
+<meta name="author" content="Updated at 2021-12-30 20:28:22 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -523,7 +523,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2021-12-28 21:57:57 UTC</span><br>
+<span id="author" class="author">Updated at 2021-12-30 20:35:31 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -1426,9 +1426,58 @@ So for example to get all <a href="https://github.com/devonfw/my-thai-star/blob/
 </div>
 </div>
 <div class="sect4">
+<h5 id="guide-jpa-query.asciidoc_native-queries">Native Queries</h5>
+<div class="paragraph">
+<p>Spring Data supports the use of <em>native queries</em>. Native queries use simple native SQL syntax that is not parsed in JPQL. This allows you to use all the features that your database supports.
+The downside to this is that database portability is lost due to the absence of an abstraction layer. Therefore, the queries may not work with another database because it may use a different syntax.</p>
+</div>
+<div class="paragraph">
+<p>You can implement a native query using <code>@Query</code> annotation with the <code>nativeQuery</code> attribute set to true:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Query(value="...", nativeQuery=true)</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+This will not work with Quarkus because Quarkus does not support native queries by using the <code>@Query</code> annotation (see <a href="guide-jpa.asciidoc.html#guide-repository.asciidoc_limitations-in-quarkus">here</a>).
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>You can also implement native queries directly using the <code>EntityManager</code> API and the <code>createNativeQuery</code> method.
+<strong>This approach also works with Quarkus</strong>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Query query = entityManager.createNativeQuery("SELECT * FROM Product", ProductEntity.class);
+List&lt;ProductEntity&gt; products = query.getResultList();</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Be sure to use the name of the table when using native queries, while you must use the entity name when implementing queries with JPQL.
+</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="sect4">
 <h5 id="guide-jpa-query.asciidoc_using-wildcards">Using Wildcards</h5>
 <div class="paragraph">
-<p>For flexible queries it is often required to allow wildcards (especially in <a href="#guide-jpa-query.asciidoc_dynamic_queries">dynamic queries</a>). While users intuitively expect glob syntax the SQL and JPQL standards work different. Therefore a mapping is required. devonfw provides this on a lower level by <a href="https://github.com/devonfw/devon4j/blob/develop/modules/basic/src/main/java/com/devonfw/module/basic/common/api/query/LikePatternSyntax.java">LikePatternSyntax</a> and on a high level by <a href="https://github.com/devonfw/devon4j/blob/develop/modules/jpa-basic/src/main/java/com/devonfw/module/jpa/dataaccess/api/QueryUtil.java#L54">QueryUtil</a> (see <a href="https://github.com/devonfw/devon4j/blob/develop/modules/jpa-basic/src/main/java/com/devonfw/module/jpa/dataaccess/api/QueryHelper.java#L199">QueryHelper.newStringClause(…​)</a>).</p>
+<p>For flexible queries it is often required to allow wildcards (especially in <a href="#guide-jpa-query.asciidoc_dynamic_queries">dynamic queries</a>). While users intuitively expect glob syntax, the SQL and JPQL standards work differently. Therefore, a mapping is required. devonfw provides this on a lower level with <a href="https://github.com/devonfw/devon4j/blob/develop/modules/basic/src/main/java/com/devonfw/module/basic/common/api/query/LikePatternSyntax.java">LikePatternSyntax</a> and on a higher level with <a href="https://github.com/devonfw/devon4j/blob/develop/modules/jpa-basic/src/main/java/com/devonfw/module/jpa/dataaccess/api/QueryUtil.java#L54">QueryUtil</a> (see <a href="https://github.com/devonfw/devon4j/blob/develop/modules/jpa-basic/src/main/java/com/devonfw/module/jpa/dataaccess/api/QueryHelper.java#L199">QueryHelper.newStringClause(…​)</a>).</p>
 </div>
 </div>
 <div class="sect4">
@@ -1808,6 +1857,63 @@ In Quarkus, native and named queries via the <code>@Query</code> annotation are 
 <h6 id="guide-repository.asciidoc_integration-of-spring-data-in-devon4j-spring">Integration of Spring Data in devon4j-spring</h6>
 <div class="paragraph">
 <p>For Spring applications, devon4j offers a proprietary solution that integrates seamlessly with QueryDSL and uses default methods instead of the fragment approach. A separate guide for this can be found <a href="#spring/guide-devon4j-spring-repository.asciidoc">here</a>.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="guide-repository.asciidoc_custom-methods-without-fragment-approach">Custom methods without fragment approach</h6>
+<div class="paragraph">
+<p>The fragment approach is a bit laborious, as three types (repository interface, fragment interface and fragment implementation) are always needed to implement custom methods.
+We cannot simply use default methods within the repository because we cannot inject the <code>EntityManager</code> directly into the repository interface.</p>
+</div>
+<div class="paragraph">
+<p>As a workaround, you can create a <code>GenericRepository</code> interface, as is done in the <a href="https://github.com/devonfw/devon4j/tree/master/modules/jpa-spring-data/src/main/java/com/devonfw/module/jpa/dataaccess/impl/data">devon4j jpa-spring-data module</a>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public interface GenericRepository&lt;E&gt; {
+
+  EntityManager getEntityManager();
+
+  ...
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class GenericRepositoryImpl&lt;E&gt; implements GenericRepository&lt;E&gt; {
+
+  @Inject
+  EntityManager entityManager;
+
+  @Override
+  public EntityManager getEntityManager() {
+
+    return this.entityManager;
+  }
+
+  ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then, all your repository interfaces can extend the <code>GenericRepository</code> and you can implement queries directly in the repository interface using default methods:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public interface ProductRepository extends JpaRepository&lt;ProductEntity, Long&gt;, GenericRepository&lt;ProductEntity&gt; {
+
+  default Page&lt;ProductEntity&gt; findByTitle(Title title) {
+
+    EntityManager entityManager = getEntityManager();
+    Query query = entityManager.createNativeQuery("select * from Product where title = :title", ProductEntity.class);
+    query.setParameter("title", title);
+    List&lt;ProductEntity&gt; products = query.getResultList();
+    return new PageImpl&lt;&gt;(products);
+  }
+
+  ...
+}</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -2377,7 +2483,7 @@ As a generic approach you can solve this via <a href="guide-rest.asciidoc.html#g
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2021-12-28 21:45:49 UTC
+Last updated 2021-12-30 20:24:19 UTC
 </sub></div>
 
 

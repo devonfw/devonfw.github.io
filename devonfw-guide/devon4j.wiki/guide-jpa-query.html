@@ -116,6 +116,7 @@
 </ul>
 </li>
 <li><a href="#guide-jpa-query.asciidoc_dynamic-queries">Dynamic Queries</a></li>
+<li><a href="#guide-jpa-query.asciidoc_native-queries">Native Queries</a></li>
 <li><a href="#guide-jpa-query.asciidoc_using-wildcards">Using Wildcards</a></li>
 <li><a href="#guide-jpa-query.asciidoc_pagination">Pagination</a>
 <ul class="sectlevel2">
@@ -269,10 +270,61 @@ So for example to get all <a href="https://github.com/devonfw/my-thai-star/blob/
 </div>
 </div>
 <div class="sect1">
+<h2 id="guide-jpa-query.asciidoc_native-queries">Native Queries</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Spring Data supports the use of <em>native queries</em>. Native queries use simple native SQL syntax that is not parsed in JPQL. This allows you to use all the features that your database supports.
+The downside to this is that database portability is lost due to the absence of an abstraction layer. Therefore, the queries may not work with another database because it may use a different syntax.</p>
+</div>
+<div class="paragraph">
+<p>You can implement a native query using <code>@Query</code> annotation with the <code>nativeQuery</code> attribute set to true:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">@Query(value="...", nativeQuery=true)</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+This will not work with Quarkus because Quarkus does not support native queries by using the <code>@Query</code> annotation (see <a href="#guide-repository.asciidoc_limitations-in-quarkus">here</a>).
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>You can also implement native queries directly using the <code>EntityManager</code> API and the <code>createNativeQuery</code> method.
+<strong>This approach also works with Quarkus</strong>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="java language-java">Query query = entityManager.createNativeQuery("SELECT * FROM Product", ProductEntity.class);
+List&lt;ProductEntity&gt; products = query.getResultList();</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+Be sure to use the name of the table when using native queries, while you must use the entity name when implementing queries with JPQL.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="guide-jpa-query.asciidoc_using-wildcards">Using Wildcards</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>For flexible queries it is often required to allow wildcards (especially in <a href="#guide-jpa-query.asciidoc_dynamic_queries">dynamic queries</a>). While users intuitively expect glob syntax the SQL and JPQL standards work different. Therefore a mapping is required. devonfw provides this on a lower level by <a href="https://github.com/devonfw/devon4j/blob/develop/modules/basic/src/main/java/com/devonfw/module/basic/common/api/query/LikePatternSyntax.java">LikePatternSyntax</a> and on a high level by <a href="https://github.com/devonfw/devon4j/blob/develop/modules/jpa-basic/src/main/java/com/devonfw/module/jpa/dataaccess/api/QueryUtil.java#L54">QueryUtil</a> (see <a href="https://github.com/devonfw/devon4j/blob/develop/modules/jpa-basic/src/main/java/com/devonfw/module/jpa/dataaccess/api/QueryHelper.java#L199">QueryHelper.newStringClause(&#8230;&#8203;)</a>).</p>
+<p>For flexible queries it is often required to allow wildcards (especially in <a href="#guide-jpa-query.asciidoc_dynamic_queries">dynamic queries</a>). While users intuitively expect glob syntax, the SQL and JPQL standards work differently. Therefore, a mapping is required. devonfw provides this on a lower level with <a href="https://github.com/devonfw/devon4j/blob/develop/modules/basic/src/main/java/com/devonfw/module/basic/common/api/query/LikePatternSyntax.java">LikePatternSyntax</a> and on a higher level with <a href="https://github.com/devonfw/devon4j/blob/develop/modules/jpa-basic/src/main/java/com/devonfw/module/jpa/dataaccess/api/QueryUtil.java#L54">QueryUtil</a> (see <a href="https://github.com/devonfw/devon4j/blob/develop/modules/jpa-basic/src/main/java/com/devonfw/module/jpa/dataaccess/api/QueryHelper.java#L199">QueryHelper.newStringClause(&#8230;&#8203;)</a>).</p>
 </div>
 </div>
 </div>
@@ -609,7 +661,7 @@ As we are requesting with the <code>total</code> property set to <code>true</cod
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2021-12-28 21:41:00 UTC
+Last updated 2021-12-30 20:20:11 UTC
 </sub></div>
 </div>
 </div>
