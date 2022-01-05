@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2022-01-05 07:14:22 UTC">
+<meta name="author" content="Updated at 2022-01-05 10:59:45 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -523,7 +523,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2022-01-05 07:21:23 UTC</span><br>
+<span id="author" class="author">Updated at 2022-01-05 11:06:24 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -556,7 +556,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="cookbook-abstract-class-store.asciidoc.html"><span class="toc-current">Abstract Class Store</span></a>
 <ul class="sectlevel3">
-<li><a href="cookbook-abstract-class-store.asciidoc.html#guide-add-electron.asciidoc_add-electron-to-an-angular-application">Add Electron to an Angular application</a>
+<li><a href="cookbook-abstract-class-store.asciidoc.html#guide-add-electron.asciidoc_add-electron-to-an-angular-application-using-angular-cli">Add Electron to an Angular application using Angular CLI</a>
+</li>
+<li><a href="cookbook-abstract-class-store.asciidoc.html#guide-add-electron.asciidoc_add-electron-to-an-angular-application-using-nx-cli">Add Electron to an Angular application using Nx CLI</a>
 </li>
 </ul>
 </li>
@@ -719,7 +721,7 @@ export abstract class Store&lt;T&gt; implements OnDestroy {
 </div>
 <!-- toc disabled -->
 <div class="sect3">
-<h4 id="guide-add-electron.asciidoc_add-electron-to-an-angular-application">Add Electron to an Angular application</h4>
+<h4 id="guide-add-electron.asciidoc_add-electron-to-an-angular-application-using-angular-cli">Add Electron to an Angular application using Angular CLI</h4>
 <div class="paragraph">
 <p>This cookbook recipe explains how to integrate Electron in an Angular 10+ application. <a href="https://electronjs.org/">Electron</a> is a framework for creating native applications with web technologies like JavaScript, HTML, and CSS. As an example, very well known applications as Visual Studio Code, Atom, Slack or Skype (and many more) are using Electron too.</p>
 </div>
@@ -1161,6 +1163,85 @@ try {
 </li>
 </ul>
 </div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="guide-add-electron.asciidoc_add-electron-to-an-angular-application-using-nx-cli">Add Electron to an Angular application using Nx CLI</h4>
+<div class="paragraph">
+<p>Creating an Electron app is very easy and straight-forward if you are using Nx CLI. As a pre-requisite, you should already have an application in your Nx workspace which you want to run as a front-end in your Electron app. (You can follow <a href="https://github.com/devonfw/devon4ng/wiki/guide-creating-angular-app-with-nx-cli">this guide</a> if you want to get started with Nx).</p>
+</div>
+<div class="paragraph">
+<p>Follow the steps below to develop an Electron app in your Nx workspace:</p>
+</div>
+<div class="sect4">
+<h5 id="guide-add-electron.asciidoc_install-nx-electron">Install <code>nx-electron</code></h5>
+<div class="paragraph">
+<p>Install <code>nx-electron</code> using the command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>  npm install -D nx-electron</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will add the packages <code>electron</code> and <code>nx-electron</code> as dev dependencies to your Nx workspace. This will help us generate our Electron app in the next step.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guide-add-electron.asciidoc_generate-your-electron-app">Generate your Electron app</h5>
+<div class="paragraph">
+<p>Once you have installed <code>nx-electron</code>, you can generate your electron app using the command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>  nx g nx-electron:app &lt;electron-app-name&gt; --frontendProject=&lt;frontend-app-name&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And that is it! You have generated your Electron app already. All the configuration files (<code>tsconfig.*</code>) are generated for you under &lt;electron-app-name&gt; in your Nx workspace.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guide-add-electron.asciidoc_serving-your-app">Serving your app</h5>
+<div class="paragraph">
+<p>You can use this command to serve your Electron app:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>  nx run-many --target=serve --projects=&lt;frontend-app-name&gt;,&lt;electron-app-name&gt; --parallel</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you see a blank application, it is because the Electron app was served before the front-end was served. To avoid this, you can serve the front-end and back-end separately, (that is, serve the back-end only after the front-end is served).</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guide-add-electron.asciidoc_building-your-app">Building your app</h5>
+<div class="paragraph">
+<p>The command for building your Electron app in Nx is similar to the <code>serve</code> command above, you only change the target from <code>serve</code> to <code>build</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>  nx run-many --target=build --projects=&lt;frontend-app-name&gt;,&lt;electron-app-name&gt; --parallel</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guide-add-electron.asciidoc_packaging-your-app">Packaging your app</h5>
+<div class="paragraph">
+<p>Make sure you have build your app before you try to package it using the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>  nx run &lt;electron-app-name&gt;:package [--options]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The options that can be passed can be found <a href="https://github.com/bennymeg/nx-electron/blob/master/src/builders/package/schema.json">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>You can find a working example of an Electron app in <a href="https://github.com/devonfw-sample/devon4ts-samples/tree/master/apps/angular-electron-test">devon4ts-samples</a>.</p>
+</div>
 <!-- toc disabled -->
 </div>
 </div>
@@ -1282,7 +1363,7 @@ try {
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-01-05 07:10:23 UTC
+Last updated 2022-01-05 10:55:58 UTC
 </sub></div>
 
 

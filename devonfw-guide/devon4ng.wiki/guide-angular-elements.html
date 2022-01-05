@@ -157,7 +157,7 @@
 <h2 id="guide-angular-elements.asciidoc_negative-points-about-elements">Negative points about Elements</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Angular Elements is really powerful but since, the transition between views between views is going to be handled by another framework or html/javascript, using Angular <code>Router</code> is not possible. the view transitions have to be handled manually. This fact also eliminates the possibility of just porting an application completely.</p>
+<p>Angular Elements is really powerful but since, the transition between views is going to be handled by another framework or HTML/JavaScript, using Angular <code>Router</code> is not possible. the view transitions have to be handled manually. This fact also eliminates the possibility of just porting an application completely.</p>
 </div>
 </div>
 </div>
@@ -242,7 +242,7 @@ export class AppModule {
 <div class="sect2">
 <h3 id="guide-angular-elements.asciidoc_a-component-example">A component example</h3>
 <div class="paragraph">
-<p>In order to be able to use a component, <code>@Input()</code> and <code>@Output()</code> variables are used. These variables are going to be the ones that will allow the Angular Element to communicate with the framework/javascript:</p>
+<p>In order to be able to use a component, <code>@Input()</code> and <code>@Output()</code> variables are used. These variables are going to be the ones that will allow the Angular Element to communicate with the framework/JavaScript:</p>
 </div>
 <div class="paragraph">
 <p>Component html</p>
@@ -327,7 +327,7 @@ export class DishFormComponent implements OnInit {
 <div class="sect4">
 <h5 id="guide-angular-elements.asciidoc_installing-polyfaces">Installing Polyfaces</h5>
 <div class="paragraph">
-<p>Another solution is to use AutoPollyfill. In order to do so, the library is going to be installed with a packet manager:</p>
+<p>Another solution is to use <code>AutoPollyfill</code>. In order to do so, the library is going to be installed with a packet manager:</p>
 </div>
 <div class="paragraph">
 <p>Yarn</p>
@@ -346,7 +346,7 @@ export class DishFormComponent implements OnInit {
 </div>
 </div>
 <div class="paragraph">
-<p>After the packet manager has finished, inside the src folder a new file <code>polyfills.ts</code> is found. To solve the error, importing the corresponding adapter (<code>custom-elements-es5-adapter.js</code>) is necessary:</p>
+<p>After the packet manager has finished, inside the <code>src</code> folder a new file <code>polyfills.ts</code> is found. To solve the error, importing the corresponding adapter (<code>custom-elements-es5-adapter.js</code>) is necessary:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -367,15 +367,15 @@ import '@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js';
 <div class="sect2">
 <h3 id="guide-angular-elements.asciidoc_building-the-angular-element">Building the Angular Element</h3>
 <div class="paragraph">
-<p>First, before building the <code>Angular Element</code>, every element inside that app component except the module need to be removed. After that, a bash script is created in the root folder,. This script will allow to put every necessary file into a js.</p>
+<p>First, before building the <code>Angular Element</code>, every element inside that app component except the module need to be removed. After that, a bash script is created in the root folder,. This script will allow to put every necessary file into a JS.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>ng build "projectName" --prod --output-hashing=none &amp;&amp; cat dist/"projectName"/runtime.js dist/"projectName"/polyfills.js dist/"projectName"/scripts.js dist/"projectName"/main.js &gt; ./dist/"projectName"/"nameWantedAngularElement".js</code></pre>
+<pre class="highlight"><code>ng build "projectName" --configuration production --output-hashing=none &amp;&amp; cat dist/"projectName"/runtime.js dist/"projectName"/polyfills.js dist/"projectName"/scripts.js dist/"projectName"/main.js &gt; ./dist/"projectName"/"nameWantedAngularElement".js</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>After executing the bash script, it will generate inside the path <code>dist/"projectName"</code> a js file named <code>"nameWantedAngularElement".js</code> and a css file.</p>
+<p>After executing the bash script, it will generate inside the path <code>dist/"projectName"</code> (or <code>dist/apps/projectname</code> in a Nx workspace) a JS file named <code>"nameWantedAngularElement".js</code> and a css file.</p>
 </div>
 <div class="sect4">
 <h5 id="guide-angular-elements.asciidoc_building-with-ngx-build-plus-recommended">Building with <code>ngx-build-plus</code> (Recommended)</h5>
@@ -411,7 +411,7 @@ import '@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js';
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>ng build "projectName" --output-hashing none --single-bundle true --prod --bundle-styles false</code></pre>
+<pre class="highlight"><code>ng build "projectName" --output-hashing none --single-bundle true --configuration production --bundle-styles false</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -420,10 +420,10 @@ import '@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js';
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>The main js bundle</p>
+<p>The main JS bundle</p>
 </li>
 <li>
-<p>The script js</p>
+<p>The script JS</p>
 </li>
 <li>
 <p>The css</p>
@@ -431,7 +431,7 @@ import '@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js';
 </ol>
 </div>
 <div class="paragraph">
-<p>These files will be used later instead of the single js generated in the last step.</p>
+<p>These files will be used later instead of the single JS generated in the last step.</p>
 </div>
 <div class="sect5">
 <h6 id="guide-angular-elements.asciidoc_extra-parameters">Extra parameters</h6>
@@ -444,13 +444,13 @@ import '@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js';
 <p><code>--keep-polyfills</code>: This parameter is going to allow us to keep the polyfills. This needs to be used with caution, avoiding using multiple different polyfills that could cause an error is necessary.</p>
 </li>
 <li>
-<p><code>--extraWebpackConfig webpack.extra.js</code>: This parameter allows us to create a javascript file inside our <code>Angular Elements</code> project with the name of different libraries. Using <code>webpack</code> these libraries will not be included in the <code>Angular Element</code>. This is useful to lower the size of our <code>Angular Element</code> by removing libraries shared. Example:</p>
+<p><code>--extraWebpackConfig webpack.extra.js</code>: This parameter allows us to create a JavaScript file inside our <code>Angular Elements</code> project with the name of different libraries. Using <code>webpack</code> these libraries will not be included in the <code>Angular Element</code>. This is useful to lower the size of our <code>Angular Element</code> by removing libraries shared. Example:</p>
 </li>
 </ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="javascript language-javascript">const webpack = require('webpack');
+<pre class="highlight"><code class="JavaScript language-JavaScript">const webpack = require('webpack');
 
 module.exports = {
     "externals": {
@@ -555,7 +555,7 @@ module.exports = {
 </div>
 </div>
 <div class="paragraph">
-<p>In this html, the css generated in the last step is going to be imported inside the <code>&lt;head&gt;</code> and then, the javascript element is going to be imported at the end of the body. After that is done, There is two uses of <code>Angular Elements</code> in the html, one directly with use of the <code>@input()</code> variables as parameters commented in the html:</p>
+<p>In this html, the css generated in the last step is going to be imported inside the <code>&lt;head&gt;</code> and then, the JavaScript element is going to be imported at the end of the body. After that is done, There is two uses of <code>Angular Elements</code> in the html, one directly with use of the <code>@input()</code> variables as parameters commented in the html:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -587,7 +587,7 @@ module.exports = {
 </div>
 </div>
 <div class="paragraph">
-<p>This javascript is an example of how to create dynamically an <code>Angular Element</code> inserting attributed to fill our <code>@Input()</code> variables and listen to the <code>@Output()</code> that was defined earlier. This is done with:</p>
+<p>This JavaScript is an example of how to create dynamically an <code>Angular Element</code> inserting attributed to fill our <code>@Input()</code> variables and listen to the <code>@Output()</code> that was defined earlier. This is done with:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -599,7 +599,7 @@ module.exports = {
 </div>
 </div>
 <div class="paragraph">
-<p>This allows javascript to hook with the <code>@Output()</code> event emitter that was defined. When this event gets called, another component that was defined gets inserted dynamically.</p>
+<p>This allows JavaScript to hook with the <code>@Output()</code> event emitter that was defined. When this event gets called, another component that was defined gets inserted dynamically.</p>
 </div>
 </div>
 </div>
@@ -660,6 +660,22 @@ module.exports = {
 </div>
 <div class="paragraph">
 <p>By declaring the files in the <code>angular.json</code> angular will take care of including them in a proper way.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="literalblock">
+<div class="content">
+<pre>If you are using Nx, the configuration file `angular.json` might be named as `workspace.json`, depending on how you had setup the workspace. The structure of the file remains similar though.</pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -734,6 +750,9 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
   &lt;dish-form&gt;&lt;/dish-form&gt;
 &lt;/div&gt;</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>You can find a working example of Angular Elements in our <a href="https://github.com/devonfw-sample/devon4ts-samples">devon4ts-samples</a> repo by referring the samples named angular-elements and angular-elements-test.</p>
 </div>
 </div>
 </div>
@@ -861,7 +880,7 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2022-01-05 07:07:33 UTC
+Last updated 2022-01-05 10:53:16 UTC
 </sub></div>
 </div>
 </div>

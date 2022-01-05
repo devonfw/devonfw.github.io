@@ -138,13 +138,13 @@
 <div class="ulist">
 <ul>
 <li>
-<p>Node.js</p>
+<p>NodeJS</p>
 </li>
 <li>
 <p>npm package manager</p>
 </li>
 <li>
-<p>Angular CLI</p>
+<p>Angular CLI / Nx CLI</p>
 </li>
 <li>
 <p>Ionic 5 CLI</p>
@@ -174,19 +174,22 @@
 <div class="sect2">
 <h3 id="guide-ionic-pwa.asciidoc_step-1-create-a-new-project">Step 1: Create a new project</h3>
 <div class="paragraph">
-<p>This step can be completed with one simple command: <code>ionic start &lt;name&gt; &lt;template&gt;</code>, where &lt;name&gt; is the name and &lt;template&gt; a model for the app. In this case, the app is going to be named <code><strong>basic-ion-pwa</strong></code>.</p>
+<p>This step can be completed with one simple command: <code>ionic start &lt;name&gt; &lt;template&gt;</code>, where <code>&lt;name&gt;</code> is the name and <code>&lt;template&gt;</code> a model for the app. In this case, the app is going to be named <code><strong>basic-ion-pwa</strong></code>.</p>
+</div>
+<div class="paragraph">
+<p>If you are using Nx, there is a pre-requisite to this step. And that is, you have to add the <code>@nxtend/ionic-angular</code> plugin to your Nx workspace. The command for that is <code>npm install --save-dev @nxtend/ionic-angular</code>. Once you have the plugin installed, you can generate an ionic app in your Nx workspace with the command <code>nx generate @nxtend/ionic-angular:app basic-ion-pwa</code>. (You can refer <a href="https://github.com/devonfw/devon4ng/wiki/guide-creating-angular-app-with-nx-cli">this guide</a> if you want to get started with Nx).</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="guide-ionic-pwa.asciidoc_step-2-structures-and-styles">Step 2: Structures and styles</h3>
 <div class="paragraph">
-<p>The styles (scss) and structures (html) do not have anything specially relevant, just colors and ionic web components. The code can be found in <a href="https://github.com/devonfw/devon4ng/tree/master/samples/IonicBasicPWA">devon4ng samples</a>.</p>
+<p>The styles (scss) and structures (html) do not have anything specially relevant, just colors and ionic web components. The code can be found in <a href="https://github.com/devonfw-sample/devon4ts-samples/tree/master/apps/ionic-basic-pwa">devon4ts-samples</a>.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="guide-ionic-pwa.asciidoc_step-3-add-functionality">Step 3: Add functionality</h3>
 <div class="paragraph">
-<p>After this step, the app will allow users take photos and display them in the main screen.
+<p>After this step, the app will allow users to take photos and display them in the main screen.
 First we have to import three important elements:</p>
 </div>
 <div class="ulist">
@@ -205,12 +208,11 @@ First we have to import three important elements:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>  import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-  import { Plugins, CameraResultType } from '@capacitor/core';
-  const { Camera, Toast } = Plugins;</code></pre>
+  import { Plugins, CameraResultType } from '@capacitor/core';</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The process of taking a picture is enclosed in a <strong>takePicture</strong> method. takePicture calls the Camera&#8217;s <em>getPhoto</em> function which returns an URL or an exception. If a photo is taken then the image displayed in the main page will be changed for the new picture, else, if the app is closed without changing it, a toast message will be displayed.</p>
+<p>The process of taking a picture is enclosed in a <code>takePicture()</code> method. <code>takePicture()</code> calls the Camera&#8217;s <code>getPhoto()</code> function which returns an URL or an exception. If a photo is taken then the image displayed in the main page will be changed for the new picture, else, if the app is closed without changing it, a toast message will be displayed.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -220,7 +222,7 @@ First we have to import three important elements:</p>
 
     async takePicture() {
       try {
-        const image = await Camera.getPhoto({
+        const image = await Plugins.Camera.getPhoto({
           quality: 90,
           allowEditing: true,
           resultType: CameraResultType.Uri,
@@ -234,7 +236,7 @@ First we have to import three important elements:</p>
     }
 
     async show(message: string) {
-      await Toast.show({
+      await Plugins.Toast.show({
         text: message,
       });
     }
@@ -269,7 +271,7 @@ defineCustomElements(window);</code></pre>
 <div class="sect2">
 <h3 id="guide-ionic-pwa.asciidoc_step-5-make-it-progressive.">Step 5: Make it Progressive.</h3>
 <div class="paragraph">
-<p>Turning an Ionic 5 app into a PWA is pretty easy, the same module used to turn Angular apps into PWAs has to be added, to do so, run: <code>ng add @angular/pwa</code>. This command also creates an <strong>icons</strong> folder inside <strong>src/assets</strong> and contains angular icons for multiple resolutions. If you want use other images, be sure that they have the same resolution, the names can be different but the file <strong>manifest.json</strong> has to be changed accordingly.</p>
+<p>Turning an Ionic 5 app into a PWA is pretty easy. The same module used to turn Angular apps into PWAs has to be added. To do so, run: <code>ng add @angular/pwa</code>. This command also creates an <strong>icons</strong> folder inside <strong>src/assets</strong> and contains angular icons for multiple resolutions. (Note: In an Nx workspace, you have to add it like a normal package using <code>npm install @angular/pwa</code>, and you have to manually add the icons). If you want to use other images, be sure that they have the same resolution, the names can be different but the file <strong>manifest.json</strong> has to be changed accordingly.</p>
 </div>
 </div>
 <div class="sect2">
@@ -284,7 +286,7 @@ defineCustomElements(window);</code></pre>
 <p><strong>ngsw-config.json</strong></p>
 </div>
 <div class="paragraph">
-<p>At <em>assetGroups &#8594; resources</em> add a URLs field and a pattern to match PWA Elements scripts and other resources (images, styles, &#8230;&#8203;):</p>
+<p>At <code>assetGroups</code> &#8594; <code>resources</code> add a URLs field and a pattern to match PWA Elements scripts and other resources (images, styles, &#8230;&#8203;):</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -295,10 +297,10 @@ defineCustomElements(window);</code></pre>
 <div class="sect2">
 <h3 id="guide-ionic-pwa.asciidoc_step-7-check-that-your-app-is-a-pwa">Step 7: Check that your app is a PWA</h3>
 <div class="paragraph">
-<p>To check if an app is a PWA lets compare its normal behaviour against itself but built for production. Run in the project&#8217;s root folder the commands below:</p>
+<p>To check if an app is a PWA lets compare its normal behavior against itself but built for production. Run in the project&#8217;s root folder the commands below:</p>
 </div>
 <div class="paragraph">
-<p><code>ionic build --prod</code> to build the app using production settings.</p>
+<p><code>ionic build --configuration production</code> to build the app using production settings. (<code>nx build basic-ion-pwa --configuration production</code> in your Nx workspace root).</p>
 </div>
 <div class="paragraph">
 <p><code>npm install http-server</code> to install an npm module that can serve your built application. Documentation <a href="https://www.npmjs.com/package/http-server">here</a>. A good alternative is also <code>npm install serve</code>. It can be checked <a href="https://github.com/zeit/serve">here</a>.</p>
@@ -329,7 +331,7 @@ In order not to install anything not necessary <code>npx</code> can be used dire
 </div>
 <div class="paragraph">
 <p>&#160;<br>
-In another console instance run <code>ionic serve</code> to open the common app (not built).</p>
+In another console instance run <code>ionic serve</code> (<code>nx serve basic-ion-pwa</code> if using Nx CLI) to open the common app (not built).</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -492,7 +494,7 @@ Finally, plugins like <a href="https://chrome.google.com/webstore/detail/lightho
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2022-01-05 07:07:56 UTC
+Last updated 2022-01-05 10:53:39 UTC
 </sub></div>
 </div>
 </div>

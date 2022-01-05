@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2022-01-05 07:14:22 UTC">
+<meta name="author" content="Updated at 2022-01-05 10:59:45 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -523,7 +523,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2022-01-05 07:21:23 UTC</span><br>
+<span id="author" class="author">Updated at 2022-01-05 11:06:24 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -620,7 +620,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect2">
 <h3 id="guide-angular-library.asciidoc">Angular Library</h3>
 <div class="paragraph">
-<p><code>Angular CLI</code> provides us with methods that allow the creation of a library. After that, using either packet manager (<code>npm</code> or <code>yarn</code>) the library can be build and packed which will allow later to install/publish it.</p>
+<p><code>Angular CLI</code> provides us with methods that allow the creation of a library. After that, using a packet manager (either <code>npm</code> or <code>yarn</code>) the library can be build and packed which will allow later to install/publish it.</p>
 </div>
 <div class="sect3">
 <h4 id="guide-angular-library.asciidoc_whats-a-library">Whats a library?</h4>
@@ -631,10 +631,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect3">
 <h4 id="guide-angular-library.asciidoc_how-to-build-a-library">How to build a library</h4>
 <div class="paragraph">
-<p>In this section, a library is going to be build step by step.</p>
+<p>In this section, a library is going to be build step by step. Please note, we will be explaining the steps using both Angular CLI and Nx CLI. You are free to choose either one for your development.</p>
 </div>
 <div class="sect4">
-<h5 id="guide-angular-library.asciidoc_creating-an-empty-application">Creating an empty application</h5>
+<h5 id="guide-angular-library.asciidoc_1.-creating-an-empty-application">1. Creating an empty application</h5>
 <div class="paragraph">
 <p>First, using <code>Angular CLI</code> we are going to generate a empty application which will be later filled with the generated library. In order to do so, <code>Angular CLI</code> allows us to add to <code>ng new "application-name"</code> an option (<code>--create-application</code>). This option is going to tell <code>Angular CLI</code> not to create the initial <code>app</code> project. This is convenient since a library is going to be generated in later steps. Using this command <code>ng new "application-name" --create-application=false</code> an empty project with the name wanted is created.</p>
 </div>
@@ -643,9 +643,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <pre class="highlight"><code>ng new "application-name" --create-application=false</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>This step is much more easier and straight-forward when using Nx. Nx allows us to work in a monorepo workspace, where you can develop a project as an application, or a library, or a tool. You can follow <a href="https://github.com/devonfw/devon4ng/wiki/guide-creating-angular-app-with-nx-cli">this guide</a> to get started with Nx.
+The command for generating a library in Nx is <code>nx generate @nrwl/angular:library library-name --publishable --importPath=library-name</code>. This will create an empty angular application which we can modify and publish as a library.</p>
+</div>
 </div>
 <div class="sect4">
-<h5 id="guide-angular-library.asciidoc_generating-a-library">Generating a library</h5>
+<h5 id="guide-angular-library.asciidoc_2.-generating-a-library">2. Generating a library</h5>
 <div class="paragraph">
 <p>After generating an empty application, a library is going to be generated. Inside the folder of the project, the <code>Angular CLI</code> command <code>ng generate library "library-name"</code> is going to generate the library as a project (<code>projects/"library-name"</code>). As an addition, the option <code>--prefix="library-prefix-wanted"</code> allows us to switch the default prefix that Angular generated with (<code>lib</code>). Using the option to change the prefix the command will look like this <code>ng generate library "library-name" --prefix="library-prefix-wanted"</code>.</p>
 </div>
@@ -654,39 +658,48 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <pre class="highlight"><code>ng generate library "library-name" --prefix="library-prefix-wanted"</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>If you are using Nx, this step is not needed as it is already covered in step 1. In this case, the library project will be generated in the <code>libs</code> folder of a Nx workspace.</p>
+</div>
 </div>
 <div class="sect4">
-<h5 id="guide-angular-library.asciidoc_generatingmodifying-in-our-library">Generating/Modifying in our library</h5>
+<h5 id="guide-angular-library.asciidoc_3.-modifying-our-library">3. Modifying our library</h5>
 <div class="paragraph">
-<p>In the last step we generated a library. This generates automatically a <code>module</code>,<code>service</code> and <code>component</code> inside (<code>projects/"library-name"</code>) that we can modify adding new methods, components etc that we want to use in other projects. We can generate other elements, using the usual <code>Angular CLI</code> generate commands adding the option <code>--project="library-name"</code> is going to allow to generate elements within our project . An example of this is: <code>ng generate service "name" --project="library-name"</code>.</p>
+<p>In the last step we generated a library. This automatically generates a <code>module</code>,<code>service</code> and a <code>component</code> inside <code>projects/"library-name"</code> that we can modify adding new methods, components etc that we want to use in other projects. We can generate other elements, using the usual <code>Angular CLI</code> generate commands adding the option <code>--project="library-name"</code>, this will allow to generate elements within our project . An example of this is: <code>ng generate service "name" --project="library-name"</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>ng generate "element" "name" --project="library-name"</code></pre>
 </div>
 </div>
-</div>
-<div class="sect4">
-<h5 id="guide-angular-library.asciidoc_exporting-the-generated-things">Exporting the generated things</h5>
 <div class="paragraph">
-<p>Inside the library (<code>projects/"library-name</code>) there’s a <code>public_api.ts</code> which is the file that exports the elements inside the library. In case we generated other things, that file needs to be modified adding the extra exports with the generated elements. In addition, changing the library version is possible in the file <code>package.json</code>.</p>
+<p>You can use the same command as above in a Nx workspace.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="guide-angular-library.asciidoc_building-our-library">Building our library</h5>
+<h5 id="guide-angular-library.asciidoc_4.-exporting-the-generated-things">4. Exporting the generated things</h5>
 <div class="paragraph">
-<p>Once we added the necessary exports, in order to use the library in other applications, we need to build the library. The command <code>ng build "library-name"</code> is going to build the library, generating in <code>"project-name"/dist/"library-name"</code> the necessary files.</p>
+<p>Inside the library (<code>projects/"library-name</code>) there’s a <code>public_api.ts</code> which is the file that exports the elements inside the library. (The file is named as <code>index.ts</code> in an Nx workspace). In case we generated other things, this file needs to be modified adding the extra exports with the generated elements. In addition, changing the library version is possible in the file <code>package.json</code>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="guide-angular-library.asciidoc_5.-building-our-library">5. Building our library</h5>
+<div class="paragraph">
+<p>Once we added the necessary exports, in order to use the library in other applications, we need to build the library. The command <code>ng build "library-name"</code> is going to build the library, generating the necessary files in <code>"project-name"/dist/"library-name"</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>ng build "library-name"</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>You can use the same command in Nx as well. Only the path for the generated files will be slightly different: <code>"project-name"/dist/libs/"library-name"</code></p>
+</div>
 </div>
 <div class="sect4">
-<h5 id="guide-angular-library.asciidoc_packing-the-library">Packing the library</h5>
+<h5 id="guide-angular-library.asciidoc_6.-packing-the-library">6. Packing the library</h5>
 <div class="paragraph">
-<p>In this step we are going to pack the build library. In order to do so, we need to go inside <code>dist/"library-name"</code> and then run either <code>npm pack</code> or <code>yarn pack</code> to generate a <code>"library-name-version.tgz"</code> file.</p>
+<p>In this step we are going to pack the build library. In order to do so, we need to go inside <code>dist/"library-name"</code> (or <code>dist/libs/"library-name"</code>) and then run either <code>npm pack</code> or <code>yarn pack</code> to generate a <code>"library-name-version.tgz"</code> file.</p>
 </div>
 <div class="listingblock">
 <div class="title">Listing 48. Packing using npm</div>
@@ -702,7 +715,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect4">
-<h5 id="guide-angular-library.asciidoc_publishing-to-npm-repository-optional">Publishing to npm repository (optional)</h5>
+<h5 id="guide-angular-library.asciidoc_7.-publishing-to-npm-repository-optional">7. Publishing to npm repository (optional)</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -721,7 +734,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect4">
-<h5 id="guide-angular-library.asciidoc_installing-our-library-in-other-projects">Installing our library in other projects</h5>
+<h5 id="guide-angular-library.asciidoc_8.-installing-our-library-in-other-projects">8. Installing our library in other projects</h5>
 <div class="paragraph">
 <p>In this step we are going to install/add the library on other projects.</p>
 </div>
@@ -759,7 +772,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect4">
-<h5 id="guide-angular-library.asciidoc_using-the-library">Using the library</h5>
+<h5 id="guide-angular-library.asciidoc_9.-using-the-library">9. Using the library</h5>
 <div class="paragraph">
 <p>Finally, once the library was installed with either packet manager, you can start using the elements from inside like they would be used in a normal element inside the application. Example <code>app.component.ts</code>:</p>
 </div>
@@ -973,7 +986,7 @@ export class AppModule { }</code></pre>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-01-05 07:10:23 UTC
+Last updated 2022-01-05 10:55:58 UTC
 </sub></div>
 
 
