@@ -1,6 +1,10 @@
 const editLinksModule = (function(window) {
     // Function definitions
   
+    fetch('../../shared/rightmenu.js').then(response => response.text()).then(data => {
+        eval(data);
+    })
+
     function executeRules(rules) {
       let result;
       let path = $("li").has(".sectlevel1").has(".toc-current").find("a").first().attr("href") || window.location.pathname;
