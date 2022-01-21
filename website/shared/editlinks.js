@@ -1,9 +1,6 @@
 const editLinksModule = (function(window) {
     // Function definitions
   
-    fetch('../../shared/rightmenu.js').then(response => response.text()).then(data => {
-        eval(data);
-    })
 
     function executeRules(rules) {
       let result;
