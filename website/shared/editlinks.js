@@ -1,6 +1,7 @@
 const editLinksModule = (function(window) {
     // Function definitions
   
+
     function executeRules(rules) {
       let result;
       let path = $("li").has(".sectlevel1").has(".toc-current").find("a").first().attr("href") || window.location.pathname;
