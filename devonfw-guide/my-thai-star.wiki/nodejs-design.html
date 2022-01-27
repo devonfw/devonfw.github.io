@@ -134,7 +134,7 @@
 <h2 id="nodejs-design.asciidoc_introduction">Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The NodeJS backend for My Thai Star application is going to be based on:</p>
+<p>The NodeJS back-end for My Thai Star application is going to be based on:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -184,7 +184,7 @@
 <p>public - All files which be exposed on the server directly</p>
 </li>
 <li>
-<p>src</p>
+<p><code>src</code></p>
 <div class="ulist">
 <ul>
 <li>
@@ -268,7 +268,7 @@
 </ul>
 </div>
 <div class="paragraph">
-<p>In order to be compatible with the other backend implementations, we must follow the <a href="https://github.com/devonfw/devon4j/wiki/guide-rest">naming conventions</a> proposed for <em>Devon4j</em> applications. We will define the following <em>end points</em> for the listed services.</p>
+<p>In order to be compatible with the other back-end implementations, we must follow the <code><a href="https://github.com/devonfw/devon4j/wiki/guide-rest">naming conventions</a></code> proposed for <em>Devon4j</em> applications. We will define the following <em>end points</em> for the listed services.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -307,13 +307,13 @@
 <div class="ulist">
 <ul>
 <li>
-<p>bookingmanagement: will answer all requests with the prefix <code>/mythaistar/services/rest/bookingmanagement/v1</code></p>
+<p><code>bookingmanagement</code>: will answer all requests with the prefix <code>/mythaistar/services/rest/bookingmanagement/v1</code></p>
 </li>
 <li>
-<p>dishmanagement: will answer all requests with the prefix <code>/mythaistar/services/rest/dishmanagement/v1</code></p>
+<p><code>dishmanagement</code>: will answer all requests with the prefix <code>/mythaistar/services/rest/dishmanagement/v1</code></p>
 </li>
 <li>
-<p>ordermanagement: will answer all requests with the prefix <code>/mythaistar/services/rest/ordermanagement/v1</code></p>
+<p><code>ordermanagement</code>: will answer all requests with the prefix <code>/mythaistar/services/rest/ordermanagement/v1</code></p>
 </li>
 </ul>
 </div>
@@ -365,6 +365,7 @@
         order = await oasp4fn.table('Order', orderId).promise() as dbtypes.Order;
 
         [...]
+    }
 }</code></pre>
 </div>
 </div>
@@ -378,7 +379,7 @@
 <h2 id="nodejs-design.asciidoc_security-with-json-web-token">Security with Json Web Token</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>For the <em>Authentication</em> and <em>Authorization</em> the app will implement the <a href="https://jwt.io/">json web token</a> protocol.</p>
+<p>For the <em>Authentication</em> and <em>Authorization</em> the app will implement the <code><a href="https://jwt.io/">json web token</a></code> protocol.</p>
 </div>
 <div class="sect2">
 <h3 id="nodejs-design.asciidoc_jwt-basics">JWT basics</h3>
@@ -389,7 +390,7 @@
 <div class="sect2">
 <h3 id="nodejs-design.asciidoc_jwt-implementation-details">JWT implementation details</h3>
 <div class="paragraph">
-<p>The <em>Json Web Token</em> pattern will be implemented based on the <a href="https://github.com/auth0/node-jsonwebtoken"><em>JSON web token</em></a> library available on npm.</p>
+<p>The <em>Json Web Token</em> pattern will be implemented based on the <code><a href="https://github.com/auth0/node-jsonwebtoken"><em>JSON web token</em></a></code> library available on npm.</p>
 </div>
 <div class="sect3">
 <h4 id="nodejs-design.asciidoc_authentication">Authentication</h4>
@@ -402,27 +403,27 @@
 <div class="ulist">
 <ul>
 <li>
-<p><em>/services/rest/dishmanagement/**</em>: to allow anonymous users to see the dishes info in the <em>menu</em> section.</p>
+<p><code><em>/services/rest/dishmanagement/\**</em></code>: to allow anonymous users to see the dishes info in the <em>menu</em> section.</p>
 </li>
 <li>
-<p><em>/services/rest/ordermanagement/v1/order</em>: to allow anonymous users to save an order. They will need a <em>booking token</em> but they won&#8217;t be authenticated to do this task.</p>
+<p><code><em>/services/rest/ordermanagement/v1/order</em></code>: to allow anonymous users to save an order. They will need a <em>booking token</em> but they won&#8217;t be authenticated to do this task.</p>
 </li>
 <li>
-<p><em>/services/rest/bookingmanagement/v1/booking</em>: to allow anonymous users to create a booking. Only a <em>booking token</em> is necessary to accomplish this task.</p>
+<p><code><em>/services/rest/bookingmanagement/v1/booking</em></code>: to allow anonymous users to create a booking. Only a <em>booking token</em> is necessary to accomplish this task.</p>
 </li>
 <li>
-<p><em>/services/rest/bookingmanagement/v1/booking/cancel/**</em>: to allow cancelling a booking from an email. Only the <em>booking token</em> is needed.</p>
+<p><code><em>/services/rest/bookingmanagement/v1/booking/cancel/\**</em></code>: to allow canceling a booking from an email. Only the <em>booking token</em> is needed.</p>
 </li>
 <li>
-<p><em>/services/rest/bookingmanagement/v1/invitedguest/accept/**</em>: to allow guests to accept an invite. Only a <em>guest token</em> is needed.</p>
+<p><code><em>/services/rest/bookingmanagement/v1/invitedguest/accept/\**</em></code>: to allow guests to accept an invite. Only a <em>guest token</em> is needed.</p>
 </li>
 <li>
-<p><em>/services/rest/bookingmanagement/v1/invitedguest/decline/**</em>: to allow guests to reject an invite. Only a <em>guest token</em> is needed.</p>
+<p><code><em>/services/rest/bookingmanagement/v1/invitedguest/decline/\**</em></code>: to allow guests to reject an invite. Only a <em>guest token</em> is needed.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>To configure the <em>login</em> we will create an instance of <em>Authentication</em> in the app file and then we will use the method <em>auth</em> for handle the requests to the /login endpoint.</p>
+<p>To configure the <em>login</em> we will create an instance of <em>Authentication</em> in the app file and then we will use the method <code><em>auth</em></code> for handle the requests to the /login endpoint.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -466,7 +467,7 @@
 <div class="sect3">
 <h4 id="nodejs-design.asciidoc_token-set-up">Token set up</h4>
 <div class="paragraph">
-<p>Following the <a href="https://jwt.io/introduction/">official documentation</a> the implementation details for the MyThaiStar&#8217;s JWT will be:</p>
+<p>Following <code>the <a href="https://jwt.io/introduction/">official documentation</a></code> the implementation details for the MyThaiStar&#8217;s JWT will be:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -653,7 +654,7 @@ app.use('/mythaistar/services/rest/bookingmanagement/v1/booking/search', auth.se
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2022-01-25 13:01:22 UTC
+Last updated 2022-01-27 07:16:08 UTC
 </sub></div>
 </div>
 </div>
