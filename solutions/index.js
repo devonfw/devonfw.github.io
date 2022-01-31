@@ -381,7 +381,7 @@ async function main() {
         }
     }
     $("#solutioncontent").append(filterspanel);
-    var resultspanel = $('<div id="resultspanel" class="resultspanel col-12 col-sm-9 row"></div>');
+    var resultspanel = $('<div id="resultspanel" class="resultspanel col-12 col-sm-9 row align-content-start"></div>');
     $("#solutioncontent").append(resultspanel);
 
     var paginationDiv = $('<div id="pagination" class="col-12"></div>');
