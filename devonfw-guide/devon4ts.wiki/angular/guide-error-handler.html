@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Error Handler in angular</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Ubuntu Font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400&display=swap" rel="stylesheet">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+
+<script src="/website/components/header/search-engine/bundle.js"></script>
+
+<script src="/website/shared/rightmenu.js"></script>
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+
+<link rel="stylesheet" type="text/css" href="https://cginternal.devonfw.com/websitesnippets/main.css">
+<script src="https://cginternal.devonfw.com/websitesnippets/main.js"></script>
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="https://www.katacoda.com/devonfw">Tutorials</a></p>
+</li>
+<li>
+<p><a href="/website/pages/solutions/index.html">Solutions</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Docs</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"
+      autocomplete="off"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-error-handler.asciidoc">Error Handler in angular</a>
+<ul class="sectlevel1">
+<li><a href="#guide-error-handler.asciidoc_what-is-errorhandler">What is <code>ErrorHandler</code></a></li>
+<li><a href="#guide-error-handler.asciidoc_creating-your-custom-errorhandler-step-by-step">Creating your custom <code>ErrorHandler</code> step by step</a>
+<ul class="sectlevel2">
+<li><a href="#guide-error-handler.asciidoc_creating-the-custom-errorhandler-class">Creating the custom <code>ErrorHandler</code> class</a></li>
+<li><a href="#guide-error-handler.asciidoc_creating-a-errorinterceptor">Creating a <code>ErrorInterceptor</code></a></li>
+<li><a href="#guide-error-handler.asciidoc_creating-a-error-module">Creating a Error Module</a></li>
+</ul>
+</li>
+<li><a href="#guide-error-handler.asciidoc_handling-errors">Handling Errors</a>
+<ul class="sectlevel3">
+<li><a href="#guide-error-handler.asciidoc_using-snackbarservice-and-ngzone">Using <code>SnackBarService</code> and <code>NgZone</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-error-handler.asciidoc" class="sect0">Error Handler in angular</h1>
+<div class="paragraph">
+<p>Angular allows us to set up a custom error handler that can be used to control the different errors and them in a correct way. Using a global error handler will avoid mistakes and provide a use friendly interface allowing us to indicate the user what problem is happening.</p>
+</div>
+<div class="sect1">
+<h2 id="guide-error-handler.asciidoc_what-is-errorhandler">What is <code>ErrorHandler</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><code>ErrorHandler</code> is the class that <code>Angular</code> uses by default to control the errors. This means that, even if the application doesn&#8217;t have a <code>ErrorHandler</code> it is going to use the one setup by default in <code>Angular</code>. This can be tested by trying to find a page not existing in any app, instantly <code>Angular</code> will print the error in the console.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-error-handler.asciidoc_creating-your-custom-errorhandler-step-by-step">Creating your custom <code>ErrorHandler</code> step by step</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order to create a custom <code>ErrorHandler</code> three steps are going to be needed:</p>
+</div>
+<div class="sect2">
+<h3 id="guide-error-handler.asciidoc_creating-the-custom-errorhandler-class">Creating the custom <code>ErrorHandler</code> class</h3>
+<div class="paragraph">
+<p>In this first step the custom <code>ErrorHandler</code> class is going to be created inside the folder <code>/app/core/errors/errors-handler.ts</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="TypeScript language-TypeScript">import { ErrorHandler, Injectable, Injector } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+
+@Injectable()
+export class ErrorsHandler implements ErrorHandler {
+
+    constructor(private injector: Injector) {}
+
+    handleError(error: Error | HttpErrorResponse) {
+      //  To do: Use injector to get the necessary services to redirect or
+      // show a message to the user
+      const classname  = error.constructor.name;
+      switch ( classname )  {
+        case 'HttpErrorResponse':
+          console.error('HttpError:' + error.message);
+          if (!navigator.onLine) {
+            console.error('There's no internet connection');
+            // To do: control here in internet what you wanna do if user has no internet
+          } else {
+            console.error('Server Error:' + error.message);
+            // To do: control here if the server gave an error
+          }
+          break;
+        default:
+          console.error('Error:' + error.message);
+          // To do: control here if the client/other things gave an error
+      }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This class can be used to control the different type of errors. If wanted, the <code>classname</code> variable could be used to add more switch cases. This would allow control of more specific situations.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-error-handler.asciidoc_creating-a-errorinterceptor">Creating a <code>ErrorInterceptor</code></h3>
+<div class="paragraph">
+<p>Inside the same folder created in the last step we are going to create the <code>ErrorInterceptor</code>(<code>errors-handler-interceptor.ts</code>). This <code>ErrorInterceptor</code> is going to retry any failed calls to the server to make sure it is not being found before showing the error:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="TypeScript language-TypeScript">import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { retry } from 'rxjs/operators';
+
+@Injectable()
+export class ErrorsHandlerInterceptor implements HttpInterceptor {
+
+    constructor() {}
+    intercept(req: HttpRequest&lt;any&gt;, next: HttpHandler): Observable&lt;HttpEvent&lt;any&gt;&gt; {
+        return next.handle(req).pipe(
+            retryWhen((errors: Observable&lt;any&gt;) =&gt; errors.pipe(
+                delay(500),
+                take(5),
+                concatMap((error: any, retryIndex: number) =&gt; {
+                    if (++retryIndex === 5) {
+                        throw error;
+                    }
+                    return of(error);
+                })
+            ))
+        );
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This custom made interceptor is implementing the <code>HttpInterceptor</code> and inside the method <code>intercept</code> using the method <code>pipe</code>,<code>retryWhen</code>,<code>delay</code>,<code>take</code> and <code>concatMap</code> from <a href="https://rxjs-dev.firebaseapp.com/api">RxJs</a> it is going to do the next things if there is errors:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>With <code>delay(500)</code> do a delay to allow some time in between requests</p>
+</li>
+<li>
+<p>With <code>take(5)</code> retry five times.</p>
+</li>
+<li>
+<p>With <code>concatMap</code> if the index that <code>take()</code> gives is not 5 it returns the error, else, it throws the error.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="guide-error-handler.asciidoc_creating-a-error-module">Creating a Error Module</h3>
+<div class="paragraph">
+<p>Finally, creating a module(<code>errors-handler.module.ts</code>) is necessary to include the <code>interceptor</code> and the custom error handler. In this case, the module is going to be created in the same folder as the last two:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="TypeScript language-TypeScript">import { NgModule, ErrorHandler } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ErrorsHandler } from './errors-handler';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ErrorsHandlerInterceptor } from './errors-handler-interceptor';
+
+@NgModule({
+  declarations: [], // Declare here component if you want to use routing to error component
+  imports: [
+    CommonModule
+  ],
+  providers: [
+    {
+      provide: ErrorHandler,
+      useClass: ErrorsHandler,
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorsHandlerInterceptor,
+      multi: true,
+    }
+  ]
+})
+export class ErrorsHandlerModule { }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This module simply is providing the services that are implemented by our custom classes and then telling angular to use our custom made classes instead of the default ones. After doing this, the module has to be included in the app module <code>app.module.ts</code> in order to be used.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="TypeScript language-TypeScript">....
+  imports: [
+    ErrorsHandlerModule,
+    ....</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-error-handler.asciidoc_handling-errors">Handling Errors</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As a final step, handling these errors is necessary. There are different ways that can be used to control the errors, here are a few:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Creating a custom page and using with <code>Router</code> to redirect to a page showing an error.</p>
+</li>
+<li>
+<p>Creating a service in the server side or <code>Backend</code> to create a log with the error and calling it with <code>HttpClient</code>.</p>
+</li>
+<li>
+<p>Showing a custom made <code>SnackBar</code> with the error message.</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="guide-error-handler.asciidoc_using-snackbarservice-and-ngzone">Using <code>SnackBarService</code> and <code>NgZone</code></h4>
+<div class="paragraph">
+<p>If the <a href="https://material.angular.io/components/snack-bar/overview">SnackBar</a> is used directly, some errors can occur, this is due to <code>SnackBar</code> being out of the <code>Angular</code> zone. In order to use this service properly, <a href="https://angular.io/api/core/NgZone">NgZone</a> is necessary. The method <code>run()</code> from <code>NgZone</code> will allow the service to be inside the <code>Angular Zone</code>. An example on how to use it:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="TypeScript language-TypeScript">import { ErrorHandler, Injectable, Injector, NgZone } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { MatSnackBar } from '@angular/material';
+
+@Injectable()
+export class ErrorsHandler implements ErrorHandler {
+
+    constructor(private injector: Injector, private zone: NgZone) {}
+
+    handleError(error: Error | HttpErrorResponse) {
+      // Use injector to get the necessary services to redirect or
+      const snackBar: MatSnackBar = this.injector.get(MatSnackBar);
+      const classname  = error.constructor.name;
+      let message: string;
+      switch ( classname )  {
+        case 'HttpErrorResponse':
+          message = !(navigator.onLine) ? 'There is no internet connection' : error.message;
+          break;
+        default:
+          message = error.message;
+      }
+      this.zone.run(
+        () =&gt; snackBar.open(message, 'danger', { duration : 4000})
+      );
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Using <code>Injector</code> the <code>MatSnackBar</code> is obtained, then the correct message is obtained inside the switch. Finally, using <code>NgZone</code> and <code>run()</code>, we open the <code>SnackBar</code> passing the message, and the parameters wanted.</p>
+</div>
+<div class="paragraph">
+<p>You can find a working example of this guide in <a href="https://github.com/devonfw-sample/devon4ts-samples/tree/master/apps/angular-error-handler">devon4ts-samples</a>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html#introduction-why-should-i-use-devonfw.asciidoc">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devon4j.wiki_architecture.asciidoc.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-ide-support.asciidoc.html#LICENSE.asciidoc">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2022-02-02 04:55:59 UTC
+</sub></div>
+</div>
+</div>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+<script>
+  var internalUrls = ["https://cginternal.devonfw.com/websitesnippets/"];
+  $(".internal").each(function(){
+    internalUrls.forEach((internalUrl, index) => {
+      $.ajax({url: internalUrl + $(this).text() + "/index.html" })
+      .then(r => {
+        var leftDiv = $('<div class="info"><span class="infoText">Internal</span><img class="infoImage" src="' + internalUrl + 'logo.png"/></div>');
+        var rightFirstDiv = $('<div class="message">This is only visible inside of the corporate network.</div>');
+        var rightLastDiv = $('<div class="content"></div>');
+        rightLastDiv.html(r);
+        var rightDiv = $('<div class="right"></div>');
+        rightDiv.append(rightFirstDiv);
+        rightDiv.append(rightLastDiv);
+        $(this).html(leftDiv);
+        $(this).append(rightDiv);
+        $(this).addClass("internal-active");
+        $(this).removeClass("internal");
+      })
+    });
+	});
+</script>
+</body>
+</html>

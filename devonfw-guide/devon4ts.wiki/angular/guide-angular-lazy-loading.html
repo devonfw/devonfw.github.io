@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Angular Lazy loading</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Ubuntu Font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400&display=swap" rel="stylesheet">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+
+<script src="/website/components/header/search-engine/bundle.js"></script>
+
+<script src="/website/shared/rightmenu.js"></script>
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+
+<link rel="stylesheet" type="text/css" href="https://cginternal.devonfw.com/websitesnippets/main.css">
+<script src="https://cginternal.devonfw.com/websitesnippets/main.js"></script>
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="https://www.katacoda.com/devonfw">Tutorials</a></p>
+</li>
+<li>
+<p><a href="/website/pages/solutions/index.html">Solutions</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Docs</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"
+      autocomplete="off"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-angular-lazy-loading.asciidoc">Angular Lazy loading</a>
+<ul class="sectlevel1">
+<li><a href="#guide-angular-lazy-loading.asciidoc_an-example-with-angular">An example with Angular</a>
+<ul class="sectlevel2">
+<li><a href="#guide-angular-lazy-loading.asciidoc_implementation">Implementation</a></li>
+</ul>
+</li>
+<li><a href="#guide-angular-lazy-loading.asciidoc_conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-angular-lazy-loading.asciidoc" class="sect0">Angular Lazy loading</h1>
+<div class="paragraph">
+<p>When the development of an application starts, it just contains a small set of features so the app usually loads fast. However, as new features are added, the overall application size grows up  and its loading speed decreases. It is in this context where Lazy loading finds its place.
+Lazy loading is a design pattern that defers initialization of objects until it is needed, so, for example, users that just access to a website&#8217;s home page do not need to have other areas loaded.
+Angular handles lazy loading through the routing module which redirects to requested pages. Those pages can be loaded at start or on demand.</p>
+</div>
+<div class="sect1">
+<h2 id="guide-angular-lazy-loading.asciidoc_an-example-with-angular">An example with Angular</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To explain how lazy loading is implemented using angular, a basic sample app is going to be developed. This app will consist in a window named "level 1" that contains two buttons that redirects to other windows in a "second level". It is a simple example, but useful to understand the relation between angular modules and lazy loading.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/angular/angular-lazy/levels-app.png" alt="Levels app structure" width="500 link="images/angular/angular-lazy/levels-app.png"">
+</div>
+<div class="title">Figure 1. Levels app structure.</div>
+</div>
+<div class="paragraph">
+<p>This graphic shows that modules acts as gates to access components "inside" them.</p>
+</div>
+<div class="paragraph">
+<p>Because the objective of this guide is related mainly with logic, the html structure and SCSS styles are less relevant, but the complete code can be found as a sample <a href="https://github.com/devonfw-sample/devon4ts-samples/tree/master/apps/angular-lazy-loading">here</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="guide-angular-lazy-loading.asciidoc_implementation">Implementation</h3>
+<div class="paragraph">
+<p>First write in a console <code>ng new level-app --routing</code>, to generate a new project called level-app including an app-routing.module.ts file (<strong>--routing</strong> flag). If you are using Nx, the command would be <code>nx generate @nrwl/angular:app level-app --routing</code> in your Nx workspace.</p>
+</div>
+<div class="paragraph">
+<p>In the file app.component.html delete all the content except the router-outlet tag.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 1. File app.component.html</div>
+<div class="content">
+<pre class="highlight"><code class="html language-html">&lt;router-outlet&gt;&lt;/router-outlet&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The next steps consists on creating features modules.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>run <code>ng generate module first --routing</code>  to generate a module named <em>first</em>.</p>
+</li>
+<li>
+<p>run <code>ng generate module first/second-left --routing</code> to generate a module named <em>second-left</em> under <em>first</em>.</p>
+</li>
+<li>
+<p>run <code>ng generate module first/second-right --routing</code> to generate a module <em>second-right</em> under <em>first</em>.</p>
+</li>
+<li>
+<p>run <code>ng generate component first/first</code> to generate a component named <em>first</em> inside the module <em>first</em>.</p>
+</li>
+<li>
+<p>run <code>ng generate component first/second-left/content</code> to generate a component <em>content</em> inside the module <em>second-left</em>.</p>
+</li>
+<li>
+<p>run <code>ng generate component first/second-right/content</code> to generate a component <em>content</em> inside the module <em>second-right</em>.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="literalblock">
+<div class="content">
+<pre>If you are using Nx, you have to specify the project name (level-app) along with the --project flag. For example, command for generating the first module will be `ng generate module first --project=level-app --routing`</pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To move between components we have to configure the routes used:</p>
+</div>
+<div class="paragraph">
+<p>In <strong>app-routing.module.ts</strong> add a path <strong>'first'</strong> to <code>FirstComponent</code> and a redirection from <strong>''</strong> to <strong>'first'</strong>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 2. File app-routing.module.ts.</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">...
+import { FirstComponent } from './first/first/first.component';
+
+const routes: Routes = [
+  {
+    path: 'first',
+    component: FirstComponent
+  },
+  {
+    path: '',
+    redirectTo: 'first',
+    pathMatch: 'full',
+  },
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule],
+})
+export class AppRoutingModule {}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In <strong>app.module.ts</strong> import the module which includes <code>FirstComponent</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 3. File app.module.ts</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">....
+import { FirstModule } from './first/first.module';
+
+@NgModule({
+  ...
+  imports: [
+    ....
+    FirstModule
+  ],
+  ...
+})
+export class AppModule { }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In <strong>first-routing.module.ts</strong> add routes that direct to the content of <code>SecondRightModule</code> and <code>SecondLeftModule</code>. The content of both modules have the same name so, in order to avoid conflicts the name of the components are going to be changed using <strong>as</strong> ( original-name as new-name).</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 4. File first-routing.module.ts</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">...
+import { ContentComponent as ContentLeft} from './second-left/content/content.component';
+import { ContentComponent as ContentRight} from './second-right/content/content.component';
+import { FirstComponent } from './first/first.component';
+
+const routes: Routes = [
+  {
+    path: '',
+    component: FirstComponent
+  },
+  {
+    path: 'first/second-left',
+    component: ContentLeft
+  },
+  {
+    path: 'first/second-right',
+    component: ContentRight
+  }
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class FirstRoutingModule { }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In first.module.ts import <code>SecondLeftModule</code> and <code>SecondRightModule</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 5. File first.module.ts</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">...
+import { SecondLeftModule } from './second-left/second-left.module';
+import { SecondRightModule } from './second-right/second-right.module';
+
+@NgModule({
+  ...
+  imports: [
+    ...
+    SecondLeftModule,
+    SecondRightModule,
+  ]
+})
+export class FirstModule { }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Using the current configuration, we have a project that loads all the modules in a eager way. Run <code>ng serve</code> (with <code>--project=level-app</code> in an Nx workspace) to see what happens.</p>
+</div>
+<div class="paragraph">
+<p>First, during the compilation we can see that just a main file is built.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/angular/angular-lazy/compile-eager.png" alt="Compile eager" width="800 link="images/angular/angular-lazy/compile-eager.png"">
+</div>
+<div class="title">Figure 2. Compile eager.</div>
+</div>
+<div class="paragraph">
+<p>If we go to <code><a href="http://localhost:4200/first" class="bare">http://localhost:4200/first</a></code> and open developer options (F12 on Chrome), it is found that a document named "first" is loaded.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/angular/angular-lazy/first-lvl-eager.png" alt="First level eager" width="800 link="images/angular/angular-lazy/first-lvl-eager.png"">
+</div>
+<div class="title">Figure 3. First level eager.</div>
+</div>
+<div class="paragraph">
+<p>If we click on <strong>[Go to right module]</strong> a second level module opens, but there is no 'second-right' document.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/angular/angular-lazy/second-lvl-right-eager.png" alt="Second level right eager" width="800 link="images/angular/angular-lazy/second-lvl-right-eager.png"">
+</div>
+<div class="title">Figure 4. Second level right eager.</div>
+</div>
+<div class="paragraph">
+<p>But, typing the URL directly will load 'second-right' but no 'first', even if we click on <strong>[Go back]</strong></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/angular/angular-lazy/second-lvl-right-eager-d.png" alt="Second level right eager" width="800 link="images/angular/angular-lazy/second-lvl-right-eager-d.png"">
+</div>
+<div class="title">Figure 5. Second level right eager direct URL.</div>
+</div>
+<div class="paragraph">
+<p>Modifying an angular application to load its modules lazily is easy, you have to change the routing configuration of the desired module (for example <code>FirstModule</code>).</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 6. File app-routing.module.ts.</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">const routes: Routes = [
+  {
+    path: 'first',
+    loadChildren: () =&gt; import('./first/first.module').then(m =&gt; m.FirstModule),
+  },
+  {
+    path: '',
+    redirectTo: 'first',
+    pathMatch: 'full',
+  },
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule],
+})
+export class AppRoutingModule {}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice that instead of loading a component, you dynamically import it in a <code>loadChildren</code> attribute because modules acts as gates to access components "inside" them. Updating the app to load lazily has four consequences:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>No component attribute.</p>
+</li>
+<li>
+<p>No import of <code>FirstComponent</code>.</p>
+</li>
+<li>
+<p><code>FirstModule</code> import has to be removed from the imports array at app.module.ts.</p>
+</li>
+<li>
+<p>Change of context.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>If we check <strong>first-routing.module.ts</strong> again, we can see that the path for <code>ContentLeft</code> and <code>ContentRight</code> is set to 'first/second-left' and 'first/second-right' respectively, so writing <code><a href="http://localhost:4200/first/second-left" class="bare">http://localhost:4200/first/second-left</a></code> will redirect us to <code>ContentLeft</code>. However, after loading a module with <code>loadChildren</code> setting the path to '<em>second-left</em>' and '<em>second-right</em>' is enough because it acquires the context set by <code>AppRoutingModule</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 7. File first-routing.module.ts</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">const routes: Routes = [
+  {
+    path: '',
+    component: FirstComponent
+  },
+  {
+    path: 'second-left',
+    component: ContentLeft
+  },
+  {
+    path: 'second-right',
+    component: ContentRight
+  }
+];</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If we go to '<em>first</em>' then <code>FirstModule</code> is situated in '<em>/first</em>' but also its children <code>ContentLeft</code> and <code>ContentRight</code>, so it is not necessary to write in their path '<em>first/second-left</em>' and '<em>first/second-right</em>', because that will situate the components on '<em>first/first/second-left</em>' and  '<em>first/first/second-right</em>'.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/angular/angular-lazy/first-lvl-wrong-path.png" alt="First level wrong path" width="800 link="images/angular/angular-lazy/first-lvl-wrong-path.png"">
+</div>
+<div class="title">Figure 6. First level lazy wrong path.</div>
+</div>
+<div class="paragraph">
+<p>When we compile an app with lazy loaded modules, files containing them will be generated</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/angular/angular-lazy/compile-first-lazy.png" alt="First level lazy compilation" width="800 link="images/angular/angular-lazy/compile-first-lazy.png"">
+</div>
+<div class="title">Figure 7. First level lazy compilation.</div>
+</div>
+<div class="paragraph">
+<p>And if we go to <em>developer tools &#8594; network</em>, we can find those modules loaded (if they are needed).</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/angular/angular-lazy/first-lvl-lazy.png" alt="First level lazy" width="800 link="images/angular/angular-lazy/first-lvl-lazy.png"">
+</div>
+<div class="title">Figure 8. First level lazy.</div>
+</div>
+<div class="paragraph">
+<p>To load the component <code>ContentComponent</code> of <code>SecondLeftModule</code> lazily, we have to load <code>SecondLeftModule</code> as a children of <code>FirstModule</code>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Change <strong>component</strong> to <code>loadChildren</code> and reference <code>SecondLeftModule</code>.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">Listing 8. File first-routing.module.ts.</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">const routes: Routes = [
+  {
+    path: '',
+    component: FirstComponent
+  },
+  {
+    path: 'second-left',
+    loadChildren: () =&gt; import('./second-left/second-left.module').then(m =&gt; m.SecondLeftModule),
+  },
+  {
+    path: 'second-right',
+    component: ContentRight
+  }
+];</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Remove <code>SecondLeftModule</code> at first.component.ts</p>
+</li>
+<li>
+<p>Route the components inside <code>SecondLeftModule</code>. Without this step nothing would be displayed.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">Listing 9. File second-left-routing.module.ts.</div>
+<div class="content">
+<pre class="highlight"><code class="ts language-ts">...
+import { ContentComponent } from './content/content.component';
+
+const routes: Routes = [
+  {
+    path: '',
+    component: ContentComponent
+  }
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class SecondLeftRoutingModule { }</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>run <code>ng serve</code> to generate files containing the lazy modules.</p>
+</li>
+</ul>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/angular/angular-lazy/second-lvl-lazy.png" alt="Second level lazy" width="800 link="images/angular/angular-lazy/second-lvl-lazy.png"">
+</div>
+<div class="title">Figure 9. Second level lazy loading compilation.</div>
+</div>
+<div class="paragraph">
+<p>Clicking on <strong>[Go to left module]</strong> triggers the load of <code>SecondLeftModule</code>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/angular/angular-lazy/second-lvl-left-lazy.png" alt="Second level lazy network" width="800 link="images/angular/angular-lazy/second-lvl-left-lazy.png"">
+</div>
+<div class="title">Figure 10. Second level lazy loading network.</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="guide-angular-lazy-loading.asciidoc_conclusion">Conclusion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Lazy loading is a pattern useful when new features are added, these features are usually identified as modules which can be loaded only if needed as shown in this document, reducing the time spent loading an application.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html#introduction-why-should-i-use-devonfw.asciidoc">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devon4j.wiki_architecture.asciidoc.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-ide-support.asciidoc.html#LICENSE.asciidoc">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2022-02-02 04:55:41 UTC
+</sub></div>
+</div>
+</div>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+<script>
+  var internalUrls = ["https://cginternal.devonfw.com/websitesnippets/"];
+  $(".internal").each(function(){
+    internalUrls.forEach((internalUrl, index) => {
+      $.ajax({url: internalUrl + $(this).text() + "/index.html" })
+      .then(r => {
+        var leftDiv = $('<div class="info"><span class="infoText">Internal</span><img class="infoImage" src="' + internalUrl + 'logo.png"/></div>');
+        var rightFirstDiv = $('<div class="message">This is only visible inside of the corporate network.</div>');
+        var rightLastDiv = $('<div class="content"></div>');
+        rightLastDiv.html(r);
+        var rightDiv = $('<div class="right"></div>');
+        rightDiv.append(rightFirstDiv);
+        rightDiv.append(rightLastDiv);
+        $(this).html(leftDiv);
+        $(this).append(rightDiv);
+        $(this).addClass("internal-active");
+        $(this).removeClass("internal");
+      })
+    });
+	});
+</script>
+</body>
+</html>

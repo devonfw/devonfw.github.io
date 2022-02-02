@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Side effects with NgRx/Effects</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Ubuntu Font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400&display=swap" rel="stylesheet">
+<!-- Lunr -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lunr.js/2.3.6/lunr.min.js" integrity="sha256-M/Awbb/BYh+Rh0aGjpQid26p1b2OBsrk2k9yAvQxPV0=" crossorigin="anonymous"></script>
+<!-- JQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/styles/googlecode.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.4/lang/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+
+<script src="/website/components/header/search-engine/bundle.js"></script>
+
+<script src="/website/shared/rightmenu.js"></script>
+
+<!-- ************** Google analytics ************ -->
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+
+<!-- ******************************************** -->
+
+
+<link rel="stylesheet" type="text/css" href="https://cginternal.devonfw.com/websitesnippets/main.css">
+<script src="https://cginternal.devonfw.com/websitesnippets/main.js"></script>
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="https://www.katacoda.com/devonfw">Tutorials</a></p>
+</li>
+<li>
+<p><a href="/website/pages/solutions/index.html">Solutions</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Docs</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"
+      autocomplete="off"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#guide-ngrx-effects.asciidoc">Side effects with NgRx/Effects</a>
+<ul class="sectlevel1">
+<li><a href="#guide-ngrx-effects.asciidoc_obtaining-the-recommendation-list-from-the-server">Obtaining the recommendation list from the server</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="guide-ngrx-effects.asciidoc" class="sect0">Side effects with NgRx/Effects</h1>
+<div class="paragraph">
+<p>Reducers are pure functions, meaning they are side-effect free and deterministic. Many actions however have side effects like sending messages or displaying a toast notification. NgRx encapsulates these actions in effects.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s build a recommended movies list so the user can add movies to their watchlist.</p>
+</div>
+<div class="sect1">
+<h2 id="guide-ngrx-effects.asciidoc_obtaining-the-recommendation-list-from-the-server">Obtaining the recommendation list from the server</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Create a module for recommendations and add stores and states as in the previous chapter. Add <code>EffectsModule.forRoot([])</code> to the imports in <code>AppModule</code> below <code>StoreModule.forRoot()</code>. Add effects to the feature module:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>ng generate effect recommendation/Recommendation -m recommendation/recommendation.module.ts</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We need actions for loading the movie list, success and failure cases:</p>
+</div>
+<div class="paragraph">
+<p><strong>recommendation/actions/index.ts</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">import { createAction, props, union } from '@ngrx/store';
+import { Movie } from 'src/app/watchlist/models/movies';
+
+export const loadRecommendedMovies = createAction('[Recommendation List] Load movies');
+export const loadRecommendedMoviesSuccess = createAction('[Recommendation API] Load movies success', props&lt;{movies: Movie[]}&gt;());
+export const loadRecommendedMoviesFailure = createAction('[Recommendation API] Load movies failure', props&lt;{error: any}&gt;());
+
+const actions = union({
+    loadRecommendedMovies,
+    loadRecommendedMoviesSuccess,
+    loadRecommendedMoviesFailure
+});
+
+export type ActionsUnion = typeof actions;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In the reducer, we use a loading flag so the UI can show a loading spinner. The store is updated with arriving data.</p>
+</div>
+<div class="paragraph">
+<p><strong>recommendation/actions/index.ts</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">export interface State {
+  items: Movie[];
+  loading: boolean;
+}
+
+export const initialState: State = {
+  items: [],
+  loading: false
+};
+
+export function reducer(state = initialState, action: recommendationActions.ActionsUnion): State {
+  switch (action.type) {
+    case '[Recommendation List] Load movies':
+      return {
+        ...state,
+        items: [],
+        loading: true
+      };
+
+    case '[Recommendation API] Load movies failure':
+      return {
+        ...state,
+          loading: false
+      };
+
+    case '[Recommendation API] Load movies success':
+      return {
+        ...state,
+        items: action.movies,
+        loading: false
+      };
+
+    default:
+      return state;
+  }
+}
+
+export const getAll = (state: State) =&gt; state.items;
+export const isLoading = (state: State) =&gt; state.loading;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We need an API service to talk to the server. For demonstration purposes, we simulate an answer delayed by one second:</p>
+</div>
+<div class="paragraph">
+<p><code>recommendation/services/recommendation-api.service.ts</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">@Injectable({
+  providedIn: 'root'
+})
+export class RecommendationApiService {
+
+  private readonly recommendedMovies: Movie[] = [
+    {
+      id: 2,
+      title: 'The Hunger Games',
+      genre: 'sci-fi',
+      releaseYear: 2012,
+      runtimeMinutes: 144
+    },
+    {
+      id: 4,
+      title: 'Avengers: Endgame',
+      genre: 'fantasy',
+      releaseYear: 2019,
+      runtimeMinutes: 181
+    }
+  ];
+
+  loadRecommendedMovies(): Observable&lt;Movie[]&gt; {
+    return of(this.recommendedMovies).pipe(delay(1000));
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here are the effects:</p>
+</div>
+<div class="paragraph">
+<p><code>recommendation/services/recommendation-api.service.ts</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">@Injectable()
+export class RecommendationEffects {
+
+  constructor(
+    private actions$: Actions,
+    private recommendationApi: RecommendationApiService,
+  ) { }
+
+  @Effect()
+  loadBooks$ = this.actions$.pipe(
+    ofType(recommendationActions.loadRecommendedMovies.type),
+    switchMap(() =&gt; this.recommendationApi.loadRecommendedMovies().pipe(
+      map(movies =&gt; recommendationActions.loadRecommendedMoviesSuccess({ movies })),
+      catchError(error =&gt; of(recommendationActions.loadRecommendedMoviesFailure({ error })))
+    ))
+  );
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Effects are always observables and return actions. In this example, we consume the actions observable provided by NgRx and listen only for the <code>loadRecommendedMovies</code> actions by using the <code>ofType</code> operator. Using <code>switchMap</code>, we map to a new observable, one that loads movies and maps the successful result to a new <code>loadRecommendedMoviesSuccess</code> action or a failure to <code>loadRecommendedMoviesFailure</code>. In a real application we would show a notification in the error case.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If an effect should not dispatch another action, return an empty observable.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a href="#guide-ngrx-entity.asciidoc">Continue reading how to simplify CRUD (Create Read Update Delete) operations using <code>@ngrx/entity</code></a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_introduction.html#introduction-why-should-i-use-devonfw.asciidoc">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devon4j.wiki_architecture.asciidoc.html">Architecture</a></p>
+</li>
+<li>
+<p><a href="/website/pages/resources/resources.html">Resources</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-ide-support.asciidoc.html#LICENSE.asciidoc">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+<div class="footnote"><sub>
+
+Last updated 2022-02-02 04:56:20 UTC
+</sub></div>
+</div>
+</div>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+<script>
+  var internalUrls = ["https://cginternal.devonfw.com/websitesnippets/"];
+  $(".internal").each(function(){
+    internalUrls.forEach((internalUrl, index) => {
+      $.ajax({url: internalUrl + $(this).text() + "/index.html" })
+      .then(r => {
+        var leftDiv = $('<div class="info"><span class="infoText">Internal</span><img class="infoImage" src="' + internalUrl + 'logo.png"/></div>');
+        var rightFirstDiv = $('<div class="message">This is only visible inside of the corporate network.</div>');
+        var rightLastDiv = $('<div class="content"></div>');
+        rightLastDiv.html(r);
+        var rightDiv = $('<div class="right"></div>');
+        rightDiv.append(rightFirstDiv);
+        rightDiv.append(rightLastDiv);
+        $(this).html(leftDiv);
+        $(this).append(rightDiv);
+        $(this).addClass("internal-active");
+        $(this).removeClass("internal");
+      })
+    });
+	});
+</script>
+</body>
+</html>
