@@ -113,13 +113,24 @@
 <li><a href="#setup-aws-account-iam-for-eks.asciidoc">Setup AWS account IAM for deployment in EKS</a>
 <ul class="sectlevel1">
 <li><a href="#setup-aws-account-iam-for-eks.asciidoc_preparing-environment">Preparing environment</a></li>
-<li><a href="#setup-aws-account-iam-for-eks.asciidoc_prerequisites">Prerequisites</a></li>
+<li><a href="#setup-aws-account-iam-for-eks.asciidoc_prerequisites">Prerequisites</a>
+<ul class="sectlevel2">
+<li><a href="#setup-aws-account-iam-for-eks.asciidoc_alternative">Alternative</a></li>
+</ul>
+</li>
 <li><a href="#setup-aws-account-iam-for-eks.asciidoc_creating-iam-user-using-provided-script">Creating IAM user using provided script</a>
 <ul class="sectlevel2">
 <li><a href="#setup-aws-account-iam-for-eks.asciidoc_usage">Usage</a></li>
 <li><a href="#setup-aws-account-iam-for-eks.asciidoc_flags">Flags</a></li>
 <li><a href="#setup-aws-account-iam-for-eks.asciidoc_example">Example</a></li>
 <li><a href="#setup-aws-account-iam-for-eks.asciidoc_after-execution">After execution</a></li>
+</ul>
+</li>
+<li><a href="#setup-aws-account-iam-for-eks.asciidoc_check-iam-user-permissions">Check IAM user permissions</a>
+<ul class="sectlevel2">
+<li><a href="#setup-aws-account-iam-for-eks.asciidoc_usage">Usage</a></li>
+<li><a href="#setup-aws-account-iam-for-eks.asciidoc_flags">Flags</a></li>
+<li><a href="#setup-aws-account-iam-for-eks.asciidoc_example">Example</a></li>
 </ul>
 </li>
 </ul>
@@ -133,7 +144,7 @@
 <h2 id="setup-aws-account-iam-for-eks.asciidoc_preparing-environment">Preparing environment</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>First of all, <a href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html">install AWS CLI for your OS</a>.</p>
+<p>First of all, install <a href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html">AWS CLI</a> and <a href="https://www.python.org/downloads/">Python</a> for your OS.</p>
 </div>
 </div>
 </div>
@@ -147,16 +158,28 @@
 </li>
 </ul>
 </div>
+<div class="sect2">
+<h3 id="setup-aws-account-iam-for-eks.asciidoc_alternative">Alternative</h3>
 <div class="paragraph">
-<p>In case you do not have an account or permission to create new IAM users, request it to your AWS administrator asking for the following policies attached. Then go to <a href="#configure-cli">[configure-cli]</a>.</p>
+<p>In case you do not have an account or permission to create new IAM users, request it to your AWS administrator asking for the following policies being attached. Then go to <a href="#check-iam-user-permissions">[check-iam-user-permissions]</a>.</p>
 </div>
+<div class="sect3">
+<h4 id="setup-aws-account-iam-for-eks.asciidoc_required-managed-policies">Required managed policies</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>AmazonEKSClusterPolicy
-AmazonEKSWorkerNodePolicy
+<pre class="highlight"><code>AmazonEC2FullAccess
+IAMReadOnlyAccess
 AmazonEKSServicePolicy
-AmazonEKS_CNI_Policy
-AmazonEKSVPCResourceController</code></pre>
+AmazonS3FullAccess
+AmazonEC2ContainerRegistryFullAccess</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="setup-aws-account-iam-for-eks.asciidoc_required-custom-policies">Required custom policies</h4>
+<div class="paragraph">
+<p>Find them on <code>/scripts/accounts/aws/eks-custom-policies.json</code>.</p>
+</div>
 </div>
 </div>
 </div>
@@ -174,7 +197,15 @@ AmazonEKSVPCResourceController</code></pre>
 <h3 id="setup-aws-account-iam-for-eks.asciidoc_usage">Usage</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>create-user.sh -u &lt;username&gt; -g &lt;group&gt; [-p &lt;policies...&gt;] [-f &lt;policies file path&gt;] [-a "&lt;AWS access key&gt;"] [-s "&lt;AWS secret key&gt;"] [-r &lt;region&gt;]</code></pre>
+<pre class="highlight"><code>create-user.sh \
+  -u &lt;username&gt; \
+  -g &lt;group&gt; \
+  [-p &lt;policies...&gt;] \
+  [-f &lt;policies file path&gt;] \
+  [-c &lt;custom policies file path&gt;] \
+  [-a &lt;AWS access key&gt;] \
+  [-s &lt;AWS secret key&gt;] \
+  [-r &lt;region&gt;]</code></pre>
 </div>
 </div>
 </div>
@@ -186,6 +217,7 @@ AmazonEKSVPCResourceController</code></pre>
 -g      [Required] Group name for the group to be created or used
 -p      [Optional] Policies to be attached to the group, splitted by comma
 -f      [Optional] Path to a file containing the policies to be attached to the group
+-c      [Optional] Path to a json file containing the custom policies to be attached to the group.
 -a      [Optional] AWS administrator access key
 -s      [Optional] AWS administrator secret key
 -r      [Optional] AWS region</code></pre>
@@ -196,7 +228,7 @@ AmazonEKSVPCResourceController</code></pre>
 <h3 id="setup-aws-account-iam-for-eks.asciidoc_example">Example</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>./create-user.sh -u "Bob" -g "DevOps" -f "./policies.txt" -a "myAccessKey" -s "mySecretKey" -r "eu-west-1"</code></pre>
+<pre class="highlight"><code>./create-user.sh -u Bob -g DevOps -f ./eks-managed-policies.txt -c ./eks-custom-policies.json -a "myAccessKey" -s "mySecretKey" -r eu-west-1</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -207,6 +239,18 @@ AmazonEKSVPCResourceController</code></pre>
 </td>
 <td class="content">
 If the "DevOps" group does not exist, it will be created.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+Required policies for using EKS are located at <code>/scripts/accounts/aws/eks-managed-policies.txt</code> and <code>/scripts/accounts/aws/eks-custom-policies.json</code>
 </td>
 </tr>
 </table>
@@ -235,10 +279,82 @@ It is mandatory to store the access key ID and the secret access key securely at
 </tr>
 </table>
 </div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="setup-aws-account-iam-for-eks.asciidoc_check-iam-user-permissions">Check IAM user permissions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The script located at <code>/scripts/accounts/aws/verify-account-policies.sh</code> will check that the necessary policies were attached to the IAM user.</p>
+</div>
+<div class="sect2">
+<h3 id="setup-aws-account-iam-for-eks.asciidoc_usage">Usage</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>verify-account-policies.sh \
+  -u &lt;username&gt; \
+  [-p &lt;policies...&gt;] \
+  [-f &lt;policies file path&gt;] \
+  [-c &lt;custom policies file path&gt;] \
+  [-a &lt;AWS access key&gt;] \
+  [-s &lt;AWS secret key&gt;] \
+  [-r &lt;region&gt;]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="setup-aws-account-iam-for-eks.asciidoc_flags">Flags</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>-u      [Required] Username whose policies will be checked
+-p      [Optional] Policies to be checked, splitted by comma
+-f      [Optional] Path to a file containing the policies to be checked
+-c      [Optional] Path to a file containing the custom policies to be checked
+-a      [Optional] AWS administrator access key
+-s      [Optional] AWS administrator secret key
+-r      [Optional] AWS region</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+At least one policies flag (<code>-p</code>, <code>-f</code> or <code>-c</code>) is required.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="setup-aws-account-iam-for-eks.asciidoc_example">Example</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>./verify-account-policies.sh -u Bob -f ./eks-managed-policies.txt -c ./eks-custom-policies.json -a "myAccessKey" -s "mySecretKey" -r eu-west-1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After execution, provided policies will be shown preceded by an <code>OK</code> or <code>FAILED</code> depending on the attachment status.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+Required policies for using EKS are located at <code>/scripts/accounts/aws/eks-managed-policies.txt</code> and <code>/scripts/accounts/aws/eks-custom-policies.json</code>
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p><a id="setup-aws-account-iam-for-eks.asciidoc_configure-aws-cli-setup-aws-account-iam-for-eks.asciidoc_configure-cli"></a>]]
 == Configure AWS CLI <a id="setup-aws-account-iam-for-eks.asciidoc_configure-cli"></a>
-Once you have been provided with an IAM user, setup the AWS CLI using the following command:</p>
+Once you have been provided with an IAM user with the required policies attached, setup the AWS CLI using the following command:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -384,7 +500,7 @@ Default output format [None]: json</code></pre>
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2022-02-03 18:04:53 UTC
+Last updated 2022-02-04 11:17:35 UTC
 </sub></div>
 </div>
 </div>
