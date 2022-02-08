@@ -3,6 +3,12 @@ on:
     secrets:
       RESUSABLE_GH_ACTION_TOKEN:
         required: true
+      RESUSABLE_BUILD_USER:
+        required: true
+      RESUSABLE_BUILD_USER_PASSWD:
+        required: true
+      RESUSABLE_BUILD_USER_EMAIL:
+        required: true
 name: Sync Docs
 jobs:
   update-wiki:
@@ -11,6 +17,7 @@ jobs:
     steps:
       - name: setup variables
         run: |
+          echo "REPO_CONSOLIDATE=devonfw-guide" >> $GITHUB_ENV
           echo "ORG=$(echo '${{ github.repository }}' | awk -F '/' '{print $1}')" >> $GITHUB_ENV
           echo "REPO_SOURCE=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
           echo "REPO_DEST=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}').wiki" >> $GITHUB_ENV
@@ -38,8 +45,8 @@ jobs:
       - name: setup git user
         if: ${{ env.TO_BE_CANCELLED == 'false' }}
         run: |
-          git config --global user.email ${{secrets.BUILD_USER_EMAIL}}
-          git config --global user.name ${{secrets.BUILD_USER}}
+          git config --global user.email ${{secrets.RESUSABLE_BUILD_USER_EMAIL}}
+          git config --global user.name ${{secrets.RESUSABLE_BUILD_USER}}
       - name: Sync Wiki
         if: ${{ env.TO_BE_CANCELLED == 'false' }}
         run: |
@@ -47,7 +54,7 @@ jobs:
           git status
           git add .
           git commit -m "${REPO_SOURCE} documentation | GitHub Actions $GITHUB_WORKFLOW $GITHUB_RUN_NUMBER"
-          git remote add origin-wiki "https://${{secrets.BUILD_USER}}:${{secrets.BUILD_USER_PASSWD}}@github.com/${ORG}/${REPO_DEST}.git"
+          git remote add origin-wiki "https://${{secrets.RESUSABLE_BUILD_USER}}:${{secrets.RESUSABLE_BUILD_USER_PASSWD}}@github.com/${ORG}/${REPO_DEST}.git"
           git push origin-wiki master
       - name: Sync devonfw guide
         if: ${{ env.TO_BE_CANCELLED == 'false' }}
@@ -62,7 +69,7 @@ jobs:
           cd ..
           git add .
           git commit -m "${REPO_SOURCE} documentation | GitHub Actions $GITHUB_WORKFLOW $GITHUB_RUN_NUMBER"
-          git remote add origin-wiki "https://${{secrets.BUILD_USER}}:${{secrets.BUILD_USER_PASSWD}}@github.com/${ORG}/${REPO_CONSOLIDATE}.git"
+          git remote add origin-wiki "https://${{secrets.RESUSABLE_BUILD_USER}}:${{secrets.RESUSABLE_BUILD_USER_PASSWD}}@github.com/${ORG}/${REPO_CONSOLIDATE}.git"
           git push origin-wiki master
       - name: Trigger Update devonfw-guide on success
         uses: peter-evans/repository-dispatch@v1
