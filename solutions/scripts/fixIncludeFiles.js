@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-function fixIncludeFiles(solutionsDir) {
+function fixIncludeFiles(solutionsDir, includeDir) {
     let dirContent = fs.readdirSync(solutionsDir);
 
     dirContent.forEach(function (dirItem) {
@@ -11,23 +11,23 @@ function fixIncludeFiles(solutionsDir) {
         if (!fileStats.isFile()) {
             var indexAsciiDocFile = path.join("./", item, "index.asciidoc");
             if (fs.existsSync(indexAsciiDocFile)) {
-                readFromFilename(indexAsciiDocFile);
+                readFromFilename(indexAsciiDocFile, includeDir);
             }
         }
     })
 }
 
-function readFromFilename(file) {
+function readFromFilename(file, includeDir) {
     let regexMatch = null;
     let fileContent = fs.readFileSync(file, { encoding: "utf-8" });
     let includeFileRegex = /include::((.*?\/([^\/\\[]+))\/([^\/\\[]+\.asciidoc))/isg;
 
     while ((regexMatch = includeFileRegex.exec(fileContent)) !== null) {
-        fileContent = fileContent.replace("include::" + regexMatch[1], "include::../" + regexMatch[1]); 
+        fileContent = fileContent.replace("include::" + regexMatch[1], "include::" + includeDir + "/" + regexMatch[3] + "/" + regexMatch[4]); 
     }
     fs.writeFileSync(file, fileContent, {encoding: 'utf-8'});
 }
 
-if (process.argv.length > 2) {
-    fixIncludeFiles(process.argv[2]);
+if (process.argv.length > 3) {
+    fixIncludeFiles(process.argv[2], process.argv[3]);
 }
