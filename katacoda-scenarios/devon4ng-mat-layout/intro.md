@@ -9,14 +9,12 @@ You can find a description of what to look for when creating a pull request at t
 The purpose of this tutorial is to get a basic understanding of creating layouts using Angular Material in a devon4ng application. You will create an application with a header containing some menu links and a sidenav with some navigation links.
 
 
-#
-## Prerequisites
+### Prerequisites
 
 * Basic Angular knowledge
 
 
-#
-## Learning goals
+### Learning goals
 In this tutorial you will learn how to:
 
 * create an Angular application using the devon command

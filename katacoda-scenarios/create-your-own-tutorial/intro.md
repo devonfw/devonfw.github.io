@@ -8,11 +8,9 @@ You can find a description of what to look for when creating a pull request at t
 
 In this scenario, you will learn how to create your own tutorial using the tutorial compiler.
 
-
 ## Prerequisites
 
 * GitHub account
-
 
 ## Learning goals
 
