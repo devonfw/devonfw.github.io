@@ -8,13 +8,11 @@ You can find a description of what to look for when creating a pull request at t
 
 In this scenario, you will learn how to write a simple mock service that helps us by feeding data into our components. 
 
-
 ## Prerequisites
 
 * GitHub account
 
 * Basic Angular knowledge
-
 
 ## Learning goals
 

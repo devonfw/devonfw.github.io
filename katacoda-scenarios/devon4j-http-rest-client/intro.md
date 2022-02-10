@@ -8,13 +8,11 @@ You can find a description of what to look for when creating a pull request at t
 
 REST (REpresentational State Transfer) is an inter-operable protocol for services that is more lightweight than SOAP. We give best practices that lead to simple, easy and pragmatic &#34;HTTP APIs&#34;.
 
-
 ## Prerequisites
 
 * User should have development experience in JAVA.
 
 * Basic knowledge of REST.
-
 
 ## Learning Goal
 Here in this tutorial you will learn the following things:

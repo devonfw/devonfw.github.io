@@ -1,6 +1,5 @@
 
-#
-## Conclusion
+### Conclusion
 
 To summarize, in this tutorial we learned about devon4j architecture and key principle it follows. with help of example we also learned about devon4j different modules such as api, core ,server and its multilayered architecture.
 

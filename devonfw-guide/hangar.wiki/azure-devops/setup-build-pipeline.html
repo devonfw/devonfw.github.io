@@ -119,7 +119,7 @@
 <p>Then, a Pull Request (PR) will be created in order to merge the new branch into the appropriate branch (provided in <code>-b</code> flag). The PR will be automatically merged if the repository policies are met. If the merge is not possible, either the PR URL will be shown as output, or it will be opened in your web browser if using <code>-w</code> flag.</p>
 </div>
 <div class="paragraph">
-<p>The script located at <code>/scripts/pipelines/azure-devops/build_pipeline_generator.sh</code> will automatically create this new branch, create a build pipeline based on a YAML template appropriate for the project programming language or framework, create the Pull Request and, if it is possible, merge this new branch into the specified branch.</p>
+<p>The script located at <code>/scripts/pipelines/azure-devops/pipeline_generator.sh</code> will automatically create this new branch, create a build pipeline based on a YAML template appropriate for the project programming language or framework, create the Pull Request and, if it is possible, merge this new branch into the specified branch.</p>
 </div>
 </div>
 </div>
@@ -132,25 +132,44 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="setup-build-pipeline.asciidoc_the-script">The script</h2>
+<h2 id="setup-build-pipeline.asciidoc_creating-the-pipeline-using-provided-script">Creating the pipeline using provided script</h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="setup-build-pipeline.asciidoc_flags">Flags</h3>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>    -n    [Required] Name that will be set to the build pipeline.
-    -l    [Required] Language or framework of the project.
-    -d    [Required] Local directory of your project (the path should always be using '/' and not '\').
-    -b               Name of the branch to which the Pull Request will target. PR is not created if the flag is not provided.
-    -w               Open the Pull Request on the web browser if it cannot be automatically merged. Requires -b flag.</code></pre>
-</div>
-</div>
-</div>
 <div class="sect2">
 <h3 id="setup-build-pipeline.asciidoc_usage">Usage</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>    ./build_pipeline_generator.sh -n &lt;pipeline name&gt; -l &lt;language or framework&gt; -d &lt;project local path&gt; -b &lt;branch&gt; [-w]</code></pre>
+<pre class="highlight"><code>./pipeline_generator.sh \
+  -c &lt;config file path&gt; \
+  -n &lt;pipeline name&gt; \
+  -l &lt;language or framework&gt; \
+  -d &lt;project local path&gt; \
+  [-b &lt;branch&gt;] \
+  [-w]</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+The config file for the build pipeline is located at <code>/scripts/pipelines/azure-devops/templates/build/build-config.cfg</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="setup-build-pipeline.asciidoc_flags">Flags</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>-c    [Required] Configuration file containing pipeline definition.
+-n    [Required] Name that will be set to the pipeline.
+-l    [Required] Language or framework of the project.
+-d    [Required] Local directory of your project (the path should always be using '/' and not '\').
+-b               Name of the branch to which the Pull Request will target. PR is not created if the flag is not provided.
+-w               Open the Pull Request on the web browser if it cannot be automatically merged. Requires -b flag.</code></pre>
 </div>
 </div>
 </div>
@@ -160,7 +179,7 @@
 <h4 id="setup-build-pipeline.asciidoc_quarkus-project">Quarkus project</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>    ./build_pipeline_generator.sh -n quarkus-project-build -l quarkus -d C:/Users/$USERNAME/Desktop/quarkus-project -b develop -w</code></pre>
+<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/build/build-config.cfg -n quarkus-project-build -l quarkus -d C:/Users/$USERNAME/Desktop/quarkus-project -b develop -w</code></pre>
 </div>
 </div>
 <div class="admonitionblock caution">
@@ -301,7 +320,7 @@ Remember to write the path to the local repository with '/' and not '\' on Windo
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2022-02-10 09:30:03 UTC
+Last updated 2022-02-10 15:53:22 UTC
 </sub></div>
 </div>
 </div>

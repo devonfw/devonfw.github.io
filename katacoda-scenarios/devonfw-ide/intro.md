@@ -10,14 +10,12 @@ devonfw offers complete IDE solution integrated with a lot​ of integrated tool
 It massively speeds up development, reduces risks and helps deliver better results.
 
 
-#
-## Prerequisites
+### Prerequisites
 
 * User should have a prior experience with Eclipse or any IDE. 
 
 
-#
-## Learning goals
+### Learning goals
 
 * After completing this scenario, you will have learned how to install devonfw development environment i.e., the devonfw IDE.
 
