@@ -9,11 +9,9 @@ You can find a description of what to look for when creating a pull request at t
 This tutorial mainly focuses on migrating an older version of devon4j project to the latest version using devon4j migrate command.
 
 
-
 ## Prerequisites
 
 * devonfw IDE
-
 
 ## Learning goals.
 Here in this tutorial you will learn 

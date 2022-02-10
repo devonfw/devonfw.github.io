@@ -10,14 +10,12 @@ This tutorial will show you how to include the Quarkus Smallrye OpenAPI extensio
 For more information about OpenAPI and the Smallrye OpenAPI extension, see the [devon4j documentation](https://github.com/devonfw/devon4j/blob/master/documentation/guide-openapi.asciidoc) or the [official Quarkus guide](https://quarkus.io/guides/openapi-swaggerui).
 
 
-#
-## Prerequisites
+### Prerequisites
 
 * Installed devonfw-ide (or at least Java and Maven installed)
 
 
-#
-## Learning goals
+### Learning goals
 
 * You will learn how to generate OpenAPI specifications and Swagger UI from REST services
 
