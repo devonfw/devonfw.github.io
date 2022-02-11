@@ -110,14 +110,14 @@
 <div class="toc2">
 <div class="title">Table of Contents</div>
 <ul class="sectlevel0">
-<li><a href="#guide-jpa-performance.asciidoc">JPA Performance</a>
+<li><a href="#devonfw-guide_devon4j.wiki_guide-jpa-performance.asciidoc">JPA Performance</a>
 <ul class="sectlevel1">
-<li><a href="#guide-jpa-performance.asciidoc_n-plus-1-problem">N plus 1 Problem</a></li>
-<li><a href="#guide-jpa-performance.asciidoc_solving-n-plus-1-problem">Solving N plus 1 Problem</a></li>
+<li><a href="#devonfw-guide_devon4j.wiki_guide-jpa-performance.asciidoc_n-plus-1-problem">N plus 1 Problem</a></li>
+<li><a href="#devonfw-guide_devon4j.wiki_guide-jpa-performance.asciidoc_solving-n-plus-1-problem">Solving N plus 1 Problem</a></li>
 </ul>
 </li>
 </ul>
-<h1 id="guide-jpa-performance.asciidoc" class="sect0">JPA Performance</h1>
+<h1 id="devonfw-guide_devon4j.wiki_guide-jpa-performance.asciidoc" class="sect0">JPA Performance</h1>
 <div class="paragraph">
 <p>When using JPA the developer sometimes does not see or understand where and when statements to the database are triggered.</p>
 </div>
@@ -136,7 +136,7 @@
 <p>So in case you do not understand what is going on under the hood of JPA, you will easily run into performance issues due to lazy loading and other effects.</p>
 </div>
 <div class="sect1">
-<h2 id="guide-jpa-performance.asciidoc_n-plus-1-problem">N plus 1 Problem</h2>
+<h2 id="devonfw-guide_devon4j.wiki_guide-jpa-performance.asciidoc_n-plus-1-problem">N plus 1 Problem</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The most prominent phenomena is call the <code>N+1 Problem</code>.
@@ -161,7 +161,7 @@ Now <code>findDishById</code> caused 1 initial query statement and for any numbe
 </div>
 </div>
 <div class="sect1">
-<h2 id="guide-jpa-performance.asciidoc_solving-n-plus-1-problem">Solving N plus 1 Problem</h2>
+<h2 id="devonfw-guide_devon4j.wiki_guide-jpa-performance.asciidoc_solving-n-plus-1-problem">Solving N plus 1 Problem</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>To solve the N+1 Problem you need to change your code to only trigger a single statement instead. This can be archived in various ways. The most universal solution is to use <code>FETCH JOIN</code> in order to pre-load the nested <code>N</code> child entities into the first level cache of the JPA vendor implementation. This will behave very similar as if the <code>@ManyToMany</code> relation to <code>IngredientEntity</code> was having <code>FetchType.EAGER</code> but only for the specific query and not in general. Because changing <code>@ManyToMany</code> to <code>FetchType.EAGER</code> would cause bad performance for other usecases where only the dish but not its extra ingredients are needed. For this reason all relations, including <code>@OneToOne</code> should always be <code>FetchType.LAZY</code>. Back to our example we simply replace <code>dao.findDishById(dishId)</code> with <code>dao.findDishWithExtrasById(dishId)</code> that we implement by the following JPQL query:</p>
@@ -314,7 +314,7 @@ Now <code>findDishById</code> caused 1 initial query statement and for any numbe
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2022-02-10 15:51:39 UTC
+Last updated 2022-02-11 11:43:18 UTC
 </sub></div>
 </div>
 </div>

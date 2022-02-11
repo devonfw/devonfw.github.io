@@ -110,22 +110,22 @@
 <div class="toc2">
 <div class="title">Table of Contents</div>
 <ul class="sectlevel0">
-<li><a href="#guide-beanmapping-quarkus.asciidoc">Bean mapping with Quarkus</a>
+<li><a href="#devonfw-guide_devon4j.wiki_quarkus_guide-beanmapping-quarkus.asciidoc">Bean mapping with Quarkus</a>
 <ul class="sectlevel1">
-<li><a href="#guide-beanmapping-quarkus.asciidoc_mapstruct-dependency">MapStruct Dependency</a></li>
-<li><a href="#guide-beanmapping-quarkus.asciidoc_mapstruct-configuration">MapStruct Configuration</a>
+<li><a href="#devonfw-guide_devon4j.wiki_quarkus_guide-beanmapping-quarkus.asciidoc_mapstruct-dependency">MapStruct Dependency</a></li>
+<li><a href="#devonfw-guide_devon4j.wiki_quarkus_guide-beanmapping-quarkus.asciidoc_mapstruct-configuration">MapStruct Configuration</a>
 <ul class="sectlevel2">
-<li><a href="#guide-beanmapping-quarkus.asciidoc_simple-configuration">Simple Configuration</a></li>
-<li><a href="#guide-beanmapping-quarkus.asciidoc_mapperconfig-configuration">MapperConfig Configuration</a></li>
-<li><a href="#guide-beanmapping-quarkus.asciidoc_configuration-via-annotation-processor-options">Configuration via annotation processor options</a></li>
+<li><a href="#devonfw-guide_devon4j.wiki_quarkus_guide-beanmapping-quarkus.asciidoc_simple-configuration">Simple Configuration</a></li>
+<li><a href="#devonfw-guide_devon4j.wiki_quarkus_guide-beanmapping-quarkus.asciidoc_mapperconfig-configuration">MapperConfig Configuration</a></li>
+<li><a href="#devonfw-guide_devon4j.wiki_quarkus_guide-beanmapping-quarkus.asciidoc_configuration-via-annotation-processor-options">Configuration via annotation processor options</a></li>
 </ul>
 </li>
-<li><a href="#guide-beanmapping-quarkus.asciidoc_basic-bean-mapper-usage">Basic Bean-Mapper Usage</a></li>
-<li><a href="#guide-beanmapping-quarkus.asciidoc_advanced-bean-mapper-usage">Advanced Bean-Mapper Usage</a></li>
+<li><a href="#devonfw-guide_devon4j.wiki_quarkus_guide-beanmapping-quarkus.asciidoc_basic-bean-mapper-usage">Basic Bean-Mapper Usage</a></li>
+<li><a href="#devonfw-guide_devon4j.wiki_quarkus_guide-beanmapping-quarkus.asciidoc_advanced-bean-mapper-usage">Advanced Bean-Mapper Usage</a></li>
 </ul>
 </li>
 </ul>
-<h1 id="guide-beanmapping-quarkus.asciidoc" class="sect0">Bean mapping with Quarkus</h1>
+<h1 id="devonfw-guide_devon4j.wiki_quarkus_guide-beanmapping-quarkus.asciidoc" class="sect0">Bean mapping with Quarkus</h1>
 <div class="paragraph">
 <p>This guide will show bean-mapping, in particular for a Quarkus application. We recommend using <a href="https://mapstruct.org/">MapStruct</a> with a Quarkus application because the other bean-mapper frameworks use Java reflections. They are not supported in GraalVm right now and cause problems when building native applications. MapStruct is a code generator that greatly simplifies the implementation of mappings between Java bean types based on a convention over configuration approach. The mapping code will be generated at compile-time and uses plain method invocations and is thus fast, type-safe, and easy to understand. MapStruct has to be configured to not use Java reflections, which will be shown in this guide.</p>
 </div>
@@ -134,7 +134,7 @@
 <a href="https://mapstruct.org/documentation/stable/reference/pdf/mapstruct-reference-guide.pdf">MapStruct reference guide</a> and a general introduction to MapStruct from <a href="https://www.baeldung.com/mapstruct">Baeldung</a>.</p>
 </div>
 <div class="sect1">
-<h2 id="guide-beanmapping-quarkus.asciidoc_mapstruct-dependency">MapStruct Dependency</h2>
+<h2 id="devonfw-guide_devon4j.wiki_quarkus_guide-beanmapping-quarkus.asciidoc_mapstruct-dependency">MapStruct Dependency</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>To get access to MapStruct, we have to add the dependency to our POM.xml:</p>
@@ -179,13 +179,13 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="guide-beanmapping-quarkus.asciidoc_mapstruct-configuration">MapStruct Configuration</h2>
+<h2 id="devonfw-guide_devon4j.wiki_quarkus_guide-beanmapping-quarkus.asciidoc_mapstruct-configuration">MapStruct Configuration</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>We already discussed the benefits of <a href="https://github.com/devonfw/devon4j/blob/master/documentation/guide-dependency-injection.asciidoc#dependency-injection">dependency injection</a>. MapStruct supports CDI with EJB, spring, and jsr330. The default retrieving method for a mapper is a factory that uses reflections, which should be avoided. The component model should be set to CDI, as this will allow us to easily inject the generated mapper implementation. The component model can be configured in multiple ways.</p>
 </div>
 <div class="sect2">
-<h3 id="guide-beanmapping-quarkus.asciidoc_simple-configuration">Simple Configuration</h3>
+<h3 id="devonfw-guide_devon4j.wiki_quarkus_guide-beanmapping-quarkus.asciidoc_simple-configuration">Simple Configuration</h3>
 <div class="paragraph">
 <p>Add the attribute <strong>componentModel</strong> to the <strong>@Mapper</strong> annotation in the mapper interface.</p>
 </div>
@@ -199,7 +199,7 @@ public interface ProductMapper{
 </div>
 </div>
 <div class="sect2">
-<h3 id="guide-beanmapping-quarkus.asciidoc_mapperconfig-configuration">MapperConfig Configuration</h3>
+<h3 id="devonfw-guide_devon4j.wiki_quarkus_guide-beanmapping-quarkus.asciidoc_mapperconfig-configuration">MapperConfig Configuration</h3>
 <div class="paragraph">
 <p>Create a shared configuration that can be used for multiple mappers. Implement an interface and use the annotation <strong>@MapperConfig</strong> for the class. You can define all configurations in this interface and pass the generated <code>MapperConfig.class</code> with the <strong>config</strong> attribute to the mapper. The <code>MapperConfig</code> also defines the <strong>InjectionStrategy</strong> and <strong>MappingInheritaceStrategy</strong>, both of which will be explained later.
 A list of all configurations can be found <a href="https://mapstruct.org/documentation/stable/api/org/mapstruct/MapperConfig.html">here</a>.</p>
@@ -228,7 +228,7 @@ public interface ProductMapper{
 </div>
 </div>
 <div class="sect2">
-<h3 id="guide-beanmapping-quarkus.asciidoc_configuration-via-annotation-processor-options">Configuration via annotation processor options</h3>
+<h3 id="devonfw-guide_devon4j.wiki_quarkus_guide-beanmapping-quarkus.asciidoc_configuration-via-annotation-processor-options">Configuration via annotation processor options</h3>
 <div class="paragraph">
 <p>The MapStruct code generator can be configured using annotation processor options.
 You can pass the options to the compiler while invoking javac directly, or add the parameters to the maven configuration in the POM.xml</p>
@@ -246,7 +246,7 @@ You can pass the options to the compiler while invoking javac directly, or add t
 </div>
 </div>
 <div class="sect1">
-<h2 id="guide-beanmapping-quarkus.asciidoc_basic-bean-mapper-usage">Basic Bean-Mapper Usage</h2>
+<h2 id="devonfw-guide_devon4j.wiki_quarkus_guide-beanmapping-quarkus.asciidoc_basic-bean-mapper-usage">Basic Bean-Mapper Usage</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>To use the mapper, we have to implement the mapper interface and the function prototypes with a <strong>@Mapper</strong> annotation.</p>
@@ -283,7 +283,7 @@ public interface ProductMapper {
 </div>
 </div>
 <div class="sect1">
-<h2 id="guide-beanmapping-quarkus.asciidoc_advanced-bean-mapper-usage">Advanced Bean-Mapper Usage</h2>
+<h2 id="devonfw-guide_devon4j.wiki_quarkus_guide-beanmapping-quarkus.asciidoc_advanced-bean-mapper-usage">Advanced Bean-Mapper Usage</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Let´s assume that our <code>Product</code> entity and the <code>ProductDto</code> have some differently named properties that should be mapped. Add a mapping annotation to map the property <strong>type</strong> from <code>Product</code> to <strong>kind</strong> from <code>ProductDto</code>. We define the source name of the property and the target name.</p>
@@ -305,7 +305,7 @@ public interface ProductMapper {
 single-source type of method B and if the single-source type of A is the same as the result type of B. If multiple apply, the attribute name is needed. Specific mappings from the inverse method can (optionally) be overridden, ignored, or set to constants or expressions.</p>
 </div>
 <div class="paragraph">
-<p>The mappingInheritanceStrategy can be defined as showed in <a href="#guide-beanmapping-quarkus.asciidoc_mapstruct-configuration">MapStruct Configuration</a>. The existing options can be found <a href="https://mapstruct.org/documentation/dev/reference/html/#shared-configurations">here</a>.</p>
+<p>The mappingInheritanceStrategy can be defined as showed in <a href="#devonfw-guide_devon4j.wiki_quarkus_guide-beanmapping-quarkus.asciidoc_mapstruct-configuration">MapStruct Configuration</a>. The existing options can be found <a href="https://mapstruct.org/documentation/dev/reference/html/#shared-configurations">here</a>.</p>
 </div>
 <div class="paragraph">
 <p>A mapped attribute does not always have the same type in the source and target objects. For instance, an attribute may be of type <code>int</code> in the source bean but of type <code>Long</code> in the target bean.</p>
@@ -443,7 +443,7 @@ single-source type of method B and if the single-source type of A is the same as
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2022-02-10 15:52:13 UTC
+Last updated 2022-02-11 11:43:48 UTC
 </sub></div>
 </div>
 </div>

@@ -110,37 +110,37 @@
 <div class="toc2">
 <div class="title">Table of Contents</div>
 <ul class="sectlevel0">
-<li><a href="#guide-jpa-query.asciidoc">Queries</a>
+<li><a href="#devonfw-guide_devon4j.wiki_guide-jpa-query.asciidoc">Queries</a>
 <ul class="sectlevel1">
-<li><a href="#guide-jpa-query.asciidoc_static-queries">Static Queries</a>
+<li><a href="#devonfw-guide_devon4j.wiki_guide-jpa-query.asciidoc_static-queries">Static Queries</a>
 <ul class="sectlevel2">
-<li><a href="#guide-jpa-query.asciidoc_using-queries-to-avoid-bidirectional-relationships">Using Queries to Avoid Bidirectional Relationships</a></li>
+<li><a href="#devonfw-guide_devon4j.wiki_guide-jpa-query.asciidoc_using-queries-to-avoid-bidirectional-relationships">Using Queries to Avoid Bidirectional Relationships</a></li>
 </ul>
 </li>
-<li><a href="#guide-jpa-query.asciidoc_dynamic-queries">Dynamic Queries</a></li>
-<li><a href="#guide-jpa-query.asciidoc_native-queries">Native Queries</a></li>
-<li><a href="#guide-jpa-query.asciidoc_using-wildcards">Using Wildcards</a></li>
-<li><a href="#guide-jpa-query.asciidoc_pagination">Pagination</a>
+<li><a href="#devonfw-guide_devon4j.wiki_guide-jpa-query.asciidoc_dynamic-queries">Dynamic Queries</a></li>
+<li><a href="#devonfw-guide_devon4j.wiki_guide-jpa-query.asciidoc_native-queries">Native Queries</a></li>
+<li><a href="#devonfw-guide_devon4j.wiki_guide-jpa-query.asciidoc_using-wildcards">Using Wildcards</a></li>
+<li><a href="#devonfw-guide_devon4j.wiki_guide-jpa-query.asciidoc_pagination">Pagination</a>
 <ul class="sectlevel2">
-<li><a href="#guide-jpa-query.asciidoc_paging-with-querydsl">Paging with Querydsl</a></li>
-<li><a href="#guide-jpa-query.asciidoc_pagination-example">Pagination example</a></li>
-<li><a href="#guide-jpa-query.asciidoc_pagingation-in-devon4j-spring">Pagingation in devon4j-spring</a></li>
+<li><a href="#devonfw-guide_devon4j.wiki_guide-jpa-query.asciidoc_paging-with-querydsl">Paging with Querydsl</a></li>
+<li><a href="#devonfw-guide_devon4j.wiki_guide-jpa-query.asciidoc_pagination-example">Pagination example</a></li>
+<li><a href="#devonfw-guide_devon4j.wiki_guide-jpa-query.asciidoc_pagingation-in-devon4j-spring">Pagingation in devon4j-spring</a></li>
 </ul>
 </li>
-<li><a href="#guide-jpa-query.asciidoc_query-meta-parameters">Query Meta-Parameters</a></li>
-<li><a href="#guide-jpa-query.asciidoc_advanced-queries">Advanced Queries</a></li>
+<li><a href="#devonfw-guide_devon4j.wiki_guide-jpa-query.asciidoc_query-meta-parameters">Query Meta-Parameters</a></li>
+<li><a href="#devonfw-guide_devon4j.wiki_guide-jpa-query.asciidoc_advanced-queries">Advanced Queries</a></li>
 </ul>
 </li>
 </ul>
-<h1 id="guide-jpa-query.asciidoc" class="sect0">Queries</h1>
+<h1 id="devonfw-guide_devon4j.wiki_guide-jpa-query.asciidoc" class="sect0">Queries</h1>
 <div class="paragraph">
 <p>The <a href="http://www.oracle.com/technetwork/java/javaee/tech/persistence-jsp-140049.html">Java Persistence API (JPA)</a> defines its own query language, the <a href="https://docs.oracle.com/html/E13946_01/ejb3_langref.html"><em>java persistence query language</em> (JPQL)</a> (see also <a href="https://docs.oracle.com/javaee/7/tutorial/persistence-querylanguage.htm">JPQL tutorial</a>), which is similar to SQL but operates on entities and their attributes instead of tables and columns.</p>
 </div>
 <div class="paragraph">
-<p>The simplest CRUD-Queries (e.g. find an entity by its ID) are already build in the devonfw CRUD functionality (via <a href="#guide-repository.asciidoc">Repository</a> or <a href="#guide-dao.asciidoc">DAO</a>). For other cases you need to write your own query. We distinguish between <em>static</em> and <em>dynamic</em> queries. <a href="#guide-jpa-query.asciidoc_static-queries">Static queries</a> have a fixed JPQL query string that may only use parameters to customize the query at runtime. Instead, <a href="#guide-jpa-query.asciidoc_dynamic-queries">dynamic queries</a> can change their clauses (<code>WHERE</code>, <code>ORDER BY</code>, <code>JOIN</code>, etc.) at runtime depending on the given search criteria.</p>
+<p>The simplest CRUD-Queries (e.g. find an entity by its ID) are already build in the devonfw CRUD functionality (via <a href="#guide-repository.asciidoc">Repository</a> or <a href="#guide-dao.asciidoc">DAO</a>). For other cases you need to write your own query. We distinguish between <em>static</em> and <em>dynamic</em> queries. <a href="#devonfw-guide_devon4j.wiki_guide-jpa-query.asciidoc_static-queries">Static queries</a> have a fixed JPQL query string that may only use parameters to customize the query at runtime. Instead, <a href="#devonfw-guide_devon4j.wiki_guide-jpa-query.asciidoc_dynamic-queries">dynamic queries</a> can change their clauses (<code>WHERE</code>, <code>ORDER BY</code>, <code>JOIN</code>, etc.) at runtime depending on the given search criteria.</p>
 </div>
 <div class="sect1">
-<h2 id="guide-jpa-query.asciidoc_static-queries">Static Queries</h2>
+<h2 id="devonfw-guide_devon4j.wiki_guide-jpa-query.asciidoc_static-queries">Static Queries</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>E.g. to find all <a href="https://github.com/devonfw/my-thai-star/blob/develop/java/mtsj/core/src/main/java/com/devonfw/application/mtsj/dishmanagement/dataaccess/api/DishEntity.java">DishEntries</a> (from MTS sample app) that have a price not exceeding a given <code>maxPrice</code> we write the following JPQL query:</p>
@@ -154,7 +154,7 @@
 <p>Here <code>dish</code> is used as alias (variable name) for our selected <code>DishEntity</code> (what refers to the simple name of the Java entity class). With <code>dish.price</code> we are referring to the Java property <code>price</code> (<code>getPrice()</code>/<code>setPrice(&#8230;&#8203;)</code>) in <code>DishEntity</code>. A named variable provided from outside (the search criteria at runtime) is specified with a colon (<code>:</code>) as prefix. Here with <code>:maxPrice</code> we reference to a variable that needs to be set via <code>query.setParameter("maxPrice", maxPriceValue)</code>. JPQL also supports indexed parameters (<code>?</code>) but they are discouraged because they easily cause confusion and mistakes.</p>
 </div>
 <div class="sect2">
-<h3 id="guide-jpa-query.asciidoc_using-queries-to-avoid-bidirectional-relationships">Using Queries to Avoid Bidirectional Relationships</h3>
+<h3 id="devonfw-guide_devon4j.wiki_guide-jpa-query.asciidoc_using-queries-to-avoid-bidirectional-relationships">Using Queries to Avoid Bidirectional Relationships</h3>
 <div class="paragraph">
 <p>With the usage of queries it is possible to avoid exposing relationships or modelling bidirectional relationships, which have some disadvantages (see <a href="#guide-jpa.asciidoc_relationships">relationships</a>). This is especially desired for relationships between entities of different business components.
 So for example to get all <a href="https://github.com/devonfw/my-thai-star/blob/develop/java/mtsj/core/src/main/java/com/devonfw/application/mtsj/ordermanagement/dataaccess/api/OrderLineEntity.java">OrderLineEntities</a> for a specific <a href="https://github.com/devonfw/my-thai-star/blob/develop/java/mtsj/core/src/main/java/com/devonfw/application/mtsj/ordermanagement/dataaccess/api/OrderEntity.java">OrderEntity</a> without using the <code>orderLines</code> relation from <code>OrderEntity</code> the following query could be used:</p>
@@ -168,7 +168,7 @@ So for example to get all <a href="https://github.com/devonfw/my-thai-star/blob/
 </div>
 </div>
 <div class="sect1">
-<h2 id="guide-jpa-query.asciidoc_dynamic-queries">Dynamic Queries</h2>
+<h2 id="devonfw-guide_devon4j.wiki_guide-jpa-query.asciidoc_dynamic-queries">Dynamic Queries</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>For dynamic queries, we use the <a href="http://querydsl.com/static/querydsl/latest/reference/html/ch02.html">JPA</a> module for <a href="http://www.querydsl.com/">Querydsl</a>. Querydsl also supports other modules such as <a href="http://querydsl.com/static/querydsl/latest/reference/html/ch02s07.html">MongoDB</a>, and <a href="http://querydsl.com/static/querydsl/latest/reference/html/ch02s05.html">Apache Lucene</a>. It allows to implement queries in a powerful but readable and type-safe way (unlike Criteria API). If you already know JPQL, you will quickly be able to read and write Querydsl code. It feels like JPQL but implemented in Java instead of plain text.</p>
@@ -272,7 +272,7 @@ So for example to get all <a href="https://github.com/devonfw/my-thai-star/blob/
 </div>
 </div>
 <div class="sect1">
-<h2 id="guide-jpa-query.asciidoc_native-queries">Native Queries</h2>
+<h2 id="devonfw-guide_devon4j.wiki_guide-jpa-query.asciidoc_native-queries">Native Queries</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Spring Data supports the use of <em>native queries</em>. Native queries use simple native SQL syntax that is not parsed in JPQL. This allows you to use all the features that your database supports.
@@ -323,15 +323,15 @@ Be sure to use the name of the table when using native queries, while you must u
 </div>
 </div>
 <div class="sect1">
-<h2 id="guide-jpa-query.asciidoc_using-wildcards">Using Wildcards</h2>
+<h2 id="devonfw-guide_devon4j.wiki_guide-jpa-query.asciidoc_using-wildcards">Using Wildcards</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>For flexible queries it is often required to allow wildcards (especially in <a href="#guide-jpa-query.asciidoc_dynamic_queries">dynamic queries</a>). While users intuitively expect glob syntax, the SQL and JPQL standards work differently. Therefore, a mapping is required. devonfw provides this on a lower level with <a href="https://github.com/devonfw/devon4j/blob/develop/modules/basic/src/main/java/com/devonfw/module/basic/common/api/query/LikePatternSyntax.java">LikePatternSyntax</a> and on a higher level with <a href="https://github.com/devonfw/devon4j/blob/develop/modules/jpa-basic/src/main/java/com/devonfw/module/jpa/dataaccess/api/QueryUtil.java#L54">QueryUtil</a> (see <a href="https://github.com/devonfw/devon4j/blob/develop/modules/jpa-basic/src/main/java/com/devonfw/module/jpa/dataaccess/api/QueryHelper.java#L199">QueryHelper.newStringClause(&#8230;&#8203;)</a>).</p>
+<p>For flexible queries it is often required to allow wildcards (especially in <a href="#devonfw-guide_devon4j.wiki_guide-jpa-query.asciidoc_dynamic_queries">dynamic queries</a>). While users intuitively expect glob syntax, the SQL and JPQL standards work differently. Therefore, a mapping is required. devonfw provides this on a lower level with <a href="https://github.com/devonfw/devon4j/blob/develop/modules/basic/src/main/java/com/devonfw/module/basic/common/api/query/LikePatternSyntax.java">LikePatternSyntax</a> and on a higher level with <a href="https://github.com/devonfw/devon4j/blob/develop/modules/jpa-basic/src/main/java/com/devonfw/module/jpa/dataaccess/api/QueryUtil.java#L54">QueryUtil</a> (see <a href="https://github.com/devonfw/devon4j/blob/develop/modules/jpa-basic/src/main/java/com/devonfw/module/jpa/dataaccess/api/QueryHelper.java#L199">QueryHelper.newStringClause(&#8230;&#8203;)</a>).</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="guide-jpa-query.asciidoc_pagination">Pagination</h2>
+<h2 id="devonfw-guide_devon4j.wiki_guide-jpa-query.asciidoc_pagination">Pagination</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>When dealing with large amounts of data, an efficient method of retrieving the data is required. Fetching the entire data set each time would be too time consuming. Instead, <em>Paging</em> is used to process only small subsets of the entire data set.</p>
@@ -357,7 +357,7 @@ Page&lt;DishEntity&gt; dishes = dishRepository.findAll(pageable);</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="guide-jpa-query.asciidoc_paging-with-querydsl">Paging with Querydsl</h3>
+<h3 id="devonfw-guide_devon4j.wiki_guide-jpa-query.asciidoc_paging-with-querydsl">Paging with Querydsl</h3>
 <div class="paragraph">
 <p>Pagination is also supported for dynamic queries with Querydsl:</p>
 </div>
@@ -383,7 +383,7 @@ Page&lt;DishEntity&gt; dishes = dishRepository.findAll(pageable);</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="guide-jpa-query.asciidoc_pagination-example">Pagination example</h3>
+<h3 id="devonfw-guide_devon4j.wiki_guide-jpa-query.asciidoc_pagination-example">Pagination example</h3>
 <div class="paragraph">
 <p>For the table entity we can make a search request by accessing the REST endpoint with pagination support like in the following examples:</p>
 </div>
@@ -481,7 +481,7 @@ As we are requesting with the <code>total</code> property set to <code>true</cod
 </div>
 </div>
 <div class="sect2">
-<h3 id="guide-jpa-query.asciidoc_pagingation-in-devon4j-spring">Pagingation in devon4j-spring</h3>
+<h3 id="devonfw-guide_devon4j.wiki_guide-jpa-query.asciidoc_pagingation-in-devon4j-spring">Pagingation in devon4j-spring</h3>
 <div class="paragraph">
 <p>For spring applications, devon4j also offers its own solution for pagination. You can find an example of this <a href="#spring/guide-querydsl-spring.asciidoc_pagination">here</a>.</p>
 </div>
@@ -489,7 +489,7 @@ As we are requesting with the <code>total</code> property set to <code>true</cod
 </div>
 </div>
 <div class="sect1">
-<h2 id="guide-jpa-query.asciidoc_query-meta-parameters">Query Meta-Parameters</h2>
+<h2 id="devonfw-guide_devon4j.wiki_guide-jpa-query.asciidoc_query-meta-parameters">Query Meta-Parameters</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Queries can have meta-parameters and that are provided via <code>SearchCriteriaTo</code>. Besides paging (see above) we also get <a href="https://github.com/devonfw/devon4j/blob/develop/modules/jpa-basic/src/main/java/com/devonfw/module/jpa/dataaccess/api/QueryHelper.java#L51">timeout support</a>.</p>
@@ -497,7 +497,7 @@ As we are requesting with the <code>total</code> property set to <code>true</cod
 </div>
 </div>
 <div class="sect1">
-<h2 id="guide-jpa-query.asciidoc_advanced-queries">Advanced Queries</h2>
+<h2 id="devonfw-guide_devon4j.wiki_guide-jpa-query.asciidoc_advanced-queries">Advanced Queries</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Writing queries can sometimes get rather complex. The current examples given above only showed very simple basics. Within this topic a lot of advanced features need to be considered like:</p>
@@ -663,7 +663,7 @@ As we are requesting with the <code>total</code> property set to <code>true</cod
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2022-02-10 15:51:41 UTC
+Last updated 2022-02-11 11:43:19 UTC
 </sub></div>
 </div>
 </div>

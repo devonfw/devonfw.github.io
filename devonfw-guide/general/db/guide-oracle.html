@@ -110,30 +110,30 @@
 <div class="toc2">
 <div class="title">Table of Contents</div>
 <ul class="sectlevel0">
-<li><a href="#guide-oracle.asciidoc">Oracle RDBMS</a>
+<li><a href="#devonfw-guide_general_db_guide-oracle.asciidoc">Oracle RDBMS</a>
 <ul class="sectlevel1">
-<li><a href="#guide-oracle.asciidoc_java">Java</a>
+<li><a href="#devonfw-guide_general_db_guide-oracle.asciidoc_java">Java</a>
 <ul class="sectlevel2">
-<li><a href="#guide-oracle.asciidoc_xe">XE</a></li>
-<li><a href="#guide-oracle.asciidoc_driver">Driver</a></li>
-<li><a href="#guide-oracle.asciidoc_pooling">Pooling</a></li>
-<li><a href="#guide-oracle.asciidoc_messaging">Messaging</a></li>
-<li><a href="#guide-oracle.asciidoc_general-notes-on-the-use-of-oracle-products">General Notes on the use of Oracle products</a></li>
-<li><a href="#guide-oracle.asciidoc_fix-for-tns-listener-issues">Fix for TNS-Listener issues</a></li>
+<li><a href="#devonfw-guide_general_db_guide-oracle.asciidoc_xe">XE</a></li>
+<li><a href="#devonfw-guide_general_db_guide-oracle.asciidoc_driver">Driver</a></li>
+<li><a href="#devonfw-guide_general_db_guide-oracle.asciidoc_pooling">Pooling</a></li>
+<li><a href="#devonfw-guide_general_db_guide-oracle.asciidoc_messaging">Messaging</a></li>
+<li><a href="#devonfw-guide_general_db_guide-oracle.asciidoc_general-notes-on-the-use-of-oracle-products">General Notes on the use of Oracle products</a></li>
+<li><a href="#devonfw-guide_general_db_guide-oracle.asciidoc_fix-for-tns-listener-issues">Fix for TNS-Listener issues</a></li>
 </ul>
 </li>
 </ul>
 </li>
 </ul>
-<h1 id="guide-oracle.asciidoc" class="sect0">Oracle RDBMS</h1>
+<h1 id="devonfw-guide_general_db_guide-oracle.asciidoc" class="sect0">Oracle RDBMS</h1>
 <div class="paragraph">
 <p>This section contains hints for those who use Oracle RDBMS. Besides general hints about the driver there are tips for more tight integration with other Oracle features or products. However, if you work for a project where Oracle RDBMS is settled and not going to be replaced (you are in a vendor lock-in anyway), you might want to use even more from Oracle technology to take advantage from a closer integration.</p>
 </div>
 <div class="sect1">
-<h2 id="guide-oracle.asciidoc_java">Java</h2>
+<h2 id="devonfw-guide_general_db_guide-oracle.asciidoc_java">Java</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="guide-oracle.asciidoc_xe">XE</h3>
+<h3 id="devonfw-guide_general_db_guide-oracle.asciidoc_xe">XE</h3>
 <div class="paragraph">
 <p>For local development you should setup Oracle XE (eXpress Edition).
 You need an oracle account, then you can download it from <a href="https://www.oracle.com/technetwork/database/database-technologies/express-edition/downloads/index.html">here</a>.</p>
@@ -184,7 +184,7 @@ In order to create schema users, use <code>sys</code> as <code>Username</code> a
 </div>
 </div>
 <div class="sect2">
-<h3 id="guide-oracle.asciidoc_driver">Driver</h3>
+<h3 id="devonfw-guide_general_db_guide-oracle.asciidoc_driver">Driver</h3>
 <div class="paragraph">
 <p>The oracle JDBC driver is <a href="https://blogs.oracle.com/developers/oracle-database-client-libraries-for-java-now-on-maven-central">available in maven central</a>.
 Oracle JDBC drivers usually are backward and forward compatible so you should be able to use an older driver with a newer Oracle DB, etc.
@@ -204,7 +204,7 @@ Your dependency for the oracle driver should look as follows:</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="guide-oracle.asciidoc_pooling">Pooling</h3>
+<h3 id="devonfw-guide_general_db_guide-oracle.asciidoc_pooling">Pooling</h3>
 <div class="paragraph">
 <p>In order to boost performance JDBC connections should be pooled and reused. If you are using Oracle RDBMS and do not plan to change that you can use the Oracle specific connection pool "Universal Connection Pool (UCP)" that is perfectly integrated with the Oracle driver. According to the documentation, UCP can even be used to <a href="https://docs.oracle.com/database/122/JJUCP/third-party-integration.htm#JJUCP8141">manage third party data sources</a>.
 Like the JDBC driver also the UCP is available in maven central. The dependency should look like this:</p>
@@ -262,14 +262,14 @@ spring.datasource.jmx-enabled=true
 </div>
 </div>
 <div class="sect2">
-<h3 id="guide-oracle.asciidoc_messaging">Messaging</h3>
+<h3 id="devonfw-guide_general_db_guide-oracle.asciidoc_messaging">Messaging</h3>
 <div class="paragraph">
 <p>In case you want to do messaging based on JMS you might consider the <a href="https://docs.oracle.com/cd/E11882_01/server.112/e11013/aq_intro.htm">Oracle JMS</a> also called Oracle Streams Advanced Queuing, or Oracle Advanced Queuing, or OAQ or AQ for short. OAQ is a JMS provider based on the Oracle RDBMS and included in the DB product for no extra fee. OAQ has some features that exceed the JMS standard like a retention time (i.e. a built-in backup mechanism that allows to make messages "unread" within a configurable period of time so that these messages do not have to be resent by the sending application). Also, OAQ messages are stored in relational tables so they can easily be observed by a test driver in a system test scenario.
 Capgemini has used the <a href="https://projects.spring.io/spring-data-jdbc-ext/">Spring Data JDBC Extension</a> in order to process OAQ messages within <strong>the same technical transaction</strong> as the resulting Oracle RDBMS data changes <strong>without</strong> using 2PC and an XA-compliant transaction manager - which is not available out of the box in Tomcat. This is possible only due to the fact that OAQ queues and RDBMS tables actually reside in the same database. However, this is higher magic and should only be tried if high transaction rates must be achieved by avoiding 2PC.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="guide-oracle.asciidoc_general-notes-on-the-use-of-oracle-products">General Notes on the use of Oracle products</h3>
+<h3 id="devonfw-guide_general_db_guide-oracle.asciidoc_general-notes-on-the-use-of-oracle-products">General Notes on the use of Oracle products</h3>
 <div class="paragraph">
 <p>Oracle sells commercial products and receives licence fees for them. This includes access to a support organization. Therefore, at an early stage of your project, prepare for contacting <a href="https://support.oracle.com">oracle support</a> in case of technical problems. You will need the Oracle support ID <strong>of your customer</strong> [i.e. the legal entity who pays the licence fee and runs the RDBMS] and your customer must grant you permission to use it in a service request - it is not legal to use a your own support ID in a customer-related project. Your customer pays for that service anyway, so use it in case of a problem!</p>
 </div>
@@ -278,7 +278,7 @@ Capgemini has used the <a href="https://projects.spring.io/spring-data-jdbc-ext/
 </div>
 </div>
 <div class="sect2">
-<h3 id="guide-oracle.asciidoc_fix-for-tns-listener-issues">Fix for TNS-Listener issues</h3>
+<h3 id="devonfw-guide_general_db_guide-oracle.asciidoc_fix-for-tns-listener-issues">Fix for TNS-Listener issues</h3>
 <div class="paragraph">
 <p>When switching networks (e.g. due to VPN) you might end up that your local Oracle XE stopps working with this error:</p>
 </div>
@@ -447,7 +447,7 @@ EXIT;</code></pre>
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2022-02-10 15:56:42 UTC
+Last updated 2022-02-11 11:47:42 UTC
 </sub></div>
 </div>
 </div>
