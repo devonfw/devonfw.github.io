@@ -13,14 +13,12 @@ The plugin analysis the REST APIs and the associated JavaDoc and then generates 
 For more information about OpenAPI and the ServicedocGen plugin, see the [devon4j documentation](https://github.com/devonfw/devon4j/blob/master/documentation/guide-openapi.asciidoc).
 
 
-#
-## Prerequisites
+### Prerequisites
 
 * Installed devonfw-ide (or at least Java and Maven installed)
 
 
-#
-## Learning goals
+### Learning goals
 
 * You will learn how to generate OpenAPI specifications and Swagger UI from REST services using ServicedocGen maven plugin
 

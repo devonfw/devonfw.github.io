@@ -321,8 +321,23 @@ Mixing these two granularities can cause problems when comparing one value to an
 <div class="sect2">
 <h3 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_primary-keys">Primary Keys</h3>
 <div class="paragraph">
-<p>We only use simple Long values as primary keys (IDs). By default it is auto generated (<code>@GeneratedValue(strategy=GenerationType.AUTO)</code>). This is already provided by the class <code>com.devonfw.&lt;projectName&gt;.general.dataaccess.api.AbstractPersistenceEntity</code> within the <a href="#guide-structure-classic.asciidoc_architecture-mapping">classic project structure</a> respectively <code>com.devonfw.&lt;projectName&gt;.general.domain.model.AbstractPersistenceEntity</code> within the <a href="#guide-structure-modern.asciidoc_architecture-mapping">modern project structure</a>, that you can extend.
-In case you have business oriented keys (often as <code>String</code>), you can define an additional property for it and declare it as unique (<code>@Column(unique=true)</code>).
+<p>We only use simple Long values as primary keys (IDs).
+By default it is auto generated (<code>@GeneratedValue(strategy=GenerationType.AUTO)</code>).
+This is already provided by the class <code>com.devonfw.&lt;projectName&gt;.general.dataaccess.api.AbstractPersistenceEntity</code> within the <a href="#guide-structure-classic.asciidoc_architecture-mapping">classic project structure</a> respectively <code>com.devonfw.&lt;projectName&gt;.general.domain.model.AbstractPersistenceEntity</code> within the <a href="#guide-structure-modern.asciidoc_architecture-mapping">modern project structure</a>, that you can extend.</p>
+</div>
+<div class="paragraph">
+<p>The reason for this recommendation is simply because using a number (<code>Long</code>) is the most efficient representation for the database.
+You may also consider to use other types like <code>String</code> or <code>UUID</code> or even composite custom datatypes and this is technically possible.
+However, please consider that the primary key is used to lookup the row from the database table, also in foreign keys and thus in JOINs.
+Please note that your project sooner or later may reach some complexity where performance really matters.
+Working on big data and performing JOINs when using types such as <code>String</code> (<code>VARCHAR[2]</code>) as primary and foreign keys will kill your performance.
+You are still free to make a different choice and devonfw only gives recommendations but does not want to dictate you what to do.
+However, you have been warned about the concequences.
+If you are well aware of what you are doing, you can still use differnet types of primary keys.
+In such case, create your own entity not extending <code>AbstractPersistenceEntity</code> or create your own copy of <code>AbstractPersistenceEntity</code> with a different name and a different type of primary key.</p>
+</div>
+<div class="paragraph">
+<p>In case you have business oriented keys (often as <code>String</code>), you can define an additional property for it and declare it as unique (<code>@Column(unique=true)</code>).
 Be sure to include "AUTO_INCREMENT" in your sql table field ID to be able to persist data (or similar for other databases).</p>
 </div>
 </div>
@@ -933,7 +948,7 @@ Use one of the types if you want to modify the entity later on, for read only ac
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2022-02-11 12:06:14 UTC
+Last updated 2022-02-13 18:54:52 UTC
 </sub></div>
 </div>
 </div>
