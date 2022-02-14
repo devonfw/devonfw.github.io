@@ -17,10 +17,9 @@ jobs:
         run: |
           git config --global fetch.parallel 20
 
-      - name: Clone
-        uses: actions/checkout@v1
-        with:
-          submodules: recursive
+      - name: Shallow Clone with Submodules
+        run: |
+          git clone --depth=1 https://${{ github.token }}@github.com/${{ github.repository }}.git --recurse-submodules --shallow-submodules
           
       - name: Cache local Maven repository
         uses: actions/cache@v2
