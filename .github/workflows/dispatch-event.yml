@@ -1,4 +1,4 @@
-name: Dispcher event on update of devonfw guide
+name: Update Submodules
 env:
   BUILD_USER: ${{ secrets.BUILD_USER }}
   BUILD_USER_EMAIL:  ${{ secrets.BUILD_USER_EMAIL }}
@@ -50,5 +50,14 @@ jobs:
           git merge origin/master
           cd ..
           git add solutions
-          git commit -m "[DocUpdate]"
-          git push origin develop
+          
+          # just commit if there is anything to commit
+          eval "$(git diff --cached --exit-code)"
+          result=${?}
+          if [ ${result} = 0 ]
+          then
+            git commit -m "[DocUpdate]"
+            git push origin develop
+          else
+            echo "Nothing to commit!"
+          fi
