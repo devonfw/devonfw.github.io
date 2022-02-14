@@ -1293,7 +1293,7 @@ plugin config) should look like the following:</p>
 <div class="sect2">
 <h3 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_csv">4.2. CSV</h3>
 <div class="paragraph">
-<p>The CSV input is normally manually generated and should look like this (The csv File is ";" separated):</p>
+<p>The CSV input is normally manually generated and should look like this:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1313,7 +1313,7 @@ plugin config) should look like the following:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The following 5 columns need to be contained:</p>
+<p>The following 5 columns need to be contained in order (separated with ";"):</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1335,8 +1335,130 @@ plugin config) should look like the following:</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>In case that a component has multiple licenses attached, there needs to be a separate
-line in the file for each license.</p>
+<p>Additionally, an optional configuration can be set in order to customize the given structure of the csv file e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>"readers" : [ {
+  "type" : "csv",
+  "source" : "file:path/to/the/file.csv",
+  "usagePattern" : "DYNAMIC_LINKING",
+  "configuration" : {
+	"charset" = "UTF-8",
+	"artifactId" : "0",
+	"version" : "1",
+	"format" : "EXCEL",
+	"skipHeaderRecord" : "true",
+	"delimiter" : ";"
+  }
+} ]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The minimum of following 2 configuration settings need to be contained:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>artifactId</p>
+</li>
+<li>
+<p>version</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>With these settings one can specify the position of the value within the csv file.
+Additional positional settings include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>groupId</p>
+</li>
+<li>
+<p>license</p>
+</li>
+<li>
+<p>licenseUrl</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If a charset needs to be specified, one can use the following option:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>charset (string, specified charset for reader e.g. UTF-8)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Furthermore, one can configure a range of other csv structure options based on the <a href="https://commons.apache.org/proper/commons-csv/apidocs/org/apache/commons/csv/CSVFormat.Builder.html">Apache Commons CSV API</a>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>allowDuplicateHeaderNames (boolean)</p>
+</li>
+<li>
+<p>allowMissingColumnNames (boolean)</p>
+</li>
+<li>
+<p>autoFlush (boolean)</p>
+</li>
+<li>
+<p>commentMarker (char)</p>
+</li>
+<li>
+<p>delimiter (string)</p>
+</li>
+<li>
+<p>escape (char)</p>
+</li>
+<li>
+<p>ignoreEmptyLines (boolean)</p>
+</li>
+<li>
+<p>ignoreHeaderCase (boolean)</p>
+</li>
+<li>
+<p>ignoreSurroundingSpaces (boolean)</p>
+</li>
+<li>
+<p>nullString (string)</p>
+</li>
+<li>
+<p>quote (char)</p>
+</li>
+<li>
+<p>recordSeparator (string)</p>
+</li>
+<li>
+<p>skipHeaderRecord (boolean)</p>
+</li>
+<li>
+<p>trailingDelimiter (boolean)</p>
+</li>
+<li>
+<p>trim (boolean)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These configurations may also be used to overwrite options of a <a href="https://commons.apache.org/proper/commons-csv/apidocs/org/apache/commons/csv/CSVFormat.Predefined.html">predefined format</a>, which can be set with:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>format (string, predefined format e.g. EXCEL)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Important: In case that a component has multiple licenses attached, there needs to be a separate
+line in the csv file for each license.</p>
 </div>
 </div>
 <div class="sect2">
@@ -1751,7 +1873,7 @@ is true if the property of the model is identical to the given value in the XLS 
 <p>If the given value of the XLS field starts with the prefix <code>NOT:</code> then the outcome of the remaining condition is logically negated, i.e. this field condition is  <code>true</code> if the rest of the condition is NOT fulfilled.</p>
 </li>
 <li>
-<p>A prefix of <code>REGEX:</code> indicates that the remainder of the field defines a <a href="https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html">Java Regular Expression</a>. For the condition to become true the whole property needs to match the given regular expression.</p>
+<p>A suffix of <code>(REGEX)</code> indicates that the remainder of the field defines a <a href="https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html">Java Regular Expression</a>. For the condition to become true the whole property needs to match the given regular expression.</p>
 </li>
 <li>
 <p>The prefix <code>RANGE:</code> indicates that the remainder of the field defines
@@ -1764,6 +1886,18 @@ a <a href="https://maven.apache.org/ref/3.5.0/maven-artifact/apidocs/org/apache/
 </div>
 <div class="paragraph">
 <p>Fields which are subject to this extended syntax are marked explicitly in the following section.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+The former prefix notation of <code>REGEX:</code> is deprecated and should no longer be used. See <a href="#devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_list-of-deprecated-features">List of Deprecated Features</a>.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -2628,6 +2762,9 @@ wrong/misleading output) the first stage of deprecation will be skipped.
 <li>
 <p>Reader of type "npm" (use type "npm-license-crawler-csv" instead); Stage 1 from Version 1.0.8 on; see <a href="https://github.com/devonfw/solicitor/issues/62" class="bare">https://github.com/devonfw/solicitor/issues/62</a></p>
 </li>
+<li>
+<p>"REGEX:" prefix notation in rule templates (use "(REGEX)" suffix instead); Stage 1 from Version 1.3.0 on; see <a href="https://github.com/devonfw/solicitor/issues/78" class="bare">https://github.com/devonfw/solicitor/issues/78</a></p>
+</li>
 </ul>
 </div>
 </div>
@@ -2827,6 +2964,15 @@ for cleanup. A warning message will be written in this case (SOLI-050).</p>
 <li>
 <p><a href="https://github.com/devonfw/solicitor/issues/103" class="bare">https://github.com/devonfw/solicitor/issues/103</a>:
 Changed structure of Solicitor source code repository to maven multi module structure.</p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/solicitor/issues/7" class="bare">https://github.com/devonfw/solicitor/issues/7</a>:
+Allow more flexible CSV file format within the CsvReader.</p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/solicitor/issues/78" class="bare">https://github.com/devonfw/solicitor/issues/78</a>: Introduce new suffix <em>(REGEX)</em> in decision
+tables to mark regular expressions. Using this suffix avoids breaking any sorting when using
+mixed verbatim strings and regex patterns. The old prefix syntax <em>REGEX:</em> has been deprecated.</p>
 </li>
 </ul>
 </div>
@@ -3070,7 +3216,7 @@ multiapplication projects even is some license files are unavailable.</p>
 <div class="footnote"><sub>
 
 Version {project-version}-{buildNumber}<br>
-Last updated 2022-02-13 19:02:42 UTC
+Last updated 2022-02-14 20:43:30 UTC
 </sub></div>
 </div>
 </div>

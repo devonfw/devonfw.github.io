@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2022-02-13 19:04:55 UTC">
+<meta name="author" content="Updated at 2022-02-14 20:45:12 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -525,7 +525,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2022-02-13 19:11:55 UTC</span><br>
+<span id="author" class="author">Updated at 2022-02-14 20:50:24 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -693,11 +693,11 @@ plugin config) should look like the following:</p>
 <div class="sect3">
 <h4 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_csv">CSV</h4>
 <div class="paragraph">
-<p>The CSV input is normally manually generated and should look like this (The csv File is ";" separated):</p>
+<p>The CSV input is normally manually generated and should look like this:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>org.eclipse;albireo;0.0.3;Eclipse Public License - v 1.0;https://www.eclipse.org/legal/epl-v10.html
+<pre class="highlight"><code>﻿org.eclipse;albireo;0.0.3;Eclipse Public License - v 1.0;https://www.eclipse.org/legal/epl-v10.html
 org.antlr.runtime;antlr;4.6.0;BSD;https://www.antlr.org/license.html
 org.eclipse.equinox.p2;Equinox p2 Provisioning for IDEs;2.3.2;Eclipse Public License - v 1.0;http://www.eclipse.org/legal/epl-v10.html
 org.springframework;spring;5.0.6;Apache 2;https://www.apache.org/licenses/LICENSE-2.0
@@ -717,7 +717,7 @@ org.eclipse.xtend;xtend;2.2.0;MIT;https://spdx.org/licenses/MIT#licenseText</cod
 </div>
 </div>
 <div class="paragraph">
-<p>The following 5 columns need to be contained:</p>
+<p>The following 5 columns need to be contained in order (separated with ";"):</p>
 </div>
 <div class="ulist">
 <ul>
@@ -739,8 +739,130 @@ org.eclipse.xtend;xtend;2.2.0;MIT;https://spdx.org/licenses/MIT#licenseText</cod
 </ul>
 </div>
 <div class="paragraph">
-<p>In case that a component has multiple licenses attached, there needs to be a separate
-line in the file for each license.</p>
+<p>Additionally, an optional configuration can be set in order to customize the given structure of the csv file e.g.:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>"readers" : [ {
+  "type" : "csv",
+  "source" : "file:path/to/the/file.csv",
+  "usagePattern" : "DYNAMIC_LINKING",
+  "configuration" : {
+	"charset" = "UTF-8",
+	"artifactId" : "0",
+	"version" : "1",
+	"format" : "EXCEL",
+	"skipHeaderRecord" : "true",
+	"delimiter" : ";"
+  }
+} ]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The minimum of following 2 configuration settings need to be contained:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>artifactId</p>
+</li>
+<li>
+<p>version</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>With these settings one can specify the position of the value within the csv file.
+Additional positional settings include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>groupId</p>
+</li>
+<li>
+<p>license</p>
+</li>
+<li>
+<p>licenseUrl</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If a charset needs to be specified, one can use the following option:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>charset (string, specified charset for reader e.g. UTF-8)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Furthermore, one can configure a range of other csv structure options based on the <a href="https://commons.apache.org/proper/commons-csv/apidocs/org/apache/commons/csv/CSVFormat.Builder.html">Apache Commons CSV API</a>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>allowDuplicateHeaderNames (boolean)</p>
+</li>
+<li>
+<p>allowMissingColumnNames (boolean)</p>
+</li>
+<li>
+<p>autoFlush (boolean)</p>
+</li>
+<li>
+<p>commentMarker (char)</p>
+</li>
+<li>
+<p>delimiter (string)</p>
+</li>
+<li>
+<p>escape (char)</p>
+</li>
+<li>
+<p>ignoreEmptyLines (boolean)</p>
+</li>
+<li>
+<p>ignoreHeaderCase (boolean)</p>
+</li>
+<li>
+<p>ignoreSurroundingSpaces (boolean)</p>
+</li>
+<li>
+<p>nullString (string)</p>
+</li>
+<li>
+<p>quote (char)</p>
+</li>
+<li>
+<p>recordSeparator (string)</p>
+</li>
+<li>
+<p>skipHeaderRecord (boolean)</p>
+</li>
+<li>
+<p>trailingDelimiter (boolean)</p>
+</li>
+<li>
+<p>trim (boolean)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>These configurations may also be used to overwrite options of a <a href="https://commons.apache.org/proper/commons-csv/apidocs/org/apache/commons/csv/CSVFormat.Predefined.html">predefined format</a>, which can be set with:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>format (string, predefined format e.g. EXCEL)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Important: In case that a component has multiple licenses attached, there needs to be a separate
+line in the csv file for each license.</p>
 </div>
 </div>
 <div class="sect3">
@@ -1305,7 +1427,7 @@ The former reader of type <code>gradle</code> is deprecated and should no longer
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-02-13 19:00:41 UTC
+Last updated 2022-02-14 20:42:00 UTC
 </sub></div>
 
 
