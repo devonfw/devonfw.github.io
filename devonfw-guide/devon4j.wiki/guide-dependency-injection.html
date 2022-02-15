@@ -74,7 +74,7 @@
 <p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
 </li>
 <li>
-<p><a href="https://www.katacoda.com/devonfw">Tutorials</a></p>
+<p><a href="#header_https://www.katacoda.com/devonfw">Tutorials</a></p>
 </li>
 <li>
 <p><a href="/website/pages/solutions/index.html">Solutions</a></p>
@@ -142,26 +142,26 @@ Therefore in devonfw we rely on these open standards and can propagate patterns 
 <div class="paragraph">
 <p>Within dependency injection a <em>bean</em> is typically a reusable unit of your application providing an encapsulated functionality.
 This <em>bean</em> can be injected into other beans and it should in general be replaceable.
-As an example we can think of a <a href="#guide-usecase.asciidoc">use-case</a>, a <a href="#guide-repository.asciidoc">repository</a>, etc.
+As an example we can think of a <a href="#devonfw-guide_devon4j.wiki_guide-usecase.asciidoc">use-case</a>, a <a href="#devonfw-guide_devon4j.wiki_guide-repository.asciidoc">repository</a>, etc.
 As best practice we use the following principles:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
 <p><strong>Stateless implementation</strong><br>
-By default such beans shall be implemented <a href="#coding-conventions.asciidoc_stateless-programming">stateless</a>. If you store state information in member variables you can easily run into concurrency problems and nasty bugs. This is easy to avoid by using local variables and separate state classes for complex state-information. Try to avoid stateful beans wherever possible. Only add state if you are fully aware of what you are doing and properly document this as a warning in your JavaDoc.</p>
+By default such beans shall be implemented <a href="#devonfw-guide_devon4j.wiki_coding-conventions.asciidoc_stateless-programming">stateless</a>. If you store state information in member variables you can easily run into concurrency problems and nasty bugs. This is easy to avoid by using local variables and separate state classes for complex state-information. Try to avoid stateful beans wherever possible. Only add state if you are fully aware of what you are doing and properly document this as a warning in your JavaDoc.</p>
 </li>
 <li>
 <p><strong>Usage of Java standards</strong><br>
-We use common standards (see above) that makes our code portable. Therefore we use standardized annotations like <code>@Inject</code> (<code>javax.inject.Inject</code>) instead of proprietary annotations such as <code>@Autowired</code>. Generally we avoid proprietary annotations in business code (<a href="#guide-logic-layer.asciidoc">logic layer</a>).</p>
+We use common standards (see above) that makes our code portable. Therefore we use standardized annotations like <code>@Inject</code> (<code>javax.inject.Inject</code>) instead of proprietary annotations such as <code>@Autowired</code>. Generally we avoid proprietary annotations in business code (<a href="#devonfw-guide_devon4j.wiki_guide-logic-layer.asciidoc">logic layer</a>).</p>
 </li>
 <li>
 <p><strong>Simple injection-style</strong><br>
-In general you can choose between constructor, setter or field injection. For simplicity we recommend to do private field injection as it is very compact and easy to maintain. We believe that constructor injection is bad for maintenance especially in case of inheritance (if you change the dependencies you need to refactor all sub-classes). Private field injection and public setter injection are very similar but setter injection is much more verbose (often you are even forced to have javadoc for all public methods). If you are writing re-usable library code setter injection will make sense as it is more flexible. In a business application you typically do not need that and can save a lot of boiler-plate code if you use private field injection instead. Nowadays you are using container infrastructure also for your tests (see <a href="#guide-testing.asciidoc">testing</a>) so there is no need to inject manually (what would require a public setter).</p>
+In general you can choose between constructor, setter or field injection. For simplicity we recommend to do private field injection as it is very compact and easy to maintain. We believe that constructor injection is bad for maintenance especially in case of inheritance (if you change the dependencies you need to refactor all sub-classes). Private field injection and public setter injection are very similar but setter injection is much more verbose (often you are even forced to have javadoc for all public methods). If you are writing re-usable library code setter injection will make sense as it is more flexible. In a business application you typically do not need that and can save a lot of boiler-plate code if you use private field injection instead. Nowadays you are using container infrastructure also for your tests (see <a href="#devonfw-guide_devon4j.wiki_guide-testing.asciidoc">testing</a>) so there is no need to inject manually (what would require a public setter).</p>
 </li>
 <li>
 <p><strong>KISS</strong><br>
-To follow the KISS (keep it small and simple) principle we avoid advanced features (e.g. custom <a href="#guide-aop.asciidoc">AOP</a>, non-singleton beans) and only use them where necessary.</p>
+To follow the KISS (keep it small and simple) principle we avoid advanced features (e.g. custom <a href="#devonfw-guide_devon4j.wiki_guide-aop.asciidoc">AOP</a>, non-singleton beans) and only use them where necessary.</p>
 </li>
 <li>
 <p><strong>Separation of API and implementation</strong><br>
@@ -201,7 +201,7 @@ public class MyComponentImpl implements MyComponent {
 </div>
 <div class="paragraph">
 <p>Here <code>MyComponentImpl</code> depends on <code>MyOtherComponent</code> that is injected into the field <code>myOtherComponent</code> because of the <code>@Inject</code> annotation.
-To make this work there must be exactly one bean in the container (e.g. <a href="#spring.asciidoc">spring</a> or <a href="#quarkus.asciidoc">quarkus</a>) that is an instance of <code>MyOtherComponent</code>.
+To make this work there must be exactly one bean in the container (e.g. <a href="#devonfw-guide_devon4j.wiki_spring.asciidoc">spring</a> or <a href="#devonfw-guide_devon4j.wiki_quarkus.asciidoc">quarkus</a>) that is an instance of <code>MyOtherComponent</code>.
 In order to put a bean into the container, we can use <code>@ApplicationScoped</code> in case of CDI (required for quarkus) for a stateless bean.
 In spring we can ommit a CDI annotation and the <code>@Named</code> annotation is already sufficient as a bean is stateless by default in spring.
 If we always use <code>@ApplicationScoped</code> we can make this more explicit and more portable accross different frameworks.
@@ -391,7 +391,7 @@ When you want to start with Jakarta EE you should use these dependencies to get 
 </div>
 </div>
 <div class="paragraph">
-<p>Please note that with <a href="#quarkus.asciidoc">quarkus</a> you will get them as transitive dependencies out of the box.
+<p>Please note that with <a href="#devonfw-guide_devon4j.wiki_quarkus.asciidoc">quarkus</a> you will get them as transitive dependencies out of the box.
 The above Jakarate EE dependencies replace these JEE depdencies:</p>
 </div>
 <div class="listingblock">
@@ -537,7 +537,7 @@ The above Jakarate EE dependencies replace these JEE depdencies:</p>
     ></script>
 <div class="footnote"><sub>
 
-Last updated 2022-02-15 15:22:11 UTC
+Last updated 2022-02-15 16:46:44 UTC
 </sub></div>
 </div>
 </div>
