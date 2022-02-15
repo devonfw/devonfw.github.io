@@ -1,4 +1,4 @@
-name: Dispcher event on update of devonfw guide
+name: Update Submodules
 env:
   BUILD_USER: ${{ secrets.BUILD_USER }}
   BUILD_USER_EMAIL:  ${{ secrets.BUILD_USER_EMAIL }}
@@ -16,13 +16,12 @@ jobs:
         run: |
           git config --global user.email ${BUILD_USER_EMAIL}
           git config --global user.name ${BUILD_USER}
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          submodules: recursive
+      - name: Shallow Clone with Submodules
+        run: |
+          git clone --depth=1 https://${{ github.token }}@github.com/${{ github.repository }}.git --recurse-submodules --shallow-submodules .
       - name: update latest changes of devonfw-guide
         run: |
-          cd devonfw-guide/
+          cd devonfw-guide
           git checkout master
           git fetch
           git branch
@@ -50,5 +49,14 @@ jobs:
           git merge origin/master
           cd ..
           git add solutions
-          git commit -m "[DocUpdate]"
-          git push origin develop
+          
+          # just commit if there is anything to commit
+          git diff --cached --exit-code
+          result=${?}
+          if [ ${result} = 0 ]
+          then
+            echo "Nothing to commit!"
+          else
+            git commit -m "[DocUpdate]"
+            git push origin develop
+          fi
