@@ -16,9 +16,10 @@ jobs:
         run: |
           git config --global user.email ${BUILD_USER_EMAIL}
           git config --global user.name ${BUILD_USER}
-      - name: Shallow Clone with Submodules
-        run: |
-          git clone https://${{ github.token }}@github.com/${{ github.repository }}.git --recurse-submodules --single-branch .
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive
       - name: update latest changes of devonfw-guide
         run: |
           cd devonfw-guide
