@@ -25,7 +25,7 @@ function main(solutionsDir, outputFile, snippetLength) {
                 console.log("Before: " + imagePath);
 
                 if (imagePath != "") {
-                    sharp(`./solutions/${dirItem}/${imagePath}`)
+                    sharp(`./target/generated-docs/solutions/${dirItem}/${imagePath}`)
                         .resize({ width: 600 })
                         .toFile(`./target/generated-docs/solutions/${dirItem}/_previewImage.png`);
                     imagePath = `./solution/${dirItem}/_previewImage.png`;
