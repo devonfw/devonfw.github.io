@@ -609,154 +609,8 @@ The platform features that (can) complement Kubernetes are:</p>
 <img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/aks_overview.png" alt="AKS Overview" width="794" height="568">
 </div>
 </div>
-</div>
-<div class="sect3">
-<h4 id="solutions_solutions_microservices_azure_aks_index.asciidoc_detailed-native-setup">Detailed Native Setup</h4>
-<div class="paragraph">
-<p>AKS comes with the following additional features regarding the <strong>orchestration platform</strong>:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Scaling</p>
-<div class="openblock">
-<div class="content">
-<div class="paragraph">
-<p>Virtual nodes enable network communication between pods that run in Azure Container Instances (ACI) and the AKS cluster. To provide this communication, a virtual network subnet is created and delegated permissions are assigned. Virtual nodes only work with AKS clusters created using advanced networking (Azure CNI). By default, AKS clusters are created with basic networking (kubenet). This implementation allows fast scaling of services for unpredictable traffic.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/virtual_nodes.png" alt="Virtual Nodes" width="1394" height="746">
-</div>
-</div>
-</div>
-</div>
-</li>
-<li>
-<p>Compliance</p>
-<div class="openblock">
-<div class="content">
-<div class="paragraph">
-<p><strong>Kubernet-dashboard</strong> has been used in the past for attacks. Either disable it or mitigate the attack potential by adding token security.</p>
-</div>
-<div class="paragraph">
-<p>AKS used to rely on <strong>service principals</strong> (SP), which are technical principals in AAD. They came with some challenges like being stored on the nodes and the need to rotate them. SPs allowed an AKS cluster to interact with other Azure resources. Managed service identity (MSI) is a wrapper for SP, it provides auto rotation and if its system assigned then it has the same life cycle as the resource. AKS uses several managed identities for built-in services and add-ons as described <a href="https://docs.microsoft.com/en-us/azure/aks/use-managed-identity">here</a>:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Control plane</p>
-</li>
-<li>
-<p>Agent pool</p>
-</li>
-<li>
-<p>Pod identity (Preview as of 13.10.2021)</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p><strong>Role based access control</strong> (RBAC) can be used for Authentication and Authorization. Predefined roles are: Cluster admin/ Cluster user = developer. Setting it up requires (1) setting up a cluster role and (2) binding the Cluster Role to a user/ cluster identity.</p>
-</div>
-<div class="paragraph">
-<p><strong>Operating system security patches</strong> are automatically pushed to your nodes on a nightly schedule. AKS uses a security hardened operating system image which complies to CIS benchmark.</p>
-</div>
-<div class="paragraph">
-<p><strong>Network security</strong> can be used to reduce attack potential. A private AKS is located inside a VNET and only exposes the ingress controller with a public IP. Interact with the Kubernetes API server as a private endpoint using Azure Private Link. To improve cluster security and minimize attacks, the API server should only be accessible from a limited set of IP address ranges.</p>
-</div>
-<div class="paragraph">
-<p><strong>Azure policies</strong> offer built-in policies to secure pods and built-in initiatives which map to pod security policies. They replace pod security policies and work with gatekeeper/ Open Policy Agent (OPA) under the hood as described here. In Kubernetes, Admission Controllers enforce semantic validation of objects during create, update, and delete operations. With Open Policy Agent (OPA) you can enforce custom policies on Kubernetes objects without recompiling or reconfiguring the Kubernetes API server.</p>
-</div>
-<div class="paragraph">
-<p>The principle of least privilege should be applied to how traffic can flow between pods in an Azure Kubernetes Service (AKS) cluster. Let&#8217;s say you likely want to block traffic directly to back-end applications. The <strong>Network Policy feature</strong> in Kubernetes lets you define rules for ingress and egress traffic between pods in a cluster. <a href="https://docs.microsoft.com/en-us/azure/aks/use-network-policies">Two options</a> for implementation exist:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Azure&#8217;s own implementation, called Azure Network Policies.</p>
-</li>
-<li>
-<p>Calico Network Policies, an open-source network and network security solution founded by Tigera.</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</li>
-<li>
-<p>Provisioning</p>
-<div class="openblock">
-<div class="content">
-<div class="paragraph">
-<p>Environments can be created by logical isolation (namespaces) or phyiscal (multiple clusters). Logical is usually recommended for dev/test whereas pysical for prod.</p>
-</div>
-</div>
-</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect3">
-<h4 id="solutions_solutions_microservices_azure_aks_index.asciidoc_variations">Variations</h4>
-<div class="paragraph">
-<p>The following additional extra tools can be used in conjunction with Kubernetes:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Extensions orchestration platform</p>
-<div class="openblock">
-<div class="content">
-<div class="paragraph">
-<p>DAPR is a distributed framework that provides application services to applications such as publish subscribe as described here.
-Open Service Mesh (OSM) add-on for Azure Kubernetes Service (AKS) is now available in public preview as of 10.09.2021. OSM implements Service Mesh Interface to provide the most common service mesh features as described here.</p>
-</div>
-</div>
-</div>
-</li>
-<li>
-<p>Configuration</p>
-<div class="openblock">
-<div class="content">
-<div class="paragraph">
-<p>Tools for accessing sensitive information:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>FlexDriver:</strong> Meet rigorous compliance requirements with secrets centrally stored outside of clusters. Access application-specific keys, secrets, and certificates natively within Kubernetes from Azure Key Vault. Mount Azure Key Vault stores via flexvolume driver <a href="https://github.com/Azure/kubernetes-keyvault-flexvol" class="bare">https://github.com/Azure/kubernetes-keyvault-flexvol</a></p>
-</li>
-<li>
-<p><strong>Azure Key Vault to Kubernetes (akv2k8s):</strong> Used for our applications, to make Azure Key Vault secrets, certificates and keys available to use in a secure way. The goals of Azure Key Vault to Kubernetes are to avoid a direct program dependency for getting secrets, secure and low risk to transfer Azure Key Vault secrets and transparently inject secrets into applications. Per default secrets, configurations and certificates can be easily read and accessed by users in Kubernetes and access to them can only be restricted by setting access rights. This will be avoided and is a huge benefit of using akv2k8s with a simple setup of Azure Key Vault and the option to set more detailed restrictions and configurations.</p>
-</li>
-<li>
-<p><a href="https://github.com/Azure/secrets-store-csi-driver-provider-azure/">secrets-store-csi-driver</a> better rated than (akv2k8s). If you want to get from multiple keyvaults secrets using multiple identities you had to have multiple instances of akv2k8s running. And secret store csi driver is more mature in general.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Tools for synchronizing configuration:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>ArgoCD:</strong> ArgoCD is a leader developed by Intuit and synchronizes changes in the code of applications, photos and cluster definitions, so the Git - repository, to the cluster. The solution is open source software, kept relatively simple and is one of the most important and oldest tools on the market.</p>
-</li>
-<li>
-<p><strong>Flux:</strong> Flux basically does the same job as ArgoCD, i.e. synchronizes the repository and cluster in the course of continuous delivery. Flux is also open source and kept simple - the special thing: It comes from the GitOps inventor Weaveworks.</p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect3">
-<h4 id="solutions_solutions_microservices_azure_aks_index.asciidoc_when-to-use">When to use</h4>
-<div class="paragraph">
-<p>When you need a container platform with orchestration support due to a higher number of microservices in Azure. Additional built in functionality that comes with Azure Red Hat OpenShift is not required or does not fit into your requirements (e.g. because you want to use a different tooling or need more flexibility.)</p>
+<div class="paragraph internal">
+<p>solution_microservices_azure_aks_infra_detailed_native setup</p>
 </div>
 </div>
 </div>
@@ -1163,7 +1017,7 @@ spec:
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-02-24 08:41:14 UTC
+Last updated 2022-02-24 12:24:35 UTC
 </sub></div>
 </div>
 </div>
