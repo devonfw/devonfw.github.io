@@ -89,6 +89,14 @@ jobs:
           ref: ${{github.event.pull_request.head.ref}}
           repository: ${{github.event.pull_request.head.repo.full_name}}
           path: solutions
+
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
           
       - name: Setup Node
         uses: actions/setup-node@v2
@@ -115,6 +123,10 @@ jobs:
           cd solutions/scripts
           npm install
           cd ../../
+
+      - name: Fix includes
+        run: |
+          node solutions/scripts/fixIncludeFiles.js ./solutions/solutions/ ./solutions/includes/
           
       - name: Fix includes
         run: |

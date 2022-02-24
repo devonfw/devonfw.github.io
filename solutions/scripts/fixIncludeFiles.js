@@ -11,7 +11,7 @@ function fixIncludeFiles(solutionsDir, includeDir) {
         if (!fileStats.isFile()) {
             var indexAsciiDocFile = path.join("./", item, "index.asciidoc");
             if (fs.existsSync(indexAsciiDocFile)) {
-                readFromFilename(indexAsciiDocFile, includeDir);
+                readFromFilename(indexAsciiDocFile, path.resolve(includeDir));
             }
         }
     })
@@ -23,10 +23,8 @@ function readFromFilename(file, includeDir) {
     let includeFileRegex = /include::((.*?\/([^\/\\[]+))\/([^\/\\[]+\.asciidoc))/isg;
 
     while ((regexMatch = includeFileRegex.exec(fileContent)) !== null) {
-        console.log(regexMatch);
         fileContent = fileContent.replace("include::" + regexMatch[1], "include::" + includeDir + "/" + regexMatch[3] + "/" + regexMatch[4]); 
     }
-    console.log(fileContent);
     fs.writeFileSync(file, fileContent, {encoding: 'utf-8'});
 }
 

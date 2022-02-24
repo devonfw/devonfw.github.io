@@ -1,10 +1,6 @@
 name: build-and-deploy
 
 on:
-  workflow_run:
-    workflows: ["Update Submodules"]
-    types:
-      - completed
   repository_dispatch:
     types: [dispatch-build-website]
   workflow_dispatch:
@@ -182,3 +178,11 @@ jobs:
           ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
           PUBLISH_BRANCH: master
           PUBLISH_DIR: ./target/generated-docs
+          
+      - name: Dispatch Website Link-Check
+        uses: guilouro/multiple-repositories-dispatch@v1.0.0
+        with:
+          repo_token: ${{ secrets.GHA_TOKEN }}
+          event_type: dispatch-website-linkcheck
+          repositories: |
+            devonfw/devonfw.github.io

@@ -21,7 +21,7 @@
 <!-- ************************************* -->
 
 
-<title>Enduser Management Solutions - Azure Active Directory</title>
+<title>Enduser Management Introduction</title>
 <!-- devonfw website stylesheet -->
 <link rel="stylesheet" type="text/css" href="/devonfw.css">
 <!-- Lunr -->
@@ -120,6 +120,17 @@ gtag('consent', 'default', {
 <div class="toc2">
 <div class="title">Table of Contents</div>
 <ul class="sectlevel1">
+<li><a href="#enduser-management-introduction">Enduser Management Introduction</a>
+<ul class="sectlevel2">
+<li><a href="#context-problem">Context &amp; Problem</a></li>
+<li><a href="#standard-problems">Standard Problems</a></li>
+</ul>
+</li>
+<li><a href="#enduser-management-platforms">Enduser Management Platforms</a>
+<ul class="sectlevel2">
+<li><a href="#azure">Azure</a></li>
+</ul>
+</li>
 <li><a href="#solutions_solutions_endusermgmt_azure_aad_index.asciidoc_enduser-management-solutions---azure-active-directory">Enduser Management Solutions - Azure Active Directory</a>
 <ul class="sectlevel2">
 <li><a href="#solutions_solutions_endusermgmt_azure_aad_index.asciidoc_overview-azure-active-directory">Overview Azure Active Directory</a></li>
@@ -129,6 +140,278 @@ gtag('consent', 'default', {
 </li>
 <li><a href="#solutions_solutions_endusermgmt_azure_aad_index.asciidoc_credits">Credits</a></li>
 </ul>
+<div class="sect1">
+<h2 id="enduser-management-introduction">Enduser Management Introduction</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="context-problem">Context &amp; Problem</h3>
+<div class="paragraph">
+<p>This document describes patterns to manage the endusers of applications including authentication and authorization. Applications are assumed to be web applications. From a data modeling perspective the major entities are the application and its endusers.</p>
+</div>
+<div class="paragraph">
+<p>Application scenarios can range from relatively simple (Just the users with a few additional data) to very complex:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Simple:</strong> User and an application with a few extra attributes.</p>
+</li>
+<li>
+<p><strong>Middle:</strong> Users with different scopes. Global users are independent from the app whereas app specific users are targeted to a certain application only (See <a href="https://stackoverflow.com/questions/46879039/azure-ad-b2c-for-supporting-multiple-apps">here</a> for details).</p>
+</li>
+<li>
+<p><strong>Very complex</strong></p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Online marketing (also known as internet marketing or web marketing) includes all marketing activities that are carried out online to achieve marketing goals, from brand awareness to closing an online business. Factors that make it complex:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>State change:</strong> Various events can trigger state changes in such a scenario. Targeting users with marketing content usually requires consent by the user. Expiry or explicit withdrawal must be reflected in those systems.</p>
+</li>
+<li>
+<p><strong>Business partners</strong> as endusers: Business partners have to go through a much more complicated process before being verified. This might also include backoffice activities that trigger further state changes. Leaving the business or closing of business triggers state changes in the associated users.</p>
+</li>
+<li>
+<p><strong>Guest user:</strong> To maximize online-business users should also allowed to do business although they may not yet fully registered in the system.</p>
+</li>
+<li>
+<p><strong>API:</strong> Systems should have a clear defined API to shield calling applications from implementation details and allowing changing of underlying platform. An API also simplifies versioning.</p>
+</li>
+<li>
+<p><strong>Integration:</strong> Certain aspects such as authentication might split across multiple systems. Systems have to communicate in such a scenario and might have to be able to receive signals to move forward in the processing flow.</p>
+</li>
+<li>
+<p><strong>Data modeling:</strong> Complex scenarios have a much more complex data model which might include arbitrary attributes and own custom entities.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Technically enduser management can be integrated into the application itself or factored out into a separate service. The pictures below indicate the basic options:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Inside Application:</strong> In this model the persistence layer also hosts the additional enduser data. All required functionality such as authentication/ authorization is provided by the application.</p>
+</li>
+<li>
+<p><strong>Factored out (Same platform as app):</strong> In that case the enduser management is factored out in a separate service within the same platform as the application.</p>
+</li>
+<li>
+<p><strong>Factored out (Different platform as app):</strong> In that case the enduser management is factored out in a separate service using a platform, that differs from the application platform.</p>
+</li>
+<li>
+<p><strong>Hybrid:</strong> Mixture of options 1 to 3.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>As shown enduser management can be split across systems. For the components used the standard considerations from the software lifecycle apply. This includes operational aspects such as monitoring and provisioning. Especially testing is challenging since the functionality requires user interaction which is not available in automated tests.</p>
+</div>
+<div class="paragraph">
+<p>The picture below shows a logical architecture of a complex scenario:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/endusermgmt.png" alt="Enduser management" width="757px" height="360px">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="standard-problems">Standard Problems</h3>
+<div class="paragraph">
+<p>The following standard problems will be addressed in subsequent paragraphs. The problems result from all described application scenarios:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Entire process enduser management</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>The folowing challenges exist regarding the entire process:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Implementation (Testing):</strong> Testing is a challenge since the tested functionality requires user interaction.</p>
+</li>
+<li>
+<p><strong>Implementation (Provisioning):</strong> Automatic deployment pipelines should be preferred. The challenge might rise from the fact that the developers reside in a different organizational boundary than the endusers of the application.</p>
+</li>
+<li>
+<p><strong>Operations (Monitoring):</strong> The user interactions must be monitored end-to-end across enduser management and the pplication. This might be challenging if enduser management is factored out in a separate service.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Application</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>The application must be able to access enduser information regarding authentication/ authorization.
+The application must manage sign in, out and up. Changes in the enduser management must be reflected by the application also if the user has not initiated a certain action.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Enduser managment</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>A service must able to handle the following challenges:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>API:</strong> A clear definition of the interfaces would preferable. This also allows to address versioning and abstraction of the underlying enduser management implementation.</p>
+</li>
+<li>
+<p><strong>Flows:</strong> Flows refer to a sequence of actions mainly related to authorization and authentication. The flows are highly asyncronous due to  possible blocking enduser interaction. E.g. if the user has to confirm his identity with an EMail verification link.</p>
+</li>
+<li>
+<p><strong>External:</strong> Bidrectional communication is required if functionality is split across systems. E.g. if the backoffice approval is factored out in a different systems that requires adjusting the state of the enduser.</p>
+</li>
+<li>
+<p><strong>Custom logic:</strong> It must be possible to incorporate custom logic e.g. to get additional data such as loyalty id.</p>
+</li>
+<li>
+<p><strong>Data store:</strong> Endusers state must be persisted along with all asscociated information.</p>
+</li>
+<li>
+<p><strong>Scheduling:</strong> Consent by the enduser might be limited to a certain expiry date. Expiry usually requires state changes of the enduser in the enduser management service.</p>
+</li>
+<li>
+<p><strong>On behalf of:</strong> Especially if business partners as endusers are involved it is common that others do things on behalf of others. E.g. if the owner (=enduser) of a business partner organization invites employees.</p>
+</li>
+<li>
+<p><strong>Access Reviews:</strong> Endusers you have been granted access might not be there anymore. E.g. because they have left their home organization. In that case system support is helpful that allows to determine which users are still active.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="enduser-management-platforms">Enduser Management Platforms</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="azure">Azure</h3>
+<div class="paragraph">
+<p>This chapter lists major features/ concrete services for enduser management of the Azure platform. This architecture pattern builds on the general problem description for enduser management. A detailed discussion of services is part of the solution design in the subsequent chapters. Major features for the previously described areas are as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Enduser managment</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>The central control instance for all users within Azure is Azure Active Directory (=AAD). Users in AAD must exist in a so called tenant which constitutes the highest possible domain boundary within Azure.</p>
+</div>
+<div class="paragraph">
+<p>AAD comes with features that support enduser management out of the box such as AAD B2C. These features cover quite well the simple to middle scenario. In the complex scenario limitations of these features might be a problem. In that case only Azure native services remain as fallback. Problematic service limitations might be:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Own entities:</strong> The features only support custom attributes but no own entities.</p>
+</li>
+<li>
+<p><strong>Separate tenant</strong>: AAD B2C comes with an own tenant that differs from the corporate one where the provisioning services might live. Azure DevOps pipelines don&#8217;t work if you use custom policies.</p>
+</li>
+<li>
+<p><strong>Bidirectional communication</strong>: Receiving messages in a publish/ subscribe pattern might not be directly supported.</p>
+</li>
+<li>
+<p><strong>APIs</strong>: AAD comes with its defined endpoints. It is not possible to introduce custom APIs.</p>
+</li>
+<li>
+<p><strong>Multiple organizations</strong>: Especially when endusers can be business partners users might be associated with multiple organizations. A tenant can serve as organization. However, a tenant is a heavyweight construct and moving endusers between tenants is not as easy as a data store update.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>AAD B2C provides cookie based session management with different options to control the session. Upon subsequent authentication requests, Azure AD B2C reads and validates the cookie-based session, and issues an access token without prompting the user to sign in again. If the cookie-based session expires or becomes invalid, the user is prompted to sign-in again. <a href="https://docs.microsoft.com/en-us/azure/active-directory-b2c/session-behavior?pivots=b2c-user-flow#sign-out">Sessions</a> can be managed by the following parties:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Azure AD B2C - Session managed by Azure AD B2C</p>
+</li>
+<li>
+<p>Federated identity provider - Session managed by the identity provider, for example Facebook, Salesforce, or Microsoft account</p>
+</li>
+<li>
+<p>Application - Session managed by the web, mobile, or single page application</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Application</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Microsoft provides AAD libraries that wrap the required functionalities including sign in/ ou/ up.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Entire process enduser management</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>The Azure platform supports enduser management as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Implementation (Testing):</strong> User flows can be tested separatly without being incorporated into an application. No additional support beyond that feature exists.</p>
+</li>
+<li>
+<p><strong>Implementation (Provisioning):</strong> Automatic deployment pipelines should be preferred. The challenge might rise from the fact that the developers reside in a different organizational boundary than the endusers of the application.</p>
+</li>
+<li>
+<p><strong>Operations (Monitoring):</strong> Azure provides Azure Monitor for monitoring the enduser management service from the application perspective. Monitoring the AAD service from infrastructure perspective is more difficult.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The picture below summarizes major aspects mentioned before:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/endusermgmt_azure.png" alt="Enduser management Azure summary" width="914px" height="560px">
+</div>
+</div>
+</div>
+</div>
+</div>
 <div class="sect1">
 <h2 id="solutions_solutions_endusermgmt_azure_aad_index.asciidoc_enduser-management-solutions---azure-active-directory">Enduser Management Solutions - Azure Active Directory</h2>
 <div class="sectionbody">
@@ -457,7 +740,7 @@ According to feedback from the microsoft product group it probably does not mean
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-02-23 13:25:20 UTC
+Last updated 2022-02-24 08:38:31 UTC
 </sub></div>
 </div>
 </div>

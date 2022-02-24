@@ -21,7 +21,7 @@ function copyIncludeFiles(solutionsDir, outputDir) {
 function readFromFilename(file, outputDir) {
     let regexMatch = null;
     let fileContent = fs.readFileSync(file, { encoding: "utf-8" });
-    let includeFileRegex = /include::.*\/([^\/\\]+)\/([^\/\\]+\.asciidoc).*$/isg;
+    let includeFileRegex = /include::.*?\/([^\/\\]+)\/([^\/\\]+\.asciidoc)/isg;
 
     while ((regexMatch = includeFileRegex.exec(fileContent)) !== null) {
         let snippetDir = path.join(__dirname, '../includes/', regexMatch[1]);

@@ -21,7 +21,7 @@
 <!-- ************************************* -->
 
 
-<title>Microservice Platforms Solutions - Azure Kubernetes Service</title>
+<title>Microservice Platforms Introduction</title>
 <!-- devonfw website stylesheet -->
 <link rel="stylesheet" type="text/css" href="/devonfw.css">
 <!-- Lunr -->
@@ -120,6 +120,18 @@ gtag('consent', 'default', {
 <div class="toc2">
 <div class="title">Table of Contents</div>
 <ul class="sectlevel1">
+<li><a href="#microservice-platforms-introduction">Microservice Platforms Introduction</a>
+<ul class="sectlevel2">
+<li><a href="#context-problem">Context &amp; Problem</a></li>
+<li><a href="#introduction-to-kubernetes">Introduction to Kubernetes</a></li>
+<li><a href="#standard-problems">Standard Problems</a></li>
+</ul>
+</li>
+<li><a href="#microservice-platforms">Microservice Platforms</a>
+<ul class="sectlevel2">
+<li><a href="#azure">Azure</a></li>
+</ul>
+</li>
 <li><a href="#solutions_solutions_microservices_azure_aks_index.asciidoc_microservice-platforms-solutions---azure-kubernetes-service">Microservice Platforms Solutions - Azure Kubernetes Service</a>
 <ul class="sectlevel2">
 <li><a href="#solutions_solutions_microservices_azure_aks_index.asciidoc_infrastructure">Infrastructure</a></li>
@@ -128,6 +140,396 @@ gtag('consent', 'default', {
 </li>
 <li><a href="#solutions_solutions_microservices_azure_aks_index.asciidoc_credits">Credits</a></li>
 </ul>
+<div class="sect1">
+<h2 id="microservice-platforms-introduction">Microservice Platforms Introduction</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="context-problem">Context &amp; Problem</h3>
+<div class="paragraph">
+<p>Microservice orchestration is the automatic process of managing or scheduling the work of individual microservices of an application within a cluster. The platform provides an automated process of managing, scaling, and maintaining microservices of an application.
+The container orchestration platform Kubernetes is the current de facto standard (Docker swarm and others are nowadays neglectable compared to Kubernetes). Containers are units that packages up code and all its dependencies like libraries so that the application can be started quickly and runs reliably, regardless of the infrastructure.
+<a href="https://avinetworks.com/glossary/container-orchestration/">Container orchestration</a> tools automate the management of various tasks that software teams encounter in a container’s lifecycle, including the following: Container deployment, scaling, load balancing and traffic routing, network and container configuration, allocation of resources, gathering of insights, provisioning, scheduling, distribution of containers to physical hosts, service discovery, health monitoring, cluster management (Link).</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="introduction-to-kubernetes">Introduction to Kubernetes</h3>
+<div class="paragraph">
+<p>To achieve the above goals a rough understanding of the Kubernetes structure is important.
+The control plane is responsible for managing your container workload. All action in Kubernetes goes through the api-server which receives and executes commands. The workload is defined by the target state you define in so called objects. A <a href="https://stackoverflow.com/questions/52309496/difference-between-kubernetes-objects-and-resources">Kubernetes object</a> is a "record of intent" - once you create the object, the Kubernetes system will constantly work to ensure that object exists. Those definitions can exist in manifest files, or be obtained from the api-server.</p>
+</div>
+<div class="paragraph">
+<p>Pods are the smallest, most basic deployable objects in Kubernetes. A Pod represents a single instance of a running process in your cluster. Pods contain one or more containers. When a Pod runs multiple containers, the containers are managed as a single entity and share the Pod&#8217;s resources. However, to make life considerably easier, you don’t need to manage each Pod directly. Instead, you can use workload resources that manage a set of pods on your behalf such as a "deployment". These resources configure controllers that make sure the right number of the right kind of pod are running, to match the state you specified (See <a href="https://kubernetes.io/docs/concepts/workloads/">here</a> for concepts implementing workflows).</p>
+</div>
+<div class="paragraph">
+<p>Two major extensions can be distinguished. There is a certain overlap between both with both having a different focus. Service meshes focus at core container orchestration functionality. The other class are extensions that focus at supporting typical application patterns such as publish subscribe. Infrastructure from programming perspective falls into two categories:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Platform orchestration support: Provided by Kubernetes and service meshes</p>
+</li>
+<li>
+<p>Application platform support: Provided by additional tools such as DAPR</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The picture below summarizes the major aspects:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/problem_context.png" alt="Container orchestration Problem Context" width="925" height="666">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="standard-problems">Standard Problems</h3>
+<div class="paragraph">
+<p>This chapter focus at problems that are unique due to the microservice focus. Links to documentation of microservice agnostic parts are given below. An example for a problem with microservice specifics and agnostic parts is provisioning. Creating the orchestration infrastructure is conceptually not different from other resources that are created with a pipeline. However, the additional container build step is specific to microservices based on a container orchestration platform.</p>
+</div>
+<div class="paragraph">
+<p>The following standard problems regarding the <strong>orchestration platform</strong> support will be addressed in subsequent paragraphs:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Deployment</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>On orchestration platform level special options exist how to create various environments. For general aspects of provisioning see the pattern "Provisioning".</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Scaling</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Targets of scaling can be the underlying nodes (=VMs) of the orchestration cluster and the pods per node. Scaling can be manual by stating a target number of components or automatic e.g. depending on load.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Load balancing/traffic routing</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>This is core strategy for maximizing availability and scalability, load balancing distributes network traffic among multiple backend services efficiently. A range of options for load balancing external traffic to pods exists in the Kubernetes context, each with its own benefits and tradeoffs. <a href="https://avinetworks.com/glossary/kubernetes-load-balancer/">Basic options are</a>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Load Balancing with kube-proxy: Simple but not fair if clients send with different frequency</p>
+</li>
+<li>
+<p>Kubernetes Endpoints API: Load balancer uses Kubernetes API to track availability of pods</p>
+</li>
+<li>
+<p>Ingress Load Balancer: Most popular and allows for sophisticated load balancing rules</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The above list only shows the major hooks/ solutions that are available in Kubernetes. <a href="https://blog.envoyproxy.io/introduction-to-modern-network-load-balancing-and-proxying-a57f6ff80236">More variations</a> are possible if basic functions are taken into account:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Backend discovery</p>
+</li>
+<li>
+<p>Health Checking</p>
+</li>
+<li>
+<p>Distribution algorithm such as round robin</p>
+</li>
+<li>
+<p>Protocol level e.g. OSI layer 7 or layer 4 only</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p><a href="https://kubernetes.io/docs/concepts/cluster-administration/networking/">Networking</a></p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Networking is a central part of Kubernetes, but it can be challenging to understand exactly how it is expected to work. There are 4 distinct networking problems to address:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Tightly coupled container-to-container communications: this is solved by ** Pods and localhost communications.</p>
+</li>
+<li>
+<p>Pod-to-Pod communications: this is the primary focus of this document.</p>
+</li>
+<li>
+<p>Pod-to-Service communications: this is covered by services.</p>
+</li>
+<li>
+<p>External-to-Service communications: this is covered by services.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Kubernetes uses the following model to organize networking. Every Pod gets its own IP address. This means you do not need to explicitly create links between Pods and you almost never need to deal with mapping container ports to host ports. Pods on a node can communicate with all pods on all nodes without NAT. Kubernetes IP addresses exist at the Pod scope - containers within a Pod share their network namespaces - including their IP address and MAC address. This means that containers within a Pod can all reach each other’s ports on localhost.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Configuration</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Configuration has various dimensions:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Sensitive versus non-sensitive information</p>
+</li>
+<li>
+<p>Orchestration platform versus application settings</p>
+</li>
+<li>
+<p>Automatic deployment of configuration settings versus manual</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Scheduling</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>In Kubernetes, scheduling refers to making sure that Pods are matched to Nodes so that the kubelet can run them. Preemption is the process of terminating Pods with lower Priority so that Pods with higher Priority can schedule on Nodes. <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/">Eviction</a> is the process of terminating one or more Pods on Nodes.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://kubernetes.io/docs/concepts/scheduling-eviction/kube-scheduler/">Factors</a> that need to be taken into account for scheduling decisions include individual and collective resource requirements, hardware / software / policy constraints, affinity and anti-affinity specifications, data locality, inter-workload interference, and so on.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Service discovery</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p><a href="https://platform9.com/blog/kubernetes-service-discovery-principles-in-practice/">Service discovery</a> is the actual process of figuring out how to connect to a service (Link). The <a href="https://microservices.io/patterns/service-registry.html">approach</a> can be either (1) client or (2) server driven.</p>
+</div>
+<div class="paragraph">
+<p>In case of <strong>client-side discovery</strong> the client is responsible for determining which service instance it should connect to. It does that by contacting a service registry component, which keeps records of all the running services and their endpoints. When a new service gets added or another one dies, the Service Registry is automatically updated. It is the client’s responsibility to load-balance and distribute its request load on the available services.</p>
+</div>
+<div class="paragraph">
+<p>In the <strong>server-side discovery</strong> a load-balancing layer exists in front of the service instances. The client connects to the well-defined URL of the load balancer and the latter determines which backend service it shall route the request too. Because a Pod can be moved or rescheduled to another Node, any internal IPs that this Pod is assigned can change over time. If we were to connect to this Pod to access our application, it would not work on the next re-deployment. To make a Pod reachable to external networks or clusters without relying on any internal IPs, we need another layer of abstraction. Services provide network connectivity to Pods that work uniformly across clusters.  Each service exposes an IP address, and may also expose a DNS endpoint — both of which will never change. Internal or external consumers that need to communicate with a set of pods will use the service’s IP address, or its more generally known DNS endpoint. In this way, the service acts as the glue for connecting pods with other pods.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Application services</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Standard services on application level include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Service-to-Service invocation</p>
+</li>
+<li>
+<p>State management</p>
+</li>
+<li>
+<p><strong>Publish &amp; Subscribe</strong>: This pattern allows microservices to communicate with each other using messages. The producer or publisher sends messages to a topic without knowledge of what application will receive them. This involves writing them to an input channel. Similarly, a consumer or subscriber subscribes to the topic and receive its messages without any knowledge of what service produced these messages. This involves receiving messages from an output channel. An intermediary message broker is responsible for copying each message from an input channel to an output channels for all subscribers interested in that message. This pattern is especially useful when you need to decouple microservices from one another.</p>
+</li>
+<li>
+<p><strong>Resource &amp; Binding Triggers:</strong> Using bindings, you can trigger your app with events coming in from external systems, or interface with external systems.</p>
+</li>
+<li>
+<p>Secrets</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The following standard problems regarding <strong>the applications to be deployed</strong> will be addressed in subsequent paragraphs:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Designing</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Mutiple options exist how many containers an application consists of. In the simplest case persistence is achieved by persistent volumes but also hosting entire databases on Kubernetes is possible.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Provisioning</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Container images need to be built, stored in a registry and deployed. Additional challenges during built are for instance triggering dependent images if a base image is affected or enforcing quality gates such as security scans as part of the build pipelines. Deployments might even go beyond Kubernetes if you have for instance a rolling update with database changes.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Compliance</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Compliance affects the building of containers and the running application such as restricting communication between containers.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Configuration</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Containers need to be configured. An additional challenge might therefore to inject environment specific values.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Monitoring</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>You can examine application performance in a Kubernetes cluster by examining the containers, pods, services, and the characteristics of the overall cluster. Kubernetes provides detailed information about an application’s resource usage at each of these levels. This information allows you to evaluate your application’s performance.</p>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="microservice-platforms">Microservice Platforms</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="azure">Azure</h3>
+<div class="paragraph">
+<p>This chapter lists major features/ concrete services for microservices platforms within Azure. A detailed discussion of services is part of the solution design based on a certain service.</p>
+</div>
+<div class="paragraph">
+<p>Azure provides the following container platforms:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Azure Kubernetes Service (AKS)</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>It represents a hosted Kubernetes service. Additional features on  <strong>orchestration platform</strong> include the integration with other Azure services such as Azure Active Directory concepts.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Azure Container Instance (ACI)</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>This service is intended to run single containers without native orchestration support. However, it can be integrated into Kubernetes.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Azure Red Hat OpenShift (ARO)</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>It provides highly available, fully managed OpenShift clusters as <strong>orchestration platform</strong> on demand, monitored and operated jointly by Microsoft and Red Hat. Kubernetes is at the core of Red Hat OpenShift. OpenShift brings added-value features to complement Kubernetes, making it a turnkey container platform as a service (PaaS) with a significantly improved developer and operator experience.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Azure Container Apps (in preview as of 07.11.2021)</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Azure Container Apps allows to build serverless microservices based on containers. <a href="https://docs.microsoft.com/en-us/azure/container-apps/compare-options">Distinctive features</a> of Container Apps include:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Optimized for running general purpose containers, especially for applications that span many microservices deployed in containers.</p>
+</li>
+<li>
+<p>Powered by Kubernetes and open-source technologies like Dapr, KEDA, and envoy.</p>
+</li>
+<li>
+<p>Supports Kubernetes-style apps and microservices with features like service discovery and traffic splitting.</p>
+</li>
+<li>
+<p>Enables event-driven application architectures by supporting scale based on traffic and pulling from event sources like queues, including scale to zero.</p>
+</li>
+<li>
+<p>Support of long running processes and can run background tasks.</p>
+</li>
+<li>
+<p>All Container Apps are Kubernetes compatible.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Azure Container Apps doesn&#8217;t provide direct access to the underlying Kubernetes APIs. If you require access to the Kubernetes APIs and control plane, you should use Azure Kubernetes Service. However, if you would like to build Kubernetes-style applications and don&#8217;t require direct access to all the native Kubernetes APIs and cluster management, Container Apps provides a fully managed experience based on best-practices.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Azure Spring Cloud</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p><a href="https://docs.microsoft.com/en-us/azure/container-apps/compare-options">Azure Spring Cloud</a> makes it easy to deploy Spring Boot microservice applications to Azure without any code changes. The service manages the infrastructure of Spring Cloud applications so developers can focus on their code. Azure Spring Cloud provides lifecycle management using comprehensive monitoring and diagnostics, configuration management, service discovery, CI/CD integration, blue-green deployments, and more. If your team or organization is predominantly Spring, Azure Spring Cloud is an ideal option.</p>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Regarding <strong>the applications to be deployed</strong> Azure comes also with its own Azure container reistry (ACR).</p>
+</div>
+<div class="paragraph">
+<p>The picture below summarizes major points:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/microservices_azure.png" alt="Microservice Platforms Azure Overview" width="965" height="582">
+</div>
+</div>
+</div>
+</div>
+</div>
 <div class="sect1">
 <h2 id="solutions_solutions_microservices_azure_aks_index.asciidoc_microservice-platforms-solutions---azure-kubernetes-service">Microservice Platforms Solutions - Azure Kubernetes Service</h2>
 <div class="sectionbody">
@@ -761,7 +1163,7 @@ spec:
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-02-23 13:25:23 UTC
+Last updated 2022-02-24 08:38:32 UTC
 </sub></div>
 </div>
 </div>

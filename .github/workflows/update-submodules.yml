@@ -20,44 +20,24 @@ jobs:
         uses: actions/checkout@v2
         with:
           submodules: recursive
+          ref: develop
       - name: update latest changes of devonfw-guide
         run: |
-          cd devonfw-guide
-          git checkout master
-          git fetch
-          git branch
-          git merge origin/master
-          cd ..
-          git add devonfw-guide
-          cd katacoda-scenarios/
-          git checkout master
-          git fetch
-          git branch
-          git merge origin/master
-          cd ..
-          git add katacoda-scenarios
-          cd wiki-tutorials/
-          git checkout main
-          git fetch
-          git branch
-          git merge origin/main
-          cd ..
-          git add wiki-tutorials 
-          cd solutions/
-          git checkout master
-          git fetch
-          git branch
-          git merge origin/master
-          cd ..
-          git add solutions
+          git submodule update --remote
+          git add -u
           
-          # just commit if there is anything to commit
-          git diff --cached --exit-code
-          result=${?}
-          if [ ${result} = 0 ]
+          # just commit if there is anything to committo prevent errors
+          if $(git diff --cached --exit-code)
           then
             echo "Nothing to commit!"
           else
             git commit -m "[DocUpdate]"
             git push origin develop
           fi
+      - name: Dispatch Website Build
+        uses: guilouro/multiple-repositories-dispatch@v1.0.0
+        with:
+          repo_token: ${{ secrets.GHA_TOKEN }}
+          event_type: dispatch-build-website
+          repositories: |
+            devonfw/devonfw.github.io
