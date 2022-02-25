@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2022-02-24 13:25:48 UTC">
+<meta name="author" content="Updated at 2022-02-25 20:14:01 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -535,7 +535,7 @@ gtag('consent', 'default', {
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2022-02-24 13:30:56 UTC</span><br>
+<span id="author" class="author">Updated at 2022-02-25 20:21:52 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -856,7 +856,7 @@ if you generate the entities with the devon4node schematic, this step is not nec
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-02-24 13:22:29 UTC
+Last updated 2022-02-25 20:08:53 UTC
 </sub></div>
 
 
@@ -890,6 +890,9 @@ Last updated 2022-02-24 13:22:29 UTC
 <script>
       let cookieName = 'cookie_consent';
       let expiryTime = new Date(2037, 11, 21);
+      let today = new Date();
+      let cookieConsentDeclinedDate = localStorage.getItem("cookie_consent_declined");
+      let dateDiffHours = 0;
       let cookieConsentHtml = `
       <div id="cookie-consent">
         <p>
@@ -901,16 +904,24 @@ Last updated 2022-02-24 13:22:29 UTC
         </p>
       </div>
       `;
-
+      dateDiffHours = cookieConsentDeclinedDate ? Math.abs(cookieConsentDeclinedDate - today) / 36e5 : 0;
       if (document.cookie.indexOf(cookieName) < 0) {
-        $("body").append(cookieConsentHtml);
+        if (cookieConsentDeclinedDate) {
+          if (dateDiffHours > 24) {
+            $("body").append(cookieConsentHtml);
+          }
+        } else {
+          $("body").append(cookieConsentHtml);
+        }
       }
       $("#accept-cookie-btn").click(function() {
         document.cookie = `${cookieName}=accept;expires=${expiryTime};path=/`;
+        localStorage.removeItem("cookie_consent_declined");
         consentGranted();
         $("#cookie-consent").hide();
       });
       $("#decline-cookie-btn").click(function() {
+        localStorage.setItem("cookie_consent_declined", today);
         $("#cookie-consent").hide();
       });
 </script>

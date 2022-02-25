@@ -121,7 +121,7 @@ gtag('consent', 'default', {
 <div class="sectionbody">
 <div class="paragraph">
 <p>The devonfw community
-dev-SNAPSHOT, 2022-02-24_13.16.04</p>
+dev-SNAPSHOT, 2022-02-25_19.58.47</p>
 </div>
 <div class="paragraph">
 <p><a href="http://www.devonfw.com/"><em>devonfw</em></a> provides a solution to building applications which combine best-in-class frameworks and libraries as well as industry proven practices and code conventions.
@@ -570,7 +570,7 @@ Unresolved directive in devon4j.asciidoc - include::quarkus/guide-beanmapping-qu
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-02-24 13:17:35 UTC
+Last updated 2022-02-25 20:01:03 UTC
 </sub></div>
 </div>
 </div>
@@ -604,6 +604,9 @@ Last updated 2022-02-24 13:17:35 UTC
 <script>
       let cookieName = 'cookie_consent';
       let expiryTime = new Date(2037, 11, 21);
+      let today = new Date();
+      let cookieConsentDeclinedDate = localStorage.getItem("cookie_consent_declined");
+      let dateDiffHours = 0;
       let cookieConsentHtml = `
       <div id="cookie-consent">
         <p>
@@ -615,16 +618,24 @@ Last updated 2022-02-24 13:17:35 UTC
         </p>
       </div>
       `;
-
+      dateDiffHours = cookieConsentDeclinedDate ? Math.abs(cookieConsentDeclinedDate - today) / 36e5 : 0;
       if (document.cookie.indexOf(cookieName) < 0) {
-        $("body").append(cookieConsentHtml);
+        if (cookieConsentDeclinedDate) {
+          if (dateDiffHours > 24) {
+            $("body").append(cookieConsentHtml);
+          }
+        } else {
+          $("body").append(cookieConsentHtml);
+        }
       }
       $("#accept-cookie-btn").click(function() {
         document.cookie = `${cookieName}=accept;expires=${expiryTime};path=/`;
+        localStorage.removeItem("cookie_consent_declined");
         consentGranted();
         $("#cookie-consent").hide();
       });
       $("#decline-cookie-btn").click(function() {
+        localStorage.setItem("cookie_consent_declined", today);
         $("#cookie-consent").hide();
       });
 </script>

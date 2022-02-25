@@ -1584,7 +1584,7 @@ For more details on devon4j follow <a href="https://devonfw.com/website/pages/do
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-02-24 13:29:23 UTC
+Last updated 2022-02-25 20:19:31 UTC
 </sub></div>
 </div>
 </div>
@@ -1618,6 +1618,9 @@ Last updated 2022-02-24 13:29:23 UTC
 <script>
       let cookieName = 'cookie_consent';
       let expiryTime = new Date(2037, 11, 21);
+      let today = new Date();
+      let cookieConsentDeclinedDate = localStorage.getItem("cookie_consent_declined");
+      let dateDiffHours = 0;
       let cookieConsentHtml = `
       <div id="cookie-consent">
         <p>
@@ -1629,16 +1632,24 @@ Last updated 2022-02-24 13:29:23 UTC
         </p>
       </div>
       `;
-
+      dateDiffHours = cookieConsentDeclinedDate ? Math.abs(cookieConsentDeclinedDate - today) / 36e5 : 0;
       if (document.cookie.indexOf(cookieName) < 0) {
-        $("body").append(cookieConsentHtml);
+        if (cookieConsentDeclinedDate) {
+          if (dateDiffHours > 24) {
+            $("body").append(cookieConsentHtml);
+          }
+        } else {
+          $("body").append(cookieConsentHtml);
+        }
       }
       $("#accept-cookie-btn").click(function() {
         document.cookie = `${cookieName}=accept;expires=${expiryTime};path=/`;
+        localStorage.removeItem("cookie_consent_declined");
         consentGranted();
         $("#cookie-consent").hide();
       });
       $("#decline-cookie-btn").click(function() {
+        localStorage.setItem("cookie_consent_declined", today);
         $("#cookie-consent").hide();
       });
 </script>
