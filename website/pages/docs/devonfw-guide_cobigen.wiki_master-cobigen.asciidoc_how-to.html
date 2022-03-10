@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2022-03-09 15:23:52 UTC">
+<meta name="author" content="Updated at 2022-03-10 10:30:17 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -533,7 +533,7 @@ gtag('consent', 'default', {
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2022-03-09 15:29:13 UTC</span><br>
+<span id="author" class="author">Updated at 2022-03-10 10:35:11 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -570,7 +570,7 @@ gtag('consent', 'default', {
 <ul class="sectlevel3">
 <li><a href="devonfw-guide_cobigen.wiki_master-cobigen.asciidoc_how-to.html#devonfw-guide_cobigen.wiki_howto_EA-client-generation.asciidoc">Enterprise Architect client generation</a>
 </li>
-<li><a href="devonfw-guide_cobigen.wiki_master-cobigen.asciidoc_how-to.html#devonfw-guide_cobigen.wiki_howto_angular-client-generation.asciidoc">Angular 8 Client Generation</a>
+<li><a href="devonfw-guide_cobigen.wiki_master-cobigen.asciidoc_how-to.html#devonfw-guide_cobigen.wiki_howto_angular-client-generation.asciidoc">Angular Client Generation</a>
 </li>
 <li><a href="devonfw-guide_cobigen.wiki_master-cobigen.asciidoc_how-to.html#devonfw-guide_cobigen.wiki_howto_ionic-client-generation.asciidoc">Ionic client generation</a>
 </li>
@@ -696,9 +696,9 @@ If you do not see it, please follow the next steps:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="devonfw-guide_cobigen.wiki_howto_angular-client-generation.asciidoc">Angular 8 Client Generation</h4>
+<h4 id="devonfw-guide_cobigen.wiki_howto_angular-client-generation.asciidoc">Angular Client Generation</h4>
 <div class="paragraph">
-<p>The generation can create a full Angular 8 client using the devon4ng-application-template package located at <code>workspaces/examples</code> folder of the distribution. For more details about this package, please refer <a href="#devonfw-guide/cobigen.wiki_https://github.com/devonfw/devon4ng-application-template">here</a>.</p>
+<p>The generation can create a full Angular client (Angular 13, as of March 2022) using the devon4ng-application-template package located at <code>workspaces/examples</code> folder of the distribution. For more details about this package, please refer <a href="#devonfw-guide/cobigen.wiki_https://github.com/devonfw/devon4ng-application-template">here</a>.</p>
 </div>
 <div class="paragraph">
 <p>Take into account that the TypeScript merging for CobiGen needs Node 6 or higher to be installed at your machine.</p>
@@ -727,7 +727,7 @@ This is a short introduction to the Angular generation. For a deeper tutorial in
 </div>
 </div>
 <div class="sect4">
-<h5 id="devonfw-guide_cobigen.wiki_howto_angular-client-generation.asciidoc_angular-8-workspace">Angular 8 workspace</h5>
+<h5 id="devonfw-guide_cobigen.wiki_howto_angular-client-generation.asciidoc_angular-workspace">Angular workspace</h5>
 <div class="paragraph">
 <p>The output location of the generation can be defined editing the <code><strong><em>cobigen.properties</em></strong></code> file located at <strong><em>crud_angular_client_app/templates</em></strong> folder of the <strong><em>CobiGen_Templates</em></strong> project.</p>
 </div>
@@ -766,7 +766,7 @@ This is a short introduction to the Angular generation. For a deeper tutorial in
 </div>
 </div>
 <div class="paragraph">
-<p>Once the output path is chosen, copy the files of the <a href="#devonfw-guide/cobigen.wiki_https://github.com/devonfw/devon4ng-application-template"><code>DEVON4NG-APPLICATION-TEMPLATE</code></a> repository into this output path.</p>
+<p>Once the output path is chosen, copy the files of the <a href="#devonfw-guide/cobigen.wiki_https://github.com/devonfw/devon4ng-application-template">devon4ng-application-template</a> repository into this output path.</p>
 </div>
 </div>
 <div class="sect4">
@@ -823,43 +823,60 @@ CobiGen will then display a wizard showing you the resources to be generated whi
 <div class="sect4">
 <h5 id="devonfw-guide_cobigen.wiki_howto_angular-client-generation.asciidoc_routing">Routing</h5>
 <div class="paragraph">
-<p>Due to the nature of the TypeScript merger, currently it is not possible to merge the array of path objects of the routings at <code>app.routing.ts</code> file properly, so the modification should be done by hand on this file. However, the import related to the new component generated is added.</p>
+<p>Due to the nature of the TypeScript merger, currently it is not possible to merge the array of path objects of the routings at <code>app-routing.module.ts</code> file properly, so the modification should be done by hand on this file. However, the import related to the new component generated is added.</p>
 </div>
 <div class="paragraph">
-<p>This would be the generated <code>app-routing.module</code> file:</p>
+<p>This would be the generated <code>app-routing.module.ts</code> file:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-ts" data-lang="ts">import { Routes, RouterModule } from '@angular/router';
-import { LoginComponent } from './login/login.component';
-import { AuthGuard } from './shared/security/auth-guard.service';
-import { InitialPageComponent } from './initial-page/initial-page.component';
-import { HomeComponent } from './home/home.component';
-import { SampleDataGridComponent } from './sampledata/sampledata-grid/sampledata-grid.component';
-//Routing array
-const appRoutes: Routes = [{
+<pre class="highlight"><code class="language-ts" data-lang="ts">import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './core/security/auth-guard.service';
+import { NavBarComponent } from './layout/nav-bar/nav-bar.component';
+
+const routes: Routes = [
+  {
+    path: '',
+    redirectTo: '/login',
+    pathMatch: 'full',
+  },
+  {
     path: 'login',
-    component: LoginComponent
-}, {
+    loadChildren: () =&gt;
+      import('./auth/auth.module').then(m =&gt; m.AuthDataModule),
+  },
+  {
     path: 'home',
-    component: HomeComponent,
-    canActivate: [AuthGuard],
-    children: [{
-        path: '',
-        redirectTo: '/home/initialPage',
-        pathMatch: 'full',
-        canActivate: [AuthGuard]
-    }, {
-        path: 'initialPage',
-        component: InitialPageComponent,
-        canActivate: [AuthGuard]
-    }]
-}, {
+    component: NavBarComponent,
+    canActivateChild: [AuthGuard],
+    children: [
+      {
+        path: 'initial',
+        loadChildren: () =&gt;
+          import('./home/initial-page/initial-page.module').then(
+            m =&gt; m.InitialPageModule,
+          ),
+      },
+      {
+        path: 'sampleData',
+        loadChildren: () =&gt;
+          import('./sampledata/sampledata.module').then(
+            m =&gt; m.SampleDataModule,
+          ),
+      },
+    ],
+  },
+  {
     path: '**',
     redirectTo: '/login',
-    pathMatch: 'full'
-}];
-export const routing = RouterModule.forRoot(appRoutes);</code></pre>
+  },
+];
+@NgModule({
+  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
+  exports: [RouterModule],
+})
+export class AppRoutingModule {}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -868,48 +885,78 @@ export const routing = RouterModule.forRoot(appRoutes);</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-ts" data-lang="ts">{
-    path: 'sampleData',
-    component: SampleDataGridComponent,
-    canActivate: [AuthGuard],
+    path: 'employee',
+    loadChildren: () =&gt;
+        import('./employee/employee.module').then(
+            m =&gt; m.EmployeeModule,
+        )
 }</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-ts" data-lang="ts">import { Routes, RouterModule } from '@angular/router';
-import { LoginComponent } from './login/login.component';
-import { AuthGuard } from './shared/security/auth-guard.service';
-import { InitialPageComponent } from './initial-page/initial-page.component';
-import { HomeComponent } from './home/home.component';
-import { SampleDataGridComponent } from './sampledata/sampledata-grid/sampledata-grid.component';
-//Routing array
-const appRoutes: Routes = [{
-    path: 'login',
-    component: LoginComponent
-}, {
-    path: 'home',
-    component: HomeComponent,
-    canActivate: [AuthGuard],
-    children: [{
+<pre class="highlight"><code class="language-ts" data-lang="ts">import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './core/security/auth-guard.service';
+import { NavBarComponent } from './layout/nav-bar/nav-bar.component';
+
+
+const routes: Routes = [{
         path: '',
-        redirectTo: '/home/initialPage',
-        pathMatch: 'full',
-        canActivate: [AuthGuard]
-    }, {
-        path: 'initialPage',
-        component: InitialPageComponent,
-        canActivate: [AuthGuard]
-    }, {
-        path: 'sampleData',
-        component: SampleDataGridComponent,
-        canActivate: [AuthGuard],
-    }]
-}, {
-    path: '**',
-    redirectTo: '/login',
-    pathMatch: 'full'
-}];
-export const routing = RouterModule.forRoot(appRoutes);</code></pre>
+        redirectTo: '/login',
+        pathMatch: 'full'
+    },
+    {
+        path: 'login',
+        loadChildren: () =&gt;
+            import('./auth/auth.module').then(m =&gt; m.AuthDataModule)
+    },
+    {
+        path: 'home',
+        component: NavBarComponent,
+        canActivateChild: [
+            AuthGuard
+        ],
+        children: [{
+                path: 'initial',
+                loadChildren: () =&gt;
+                    import('./home/initial-page/initial-page.module').then(
+                        m =&gt; m.InitialPageModule,
+                    )
+            },
+            {
+                path: 'sampleData',
+                loadChildren: () =&gt;
+                    import('./sampledata/sampledata.module').then(
+                        m =&gt; m.SampleDataModule,
+                    )
+            },
+            {
+                path: 'employee',
+                loadChildren: () =&gt;
+                    import('./employee/employee.module').then(
+                        m =&gt; m.EmployeeModule,
+                    )
+            }
+        ]
+    },
+    {
+        path: '**',
+        redirectTo: '/login'
+    }
+];
+
+@NgModule({
+    imports: [
+        RouterModule.forRoot(routes)
+    ],
+    exports: [
+        RouterModule
+    ]
+})
+export class AppRoutingModule {
+
+}</code></pre>
 </div>
 </div>
 <div class="imageblock">
@@ -921,10 +968,19 @@ export const routing = RouterModule.forRoot(appRoutes);</code></pre>
 <div class="sect4">
 <h5 id="devonfw-guide_cobigen.wiki_howto_angular-client-generation.asciidoc_jwt-authentication"><code>JWT</code> Authentication</h5>
 <div class="paragraph">
-<p>If you are using a backend server with <code>JWT</code> Authentication (there is a sample in <code>workspaces/folder</code> called <code><strong>sampleJwt</strong></code>) you have to specify the Angular application to use this kind of authentication.</p>
+<p>If you are using a backend server with <code>JWT</code> authentication, you need to specify this type of authentication to be used by your Angular application (default when generating from the devon4ng template).</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 152. <a href="#devonfw-guide/cobigen.wiki_https://github.com/devonfw/devon4ng-application-template/blob/develop/src/environments/environment.ts">environment.ts</a></div>
+<div class="content">
+<pre class="highlight"><code>export const environment = {
+  ...,
+  security: 'jwt',
+};</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>By default the variable is set to CSRF but you can change it to <code>JWT</code> by going to the <a href="devonfw-guide/cobigen.wiki_https://github.com/devonfw/devon4ng-application-template/blob/develop/src/environments/environment.ts#L10">Enviroment.ts</a> and setting <code>security: 'jwt'</code>.</p>
+<p>An alternative would be to set <code>security: 'csrf'</code>. For more details, see the <a href="#devonfw-guide/cobigen.wiki_https://github.com/devonfw/devon4j/wiki/guide-csrf">devon4j CSRF guide</a>.</p>
 </div>
 </div>
 <div class="sect4">
@@ -938,7 +994,7 @@ export const routing = RouterModule.forRoot(appRoutes);</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Once the the server is running, open a Devon console at the output directory defined previously and run:</p>
+<p>Once the the server is running, open a devonfw console at the output directory defined previously and run:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -946,7 +1002,7 @@ export const routing = RouterModule.forRoot(appRoutes);</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>This will run the Angular 8 application at:</p>
+<p>This will run the Angular application at:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -955,11 +1011,11 @@ export const routing = RouterModule.forRoot(appRoutes);</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<a class="image" href="images/howtos/angular4-gen/ng4gen_5.png"><img src="images/howtos/angular4-gen/ng4gen_5.png" alt="Running Angular 8 app" width="450"></a>
+<a class="image" href="images/howtos/angular4-gen/ng4gen_5.png"><img src="images/howtos/angular4-gen/ng4gen_5.png" alt="Running Angular app" width="450"></a>
 </div>
 </div>
 <div class="paragraph">
-<p>Once finished, the browser will open automatically at the previously stated localhost URL showing the Angular 8 application. You can use the credentials set at the devon4j java server to login.</p>
+<p>Once finished, the browser will open automatically at the previously stated localhost URL showing the Angular application. You can use the credentials set at the devon4j java server to login.</p>
 </div>
 <!-- toc disabled -->
 </div>
@@ -985,17 +1041,17 @@ This is a short introduction to the Ionic generation. For a deeper tutorial incl
 <div class="sect4">
 <h5 id="devonfw-guide_cobigen.wiki_howto_ionic-client-generation.asciidoc_prerequisites">Prerequisites</h5>
 <div class="paragraph">
-<p>Before starting, make sure you already have in your computer:</p>
+<p>Before starting, make sure you have the following things already installed on your machine:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#devonfw-guide/cobigen.wiki_https://ionicframework.com/docs/installation/cli">Ionic</a>: by following the steps defined on that page.
-It includes installing:</p>
+<p><a href="#devonfw-guide/cobigen.wiki_https://ionicframework.com/docs/installation/cli">Ionic</a>: follow the steps described on the Ionic page.
+It includes the installation of:</p>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="#devonfw-guide/cobigen.wiki_https://nodejs.org/en/">NodeJS</a>: We have to use "NPM" for downloading packages.</p>
+<p><a href="#devonfw-guide/cobigen.wiki_https://nodejs.org/en/">Node.js</a>: We have to use the <code>npm</code> package manager for downloading packages.</p>
 </li>
 <li>
 <p>Ionic CLI.</p>
@@ -1014,10 +1070,10 @@ It includes installing:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Right click on any file of your workspace <em>CobiGen &gt; Update Templates</em> and now you are able to start the generation.</p>
+<p>Right click on any file in your Eclipse workspace. Select <em>CobiGen → Update Templates…​</em> from the context menu and now you are able to start the generation.</p>
 </li>
 <li>
-<p>If you want to adapt them, click <em>Adapt Templates</em> and you should have the <em>CobiGen_Templates</em> as a new project in Eclipse’s workspace.</p>
+<p>If you want to adapt the templates, select <em>CobiGen → Adapt Templates…​</em> from the menu and you should have the <em>CobiGen_Templates</em> as a new project in your Eclipse’s workspace.</p>
 </li>
 </ul>
 </div>
@@ -1028,11 +1084,11 @@ It includes installing:</p>
 <div class="sect4">
 <h5 id="devonfw-guide_cobigen.wiki_howto_ionic-client-generation.asciidoc_generation">Generation</h5>
 <div class="paragraph">
-<p>We are going to generate the CRUD into a <strong>sample application</strong> that we have developed for
-testing this functionality. It is present on your <code>workspaces/examples</code> folder (devon4ng-ionic-application-template). If you do not see it, you can clone or download it from <a href="#devonfw-guide/cobigen.wiki_https://github.com/devonfw/devon4ng-ionic-application-template">here</a>.</p>
+<p>We are going to generate the CRUD functions into a <strong>sample application</strong>.
+First, clone or download the <a href="#devonfw-guide/cobigen.wiki_https://github.com/devonfw/devon4ng-ionic-application-template">devon4ng Ionic template</a> in your workspace.</p>
 </div>
 <div class="paragraph">
-<p>After having that sample app, please create an <a href="#devonfw-guide/cobigen.wiki_https://github.com/devonfw/devon4ng/wiki/tutorial-newapp">devon4j project</a> and then start implementing the ETO: You will find an example <a href="#devonfw-guide/cobigen.wiki_https://github.com/devonfw/devon4j/blob/develop/samples/core/src/main/java/io/devonfw/gastronomy/restaurant/tablemanagement/logic/api/to/TableEto.java">here</a>.</p>
+<p>After that, please create a <a href="#devonfw-guide/cobigen.wiki_https://github.com/devonfw/devon4ng/wiki/tutorial-newapp">devon4j project</a> and then start implementing the ETO: you can find an example <a href="#devonfw-guide/cobigen.wiki_https://github.com/devonfw/devon4j/blob/develop/samples/core/src/main/java/io/devonfw/gastronomy/restaurant/tablemanagement/logic/api/to/TableEto.java">here</a>.</p>
 </div>
 <div class="paragraph">
 <p>As you can see, <code>TableEto</code> contains 3 attributes: 2 of them are <code>Long</code> and the third one <code>TableState</code> is an enum that you will find
@@ -4185,7 +4241,7 @@ public class EmployeeEntity implements PersistenceEntity&lt;CompositeEmployeeKey
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-03-09 15:20:26 UTC
+Last updated 2022-03-10 10:27:08 UTC
 </sub></div>
 
 
