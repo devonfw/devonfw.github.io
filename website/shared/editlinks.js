@@ -209,6 +209,7 @@ const editLinksModule = (function(window) {
               let headline = $( this );
               let id = headline.prop('id');
               let filename = getFilename(id);
+              filename = repoName==='solutions' ? 'index.asciidoc' : filename;
               if(filename.length > 0) {
                   if (filename.indexOf("_") != -1) {
                       if (filename != 'CODE_OF_CONDUCT.asciidoc') {
