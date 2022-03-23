@@ -1054,7 +1054,8 @@ removing all non-word characters and converting to lowercase).</p>
 <div class="sect3">
 <h4 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_business-rules">3.2.4. Business Rules</h4>
 <div class="paragraph">
-<p>Business rules are executed within a <a href="https://www.drools.org/">Drools</a> rule engine. They are defined as a sequence of rule templates and corresponding XLS files which together represent decision tables.</p>
+<p>Business rules are executed within a <a href="https://www.drools.org/">Drools</a> rule engine.
+They are defined as a sequence of rule templates and corresponding XLS (or CSV) files which together represent decision tables.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1087,13 +1088,15 @@ removing all non-word characters and converting to lowercase).</p>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>if set to <code>true</code> the processing of this group of rules will be skipped if the XLS with table
-data (given by <code>ruleSource</code>) does not exist; if set to <code>false</code> a missing XLS table will result
+<td>if set to <code>true</code> the processing of this group of rules will be skipped if the XLS/CSV with table
+data (given by <code>ruleSource</code>) does not exist; if set to <code>false</code> a missing XLS/CSV table will result
 in program termination</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>location of the tabular decision table data</td>
+<td>location of the tabular decision table data. This might either point directly to the XLS or CSV file
+or only give the resource name without suffix. In this case <em>Solictor</em> will dynamically test for existing
+resources by appending suffixes <em>xls</em> and <em>csv</em>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
@@ -1119,7 +1122,8 @@ given by the configuration. Only if there are no more rules to fire in a group <
 move to the next rule group and start firing those rules.</p>
 </div>
 <div class="paragraph">
-<p>Normally a project will only customize (part of) the data of the decision tables and thus will only change the <code>ruleSource</code> and the data in the XLS. All other configuration (the different templates and processing order) is part of the <em>Solicitor</em> application itself and should not be changed by end users.</p>
+<p>Normally a project will only customize (part of) the data of the decision tables and thus will only change the <code>ruleSource</code> and the data in the XLS/CSV.
+All other configuration (the different templates and processing order) is part of the <em>Solicitor</em> application itself and should not be changed by end users.</p>
 </div>
 <div class="paragraph">
 <p>See <a href="#devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_working-with-decision-tables">Working with Decision Tables</a> and <a href="#devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_standard-business-rules">Standard Business Rules</a> for further information on the business rules.</p>
@@ -1188,7 +1192,7 @@ move to the next rule group and start firing those rules.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Besides the necessary configuration file this includes also empty XLS files for defining project
+<p>Besides the necessary configuration file this includes also empty XLS or CSV files for defining project
 specific rules which amend the builtin rules. Furtheron a sample <code>license.xml</code> file is provided to
 directly enable execution of solicitor and check functionality.</p>
 </div>
@@ -1812,12 +1816,13 @@ defined as "extended" decision tables. Each such decision table consists of two 
 <p>A rule template file in specific drools template format</p>
 </li>
 <li>
-<p>An Excel (XLSX) table which defines the decision table data</p>
+<p>An Excel 97 (XLS) table or CSV table which defines the decision table data.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>When processing, <em>Solicitor</em> will internally use the rule template to create one or multiple rules for every record found in the Excel sheet. The following points are important here:</p>
+<p>When processing, <em>Solicitor</em> will internally use the rule template to create one or multiple rules for every record found in the Excel (or CSV) sheet.
+The following points are important here:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1835,6 +1840,9 @@ defined as "extended" decision tables. Each such decision table consists of two 
 <p>Excel decision table data</p>
 <div class="ulist">
 <ul>
+<li>
+<p>The file needs to be in Excel 97 format. File suffix needs to be <em>xls</em>.</p>
+</li>
 <li>
 <p>The Excel tables might be extended or changed on a per project level.</p>
 </li>
@@ -1860,6 +1868,25 @@ defined as "extended" decision tables. Each such decision table consists of two 
 </div>
 </li>
 <li>
+<p>CSV decision table data</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The file suffix needs to be <em>csv</em>.</p>
+</li>
+<li>
+<p>The same points as for the Excel decision table data apply here.</p>
+</li>
+<li>
+<p>The CSV has to use a comma as delimiter.</p>
+</li>
+<li>
+<p>All values in the CSV need to be surrounded by double quotation marks to escape the comma character.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
 <p><em>rule groups</em>: Business rules are executed within groups. All rules resulting from a single decision table are assigned to the same <em>rule group</em>. The order of execution of the <em>rule groups</em>
 is defined by the sequence of declaration in the config file. Processing of the current group will
 be finished when there are no more rules to fire in that group. Processing of the next group will then start. Rule groups which have been finished processing will not be resumed even if rules within that group might have been activated again due to changes of the facts.</p>
@@ -1870,7 +1897,7 @@ be finished when there are no more rules to fire in that group. Processing of th
 <h3 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_extended-comparison-syntax">5.1. Extended comparison syntax</h3>
 <div class="paragraph">
 <p>By default any condtions given in the fields of decision tables are simple textual comparisons: The condition
-is true if the property of the model is identical to the given value in the XLS sheet.</p>
+is true if the property of the model is identical to the given value in the XLS (or CSV) sheet.</p>
 </div>
 <div class="paragraph">
 <p>Depending on the configuration of the rule templates for some fields, an extended syntax might be available. For those fields the following syntax applies:</p>
@@ -1878,7 +1905,7 @@ is true if the property of the model is identical to the given value in the XLS 
 <div class="ulist">
 <ul>
 <li>
-<p>If the given value of the XLS field starts with the prefix <code>NOT:</code> then the outcome of the remaining condition is logically negated, i.e. this field condition is  <code>true</code> if the rest of the condition is NOT fulfilled.</p>
+<p>If the given value of the XLS (or CSV) field starts with the prefix <code>NOT:</code> then the outcome of the remaining condition is logically negated, i.e. this field condition is  <code>true</code> if the rest of the condition is NOT fulfilled.</p>
 </li>
 <li>
 <p>A suffix of <code>(REGEX)</code> indicates that the remainder of the field defines a <a href="https://docs.oracle.com/javase/7/docs/api/java/util/regex/Pattern.html">Java Regular Expression</a>. For the condition to become true the whole property needs to match the given regular expression.</p>
@@ -2882,7 +2909,7 @@ This report is an experimental feature and might be changed or removed in future
 <div class="paragraph">
 <p><code>Solicitor</code> comes with a sample rule data set and sample reporting templates. In general it will
 be required to correct, supplement and extend this data sets and templates. This can be done straightforward
-by creating copies of the appropriate resources (rule data XLS and template files), adopting them and furtheron referencing those copies instead of the original resources from the project configuration file.</p>
+by creating copies of the appropriate resources (rule data XLS/CSV and template files), adopting them and furtheron referencing those copies instead of the original resources from the project configuration file.</p>
 </div>
 <div class="paragraph">
 <p>Even though this approach is possible it will result in hard to maintain configurations,
@@ -2948,6 +2975,11 @@ file.</p>
 <dd>
 <div class="ulist">
 <ul>
+<li>
+<p><a href="https://github.com/devonfw/solicitor/issues/15" class="bare">https://github.com/devonfw/solicitor/issues/15</a>:
+Enable Decision Tables to be alternatively defined as CSV.
+Allow dynamic determination of applicable format by specifying resource names without file extension.</p>
+</li>
 <li>
 <p><a href="https://github.com/devonfw/solicitor/issues/108" class="bare">https://github.com/devonfw/solicitor/issues/108</a>:
 Updated spring boot framework, drools rule engine and other used components to latest versions.</p>
@@ -3228,7 +3260,7 @@ multiapplication projects even is some license files are unavailable.</p>
 <div class="footnote"><sub>
 
 Version {project-version}-{buildNumber}<br>
-Last updated 2022-03-23 11:05:37 UTC
+Last updated 2022-03-23 19:02:33 UTC
 </sub></div>
 </div>
 </div>

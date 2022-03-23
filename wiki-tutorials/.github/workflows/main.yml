@@ -33,38 +33,44 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: devonfw-tutorials/tutorial-compiler
+          path: compiler
       
       - name: Checkout playbooks
         uses: actions/checkout@v2
         with:
           repository: devonfw-tutorials/tutorials
-          path: playbooks
+          path: compiler/playbooks
       
       - uses: actions/setup-node@v2
         with:
           node-version: '12'
       
       - name: install TS
-        run: npm install typescript
+        run: |
+          cd compiler
+          npm install typescript
       
-      - name: npm install
-        run: npm install
-        
-
-      - name: run buildRun.sh
-        run: sh buildRun.sh -e wiki_eclipse -e wiki_vscode -p ${{ github.event.client_payload.tutorial }}
-
+      - name: npm install compiler
+        run: |
+          cd compiler
+          npm install
+          
+      - name: npm install repo
+        run: |
+          cd repo
+          npm install
+          
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          path: repo
+          path: compiler/repo
           
-      - name: publish tutorials
-        run: | 
-          ls -a
-          bash repo/publishTutorials.sh
-          ls -a
-        
+      - name: create tutorials and courses
+        run: node repo/publishTutorials.js $GITHUB_WORKSPACE
+
+      - name: publish tutorials and courses
+        run: bash repo/publish.sh 
+
       - name: Repository dispatch
         uses: peter-evans/repository-dispatch@v1
         with:
