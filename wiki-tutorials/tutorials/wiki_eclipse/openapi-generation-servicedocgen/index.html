@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>OpenAPI and Swagger UI generation with ServicedocGen plugin</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="/website/assets/scripts/lunr.min.js"></script>
+<!-- JQuery -->
+<script src="/website/assets/scripts/jquery.min.js"></script>
+<link rel="stylesheet" href="/website/assets/styles/font-awesome.min.css">
+<link rel="stylesheet" href="/website/assets/styles/googlecode.min.css">
+<script src="/website/assets/scripts/highlight.min.js"></script>
+<script src="/website/assets/scripts/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="/website/assets/styles/bootstrap.min.css">
+
+<script src="/website/assets/scripts/anchor.min.js"></script>
+
+<script src="/website/components/header/search-engine/bundle.js"></script>
+
+<script src="/website/shared/rightmenu.js"></script>
+
+<!-- ************** Google analytics ************ -->
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+
+gtag('consent', 'default', {
+  'analytics_storage': 'denied'
+});
+</script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+<script>
+  function consentGranted() {
+    gtag('consent', 'update', {
+      'analytics_storage': 'granted'
+    });
+  }
+</script>
+
+<!-- ******************************************** -->
+
+
+</head>
+<body id="wiki-tutorials_tutorials_wiki_eclipse_openapi-generation-servicedocgen_index.asciidoc" class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="#header_https://www.katacoda.com/devonfw">Tutorials</a></p>
+</li>
+<li>
+<p><a href="/website/pages/solutions/index.html">Solutions</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Docs</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"
+      autocomplete="off"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>This tutorial will teach you how to use the [ServicedocGen maven plugin](<a href="http://www.mojohaus.org/servicedocgen-maven-plugin/" class="bare">http://www.mojohaus.org/servicedocgen-maven-plugin/</a>) to generate the OpenAPI specification and Swagger UI from your REST APIs.</p>
+</div>
+<div class="paragraph">
+<p>The plugin analysis the REST APIs and the associated JavaDoc and then generates the OpenAPI specification as a static file. It is also able to create an HTML file that represents the Swagger UI and can be served by Quarkus to provide the Swagger UI in the browser.</p>
+</div>
+<div class="paragraph">
+<p>For more information about OpenAPI and the ServicedocGen plugin, see the [devon4j documentation](<a href="https://github.com/devonfw/devon4j/blob/master/documentation/guide-openapi.asciidoc" class="bare">https://github.com/devonfw/devon4j/blob/master/documentation/guide-openapi.asciidoc</a>).</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="prerequisites">Prerequisites</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Installed devonfw-ide (or at least Java and Maven installed)</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="learning-goals">Learning goals</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>You will learn how to generate OpenAPI specifications and Swagger UI from REST services using ServicedocGen maven plugin</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The definition of each step of this tutorial can be found at <a href="https://github.com/devonfw-tutorials/tutorials/tree/main/openapi-generation-servicedocgen/" class="bare">https://github.com/devonfw-tutorials/tutorials/tree/main/openapi-generation-servicedocgen/</a>.</p>
+</div>
+<div class="paragraph">
+<p>Feel free to report any errors to us or fix them yourself. Errors can be reported by creating an issue in the <a href="https://github.com/devonfw-tutorials/tutorials/issues">tutorials repository</a>. To fix the error fork the repository and create a pull request. Errors in the wiki can be reported and fixed in the <a href="https://github.com/devonfw-tutorials/tutorial-compiler">Tutorial-compiler repository</a>.
+You can find a description of what to look for when creating a pull request at the devonfw contribution guide: <a href="https://devonfw.com/website/pages/community/community.html#community.asciidoc_contributing-to-devonfw" class="bare">https://devonfw.com/website/pages/community/community.html#community.asciidoc_contributing-to-devonfw</a>. If you want to create a tutorial you can start with the <a href="https://katacoda.com/devonfw/scenarios/create-your-own-tutorial">katacoda tutorial</a> and read the description for creating your own tutorials: <a href="https://github.com/devonfw-tutorials/tutorials/wiki/Development" class="bare">https://github.com/devonfw-tutorials/tutorials/wiki/Development</a>.</p>
+</div>
+</div>
+<div class="sect1">
+<h2 id="wiki-tutorials_tutorials_wiki_eclipse_openapi-generation-servicedocgen_index.asciidoc_devonfw-setup">devonfw setup</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you already installed the devonfw IDE, you can skip this step.</p>
+</div>
+<div class="sect3">
+<h4 id="wiki-tutorials_tutorials_wiki_eclipse_openapi-generation-servicedocgen_index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>You need to have a tool to extract <code>.tar.gz</code> files. On Windows lower Windows 10 use can use <a href="https://www.7-zip.org/7-zip">7-Zip</a>. The most other platforms support this feature by default.</p>
+</li>
+<li>
+<p>You need to have <a href="https://git-scm.com/">Git</a> and <a href="https://curl.se/">Curl</a> installed. On Windows you have to install <a href="https://git-scm.com/download/win">Git for Windows</a>. On Linux systems you might need to install the following tools in case they are not present (<code>sudo apt-get install git curl</code> or <code>sudo yum install git-core curl</code>)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Create a new directory in the location where you want to install the devonfw IDE. If you are using the terminal, navigate to this location and run <code>mkdir devonfw</code> and <code>cd devonfw</code> to create the directory and navigate into it.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="wiki-tutorials_tutorials_wiki_eclipse_openapi-generation-servicedocgen_index.asciidoc_download">Download</h4>
+<div class="paragraph">
+<p>Now you have to download the latest release of the devonfw IDE. You can download it from <a href="https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=LATEST&amp;p=tar.gz">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>In the Terminal execute <code>Invoke-WebRequest -OutFile devonfw-ide-scripts.tar.gz 'https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=LATEST&amp;p=tar.gz'</code> if you are using Windows.</p>
+</div>
+<div class="paragraph">
+<p>On Linux use <code>wget -c 'https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=LATEST&amp;p=tar.gz' -O devonfw-ide-scripts.tar.gz -</code>.</p>
+</div>
+<div class="paragraph">
+<p>On MacOS, depending on your setup, you can either use the same <code>wget</code> command specified for the Linux installation (install wget via homebrew <code>brew install wget</code>) or use any other available download command i.e. <code>curl -o devonfw-ide-scripts.tar.gz <a href="https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=LATEST&amp;p=tar.gz" class="bare">https://repository.sonatype.org/service/local/artifact/maven/redirect?r=central-proxy&amp;g=com.devonfw.tools.ide&amp;a=devonfw-ide-scripts&amp;v=LATEST&amp;p=tar.gz</a></code>.</p>
+</div>
+<div class="paragraph">
+<p>After that you need to extract the downloaded file. To do this, run <code>tar -xvzf devonfw-ide-scripts.tar.gz</code>. Or you can simply use a tool (e.g. 7-Zip) for this.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="wiki-tutorials_tutorials_wiki_eclipse_openapi-generation-servicedocgen_index.asciidoc_setup">Setup</h4>
+<div class="paragraph">
+<p>First, you need to prepare a settings repository to specify the tools to be installed within the devonfw IDE. Normally this is done by your project. If you just want to test the devonfw IDE, you can use the default URL, which is <a href="https://github.com/devonfw/ide-settings" class="bare">https://github.com/devonfw/ide-settings</a>.</p>
+</div>
+<div class="paragraph">
+<p>For now clone the repository on <a href="https://github.com/devonfw/ide-settings" class="bare">https://github.com/devonfw/ide-settings</a> or your own fork of it.
+For this tutorial you have to write <code>DEVON_IDE_TOOLS=(java mvn)</code> into the devon.properties file of the cloned settings repository. These settings will now be passed into the installation process of the devonfw-ide.
+Start the setup process by executing <code>.\setup 'path/to/settings'</code> (Windows) or <code>bash setup path/to/settings.git</code> (Linux).</p>
+</div>
+<div class="paragraph">
+<p>You can also just execute <code>.\setup</code> (Windows) or <code>bash setup</code> (Linux) and press Enter when the setup assistent asks for the URL to the settings repository. This will also download the default settings and install the default tools within the devonfw IDE.</p>
+</div>
+<div class="paragraph">
+<p>The installer will also ask you if you want to enter secrets for your maven repository. You can simply skip this by pressing 'Enter'.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="wiki-tutorials_tutorials_wiki_eclipse_openapi-generation-servicedocgen_index.asciidoc_clone-quarkus-quickstarts-repository">Clone quarkus-quickstarts repository</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="wiki-tutorials_tutorials_wiki_eclipse_openapi-generation-servicedocgen_index.asciidoc_clone-repository">Clone Repository</h3>
+<div class="paragraph">
+<p>First, clone the <code>quarkus-quickstarts</code> repository from GitHub. It contains several sample applications for many extensions to Quarkus. For this tutorial, we will use an application with a simple REST service contained in the <code>rest-json-quickstart</code> subfolder.</p>
+</div>
+<div class="sect3">
+<h4 id="wiki-tutorials_tutorials_wiki_eclipse_openapi-generation-servicedocgen_index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>You need to have Git installed. You can download Git <a href="https://git-scm.com/downloads">here</a> for your OS and install it by following the instructions.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="wiki-tutorials_tutorials_wiki_eclipse_openapi-generation-servicedocgen_index.asciidoc_download">Download</h4>
+<div class="paragraph">
+<p>Open a terminal in your current workspace.</p>
+</div>
+<div class="paragraph">
+<p>Firstly, you have to move to the directory where the repository should be cloned to.
+If the directory does not exist yet, you can create it by using the <code>mkdir</code> command in the terminal.
+In this case execute <code>mkdir -p /home/runner/work/wiki-tutorials/wiki-tutorials/compiler/build/working/devonfw/workspaces/main</code>.</p>
+</div>
+<div class="paragraph">
+<p>After that, move to the target directory by executing <code>cd  /home/runner/work/wiki-tutorials/wiki-tutorials/compiler/build/working/devonfw/workspaces/main</code> in the terminal.</p>
+</div>
+<div class="paragraph">
+<p>To clone a Git repository execute <code>git clone <a href="https://github.com/quarkusio/quarkus-quickstarts.git" class="bare">https://github.com/quarkusio/quarkus-quickstarts.git</a></code> in the terminal.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="wiki-tutorials_tutorials_wiki_eclipse_openapi-generation-servicedocgen_index.asciidoc_add-the-servicedocgen-maven-plugin">Add the ServicedocGen maven plugin</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="wiki-tutorials_tutorials_wiki_eclipse_openapi-generation-servicedocgen_index.asciidoc_changing-of-the-pom.xml-file">Changing of the pom.xml file</h3>
+<div class="paragraph">
+<p>Next step is to add the ServicedocGen plugin to the project&#8217;s pom.xml</p>
+</div>
+<div class="sect3">
+<h4 id="wiki-tutorials_tutorials_wiki_eclipse_openapi-generation-servicedocgen_index.asciidoc_prerequisites">Prerequisites</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Any editor that can edit files</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="wiki-tutorials_tutorials_wiki_eclipse_openapi-generation-servicedocgen_index.asciidoc_changing-of-pom.xml-in-any-editor">Changing of pom.xml in any Editor</h4>
+<div class="paragraph">
+<p>To change the file pom.xml, you have to open it in any editor.
+Open the editor and choose in the file context menu in the top left corner <strong>Open &#8230;&#8203;</strong> mostly also keyboard shortcut ctrl+o works.
+Based on your operating system a window with the file explorer opens. You have to navigate to pom.xml and select it.  Select the right folder manually by selecting the folders from the path <code>devonfw/workspaces/main/quarkus-quickstarts/rest-json-quickstart</code> and select the file <code>pom.xml</code>.
+You confirm this with the <strong>Open</strong> button in the bottom right corner pom.xml will be opened in a new editor window.</p>
+</div>
+<div class="paragraph">
+<p>Copy the following text.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>&lt;?xml version="1.0"?&gt;
+&lt;project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
+  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+  &lt;groupId&gt;org.acme&lt;/groupId&gt;
+  &lt;artifactId&gt;rest-json-quickstart&lt;/artifactId&gt;
+  &lt;version&gt;1.0.0-SNAPSHOT&lt;/version&gt;
+  &lt;properties&gt;
+    &lt;quarkus.platform.artifact-id&gt;quarkus-bom&lt;/quarkus.platform.artifact-id&gt;
+    &lt;quarkus.platform.group-id&gt;io.quarkus&lt;/quarkus.platform.group-id&gt;
+    &lt;quarkus.platform.version&gt;2.5.1.Final&lt;/quarkus.platform.version&gt;
+    &lt;surefire-plugin.version&gt;3.0.0-M5&lt;/surefire-plugin.version&gt;
+    &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;
+    &lt;maven.compiler.source&gt;11&lt;/maven.compiler.source&gt;
+    &lt;maven.compiler.target&gt;11&lt;/maven.compiler.target&gt;
+  &lt;/properties&gt;
+
+  &lt;dependencyManagement&gt;
+    &lt;dependencies&gt;
+      &lt;dependency&gt;
+        &lt;groupId&gt;${quarkus.platform.group-id}&lt;/groupId&gt;
+        &lt;artifactId&gt;${quarkus.platform.artifact-id}&lt;/artifactId&gt;
+        &lt;version&gt;${quarkus.platform.version}&lt;/version&gt;
+        &lt;type&gt;pom&lt;/type&gt;
+        &lt;scope&gt;import&lt;/scope&gt;
+      &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+  &lt;/dependencyManagement&gt;
+
+  &lt;dependencies&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;io.quarkus&lt;/groupId&gt;
+      &lt;artifactId&gt;quarkus-resteasy-jackson&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;io.quarkus&lt;/groupId&gt;
+      &lt;artifactId&gt;quarkus-junit5&lt;/artifactId&gt;
+      &lt;scope&gt;test&lt;/scope&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+      &lt;groupId&gt;io.rest-assured&lt;/groupId&gt;
+      &lt;artifactId&gt;rest-assured&lt;/artifactId&gt;
+      &lt;scope&gt;test&lt;/scope&gt;
+    &lt;/dependency&gt;
+  &lt;/dependencies&gt;
+  &lt;build&gt;
+    &lt;plugins&gt;
+      &lt;plugin&gt;
+        &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
+        &lt;artifactId&gt;servicedocgen-maven-plugin&lt;/artifactId&gt;
+        &lt;version&gt;1.0.0&lt;/version&gt;
+        &lt;executions&gt;
+          &lt;execution&gt;
+            &lt;goals&gt;
+              &lt;goal&gt;generate&lt;/goal&gt;
+            &lt;/goals&gt;
+          &lt;/execution&gt;
+        &lt;/executions&gt;
+        &lt;configuration&gt;
+          &lt;descriptor&gt;
+            &lt;info&gt;
+              &lt;title&gt;Order Service REST API Documentation&lt;/title&gt;
+              &lt;description&gt;This documentation describes the REST API of the order service&lt;/description&gt;
+              &lt;contact&gt;
+                &lt;email&gt;icsddevonfwsupport.apps2@capgemini.com&lt;/email&gt;
+                &lt;name&gt;devon4j support&lt;/name&gt;
+                &lt;url&gt;https://devonfw.com&lt;/url&gt;
+              &lt;/contact&gt;
+              &lt;license&gt;
+                &lt;url&gt;https://github.com/devonfw-sample/devon4quarkus-order/blob/master/LICENSE&lt;/url&gt;
+                &lt;name&gt;Apache License 2.0&lt;/name&gt;
+              &lt;/license&gt;
+            &lt;/info&gt;
+            &lt;basePath&gt;/&lt;/basePath&gt;
+            &lt;schemes&gt;
+              &lt;scheme&gt;http&lt;/scheme&gt;
+            &lt;/schemes&gt;
+          &lt;/descriptor&gt;
+          &lt;classnameRegex&gt;.*Resource.*&lt;/classnameRegex&gt;
+          &lt;templates&gt;
+            &lt;template&gt;
+              &lt;templateName&gt;OpenApi.yaml.vm&lt;/templateName&gt;
+              &lt;outputName&gt;OpenApi.yaml&lt;/outputName&gt;
+            &lt;/template&gt;
+            &lt;template&gt;
+              &lt;templateName&gt;SwaggerUI.html.vm&lt;/templateName&gt;
+              &lt;outputName&gt;SwaggerUI.html&lt;/outputName&gt;
+            &lt;/template&gt;
+          &lt;/templates&gt;
+        &lt;/configuration&gt;
+      &lt;/plugin&gt;
+      &lt;plugin&gt;
+        &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;
+        &lt;version&gt;${surefire-plugin.version}&lt;/version&gt;
+        &lt;configuration&gt;
+          &lt;systemPropertyVariables&gt;
+            &lt;java.util.logging.manager&gt;org.jboss.logmanager.LogManager&lt;/java.util.logging.manager&gt;
+            &lt;maven.home&gt;${maven.home}&lt;/maven.home&gt;
+          &lt;/systemPropertyVariables&gt;
+        &lt;/configuration&gt;
+      &lt;/plugin&gt;
+      &lt;plugin&gt;
+        &lt;groupId&gt;${quarkus.platform.group-id}&lt;/groupId&gt;
+        &lt;artifactId&gt;quarkus-maven-plugin&lt;/artifactId&gt;
+        &lt;version&gt;${quarkus.platform.version}&lt;/version&gt;
+        &lt;executions&gt;
+          &lt;execution&gt;
+            &lt;goals&gt;
+              &lt;goal&gt;build&lt;/goal&gt;
+            &lt;/goals&gt;
+          &lt;/execution&gt;
+        &lt;/executions&gt;
+      &lt;/plugin&gt;
+    &lt;/plugins&gt;
+  &lt;/build&gt;
+  &lt;profiles&gt;
+    &lt;profile&gt;
+      &lt;id&gt;native&lt;/id&gt;
+      &lt;activation&gt;
+        &lt;property&gt;
+          &lt;name&gt;native&lt;/name&gt;
+        &lt;/property&gt;
+      &lt;/activation&gt;
+      &lt;properties&gt;
+        &lt;quarkus.package.type&gt;native&lt;/quarkus.package.type&gt;
+      &lt;/properties&gt;
+      &lt;build&gt;
+        &lt;plugins&gt;
+          &lt;plugin&gt;
+            &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+            &lt;artifactId&gt;maven-failsafe-plugin&lt;/artifactId&gt;
+            &lt;version&gt;${surefire-plugin.version}&lt;/version&gt;
+            &lt;executions&gt;
+              &lt;execution&gt;
+                &lt;goals&gt;
+                  &lt;goal&gt;integration-test&lt;/goal&gt;
+                  &lt;goal&gt;verify&lt;/goal&gt;
+                &lt;/goals&gt;
+                &lt;configuration&gt;
+                  &lt;systemPropertyVariables&gt;
+                    &lt;native.image.path&gt;${project.build.directory}/${project.build.finalName}-runner&lt;/native.image.path&gt;
+                    &lt;java.util.logging.manager&gt;org.jboss.logmanager.LogManager&lt;/java.util.logging.manager&gt;
+                    &lt;maven.home&gt;${maven.home}&lt;/maven.home&gt;
+                  &lt;/systemPropertyVariables&gt;
+                &lt;/configuration&gt;
+              &lt;/execution&gt;
+            &lt;/executions&gt;
+          &lt;/plugin&gt;
+        &lt;/plugins&gt;
+      &lt;/build&gt;
+    &lt;/profile&gt;
+  &lt;/profiles&gt;
+&lt;/project&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now insert the copied text into the opened pom.xml.
+The final step is to save the file by selecting <strong>Save</strong> in the file context menu or by using the keyboard shortcut ctrl+s and pom.xml has been changed.</p>
+</div>
+<div class="paragraph">
+<p>Take a look at the <code>configuration</code> section of the plugin. In this section you can configure the behavior of the plugin. Not all options are necessary, such as the <code>info</code> section. This one is only used to add additional information to the OpenAPI file.</p>
+</div>
+<div class="paragraph">
+<p>Some other parts are necessary. The <code>classnameRegex</code> parameter is used to configure which name pattern the REST service classes must match.</p>
+</div>
+<div class="paragraph">
+<p>The <code>templates</code> section is used to configure what is created by the plugin. In this case, the OpenAPI specification is created in yaml format and the Swagger UI file is also created.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_getting-started.wiki_getting-started.asciidoc_introduction.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_getting-started.wiki_introduction-why-should-i-use-devonfw.asciidoc.html">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_getting-started.wiki_getting-started.asciidoc_further-information.html">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_getting-started.wiki_getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_devon4j.wiki_architecture.asciidoc.html">Architecture</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_ide.wiki_devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_general_master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-guide_ide.wiki_LICENSE.asciidoc.html">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script src="/website/assets/scripts/popper.min.js"></script>
+    <script src="/website/assets/scripts/bootstrap.min.js"></script>
+<div class="footnote"><sub>
+
+Last updated 2022-03-24 08:45:38 UTC
+</sub></div>
+</div>
+</div>
+<link rel="stylesheet" type="text/css" href="https://cginternal.devonfw.com/websitesnippets/main.css">
+<script async src="https://cginternal.devonfw.com/websitesnippets/main.js"></script>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+<script>
+  var internalUrls = ["https://cginternal.devonfw.com/websitesnippets/"];
+  $(".internal").each(function(){
+    internalUrls.forEach((internalUrl, index) => {
+      $.ajax({url: internalUrl + $(this).text() + "/index.html" })
+      .then(r => {
+        var leftDiv = $('<div class="info"><span class="infoText">Internal</span><img class="infoImage" src="' + internalUrl + 'logo.png"/></div>');
+        var rightFirstDiv = $('<div class="message">This is only visible inside of the corporate network.</div>');
+        var rightLastDiv = $('<div class="content"></div>');
+        rightLastDiv.html(r);
+        var rightDiv = $('<div class="right"></div>');
+        rightDiv.append(rightFirstDiv);
+        rightDiv.append(rightLastDiv);
+        $(this).html(leftDiv);
+        $(this).append(rightDiv);
+        $(this).addClass("internal-active");
+        $(this).removeClass("internal");
+      })
+    });
+	});
+</script>
+<script>
+      let cookieName = 'cookie_consent';
+      let expiryTime = new Date(2037, 11, 21);
+      let today = new Date();
+      let cookieConsentDeclinedDate = localStorage.getItem("cookie_consent_declined");
+      let dateDiffHours = 0;
+      let cookieConsentHtml = `
+      <div id="cookie-consent">
+        <p>
+          We use cookies to perform analytics and enhance user experience. Do you accept to the use of cookies?
+        </p>
+        <p class="cookie-consent-buttons">
+          <a id="decline-cookie-btn" class="btn white-button" href="javascript:void(0)">Decline</a>
+          <a id="accept-cookie-btn" class="btn blue-button" href="javascript:void(0)">Accept</a>
+        </p>
+      </div>
+      `;
+      dateDiffHours = cookieConsentDeclinedDate ? Math.abs(cookieConsentDeclinedDate - today) / 36e5 : 0;
+      if (document.cookie.indexOf(cookieName) < 0) {
+        if (cookieConsentDeclinedDate) {
+          if (dateDiffHours > 24) {
+            $("body").append(cookieConsentHtml);
+          }
+        } else {
+          $("body").append(cookieConsentHtml);
+        }
+      }
+      $("#accept-cookie-btn").click(function() {
+        document.cookie = `${cookieName}=accept;expires=${expiryTime};path=/`;
+        localStorage.removeItem("cookie_consent_declined");
+        consentGranted();
+        $("#cookie-consent").hide();
+      });
+      $("#decline-cookie-btn").click(function() {
+        localStorage.setItem("cookie_consent_declined", today);
+        $("#cookie-consent").hide();
+      });
+</script>
+</body>
+</html>
