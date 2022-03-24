@@ -19,7 +19,7 @@
 <!-- ************************************* -->
 
 
-<title>Apache Kafka on Microsoft Azure</title>
+<title>Stream Processing Solutions - Apache Kafka on Microsoft Azure</title>
 <!-- devonfw website stylesheet -->
 <link rel="stylesheet" type="text/css" href="/devonfw.css">
 <!-- Lunr -->
@@ -108,27 +108,270 @@ gtag('consent', 'default', {
 <div id="content" class="mt-4 mt-sm-5">
 <div class="toc">
 <div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#index.asciidoc">Stream Processing Solutions - Apache Kafka on Microsoft Azure</a>
 <ul class="sectlevel1">
-<li><a href="#index.asciidoc_apache-kafka-on-microsoft-azure">Apache Kafka on Microsoft Azure</a>
+<li><a href="#stream-processing-introduction">Stream Processing Introduction</a>
 <ul class="sectlevel2">
-<li><a href="#index.asciidoc_options-for-running-apache-kafka-on-microsoft-azure">Options for running Apache Kafka on Microsoft Azure</a></li>
+<li><a href="#context-problem">Context &amp; Problem</a></li>
+<li><a href="#standard-problems">Standard Problems</a></li>
+</ul>
+</li>
+<li><a href="#stream-processing-platforms">Stream Processing Platforms</a>
+<ul class="sectlevel2">
+<li><a href="#azure">Azure</a></li>
+</ul>
+</li>
+<li><a href="#index.asciidoc_provisioning-solutions---apache-kafka-on-microsoft-azure">Provisioning Solutions - Apache Kafka on Microsoft Azure</a>
+<ul class="sectlevel2">
+<li><a href="#index.asciidoc_event-hub">Event Hub</a></li>
+<li><a href="#index.asciidoc_aks">AKS</a></li>
+<li><a href="#index.asciidoc_confluent-cloud">Confluent Cloud</a></li>
+<li><a href="#index.asciidoc_hdinsight">HDInsight</a></li>
 <li><a href="#index.asciidoc_comparison">Comparison</a></li>
 </ul>
 </li>
 <li><a href="#index.asciidoc_credits">Credits</a></li>
 </ul>
+</li>
+</ul>
+<h1 id="index.asciidoc" class="sect0">Stream Processing Solutions - Apache Kafka on Microsoft Azure</h1>
+<div class="toc">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#index.asciidoc">Stream Processing Solutions - Apache Kafka on Microsoft Azure</a>
+<ul class="sectlevel1">
+<li><a href="#stream-processing-introduction">Stream Processing Introduction</a>
+<ul class="sectlevel2">
+<li><a href="#context-problem">Context &amp; Problem</a></li>
+<li><a href="#standard-problems">Standard Problems</a></li>
+</ul>
+</li>
+<li><a href="#stream-processing-platforms">Stream Processing Platforms</a>
+<ul class="sectlevel2">
+<li><a href="#azure">Azure</a></li>
+</ul>
+</li>
+<li><a href="#index.asciidoc_provisioning-solutions---apache-kafka-on-microsoft-azure">Provisioning Solutions - Apache Kafka on Microsoft Azure</a>
+<ul class="sectlevel2">
+<li><a href="#index.asciidoc_event-hub">Event Hub</a></li>
+<li><a href="#index.asciidoc_aks">AKS</a></li>
+<li><a href="#index.asciidoc_confluent-cloud">Confluent Cloud</a></li>
+<li><a href="#index.asciidoc_hdinsight">HDInsight</a></li>
+<li><a href="#index.asciidoc_comparison">Comparison</a></li>
+</ul>
+</li>
+<li><a href="#index.asciidoc_credits">Credits</a></li>
+</ul>
+</li>
+</ul>
 <div class="sect1">
-<h2 id="index.asciidoc_apache-kafka-on-microsoft-azure">Apache Kafka on Microsoft Azure</h2>
+<h2 id="stream-processing-introduction">Stream Processing Introduction</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="index.asciidoc_options-for-running-apache-kafka-on-microsoft-azure">Options for running Apache Kafka on Microsoft Azure</h3>
+<h3 id="context-problem">Context &amp; Problem</h3>
+<div class="paragraph">
+<p><a href="https://en.wikipedia.org/wiki/Complex_event_processing">Stream processing</a> is a method of tracking and analyzing (processing) streams of information (data) about things that happen (events) and deriving a conclusion from them. <a href="https://www.confluent.io/de-de/blog/making-sense-of-stream-processing/">Related words</a> also referring to the core of that technology are: Complex Event Processing (CEP) or Command and Query Responsibility Segregation (CQRS). Due to its benefits (see below) its also a vital technology in conjunction with real-time processing.</p>
+</div>
+<div class="paragraph">
+<p>The <a href="https://towardsdatascience.com/introduction-to-stream-processing-5a6db310f1b4">foundation of modern stream processing software</a> is a data structure called an append-only log. A log is just a sequence of binary records. An append-only log only allows for the addition of new elements to the end of the log. We can’t insert new elements at arbitrary positions of the log, and we can’t remove elements at will. Every element in a log has a sequence number, and newer elements have a higher sequence number than older elements. Element also known as "message". <a href="https://docs.microsoft.com/en-us/azure/architecture/data-guide/technology-choices/stream-processing">Processing</a> may include querying, filtering, and aggregating elements. The picture below illustrates the concepts:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="arch_overview.png" alt="Stream Processing" width="478 px" height="327 px">
+</div>
+</div>
+<div class="paragraph">
+<p>These often <a href="https://searchdatamanagement.techtarget.com/definition/stream-processing">go hand in hand</a> with other publish-subscribe frameworks used for connecting applications and data stores. For example, Apache Kafka is a popular open source publish-subscribe framework that simplifies integrating data across multiple applications.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://searchdatamanagement.techtarget.com/definition/stream-processing">Below</a> a few common streaming frameworks/ libraries are listed:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Apache Kafka Streams</strong> is a stream processing library for creating applications that ingest data from Kafka, process it and then publish the results back to Kafka as a new data source for other applications to consume.</p>
+</li>
+<li>
+<p><strong>Samza</strong> is a distributed stream processing tool that allows users to build stateful applications.</p>
+</li>
+<li>
+<p><strong>Apache Storm supports</strong> real-time computation capabilities like online machine learning, reinforcement learning and continuous computation.</p>
+</li>
+<li>
+<p><strong>Delta Lake</strong> supports stream processing and batch processing using a common architecture.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><a href="https://www.upsolver.com/blog/batch-stream-a-cheat-sheet">In micro-batch processing</a>, we run batch processes on much smaller accumulations of data - typically less than a minute’s worth of data. This means data is available in near real-time. In practice, there is little difference between micro-batching and stream processing, and the terms would often be used interchangeably in data architecture descriptions and software platform descriptions. Microbatch processing is useful when we need very fresh data, but not necessarily real-time - meaning we can’t wait an hour or a day for a batch processing to run, but we also don’t need to know what happened in the last few seconds.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://www.confluent.io/fr-fr/blog/making-sense-of-stream-processing/">Benefits</a> are as follows:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Loose coupling</strong></p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>If you write data to the database in the same schema as you use for reading, you have tight coupling between the part of the application doing the writing (the "button") and the part doing the reading (the "screen"). We know that loose coupling is a good design principle for software. By separating the form in which you write and read data, and by explicitly translating from one to the other, you get much looser coupling between different parts of your application.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Read and write performance</strong></p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>The decades-old debate over normalization (faster writes) vs. denormalization (faster reads) exists only because of the assumption that writes and reads use the same schema. If you separate the two, you can have fast writes and fast reads.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Scalability</strong></p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Event streams are great for scalability, because they are a simple abstraction (comparatively easy to parallelize and scale across multiple machines) and because they allow you to decompose your application into producers and consumers of streams (which can operate independently and can take advantage of more parallelism in hardware).</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Flexibility and agility</strong></p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Raw events are so simple and obvious that a "schema migration" doesn’t really make sense (you may just add a new field from time to time, but you don’t usually need to rewrite historic data into a new format). On the other hand, the ways in which you want to present data to users are much more complex, and may be continually changing. If you have an explicit translation process between the source of truth and the caches that you read from, you can experiment with new user interfaces by just building new caches using new logic, running the new system in parallel with the old one, gradually moving people over from the old system, and then discarding the old system (or reverting to the old system if the new one didn’t work). Such flexibility is incredibly liberating.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Error scenarios</strong></p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Finally, error scenarios are much easier to reason about if data is immutable. If something goes wrong in your system, you can always replay events in the same order, and reconstruct exactly what happened (especially important in finance, where auditability is crucial). If you deploy buggy code that writes bad data to a database, you can just re-run it after you fixed the bug, and thus correct the outputs. Those things are not possible if your database writes are destructive.</p>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="standard-problems">Standard Problems</h3>
+<div class="paragraph">
+<p><a href="https://docs.aws.amazon.com/whitepapers/latest/streaming-data-solutions-amazon-kinesis/stream-processing-challenges.html">Standard challenges</a> are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>You have to build a system that can cost-effectively collect, prepare, and transmit data coming simultaneously from thousands of data sources.</p>
+</li>
+<li>
+<p>You need to fine-tune the storage and compute resources so that data is batched and transmitted efficiently for maximum throughput and low latency.</p>
+</li>
+<li>
+<p>You have to deploy and manage a fleet of servers to scale the system so you can handle the varying speeds of data you are going to throw at it.</p>
+</li>
+<li>
+<p>IoT devices are often produced by different manufacturers so the data can be quite different. This scenario of mixed devices and sensor data means the data schema can change unpredictably, potentially breaking data pipelines.</p>
+</li>
+</ul>
+</div>
+<div class="toc">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#index.asciidoc">Stream Processing Solutions - Apache Kafka on Microsoft Azure</a>
+<ul class="sectlevel1">
+<li><a href="#stream-processing-introduction">Stream Processing Introduction</a>
+<ul class="sectlevel2">
+<li><a href="#context-problem">Context &amp; Problem</a></li>
+<li><a href="#standard-problems">Standard Problems</a></li>
+</ul>
+</li>
+<li><a href="#stream-processing-platforms">Stream Processing Platforms</a>
+<ul class="sectlevel2">
+<li><a href="#azure">Azure</a></li>
+</ul>
+</li>
+<li><a href="#index.asciidoc_provisioning-solutions---apache-kafka-on-microsoft-azure">Provisioning Solutions - Apache Kafka on Microsoft Azure</a>
+<ul class="sectlevel2">
+<li><a href="#index.asciidoc_event-hub">Event Hub</a></li>
+<li><a href="#index.asciidoc_aks">AKS</a></li>
+<li><a href="#index.asciidoc_confluent-cloud">Confluent Cloud</a></li>
+<li><a href="#index.asciidoc_hdinsight">HDInsight</a></li>
+<li><a href="#index.asciidoc_comparison">Comparison</a></li>
+</ul>
+</li>
+<li><a href="#index.asciidoc_credits">Credits</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="stream-processing-platforms">Stream Processing Platforms</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="azure">Azure</h3>
+<div class="sect3">
+<h4 id="overview">Overview</h4>
+<div class="paragraph">
+<p>This chapter lists major features/ concrete services for stream processing on the Azure platform. This architecture pattern builds on the general problem description for stream processing.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://docs.microsoft.com/en-us/azure/architecture/data-guide/technology-choices/stream-processing">In Azure</a>, all of the following data stores will meet the core requirements supporting real-time processing:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Azure Stream Analytics</p>
+</li>
+<li>
+<p>HDInsight with Spark Streaming (Microbacth processing)/ Kafka Streaming (Stream processing)</p>
+</li>
+<li>
+<p>Apache Spark (Microbacth processing) in Azure Databricks</p>
+</li>
+<li>
+<p>HDInsight with Storm (Stream processing)</p>
+</li>
+<li>
+<p>Azure Functions</p>
+</li>
+<li>
+<p>Azure App Service WebJobs</p>
+</li>
+<li>
+<p>Apache Kafka streams API</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For Kafka a separate page with guidelines exists. <a href="https://docs.microsoft.com/en-us/azure/architecture/data-guide/technology-choices/stream-processing">The Azure Docs</a> provide tables with decision criteria for the following technology options: Azure Stream Analytics, HDInsight with Spark Streaming, Apache Spark in Azure Databricks, HDInsight with Storm, Azure Functions, Azure App Service WebJobs.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="index.asciidoc_provisioning-solutions---apache-kafka-on-microsoft-azure">Provisioning Solutions - Apache Kafka on Microsoft Azure</h2>
+<div class="sectionbody">
 <div class="imageblock">
 <div class="content">
 <img src="options.png" alt="Kafka options">
 </div>
 </div>
-<div class="sect3">
-<h4 id="index.asciidoc_event-hub">Event Hub</h4>
+<div class="sect2">
+<h3 id="index.asciidoc_event-hub">Event Hub</h3>
 <div class="paragraph">
 <p>Azure Event Hub<span class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnote_1" title="View footnote.">1</a>]</span> supports Apache Kafka producer and consumer APIs</p>
 </div>
@@ -138,8 +381,8 @@ gtag('consent', 'default', {
 <span class="red">- No Kafka streams</span></p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="index.asciidoc_aks">AKS</h4>
+<div class="sect2">
+<h3 id="index.asciidoc_aks">AKS</h3>
 <div class="paragraph">
 <p>Kafka on Kubernetes (AKS) using Operators<span class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnote_2" title="View footnote.">2</a>]</span></p>
 </div>
@@ -169,8 +412,8 @@ gtag('consent', 'default', {
 <span class="red">- potentially higher compute and storage cost</span></p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="index.asciidoc_confluent-cloud">Confluent Cloud</h4>
+<div class="sect2">
+<h3 id="index.asciidoc_confluent-cloud">Confluent Cloud</h3>
 <div class="paragraph">
 <p>Confluent Cloud<span class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnote_3" title="View footnote.">3</a>]</span> is now integrated in Azure Marketplace</p>
 </div>
@@ -229,8 +472,8 @@ gtag('consent', 'default', {
 <span class="red">- No BYOK for data encryption</span></p>
 </div>
 </div>
-<div class="sect3">
-<h4 id="index.asciidoc_hdinsight">HDInsight</h4>
+<div class="sect2">
+<h3 id="index.asciidoc_hdinsight">HDInsight</h3>
 <div class="paragraph">
 <p>Azure HDInsight<span class="footnote">[<a id="_footnoteref_5" class="footnote" href="#_footnote_5" title="View footnote.">5</a>]</span> is a fully-managed cloud distribution of Hadoop Components. It supports many open-source frameworks like Apache Spark, Hive, Apache Storm, R Server, Apache HBase and of course Apache Kafka. It provides 99.99% SLA on Kafka uptime &amp; uses Azure Managed Disks as the backing store for Kafka brokers (providing up to 16TB of storage per broker).</p>
 </div>
@@ -276,7 +519,6 @@ gtag('consent', 'default', {
 <div class="imageblock">
 <div class="content">
 <a class="image" href="images/hdinsight-kafka.png"><img src="hdinsight-kafka.png" alt="Kafka on HDInsight" width="300"></a>
-</div>
 </div>
 </div>
 </div>
@@ -531,10 +773,10 @@ Agraj Mangal from Microsoft provides a nice comparison (see table below).</p>
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-03-24 20:45:34 UTC
+Last updated 2022-03-24 22:22:11 UTC
 </sub></div>
 </div>
-
+</div>
 <link rel="stylesheet" type="text/css" href="https://cginternal.devonfw.com/websitesnippets/main.css">
 <script async="" src="https://cginternal.devonfw.com/websitesnippets/main.js"></script>
 <script>
@@ -603,4 +845,4 @@ Last updated 2022-03-24 20:45:34 UTC
       });
 </script>
 
-</body></html>
+</div></body></html>
