@@ -118,7 +118,7 @@ gtag('consent', 'default', {
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this section we will create a quality pipeline for analyzing project code with SonarQube. This pipeline will be configured in order to be triggered every time a commit to the Azure DevOps repository is done, regardless of which branch it is made on.</p>
+<p>In this section we will create a quality pipeline for analyzing project code with SonarQube. This pipeline will be configured in order to be triggered every time the test pipeline is executed successfully on a commit, and consumes the artifact produced by the build pipeline.</p>
 </div>
 <div class="paragraph">
 <p>The creation of this pipeline will follow the project workflow, so a new branch named <code>feature/quality-pipeline</code> will be created and the YAML file for the pipeline will be pushed to it.</p>
@@ -157,10 +157,11 @@ gtag('consent', 'default', {
   -c &lt;config file path&gt; \
   -n &lt;pipeline name&gt; \
   -l &lt;language or framework&gt; \
-  -p &lt;build pipeline name&gt; \
-  -u &lt;sonarqube url&gt; \
-  -t &lt;sonarqube token&gt; \
+  --sonar-url &lt;sonarqube url&gt; \
+  --sonar-token &lt;sonarqube token&gt; \
   -d &lt;project local path&gt; \
+  --build-pipeline-name &lt;build pipeline name&gt; \
+  --test-pipeline-name &lt;test pipeline name&gt; \
   [-b &lt;branch&gt;] \
   [-w]</code></pre>
 </div>
@@ -172,7 +173,7 @@ gtag('consent', 'default', {
 <i class="icon-note" title=""></i>
 </td>
 <td class="content">
-The config file for the quality pipeline is located at <code>/scripts/pipelines/azure-devops/templates/quality/quality-config.cfg</code>.
+The config file for the quality pipeline is located at <code>/scripts/pipelines/azure-devops/templates/quality/quality-pipeline.cfg</code>.
 </td>
 </tr>
 </table>
@@ -182,15 +183,16 @@ The config file for the quality pipeline is located at <code>/scripts/pipelines/
 <h3 id="devonfw-guide_hangar.wiki_azure-devops_setup-quality-pipeline.asciidoc_flags">Flags</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>-c    [Required] Configuration file containing pipeline definition.
--n    [Required] Name that will be set to the pipeline.
--l    [Required] Language or framework of the project.
--p    [Required] Build pipeline name.
--u    [Required] SonarQube URL.
--t    [Required] SonarQube token.
--d    [Required] Local directory of your project (the path should always be using '/' and not '\').
--b               Name of the branch to which the Pull Request will target. PR is not created if the flag is not provided.
--w               Open the Pull Request on the web browser if it cannot be automatically merged. Requires -b flag.</code></pre>
+<pre class="highlight"><code>-c, --config-file            [Required] Configuration file containing pipeline definition.
+-n, --pipeline-name          [Required] Name that will be set to the pipeline.
+-l, --language               [Required] Language or framework of the project.
+    --sonar-url              [Required] SonarQube URL.
+    --sonar-token            [Required] SonarQube token.
+-d, --local-directory        [Required] Local directory of your project (the path should always be using '/' and not '\').
+    --build-pipeline-name    [Required] Build pipeline name.
+    --test-pipeline-name     [Required] Test pipeline name.
+-b, --target-branch                     Name of the branch to which the Pull Request will target. PR is not created if the flag is not provided.
+-w                                      Open the Pull Request on the web browser if it cannot be automatically merged. Requires -b flag.</code></pre>
 </div>
 </div>
 </div>
@@ -200,7 +202,7 @@ The config file for the quality pipeline is located at <code>/scripts/pipelines/
 <h4 id="devonfw-guide_hangar.wiki_azure-devops_setup-quality-pipeline.asciidoc_quarkus-project">Quarkus project</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/quality/quality-config.cfg -n quarkus-project-quality -l quarkus -p quarkus-project-build -u http://52.17.210.4:9000 -t 6ce6663b63fc02881c6ea4c7cBa6563b8247a04e -d C:/Users/$USERNAME/Desktop/quarkus-project -b develop -w</code></pre>
+<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/quality/quality-pipeline.cfg -n quarkus-project-quality -l quarkus --sonar-url http://1.2.3.4:9000 --sonar-token 6ce6663b63fc02881c6ea4c7cBa6563b8247a04e -d C:/Users/$USERNAME/Desktop/quarkus-project --build-pipeline-name quarkus-project-build --test-pipeline-name quarkus-project-test  -b develop -w</code></pre>
 </div>
 </div>
 <div class="admonitionblock caution">
@@ -330,7 +332,7 @@ Remember to write the path to the local repository with '/' and not '\' on Windo
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-03-25 08:53:25 UTC
+Last updated 2022-03-25 14:30:26 UTC
 </sub></div>
 </div>
 </div>

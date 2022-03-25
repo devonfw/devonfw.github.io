@@ -118,7 +118,7 @@ gtag('consent', 'default', {
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this section we will create a Test pipeline on Azure DevOps for running project test cases. This pipeline will be configured in order to be triggered every time a commit to the Azure DevOps repository is done, regardless of which branch it is made on.</p>
+<p>In this section we will create a test pipeline on Azure DevOps for running project test cases. This pipeline will be configured in order to be triggered every time the build pipeline is executed successfully on a commit.</p>
 </div>
 <div class="paragraph">
 <p>The creation of this pipeline will follow the project workflow, so a new branch named <code>feature/test-pipeline</code> will be created and the YAML file for the pipeline will be pushed to it.</p>
@@ -158,6 +158,7 @@ gtag('consent', 'default', {
   -n &lt;pipeline name&gt; \
   -l &lt;language or framework&gt; \
   -d &lt;project local path&gt; \
+  --build-pipeline-name &lt;build pipeline name&gt; \
   [-a &lt;artifact source path&gt;] \
   [-b &lt;branch&gt;] \
   [-w]</code></pre>
@@ -170,7 +171,7 @@ gtag('consent', 'default', {
 <i class="icon-note" title=""></i>
 </td>
 <td class="content">
-The config file for the test pipeline is located at <code>/scripts/pipelines/azure-devops/templates/test/test-config.cfg</code>.
+The config file for the test pipeline is located at <code>/scripts/pipelines/azure-devops/templates/test/test-pipeline.cfg</code>.
 </td>
 </tr>
 </table>
@@ -192,13 +193,14 @@ If the test pipeline failed, check the logs for the failed test case(s) summary.
 <h3 id="devonfw-guide_hangar.wiki_azure-devops_setup-test-pipeline.asciidoc_flags">Flags</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>-c    [Required] Configuration file containing pipeline definition.
--n    [Required] Name that will be set to the pipeline.
--l    [Required] Language or framework of the project.
--d    [Required] Local directory of your project (the path should always be using '/' and not '\').
--a               Path to be persisted as an artifact after pipeline execution, e.g. where the application stores logs or any other blob on runtime.
--b               Name of the branch to which the Pull Request will target. PR is not created if the flag is not provided.
--w               Open the Pull Request on the web browser if it cannot be automatically merged. Requires -b flag.</code></pre>
+<pre class="highlight"><code>-c, --config-file           [Required] Configuration file containing pipeline definition.
+-n, --pipeline-name         [Required] Name that will be set to the pipeline.
+-l, --language              [Required] Language or framework of the project.
+-d, --local-directory       [Required] Local directory of your project (the path should always be using '/' and not '\').
+    --build-pipeline-name   [Required] Build pipeline name.
+-a, --artifact-path                    Path to be persisted as an artifact after pipeline execution, e.g. where the application stores logs or any other blob on runtime.
+-b, --target-branch                    Name of the branch to which the Pull Request will target. PR is not created if the flag is not provided.
+-w                                     Open the Pull Request on the web browser if it cannot be automatically merged. Requires -b flag.</code></pre>
 </div>
 </div>
 </div>
@@ -208,7 +210,7 @@ If the test pipeline failed, check the logs for the failed test case(s) summary.
 <h4 id="devonfw-guide_hangar.wiki_azure-devops_setup-test-pipeline.asciidoc_quarkus-project">Quarkus project</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/test/test-config.cfg -n quarkus-project-test -l quarkus -d C:/Users/$USERNAME/Desktop/quarkus-project -b develop -w</code></pre>
+<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/test/test-pipeline.cfg -n quarkus-project-test -l quarkus -d C:/Users/$USERNAME/Desktop/quarkus-project --build-pipeline-name quarkus-project-build -b develop -w</code></pre>
 </div>
 </div>
 <div class="admonitionblock caution">
@@ -338,7 +340,7 @@ Remember to write the path to the local repository with '/' and not '\' on Windo
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-03-25 08:53:26 UTC
+Last updated 2022-03-25 14:30:26 UTC
 </sub></div>
 </div>
 </div>
