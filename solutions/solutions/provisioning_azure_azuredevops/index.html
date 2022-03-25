@@ -525,87 +525,8 @@ Orchestrated pipelines must pass data between them. The recommended method is to
 <div class="paragraph">
 <p>Imperative programming languages state the how. The internal delta calculation needs to be explicitly programmed here. If possible declarative programming languages are recommended due to automatic delta calculation. Typical case is infrastructure.</p>
 </div>
-<div class="paragraph">
-<p>Typical declarative options are shown in detail in the table below. The overall recommendation is to go for terraform. Major reasons for downvoting Bicep/ ARM:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>ARM: difficult readability for humans</p>
-</li>
-<li>
-<p>Bicep: Lack of support for testing based on plan and testing ecosystem since first added recently.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Table with declarative programming language options:</p>
-</div>
-<table class="tableblock frame-all grid-all" style="width: 100%;">
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Criteria</th>
-<th class="tableblock halign-left valign-top">Bicep</th>
-<th class="tableblock halign-left valign-top">ARM</th>
-<th class="tableblock halign-left valign-top">Terraform</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Same syntax across clouds</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">- (Azure Only)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">- (Azure Only)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">+ (multi)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">What if</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">o (no complete prop list;only display of plan; unexpected delete)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">- (not available)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">+ (plan command)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Detection current</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">o (Real anaylsis but time)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">+ (Real anaylsis)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">o (Statefile)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Testing/ static analysis</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">o (Only via ARM)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">+ (available)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">+ (available)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Human Readability</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">+</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">+</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Reverse Engineering</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">- (Extra ARM step + adjust)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">o (adjust)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">+ (Direct via Terraformer)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Latest features</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">o (No embedded fallback)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">+ (native)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">o (Time lag but embedded fallback)</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>The major options for imperative programming languages are Azure CLI, Powershell (Windows) or Linux based scripting. Azure CLI is recommended as prefered choice since it works on linux and windows based VMs.</p>
-</div>
-<div class="paragraph">
-<p>The created resources should follow a <strong>uniform naming schema</strong>. This requires naming to be factored out in a centralized module. Terraform supports factoring out common code in modules. However the backend must already exist and should also follow a naming convention. The recommendation is therefore to expose the common terraform module via an additional path that does not require a backend to determine the names for the azure resources representing the backend.</p>
+<div class="paragraph internal">
+<p>solution_provisioning_platforms_azure_dec_opt</p>
 </div>
 </div>
 <div class="sect3">
@@ -888,39 +809,9 @@ Orchestrated pipelines must pass data between them. The recommended method is to
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>The table below lists typical configurations along with their characteristics:</p>
+<div class="paragraph internal">
+<p>solution_provisioning_azure_devops_struct</p>
 </div>
-<table class="tableblock frame-all grid-all" style="width: 100%;">
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Criteria</th>
-<th class="tableblock halign-left valign-top">1 project, N teams</th>
-<th class="tableblock halign-left valign-top">1 org, N projects/ teams</th>
-<th class="tableblock halign-left valign-top">N orgs</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">General guidance</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Smaller or larger organizations with highly aligned teams</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Good when different efforts require different processes (multi)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Legacy migration</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Process</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Aligned processes across teams; team flexibility to customize boards, dashboards, and so on</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Different processes per prj;e.g. different work item types, custom fields</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">same as many projects</p></td>
-</tr>
-</tbody>
-</table>
 </div>
 <div class="sect3">
 <h4 id="solutions_solutions_provisioning_azure_azuredevops_index.asciidoc_remaining-goals-automation-code">Remaining goals (Automation Code)</h4>
@@ -994,80 +885,10 @@ resources:
 </div>
 </div>
 <div class="paragraph">
-<p>Implicit Chaining for <strong>orchestration</strong> is possible by using trigger condition. Calling pipelines explicitly is so far only possible with scripting. The code snippet below shows an example:</p>
+<p>Implicit Chaining for <strong>orchestration</strong> is possible by using trigger condition. Calling pipelines explicitly is so far only possible with scripting.</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="Powershell language-Powershell">#
-# Make call to schedule pipeline run
-#
-
-# Body
-$body = @{
-    stagesToSkip = @()
-    resources = @{
-        self = @{
-            refName = $branch_name
-        }
-    }
-    templateParameters = $params
-    variables = @{}
-}
-$bodyJson = $body | ConvertTo-Json
-# Uri extracted from the Azure DevOps UI
-# $org_uri and $prj_id contain names of current organization/ project
-# $pl_id denotes the internal pipeline id to be started
-$uri = "${org_uri}${prj_id}/_apis/pipelines/${pl_id}/runs?api-version=5.1-preview.1"
-
-# Output paramters
-Write-Host("--------  Call ${pl_name} --------")
-Write-Host("Headers: ${headersJson}")
-Write-Host("Json body: ${bodyJson}")
-Write-Host("Uri: ${uri}")
-
-try
-{
-    # Trigger pipeline
-    $result = Invoke-RestMethod -Method POST -Headers $headers -Uri $uri -Body $bodyJson
-    Write-Host("Result: ${result}")
-
-    # Wait until run completed
-    $buildid = $result.id
-    $start_time = (get-date).ToString('T')
-    Write-Host("------------ Loop until ${pl_name} completed --------")
-    Write-Host("started runbuild ${buildid} at ${start_time}")
-
-    # Uri for checking state
-    $uri = "${org_uri}${prj_id}/_apis/pipelines/${pl_id}/runs/${buildid}?api-version=5.1-preview.1"
-
-    Do {
-        Start-Sleep -Seconds 60
-        $current_time = (get-date).ToString('T')
-
-        # Retrieve current state
-        $result = Invoke-RestMethod -Method GET -Headers $headers -Uri $uri
-        $status = $result.state
-        Write-Host("Received state ${status} at ${current_time}...")
-    } until ($status -eq "completed")
-
-    # return result
-    $pl_run_result = $result.result
-    Write-Host("Result: ${pl_run_result}")
-    return $pl_run_result
-}
-catch {
-    $excMsg = $_.Exception.Message
-    Write-Host("Exception text: ${excMsg}")
-    return "Failed"
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Orchestration must take dependencies into account. They might result from the deployed code or the scope of the pipeline (scope is e.g. a single microservice and code includes the libraries needed).
-Orchestrated pipelines must pass data between them. The recommended method is to use key vault.</p>
-</div>
-<div class="paragraph">
-<p><strong>Recreation of resources in short intervals</strong> might cause pipelines to fail. Even if resources are deleted they might still exist in the background (even although soft delete is not applicable). Programming languages can therefore get confused if pipelines recreate things in short intervals. Creating a new resource group can solve the problem since they are part of the tecnical resource id.</p>
+<div class="paragraph internal">
+<p>solution_provisioning_azure_devops_orch</p>
 </div>
 <div class="paragraph">
 <p>As part of the <strong>configuration</strong> Azure DevOps provides the possibility to provide various settings that are used for development such as enforcing pull requests instead of direct pushes to the repo.
@@ -1513,7 +1334,7 @@ Hence, secrets can be stored in a repository in a safe way without having to sto
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-03-25 01:14:19 UTC
+Last updated 2022-03-25 08:57:29 UTC
 </sub></div>
 </div>
 </div>
