@@ -185,7 +185,7 @@ function highlightSelected() {
 }
 
 function disableFilters(solutions) {
-    $(".disabled").removeClass("disabled");
+    $(".disabled").removeClass("disabled").show();;
     for (const filter in tagsJson) {
         if (Object.hasOwnProperty.call(tagsJson, filter)) {
             const tag = orderTag(tagsJson[filter]);
@@ -202,7 +202,7 @@ function disableFilters(solutions) {
                 if (Object.hasOwnProperty.call(tag, tagValue)) {
                     console.log(filter + ":" + tagValue);
                     if (!activeValues.includes(tagValue)) {
-                        $('#tag_' + filter.replace(/[^a-zA-Z0-9]/g, "_") + '_' + tagValue.replace(/[^a-zA-Z0-9]/g, "_")).addClass("disabled");
+                        $('#tag_' + filter.replace(/[^a-zA-Z0-9]/g, "_") + '_' + tagValue.replace(/[^a-zA-Z0-9]/g, "_")).addClass("disabled").hide();
                     }
                 }
             }
@@ -360,7 +360,7 @@ async function main() {
                     if (Object.hasOwnProperty.call(tag, tagValue) && (showMaturity || solutionFilterExists)) {
                         var tagDiv = $('<div class="tag" id="tag_' + filter.replace(/[^a-zA-Z0-9]/g, "_") + '_' + tagValue.replace(/[^a-zA-Z0-9]/g, "_") + '"></div>');
                         tagDiv.text(tagValue);
-                        tagDiv.prepend($('<span id="tag_' + filter.replace(/[^a-zA-Z0-9]/g, "_") + '_' + tagValue.replace(/[^a-zA-Z0-9]/g, "_") + '_checkbox" class="checkbox material-icons-sharp">check_box_outline_blank</span>'))
+                        tagDiv.prepend($('<input type="checkbox" id="tag_' + filter.replace(/[^a-zA-Z0-9]/g, "_") + '_' + tagValue.replace(/[^a-zA-Z0-9]/g, "_") + '_checkbox" class="checkbox material-icons-sharp form-check-input"></input>'))
                         tagDiv.click((e) => {
                             if (!$(e.currentTarget).hasClass("disabled")) {
                                 if (!parameters.delete(filter, tagValue)) {

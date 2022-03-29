@@ -22,3 +22,4 @@ sed -i "s#$head#$headRep#" "target/generated-docs/index.html";
 
 node scripts/createTutorials.js target/generated-docs/tutorials.json
 node scripts/createTags.js target/generated-docs/tags.json
+node scripts/createIndex.js target/generated-docs/docs.json target/generated-docs/index.json
