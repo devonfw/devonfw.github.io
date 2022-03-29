@@ -17,20 +17,20 @@ function publish(){
         //create directories to save temp courses and Tutorials 
         createFolder(TEMP); 
 
-        //TODO GENERATE changed tutorials only
-        //ISSUE #25
         generateNewTutorials(TEMP);
 		const GENERATED_TUTORIALS = getTutorials(WIKITUTORIALS);
         
-        //TODO UPDATE changed Tutorials only
 		createScenario();
+		
+		copyTutorialAssets(GENERATED_TUTORIALS, PLAYBOOKS, TUTORIALTYPE, TEMP);
         
         //Delete unused and newly generated tutorials 
         fs.removeSync(path.join(TUTORIALS, 'tutorials', '.'), { recursive: true });
-		console.log("Removed published tutorials to replace them")
+		console.log("Removed published tutorials to replace them");
 		
 		//Copy TEMP folder to tutorials
 		fs.copySync(TEMP, path.join(TUTORIALS, 'tutorials', "/."));
+		console.log("Copy TEMP Folder to wiki-tutorials");
 		
 		//Delete TEMP folder
 		fs.removeSync(path.join(TEMP), { recursive: true });
@@ -72,6 +72,20 @@ function getTutorials(dirname){
     return tutorials;
 }
 
+function copyTutorialAssets(tutorials, playbooksFolder, tutorialTypes, tempFolder){
+	for (let tutorial of tutorials){
+		let tutorialFolder = path.join(playbooksFolder, tutorial);
+		let assetFolders = fs.readdirSync(tutorialFolder, { withFileTypes: true }).filter(dirent => dirent.isDirectory());
+		for (let asset of assetFolders){
+			for (let type of tutorialTypes){
+				console.log(path.join(tutorialFolder, asset.name), '->', path.join(tempFolder, type, tutorial));
+				createFolder(path.join(tempFolder, type, tutorial, asset.name));
+				fs.copySync(path.join(tutorialFolder, asset.name), path.join(tempFolder, type, tutorial, asset.name));
+			}
+		}
+	}
+}
+
 function createFolder(dirname){
     if (fs.existsSync(dirname)){
         fs.removeSync(dirname); 
@@ -79,5 +93,6 @@ function createFolder(dirname){
     fs.mkdir(dirname);
     console.log(dirname, "was created.");
 }
+
 
 publish();
