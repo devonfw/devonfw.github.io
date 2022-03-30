@@ -1,0 +1,1 @@
+In the `CoreModule`, you can see services like `TranslocoRootModule` (translation service), `HttpRequestInterceptorService` (HTTP interceptor sesrvice) and Angular Material related modules being part of this core module. This core module is then imported into every other module as the services are used throughout the application.

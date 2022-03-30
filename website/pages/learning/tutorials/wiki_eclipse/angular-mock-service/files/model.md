@@ -1,0 +1,3 @@
+Let’s consider a 'box of data' represented in JSON. Physically this means a folder with some JSON/TS files in it. They are located in the app/mock folder. The example uses only one mock data file. The file is typed according to our data model.
+
+The model is represented by the interfaces we make. These interfaces describe the data structures we will use in our application. In this example, there is one data model, corresponding with the 'type' of data that was mocked. In the models folder you will find the .ts script file that describes chemical elements. The corresponding mock file defines a set is chemical element objects, in accordance to our interface definition.
