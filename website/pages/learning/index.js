@@ -1,7 +1,7 @@
 let onlineTutorials = [];
 let onlineFilter = [];
 let allFilter = [];
-const tagTypes = ['difficulty', 'technology'];
+const tagTypes = ['difficulty', 'technology', 'asset'];
 
 function renderTutorial(tutorial){
 	var tutorialCard = $('<div id="tutorial_' + tutorial['name'] + '" class="card col-12 col-sm-6"></div>');
