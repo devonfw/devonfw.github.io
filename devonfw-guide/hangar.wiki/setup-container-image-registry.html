@@ -146,7 +146,7 @@ gtag('consent', 'default', {
 <h2 id="devonfw-guide_hangar.wiki_setup-container-image-registry.asciidoc_setup-container-image-registry">Setup Container Image Registry</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The scope of this section is to setup/create a container image registry or repository (depending on provider) on Docker Hub, AWS or Azure for allowing the pipeline that will package the application to push the resulting container image. By the end of this guide, we will get the container repository URI as an output.</p>
+<p>The scope of this section is to setup/create a container image registry or repository (depending on provider) on Docker Hub, AWS or Azure for allowing the pipeline that will package the application to push the resulting container image. By the end of this guide, we will get as an output the container repository URI, and, for some providers, the credentials for accessing the registry.</p>
 </div>
 <div class="paragraph">
 <p>A container image name generically has the following format:</p>
@@ -333,7 +333,7 @@ IMPORTANT: Docker Hub does not support multi-level image names.
 <div class="ulist">
 <ul>
 <li>
-<p><code>&lt;registry-url&gt;</code>: &lt;aws-account-id&gt;.dkr.ecr.&lt;region&gt;.amazonaws.com</p>
+<p><code>&lt;registry-url&gt;</code>: <code>&lt;aws-account-id&gt;.dkr.ecr.&lt;region&gt;.amazonaws.com</code></p>
 </li>
 <li>
 <p><code>&lt;namespace&gt;</code>: Previously chosen repository name.</p>
@@ -442,6 +442,42 @@ IMPORTANT: Docker Hub does not support multi-level image names.
 }</code></pre>
 </div>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>Enable user and password authentication on the registry with the following command:</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+Any <a href="https://docs.microsoft.com/en-us/azure/container-registry/container-registry-authentication?tabs=azure-cli">authentication option</a> that produces as a result a long-term user and password is valid. The least troublesome one follows.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="shell language-shell">   az acr update -n &lt;registry-name&gt; --admin-enabled true</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Retrieve credentials for accessing the registry with the following command:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="shell language-shell">   az acr credential show --name &lt;registry-name&gt;</code></pre>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_hangar.wiki_setup-container-image-registry.asciidoc_image-format">Image Format</h3>
@@ -452,7 +488,7 @@ IMPORTANT: Docker Hub does not support multi-level image names.
 <div class="ulist">
 <ul>
 <li>
-<p><code>&lt;registry-url&gt;</code>: &lt;registry-name&gt;.azurecr.io</p>
+<p><code>&lt;registry-url&gt;</code>: <code>&lt;registry-name&gt;.azurecr.io</code></p>
 </li>
 <li>
 <p><code>&lt;namespace&gt;/&lt;image-name&gt;</code>: Freely chosen project/image-name given by the user.</p>
@@ -623,7 +659,7 @@ IMPORTANT: Docker Hub does not support multi-level image names.
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-04-12 01:20:57 UTC
+Last updated 2022-04-12 15:25:46 UTC
 </sub></div>
 </div>
 </div>
