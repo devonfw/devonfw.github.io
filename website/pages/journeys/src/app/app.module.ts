@@ -1,14 +1,32 @@
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatListModule } from '@angular/material/list';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
 
+import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { HomeComponent } from './pages/home/home.component';
+import { DataComponent } from './pages/data/data.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    HomeComponent,
+    DataComponent
   ],
   imports: [
-    BrowserModule
+    BrowserAnimationsModule,
+    MatIconModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatListModule,
+    MatToolbarModule,
+    MatSidenavModule,
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]

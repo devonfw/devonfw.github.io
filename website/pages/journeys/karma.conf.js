@@ -25,7 +25,7 @@ module.exports = function (config) {
       suppressAll: true // removes the duplicated traces
     },
     coverageReporter: {
-      dir: require('path').join(__dirname, './coverage/devonfw-journey-visualization'),
+      dir: require('path').join(__dirname, './coverage/devon4ng-mat-layout'),
       subdir: '.',
       reporters: [
         { type: 'html' },
