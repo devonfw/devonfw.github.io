@@ -1,5 +1,11 @@
 # Changelog
 
+## [7.1.0] - 2022-04-20
+
+### Changed
+
+- Allow setting libc to glibc on non-glibc platform ([#176](https://github.com/prebuild/prebuild-install/issues/176)) ([`f729abb`](https://github.com/prebuild/prebuild-install/commit/f729abb)) (Joona Heinikoski).
+
 ## [7.0.1] - 2022-01-28
 
 ### Changed
@@ -76,6 +82,8 @@
 ### Changed
 
 - Replace `mkdirp` dependency with `mkdirp-classic` ([**@ralphtheninja**](https://github.com/ralphtheninja))
+
+[7.1.0]: https://github.com/prebuild/prebuild-install/releases/tag/v7.1.0
 
 [7.0.1]: https://github.com/prebuild/prebuild-install/releases/tag/v7.0.1
 
