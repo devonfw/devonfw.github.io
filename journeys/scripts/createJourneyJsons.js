@@ -9,25 +9,25 @@ fs.writeFileSync(path.join(journeyDir,"dummy","journey.json"), JSON.stringify({
         id: 1,
         title: "Architecture", //h1
         sections: [{
-            id: 2,
+            id: 12,
             title: "Key Principles", //h2
             sections:[{
-                id: 21,
+                id: 121,
                 title: "dummy title h3",
                 sections: [{
-                    id: 211,
+                    id: 1211,
                     title:"dummy title h5",
                     sections:[]
 
                 }]
             }]
         },{
-            id: 3,
+            id: 2,
             title: "Architecture Principles", //h2
             sections: []
         },
             {
-                id: 4,
+                id: 3,
                 title: "Application Architecture", //h2
                 sections: []
             }
@@ -47,7 +47,7 @@ fs.writeFileSync(path.join(journeyDir,"dummy","1.json"), JSON.stringify({
 }));
 
 
-fs.writeFileSync(path.join(journeyDir,"dummy","2.json"), JSON.stringify({
+fs.writeFileSync(path.join(journeyDir,"dummy","12.json"), JSON.stringify({
     title: "Key Principles",
     htmlContent: '<div class="sectionbody">\n' +
         '<div class="paragraph">\n' +
@@ -76,7 +76,7 @@ fs.writeFileSync(path.join(journeyDir,"dummy","2.json"), JSON.stringify({
         '</div>'
 }));
 
-fs.writeFileSync(path.join(journeyDir,"dummy","3.json"), JSON.stringify({
+fs.writeFileSync(path.join(journeyDir,"dummy","121.json"), JSON.stringify({
     title: "Architecture Principles",
     htmlContent: ' <div class="sectionbody">\n' +
         '<div class="paragraph">\n' +
@@ -122,7 +122,7 @@ fs.writeFileSync(path.join(journeyDir,"dummy","3.json"), JSON.stringify({
         '</div> '
 }));
 
-fs.writeFileSync(path.join(journeyDir,"dummy","4.json"), JSON.stringify({
+fs.writeFileSync(path.join(journeyDir,"dummy","1211.json"), JSON.stringify({
     title: "Application Architecture",
     htmlContent: '  <div class="sectionbody">\n' +
         '<div class="paragraph">\n' +
@@ -371,7 +371,7 @@ fs.writeFileSync(path.join(journeyDir,"dummy","4.json"), JSON.stringify({
         '</div>  '
 }));
 
-fs.writeFileSync(path.join(journeyDir,"dummy","21.json"), JSON.stringify({
+fs.writeFileSync(path.join(journeyDir,"dummy","2.json"), JSON.stringify({
     title: "21",
     htmlContent: '  <div class="sectionbody">\n' +
         '<div class="paragraph">\n' +
@@ -386,7 +386,7 @@ fs.writeFileSync(path.join(journeyDir,"dummy","21.json"), JSON.stringify({
 
 }))
 
-fs.writeFileSync(path.join(journeyDir,"dummy","211.json"), JSON.stringify({
+fs.writeFileSync(path.join(journeyDir,"dummy","3.json"), JSON.stringify({
     title: "211",
     htmlContent: '  <div class="sectionbody">\n' +
         '<div class="paragraph">\n' +
