@@ -12,4 +12,9 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  onLoading(journeyId: string) {
+    console.log(journeyId);
+    //this.store.dispatch(loadJourney({ journeyId }));
+  }
+
 }

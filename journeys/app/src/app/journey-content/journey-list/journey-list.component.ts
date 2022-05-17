@@ -1,41 +1,27 @@
-import { Component, OnInit } from '@angular/core';
-import { Journey } from '../journeys';
-import { JourneyService } from '../journey.service';
+import { Component, OnInit,  Output, EventEmitter } from '@angular/core';
+import { Journey } from '../journey';
+import { JourneyService } from '../../state/journeys/journey.service';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { loadJourney } from '../../state/journeys/journey.actions';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-journey-list',
   templateUrl: './journey-list.component.html',
   styleUrls: ['./journey-list.component.css']
 })
+
 export class JourneyListComponent implements OnInit {
-
-  selectedJourneyId: number = 0;
-  journeys: Journey[] = [];
-  journeysFetched:boolean = false;
-
-  constructor(private journeyService: JourneyService, private router: Router, private route: ActivatedRoute) { }
-
-  ngOnInit(): void {
-    //TODO 1.1:  nur einmaliges Laden der Daten + Loading Page darstellen solange Daten noch nicht angekommen sind.
-    this.fetchJourneys();
-    this.journeys = this.journeyService.getJourneys();
-    this.route.paramMap.subscribe((params: ParamMap) => {
-      let id = Number(params.get('journeyId'));
-      this.selectedJourneyId = id;
-      });
+  @Output() loadJourneyId: EventEmitter<any> = new EventEmitter<any>();
+  constructor(private store: Store<{JourneyState:any}> ,private journeyService: JourneyService, private router: Router, private route: ActivatedRoute) {
+    console.log(store.select("JourneyState"))
    }
 
-  fetchJourneys(): void {
-    this.journeyService.fetchJourneys().subscribe((journey) => {
-      this.journeys = journey;
-    });
+  ngOnInit(): void {
+
   }
 
-  onSelect(journey: Journey): void {
-    this.router.navigate([journey.id], {relativeTo: this.route})
   }
 
-  isSelected(journey: Journey) { return journey.id === this.selectedJourneyId; }
 
-}

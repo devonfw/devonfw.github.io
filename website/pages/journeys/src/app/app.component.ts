@@ -1,4 +1,12 @@
 import { Component } from '@angular/core';
+import { Store } from '@ngrx/store';
+import { getAppState } from './state/journeys/journey.selector';
+
+import {
+  loadJourney,
+  loadJourneySuccess,
+  loadJourneyFailure,
+} from './state/journeys/journey.actions';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +14,10 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'devon4ng-mat-layout';
+  title = 'journey';
+
+
+  constructor(
+    private store: Store
+  ) {}
 }
