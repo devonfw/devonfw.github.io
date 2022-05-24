@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2022-05-23 16:47:28 UTC">
+<meta name="author" content="Updated at 2022-05-24 16:43:24 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -533,7 +533,7 @@ gtag('consent', 'default', {
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2022-05-23 16:52:49 UTC</span><br>
+<span id="author" class="author">Updated at 2022-05-24 16:48:38 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -563,6 +563,10 @@ gtag('consent', 'default', {
 <li><a href="devonfw-guide_ide.wiki_cli.asciidoc.html#devonfw-guide_ide.wiki_build.asciidoc">build</a>
 </li>
 <li><a href="devonfw-guide_ide.wiki_cli.asciidoc.html#devonfw-guide_ide.wiki_docker.asciidoc">Docker</a>
+</li>
+<li><a href="devonfw-guide_ide.wiki_cli.asciidoc.html#ide.wiki_devonfw-guide_ide.wiki_docker-desktop-alternative.asciidoc">Introduction</a>
+</li>
+<li><a href="devonfw-guide_ide.wiki_cli.asciidoc.html#ide.wiki_devonfw-guide_ide.wiki_docker-desktop-alternative.asciidoc_2">Why we chose Rancher Desktop as Docker-Desktop alternative</a>
 </li>
 <li><a href="devonfw-guide_ide.wiki_cli.asciidoc.html#devonfw-guide_ide.wiki_eclipse.asciidoc">eclipse</a>
 </li>
@@ -815,10 +819,12 @@ It will auto-detect your build-system (via existence of files like <code>pom.xml
 <h4 id="devonfw-guide_ide.wiki_docker.asciidoc">Docker</h4>
 <div class="paragraph">
 <p>The Docker commandlet allows to install and use <a href="https://www.docker.com/">Docker</a>.
-On Windows <a href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">WSL 2</a>(Windows Subsystem for Linux) has to be installed properly as a prerequisite.</p>
-</div>
-<div class="paragraph">
-<p><strong>ATTENTION:</strong>
+On Windows <a href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">WSL 2</a>(Windows Subsystem for Linux) has to be installed properly as a prerequisite.
+It also offers the installation of <a href="https://rancherdesktop.io/">Rancher Desktop</a>, which works on Windows, Mac and Linux.
+To run the tools installed and managed by Rancher Desktop it is necessary to have Rancher Desktop up and running.
+To assure that you are able to use these tools directly after startup, you can add Rancher Desktop to the startup programs
+of your Operating System. Such instructions will be given below inside the sections for Windows, Mac and Linux.
+<strong>ATTENTION:</strong>
 Currently this feature is new and therefore experimental.
 It may change in incompatible ways in the next releases until we reach a stable state.
 We hope that all is working fine for you.
@@ -854,9 +860,22 @@ In case you are facing issues (e.g. network problems with Cisco AnyConnect, etc.
 <div class="sect4">
 <h5 id="devonfw-guide_ide.wiki_docker.asciidoc_setup">setup</h5>
 <div class="paragraph">
-<p>The Docker commandlet will install Docker automatically.
-Please note that besides the sandbox concept of devonfw-ide this is a global installation on your system.
-When uninstalling devonfw-ide, you may have to manually uninstall Docker and Kubernetes if you do not need it anymore.</p>
+<p>The Docker commandlet will install Docker Desktop or Rancher Desktop automatically.
+This depends on how the variable DOCKER_EDITION was set. We chose to set Rancher Desktop as standard
+for our installation, due to it being license free compared to Docker Desktop while offering a similar tool set (please read the document <a href="#devonfw-guide_ide.wiki_docker-desktop-alternative.asciidoc">docker-desktop-alternative</a> motivating why we added Rancher Desktop to the docker commandlet).
+Docker Desktop can still be used as before, by setting the variable DOCKER_EDITION equal to "DOCKERDESKTOP".
+This can be done by your projects ide-admin in the <a href="#devonfw-guide_ide.wiki_usage.asciidoc_developer">settings file</a>. If you want to switch from Rancher Desktop to Docker Desktop, then add a line with the following content
+"DOCKER_EDITION=DOCKERDESKTOP"
+(without the quotes around the allocation) to the file devon.properties located at the path ${DEVON_IDE_HOME}/conf/devon.properties.</p>
+</div>
+<div class="paragraph">
+<p>After successfull installation please start Rancher Desktop and go to the menu point "Kubernetes Settings". Under "Container Runtime" choose dockerd(moby) to enable the docker-cli. If you use Windows, then make sure to go to the Settings named "WSL Integration".
+There you can choose the WSL Shells you want Rancher Desktop to work on. Besides that the tools like docker or kubectl should
+directly work with CMD or Powershell.</p>
+</div>
+<div class="paragraph">
+<p>Please note that besides the sandbox concept of devonfw-ide this is a global installation on your system.
+When uninstalling devonfw-ide, you may have to manually uninstall Docker and Kubernetes, or Rancher Desktop if you do not need it anymore. At least uninstalling Rancher Desktop should leave way less remains if you did not install one of the related software  Rancher Desktop offers separately.</p>
 </div>
 <div class="sect5">
 <h6 id="devonfw-guide_ide.wiki_docker.asciidoc_requirements">requirements</h6>
@@ -881,7 +900,10 @@ If you use Docker and Kubernetes on your local machine on a daily basis this mak
 <div class="sect5">
 <h6 id="devonfw-guide_ide.wiki_docker.asciidoc_windows-and-macos">Windows and macOS</h6>
 <div class="paragraph">
-<p>To enable or disable autostart, you can launch Docker Desktop on Windows or MacOS got to the <code>Preferences</code> (gear icon in the title bar). Then in the <code>General</code> tab you can check or uncheck the option <code>Start Docker Desktop when you login</code> (see also <a href="https://docs.docker.com/docker-for-windows/#general">here</a>). When autostart is disabled and you launch Docker Desktop it will notice and ask your to start the service or do this automatically for you.
+<p>For Windows 10 you can use the following <a href="https://www.dell.com/support/kbdoc/de-de/000124550/how-to-add-app-to-startup-in-windows-10">Instructions on how to set startup programs for Windows 10</a>, so that Rancher Desktop starts with your OS.</p>
+</div>
+<div class="paragraph">
+<p>To enable or disable autostart, you can launch Docker Desktop on Windows or MacOS go to the <code>Preferences</code> (gear icon in the title bar). Then in the <code>General</code> tab you can check or uncheck the option <code>Start Docker Desktop when you login</code> (see also <a href="https://docs.docker.com/docker-for-windows/#general">here</a>). When autostart is disabled and you launch Docker Desktop it will notice and ask your to start the service or do this automatically for you.
 On Windows you can also manually tweak this:</p>
 </div>
 <div class="ulist">
@@ -909,7 +931,10 @@ On Windows you can also manually tweak this:</p>
 <div class="sect6">
 <h7 id="devonfw-guide_ide.wiki_docker.asciidoc_mac-a1">Mac A1</h7>
 <div class="paragraph">
-<p>In case you have a new Mac with A1 CPU, we automatically download and install the according ARM version of Docker Desktop for macOS.
+<p>Have a look at the <a href="https://www.makeuseof.com/tag/add-remove-delay-startup-items-mac/">Instructions on how to set startup programs for MacOS</a> to make Rancher Desktop run directly after starting up your OS.</p>
+</div>
+<div class="paragraph">
+<p>In case you have a new Mac with A1 CPU, we automatically download and install the according ARM version of Docker Desktop or Rancher Desktop for macOS.
 However, if you use Docker and search for images you may end up with errors like:</p>
 </div>
 <div class="listingblock">
@@ -925,33 +950,19 @@ However, if you use Docker and search for images you may end up with errors like
 <div class="sect5">
 <h6 id="devonfw-guide_ide.wiki_docker.asciidoc_linux">Linux</h6>
 <div class="paragraph">
-<p>There is no Docker Desktop for Linux.
-As Docker initially comes from the Linux world, it is easy to set it up on a Linux machine and use it from the commandline.
-Therefore we do not install a GUI for you in case you are a Linux user.
-In case you need a GUI for Docker and Kubernetes on Linux you can choose from the following options:</p>
+<p>Docker Desktop isn’t available for Linux, but Rancher Desktop can be used as compareable alternative as mentioned before.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://dockstation.io/">DockStation</a></p>
-</li>
-<li>
-<p><a href="https://portainer.io/">Portainer</a></p>
-</li>
-<li>
-<p><a href="https://kitematic.com/">Kitematic</a></p>
-</li>
-<li>
-<p><a href="https://shipyard-project.com/">Shipyard</a></p>
-</li>
-</ul>
+<div class="paragraph">
+<p>To make the usage of Rancher Desktop more comfortable and reliable let your operating system run it after starting up your system.
+On many Linux distributions you can just go to your menu (usually by clicking the icon at your screens left bottom), type "startup" and start your systems GUI-startup manager, if popping up. At the following website you can find some <a href="https://www.simplified.guide/linux/automatically-run-program-on-startup">examples or other options on how to set startup programs for some Linux distributions</a>.</p>
 </div>
 </div>
 </div>
 <div class="sect4">
 <h5 id="devonfw-guide_ide.wiki_docker.asciidoc_usage">usage</h5>
 <div class="paragraph">
-<p>Once installed via setup, you can run Docker directly from any shell of your OS directly.
+<p>Once installed via setup, you can run Docker from any shell of your OS directly. If you use Rancher Desktop just
+make sure that Rancher Desktop runs in the background.
 Run <code>docker help</code> to get started and use the online documentations and resources on the web to get familiar with Docker.
 It is not our intention to repeat this here.</p>
 </div>
@@ -960,6 +971,93 @@ It is not our intention to repeat this here.</p>
 </div>
 <!-- toc disabled -->
 </div>
+</div>
+<div class="sect3">
+<h4 id="ide.wiki_devonfw-guide_ide.wiki_docker-desktop-alternative.asciidoc">Introduction</h4>
+<div class="paragraph">
+<p>As <a href="https://www.docker.com/blog/updating-product-subscriptions/">Docker Desktop has changed its licensing</a> we have been looking for a license-free alternative.
+This document gives a rationale why we have choosen <a href="https://rancherdesktop.io/">Rancher Desktop</a> as alternative to setup and manage <a href="https://www.docker.com/">docker</a> and <a href="https://kubernetes.io/">kubernetes</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="ide.wiki_devonfw-guide_ide.wiki_docker-desktop-alternative.asciidoc_2">Why we chose Rancher Desktop as Docker-Desktop alternative</h4>
+<div class="paragraph">
+<p>Our main criteria for tool comparision were:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The softwares licence</p>
+</li>
+<li>
+<p>Match of toolset compared to Docker Desktop</p>
+</li>
+<li>
+<p>Complexity of installing and setting up the toolset</p>
+</li>
+<li>
+<p>Stability of the solution</p>
+</li>
+<li>
+<p>Future-proofness (community activitiy, regular updates and fixes)</p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-cols stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"></th>
+<th class="tableblock halign-left valign-top"><strong>Rancher Desktop</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Podman-Minikube</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Others</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Pro</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- It comes very close to what Docker-Desktop offers, as it installs most of Docker-Desktop’s cli-tools  → Almost frictionless shift<br>
+- Installs and sets up a good toolset including typical docker compnents as well as kubernetes<br>
+- Makes installation and setup very easy<br>
+- Cloud tools like Helm or Terraform are usable<br>
+- Works on macOS, Windows and Linux<br>
+- Comes with a GUI<br>
+- Easy shift between Kubernetes versions via GUI<br>
+- Works with VPN when using <a href="https://github.com/sakai135/wsl-vpnkit/">wsl-vpnkit</a><br>
+- Licence free</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- Works deamon less, also OCI-Containers (like Docker)<br>
+- Root less Containers, giving security improvements over Docker<br>
+- Not that hard to install and setup<br>
+- Kubernetes usable locally<br>
+- Licence free</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Interesting components:<br>
+- e.g. Lazydocker gives a pretty and compact graphical component<br>
+- e.g. MicroK8s as a lightweight, fast version of Kubernetes<br></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Contra</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-does not have all features Docker Desktop has, like image security scans</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- Has most usual Docker-commands, but not all of them<br>
+- For ongoing Docker-projects might not be worth it, because of some differences to Docker → Porblems during software migration<br>
+- GUI less<br>
+- More work when it comes to implementation<br>
+- minikube only gives us one cluster<br>
+- Does not have all features Docker Desktop has, like image security scans<br></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- In some cases not available for all OS<br>
+- Software often just one component of what we need (like Kind for running Clusters using Docker; Buildah for building Containers…​), therefore need to mix tools<br>
+- Especially for a manual mix of tools severe implementation/maintenance increase possible<br>
+- More error-prone, particularly when using a rather uncommon mix of tools<br>
+- Unclear future of some projects<br>
+- Some options were bleeding edge</p></td>
+</tr>
+</tbody>
+</table>
+<!-- toc disabled -->
 </div>
 <div class="sect3">
 <h4 id="devonfw-guide_ide.wiki_eclipse.asciidoc">eclipse</h4>
@@ -2489,7 +2587,7 @@ plugin_active=true</code></pre>
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-05-23 16:44:19 UTC
+Last updated 2022-05-24 16:40:17 UTC
 </sub></div>
 
 
