@@ -4,6 +4,7 @@ import { loadJourney, loadJourneySuccess, loadJourneyFailure } from '../journey.
 export default function uiReducer(state, action) {
   switch (action.type) {
     case loadJourney.type: {
+      console.log("journeyuireducer")
       return {
         ...state, viewStatus: ViewStatus.Loading,
       }

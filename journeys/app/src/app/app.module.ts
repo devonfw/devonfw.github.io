@@ -11,8 +11,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './pages/home/home.component';
 import { DataComponent } from './pages/data/data.component';
-import { JourneyRoutingModule } from './journey-content/journey-routing.module';
-import { JourneyContentModule } from './journey-content/journey-content.module';
 import { HttpClientModule } from '@angular/common/http';
 import { PageNotFoundComponent } from './journey-content/page-not-found/page-not-found.component';
 import { MessagesComponent } from './messages/messages.component';
@@ -25,10 +23,11 @@ import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 import { environment } from '../environments/environment';
 import { EffectsModule } from '@ngrx/effects';
 import { JourneyEffect } from './state/journeys/journey.effect';
-import appReducer from './state/journeys//journey.reducer';
-import { AppState, DataState } from './state/app.state';
-import {getAppState} from './state/journeys/journey.selector'
-
+import { appReducer } from './state/mainreducer';
+import { StepDetailComponent } from './journey-content/step-detail/step-detail.component'
+import { StepComponent } from './journey-content/step/step.component'
+import { StepService } from './state/steps/step.service';
+import { StepEffect } from './state/steps/step.effect';
 
 @NgModule({
   declarations: [
@@ -39,10 +38,11 @@ import {getAppState} from './state/journeys/journey.selector'
     DataComponent,
     JourneyDetailComponent,
     JourneyListComponent,
+    StepDetailComponent,
+    StepComponent
   ],
   imports: [
     BrowserModule,
-    JourneyRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
     MatIconModule,
@@ -53,16 +53,15 @@ import {getAppState} from './state/journeys/journey.selector'
     MatSidenavModule,
     AppRoutingModule,
     CommonModule,
-    JourneyRoutingModule,
-    StoreModule.forRoot({ journeyData: appReducer }),
+    StoreModule.forRoot({ appState: appReducer }),
     StoreDevtoolsModule.instrument({
       maxAge: 25,
       logOnly: environment.production,
     }),
-    EffectsModule.forRoot([JourneyEffect])
+    EffectsModule.forRoot([JourneyEffect, StepEffect])
 
   ],
-  providers: [JourneyService],
+  providers: [JourneyService, StepService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

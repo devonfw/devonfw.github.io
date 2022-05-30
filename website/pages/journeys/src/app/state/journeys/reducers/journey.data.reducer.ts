@@ -2,11 +2,16 @@ import { loadJourneySuccess } from '../journey.actions';
 
 
 
-export default function dataReducer(state, action) {
+export default function journeydataReducer(state, action) {
   switch (action.type) {
     case loadJourneySuccess.type: {
       return {
-        ...state, title: action.payload.title, section: action.payload.sections,
+        ...state,
+        
+          title: action.payload.title,
+          journeyId: action.payload.title.replace(/\s/g, ""),
+          sections: action.payload.sections,
+        
       }
     }
     default:

@@ -15,8 +15,8 @@ import { Observable } from 'rxjs';
 export class JourneyListComponent implements OnInit {
   @Output() loadJourneyId: EventEmitter<any> = new EventEmitter<any>();
   constructor(private store: Store<{JourneyState:any}> ,private journeyService: JourneyService, private router: Router, private route: ActivatedRoute) {
-    console.log(store.select("JourneyState"))
-   }
+
+  }
 
   ngOnInit(): void {
 

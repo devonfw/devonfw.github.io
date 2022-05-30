@@ -1,5 +1,5 @@
 import { createAction, props } from '@ngrx/store';
-import { Journey, Step } from "../../journey-content/journey"
+import { Journey } from "../../journey-content/journey"
 
 export const loadJourney = createAction(
     '[Journey] Load Journey',

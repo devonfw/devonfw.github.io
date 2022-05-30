@@ -1,11 +1,10 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
-import { DataState, ViewStatus, UiState, AppState } from '../app.state';
-import * as fromStore from './journey.reducer';
+import { AppState } from '../app.state';
 
-export const getAppState = createFeatureSelector<AppState>("journeyData");
+export const getAppState = createFeatureSelector<AppState>("appState");
 
 export const getDataState = createSelector(
   getAppState,
-  (state: AppState) => {return state.dataState}
+  (state: AppState) => {return state.dataState.journeyData}
 )
 

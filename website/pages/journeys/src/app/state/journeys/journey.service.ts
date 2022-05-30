@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Observable, throwError, catchError, tap} from 'rxjs';
-import { Journey, Step} from '../../journey-content/journey';
+import { Observable, throwError,} from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { DataState, AppState } from '../app.state';
 import { Store } from '@ngrx/store';
+import { Journey } from "../../journey-content/journey"
+
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +14,7 @@ export class JourneyService {
   constructor(private http: HttpClient, private store: Store<AppState>) { }
 
   getJourney() {
-    return this.http.get('../../../assets/dummy.json').pipe(
-      tap(console.log));
+    return this.http.get('../../../assets/dummy.json') as Observable<Journey>
 
   }
 
