@@ -534,6 +534,21 @@ For this step <em>Solicitor</em> only provides a framework / tool to support the
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">the <a href="https://github.com/package-url/purl-spec">Package URL</a> as an technology neutral component identifier</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">noticeFileUrl</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">URL referencing a NOTICE file to be included in the attributions (optional, see <a href="#devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_experimental-scancode-integration">Experimental Scancode Integration</a>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">noticeFileContent</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">resolved content of noticeFileUrl (optional, see <a href="#devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_experimental-scancode-integration">Experimental Scancode Integration</a>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">copyrights</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Copyright statements found in the components metadata / code (optional, see <a href="#devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_experimental-scancode-integration">Experimental Scancode Integration</a>)</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -567,6 +582,11 @@ For this step <em>Solicitor</em> only provides a framework / tool to support the
 <td class="tableblock halign-left valign-top"><p class="tableblock">trace</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">detail info of history of this data record</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">origin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">origin of the raw license data; either the lowercase classname of the Reader or "scancode" if licensedata was taken from scancode results</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">specialHandling</p></td>
@@ -621,6 +641,11 @@ For this step <em>Solicitor</em> only provides a framework / tool to support the
 <td class="tableblock halign-left valign-top"><p class="tableblock">normalizedLicenseUrl</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">URL pointing to a normalized form of the license</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">normalizedLicenseContent</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">resolved content of normalizedLicenseUrl</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">normalizedLicenseType</p></td>
@@ -1072,10 +1097,12 @@ They are defined as a sequence of rule templates and corresponding XLS (or CSV) 
 <pre>  "rules" : [ {
     "type" : "dt", <i class="conum" data-value="1"></i><b>(1)</b>
     "optional" : false, <i class="conum" data-value="2"></i><b>(2)</b>
-    "ruleSource" : "classpath:samples/LicenseAssignmentSample.xls", <i class="conum" data-value="3"></i><b>(3)</b> <i class="conum" data-value="7"></i><b>(7)</b>
-    "templateSource" : "classpath:com/.../rules/rule_templates/LicenseAssignment.drt", <i class="conum" data-value="4"></i><b>(4)</b> <i class="conum" data-value="7"></i><b>(7)</b>
-    "ruleGroup" : "LicenseAssignment", <i class="conum" data-value="5"></i><b>(5)</b>
-    "description" : "setting license in case that no one was detected" <i class="conum" data-value="6"></i><b>(6)</b>
+    "ruleSource" : "classpath:samples/LicenseAssignmentV2Sample.xls", <i class="conum" data-value="3"></i><b>(3)</b> <i class="conum" data-value="9"></i><b>(9)</b>
+    "templateSource" : "classpath:com/.../rules/rule_templates/LicenseAssignmentV2.drt", <i class="conum" data-value="4"></i><b>(4)</b> <i class="conum" data-value="9"></i><b>(9)</b>
+    "ruleGroup" : "LicenseAssignmentV2", <i class="conum" data-value="5"></i><b>(5)</b>
+    "description" : "setting license in case that no one was detected", <i class="conum" data-value="6"></i><b>(6)</b>
+    "deprecationWarnOnly" : true, <i class="conum" data-value="7"></i><b>(7)</b>
+    "deprecationDetails" : "This decision table should be migrated to ..." <i class="conum" data-value="8"></i><b>(8)</b>
   },
   .
   .
@@ -1122,6 +1149,15 @@ resources by appending suffixes <em>xls</em> and <em>csv</em>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>flag to control which level of deprecation (see <a href="#devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_feature-deprecation">Feature Deprecation</a>) applies to this rule group; optional and only applicable if <code>deprecationDetails</code> is also defined.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>optional value; if set then the use of the defined decision table is deprecated; the
+given string will be given as part of the log message</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
 <td><em>placeholder patterns might be used here</em></td>
 </tr>
 </table>
@@ -1996,6 +2032,9 @@ The former prefix notation of <code>REGEX:</code> is deprecated and should no lo
 <div class="paragraph">
 <p>With this decision table is is possible to explicitely assign NormalizedLicenses to components. This will be used if the imported RawLicense data is either incomplete or incorrect. Items which have been processed by rules of this group will not be reprocessed by the next rule group.</p>
 </div>
+<div class="paragraph">
+<p>Decision table data: <code>LicenseAssignmentV2*.xls/csv</code></p>
+</div>
 <div class="ulist">
 <ul>
 <li>
@@ -2019,6 +2058,9 @@ The former prefix notation of <code>REGEX:</code> is deprecated and should no lo
 </li>
 <li>
 <p><code>ApplicationComponent.version</code> <span class="icon"><i class="icon-magic"></i></span></p>
+</li>
+<li>
+<p><code>RawLicense.origin</code> <span class="icon"><i class="icon-magic"></i></span> (new with "V2" version of rules)</p>
 </li>
 <li>
 <p><code>RawLicense.declaredLicense</code> <span class="icon"><i class="icon-magic"></i></span></p>
@@ -2056,11 +2098,30 @@ The former prefix notation of <code>REGEX:</code> is deprecated and should no lo
 <div class="paragraph">
 <p>All RawLicenses which are in scope of fired rules will be marked so that they do not get reprocessed by the following decision table.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+With the "V2" version of rules the additional field/condition <code>origin</code> was introduced.
+This can be used to fire rules only if the raw license data was obtained from a specific data source.
+Its primary intention is to distinguish between data obtained via normal readers or from Scancode data.
+Decision table data for the new data structure is named <code>LicenseAssignmentV2*.xls/csv</code>.
+The old decision table structure <code>LicenseAssignment*.xls/csv</code> is deprecated but for compatibility reasons still supported.
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect3">
 <h4 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_decision-table-detecting-licenses-from-imported-data">6.1.2. Decision Table: Detecting Licenses from Imported Data</h4>
 <div class="paragraph">
 <p>With this decision table the license info from the RawLicense is mapped to the NormalizedLicense. This is based on the name and/or URL of the license as imported via the readers.</p>
+</div>
+<div class="paragraph">
+<p>Decision table data: <code>LicenseNameMapping*.xls/csv</code></p>
 </div>
 <div class="ulist">
 <ul>
@@ -2109,6 +2170,9 @@ The former prefix notation of <code>REGEX:</code> is deprecated and should no lo
 <h4 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_choosing-specific-license-in-case-of-multi-licensing">6.2.1. Choosing specific License in case of Multi-Licensing</h4>
 <div class="paragraph">
 <p>This group of rules has the speciality that it might match to a group of NormalizedLicenses associated to an ApplicationComponent. In case that multiple licenses are associated to an ApplicationComponent one of them might be selected as "effective" license and the others might be marked as <code>Ignored</code>.</p>
+</div>
+<div class="paragraph">
+<p>Decision table data: <code>MultiLicenseSelection*.xls/csv</code></p>
 </div>
 <div class="ulist">
 <ul>
@@ -2167,6 +2231,9 @@ The former prefix notation of <code>REGEX:</code> is deprecated and should no lo
 <div class="paragraph">
 <p>The second decision table in this group is used to define the <code>effectiveNormalizedLicense</code> (if not already handled by the decision table before).</p>
 </div>
+<div class="paragraph">
+<p>Decision table data: <code>LicenseSelection*.xls/csv</code></p>
+</div>
 <div class="ulist">
 <ul>
 <li>
@@ -2224,6 +2291,9 @@ The former prefix notation of <code>REGEX:</code> is deprecated and should no lo
 <div class="paragraph">
 <p>Within the pre evaluation the license info is checked against standard OSS usage policies. This roughly qualifies the usage and might already determine licenses which are OK in any case or which need to be further evaluated. Furtheron they qualify whether the license text or source code needs to be included in the distribution. The rules in this decision table are only based on the <code>effectiveNormalizedLicense</code> and do not consider any project, application of component information.</p>
 </div>
+<div class="paragraph">
+<p>Decision table data: <code>LegalPreEvaluation*.xls/csv</code></p>
+</div>
 <div class="ulist">
 <ul>
 <li>
@@ -2272,6 +2342,9 @@ The former prefix notation of <code>REGEX:</code> is deprecated and should no lo
 <div class="paragraph">
 <p>The decision table for final legal evaluation defines all rules which are needed
 to create the result of the legal evaluation. Rules here might be general for all projects or even very specific to a project if the rule can not be applied to other projects.</p>
+</div>
+<div class="paragraph">
+<p>Decision table data: <code>LegalEvaluation*.xls/csv</code></p>
 </div>
 <div class="ulist">
 <ul>
@@ -2840,7 +2913,265 @@ wrong/misleading output) the first stage of deprecation will be skipped.
 <li>
 <p>"REGEX:" prefix notation in rule templates (use "(REGEX)" suffix instead); Stage 1 from Version 1.3.0 on; see <a href="https://github.com/devonfw/solicitor/issues/78" class="bare">https://github.com/devonfw/solicitor/issues/78</a></p>
 </li>
+<li>
+<p>Use of <code>LicenseAssignmentProject.xls</code> decision table (use <code>LicenseAssignmentV2Project.xls</code> instead); Stage 1 from Version 1.4.0 on</p>
+</li>
 </ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_experimental-scancode-integration">11. Experimental Scancode Integration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Starting from version 1.4.0 <em>Solicitor</em> can be integrated with the tool <a href="https://github.com/nexB/scancode-toolkit">ScanCode</a> to include detailed information gathered from
+the "deep license scan" performed by ScanCode. This includes detected Licenses, Copyrights and Notice-Files.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+The current integration with ScanCode is experimental: The used ScanCode parameters, interfacing and curations logic and all parts of the data persistence are experimental and thus might result in insufficient quality of results. The current workflow and implementation is subject to change in future versions without further notice.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_general-workflow">11.1. General workflow</h3>
+<div class="paragraph">
+<p>The general workflow when integrating with ScanCode consists of the following 3 steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Execute <em>Solicitor</em> in a "classic" way i.e. just based on the data provided via the Readers as described in
+<a href="#devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_reading-license-information-with-readers">Reading License Information with Readers</a>. Besides the normal reports/documents generated this will also
+create scripts for downloading the needed OSS source codes and run Scancode.</p>
+</li>
+<li>
+<p>Download source codes and run ScanCode by executing the generated scripts. The downloadad sources and ScanCode results will be saved to a directory tree in the local filesytem.</p>
+</li>
+<li>
+<p>Execute <em>Solicitor</em> a second time. For all ApplicationComponents where ScanCode information is available
+(stored in the local directory tree) the license data as obtained from the Readers is replaced by this information. The data model is enriched with the found copyright and notice file information. Reports (see <a href="#devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_reporting-and-creating-output-documents">Reporting and Creating output documents</a>) are now based on the ScanCode data (where available).</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_prerequisites">11.2. Prerequisites</h3>
+<div class="sect3">
+<h4 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_bash">11.2.1. Bash</h4>
+<div class="paragraph">
+<p>The scripts generated by <em>Solicitor</em> to download sources and run ScanCode are in Bash syntax.
+So either run it on a system using natively Bash (linux) or install an appropriate environment (e.g. Git Bash) if you are using a windows environment.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_scancode">11.2.2. ScanCode</h4>
+<div class="paragraph">
+<p>Download and install ScanCode from <a href="https://github.com/nexB/scancode-toolkit/releases" class="bare">https://github.com/nexB/scancode-toolkit/releases</a>.
+Make sure that the executable is included in the search PATH for executables.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_activate-feature">11.2.3. Activate feature</h4>
+<div class="paragraph">
+<p>As the ScanCode integration is still experimental it is currently deactivated by default.
+To enable it set system property <code>solicitor.feature-flag.scancode=true</code>.
+(See <a href="#devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_built-in-default-properties">Built in Default Properties</a> for information how to do so.)
+If this feature flag is not activated then <em>Solicitor</em> will not try to attempt to read ScanCode information from the local file system.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_detailed-workflow">11.3. Detailed workflow</h3>
+<div class="sect3">
+<h4 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_solicitor-1st-run">11.3.1. Solicitor 1st run</h4>
+<div class="paragraph">
+<p>Execute <em>Solicitor</em> in a classic way. As part of the report creation step this will generate two scripts:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>output/scancode_PROJECTNAME.sh</code> (for downloading the sources, also calls <code>scancodeScan.sh</code>)</p>
+</li>
+<li>
+<p><code>output/scancodeScan.sh</code> (for running ScanCode on the downloaded sources)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Scripts will include all ApplicationComponents with exception of those where <code>normalizedLicenseType</code> was set to <code>COMMERCIAL</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_download-sources-and-run-scancode">11.3.2. Download Sources and run Scancode</h4>
+<div class="paragraph">
+<p>Change to directory <code>output</code> and execute <code>sh scancode_PROJECTNAME.sh</code>.
+This will download all sources and process them via ScanCode.
+This might take several hours to complete.
+Results are stored in subdirectory <code>Source</code> of the directory <code>output</code> and is organized in a tree structure given by the <a href="https://github.com/package-url/purl-spec">PackageURL</a> of the ApplicationComponents.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_solicitor-2nd-run">11.3.3. Solicitor 2nd run</h4>
+<div class="paragraph">
+<p>Execute <em>Solicitor</em> a second time.
+After reading the component/license information from the Readers (but before starting the rule engine)
+<em>Solicitor</em> will try to look up ScanCode information from the directory tree in <code>output/Sources</code> for all processed ApplicationComponents. If information is found for an ApplicationsComponent the following is done:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>License information (including URL of license text) as obtained from the Readers is replaced by the license info found by ScanCode</p>
+</li>
+<li>
+<p>Copyrights are taken from ScanCode results</p>
+</li>
+<li>
+<p>Info on NOTICE file is taken from the ScanCode results</p>
+</li>
+<li>
+<p>If the ScanCode results contain information about a project URL then this is stored as <code>ossHomepage</code></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_output">11.3.4. Output</h4>
+<div class="paragraph">
+<p>Main target of the additional information obtained from ScanCode is currently the new report <code>Attributions_PROJECTNAME.html</code> which lists</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>all ApplicationComponents (excluding those which are not OSS licensed)</p>
+</li>
+<li>
+<p>with all found copyrights</p>
+</li>
+<li>
+<p>and all licenses</p>
+</li>
+<li>
+<p>including all different license texts</p>
+</li>
+<li>
+<p>and contents of all found NOTICE files</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_correcting-data">11.4. Correcting data</h3>
+<div class="paragraph">
+<p>The data obtained from ScanCode might be affected by false positives (wrongly detected a license or copyright) or false negatives (missed to detect a license or copyright).
+To compensate such defects there are two mechanisms:
+Applying Curation information from a "curations" file or changing the License information via the decision table rules.</p>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_curations-file">11.4.1. Curations file</h4>
+<div class="paragraph">
+<p>To define curations you might create a file <code>output/curations.yaml</code> containing the following structure:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="yaml language-yaml">artifacts:
+  - name: pkg/npm/@somescope/somepackage/1.2.3                  <i class="conum" data-value="1"></i><b>(1)</b>
+    url: https://github.com/foo/bar                             <i class="conum" data-value="2"></i><b>(2)</b>
+    licenses:                                                   <i class="conum" data-value="3"></i><b>(3)</b>
+      - license: MIT                                            <i class="conum" data-value="4"></i><b>(4)</b>
+        url: https://raw.githubusercontent.com/foo/bar/LICENSE  <i class="conum" data-value="5"></i><b>(5)</b>
+    copyrights:                                                 <i class="conum" data-value="6"></i><b>(6)</b>
+      - (c) 2021 Donald Duck                                    <i class="conum" data-value="7"></i><b>(7)</b>
+      - "(c) 2019 Mickey Mouse &lt;http://mickey.mouse&gt;"           <i class="conum" data-value="8"></i><b>(8)</b>
+  - name: pkg/npm/@anotherscope/anotherpackage/4.5.6            <i class="conum" data-value="9"></i><b>(9)</b>
+.
+.
+.</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Path of the package information as used in the file tree. Derived from the PackageURL.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>URL of the project, will be stored as <code>ossHomepage</code>. (Optional: no change if not existing.)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Licenses to set. Optional. If defined then all found licenses will be replaced by the list of licenses given here.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>SPDX identifier of license.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>URL pointing to license text.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Copyrights to set. Optional. If defined then all found copyrights will be replaced by the list of copyrights given here.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>A single copyright.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>Another copyright. Note that due to YAML syntax any string containing <code>:</code> needs to be enclosed with parantheses</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="9"></i><b>9</b></td>
+<td>Further packages to follow.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_decision-table-rules">11.4.2. Decision table rules</h4>
+<div class="paragraph">
+<p>As for license information obtained from the Readers the license information from ScanCode can also be altered using decision table rules. A new attribute <code>origin</code> was introduced in the <code>RawLicense</code> entity as well as condition field in decision table <code>LicenseAssignmentV2*.xls/csv</code>. The <code>origin</code> attribute in <code>Rawlicense</code> either contains the string <code>scancode</code> if the license information came from ScanCode or it contains the (lowercase) class name of the used Reader.</p>
+</div>
+<div class="paragraph">
+<p>Using the <a href="#devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_extended-comparison-syntax">Extended comparison syntax</a> it is possible to qualify whether a rule should apply for licenses found by ScanCode or not:</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Value of condition Origin</th>
+<th class="tableblock halign-left valign-top">rule applies for &#8230;&#8203;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>scancode</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#8230;&#8203; licenses obtained from ScanCode information</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>NOT:scancode</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#8230;&#8203; licenses obtained from normal Readers</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>(empty)</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#8230;&#8203; in both cases</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
@@ -2855,7 +3186,7 @@ of the <em>Solicitor</em> configuration file which will be used if the project s
 <div class="listingblock">
 <div class="title">Default Configuration</div>
 <div class="content">
-<pre class="highlight"><code class="json language-json">Unresolved directive in master-solicitor.asciidoc - include::files/solicitor_base.cfg[lines=23..169]</code></pre>
+<pre class="highlight"><code class="json language-json">Unresolved directive in master-solicitor.asciidoc - include::files/solicitor_base.cfg[lines=23..220]</code></pre>
 </div>
 </div>
 </div>
@@ -2922,11 +3253,11 @@ Application, OSS Name/Product, OSS ArtifactId, OSS Version, Effective Normalized
 </div>
 </div>
 <div class="sect2">
-<h3 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_scancodedownloadscript.vm">C.6. ScancodeDownloadScript.vm</h3>
+<h3 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_scancodescript.vm">C.6. ScancodeScript.vm, ScancodeScanScript.vm</h3>
 <div class="paragraph">
-<p>This template creates a script file for using <a href="https://github.com/nexB/scancode-toolkit">ScanCode</a> to create a JSON document which contains copyright information (statements, holders, authors) about each artifact within a project. Copyright information
-is displayed on file level. The output format being a JSON allows for further usage and processing as we store it in a valid syntax with an array of artifacts that contain all infos.
-Usage information can be found in the created "scancode_projectname.sh" script after running solicitor.</p>
+<p>These templates create script files for downloading package sources and using <a href="https://github.com/nexB/scancode-toolkit">ScanCode</a> to do a "deep license scan"
+for finding licenses, copyright information (statements, holders, authors)
+and NOTICE files for each artifact within a project. See <a href="#devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_experimental-scancode-integration">Experimental Scancode Integration</a>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -2935,10 +3266,17 @@ Usage information can be found in the created "scancode_projectname.sh" script a
 <i class="icon-note" title=""></i>
 </td>
 <td class="content">
-This report is an experimental feature and might be changed or removed in future versions without any notice.
+Generating these scripts is an experimental feature and might be changed or removed in future versions without any notice.
 </td>
 </tr>
 </table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_attributions.vm">C.7. Attributions.vm</h3>
+<div class="paragraph">
+<p>This template creates an attributions document which lists all used OSS components with their licenses, license texts and found copyrights information as well as found information from NOTICE files.
+The template is part of the <a href="#devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_experimental-scancode-integration">Experimental Scancode Integration</a> and requires ScanCode to be used to collect all necessary information.</p>
 </div>
 </div>
 </div>
@@ -3015,6 +3353,14 @@ file.</p>
 <dd>
 <div class="ulist">
 <ul>
+<li>
+<p>Initial version of experimental scancode integration. See <a href="#devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_experimental-scancode-integration">Experimental Scancode Integration</a>.</p>
+</li>
+<li>
+<p>New decision table structure <code>LicenseAssignmentV2</code> with additional condition <code>origin</code>.
+Old structure deprecated but still supported.
+Migrate existing project decision tables by renaming <code>LicenseAssignmentProject.xls</code> to  <code>LicenseAssignmentV2Project.xls</code> and introducing a new (empty) column <code>Origin</code> between existing columns <code>OSS Version</code> and <code>Declared License</code>.</p>
+</li>
 <li>
 <p>Added Solicitor Logo and code for creating variants / animation.</p>
 </li>
@@ -3317,7 +3663,7 @@ multiapplication projects even is some license files are unavailable.</p>
 <div class="footnote"><sub>
 
 Version {project-version}-{buildNumber}<br>
-Last updated 2022-06-02 11:01:32 UTC
+Last updated 2022-06-02 21:08:28 UTC
 </sub></div>
 </div>
 </div>
