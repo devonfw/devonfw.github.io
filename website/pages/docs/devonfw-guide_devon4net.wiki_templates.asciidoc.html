@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2022-06-03 12:31:03 UTC">
+<meta name="author" content="Updated at 2022-06-06 14:05:40 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -533,7 +533,7 @@ gtag('consent', 'default', {
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2022-06-03 12:36:16 UTC</span><br>
+<span id="author" class="author">Updated at 2022-06-06 14:12:38 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -566,13 +566,9 @@ gtag('consent', 'default', {
 <ul class="sectlevel2">
 <li><a href="devonfw-guide_devon4net.wiki_templates.asciidoc.html"><span class="toc-current">Templates</span></a>
 <ul class="sectlevel3">
-<li><a href="devonfw-guide_devon4net.wiki_templates.asciidoc.html#devonfw-guide_devon4net.wiki_templates.asciidoc_overview">Overview</a>
+<li><a href="devonfw-guide_devon4net.wiki_templates.asciidoc.html#devonfw-guide_devon4net.wiki_templates.asciidoc_webapi-template">WebAPI Template</a>
 </li>
-<li><a href="devonfw-guide_devon4net.wiki_templates.asciidoc.html#devonfw-guide_devon4net.wiki_templates.asciidoc_net-core-3.0">Net Core 3.0</a>
-</li>
-<li><a href="devonfw-guide_devon4net.wiki_templates.asciidoc.html#devonfw-guide_devon4net.wiki_templates.asciidoc_net-core-2.1.x">Net Core 2.1.x</a>
-</li>
-<li><a href="devonfw-guide_devon4net.wiki_templates.asciidoc.html#devonfw-guide_devon4net.wiki_templates.asciidoc_links">Links</a>
+<li><a href="devonfw-guide_devon4net.wiki_templates.asciidoc.html#devonfw-guide_devon4net.wiki_templates.asciidoc_grpc-template">gRPC Template</a>
 </li>
 </ul>
 </li>
@@ -601,106 +597,225 @@ gtag('consent', 'default', {
 </div><div id="content">
 <div class="sect2">
 <h3 id="devonfw-guide_devon4net.wiki_templates.asciidoc">Templates</h3>
+<!-- toc disabled -->
 <div class="sect3">
-<h4 id="devonfw-guide_devon4net.wiki_templates.asciidoc_overview">Overview</h4>
+<h4 id="devonfw-guide_devon4net.wiki_templates.asciidoc_webapi-template">WebAPI Template</h4>
 <div class="paragraph">
-<p>The .Net Core and .Net Framework given templates allows to start coding an application with the following functionality ready to use:</p>
+<p>This section contains all of the information about the template that corresponds to the Devon4net WebAPI. This template will allow you to easily create a functional API with everything set up so you can start coding for your specific domain.</p>
 </div>
 <div class="paragraph">
-<p>Please refer to <a href="#devonfw-guide_devon4net.wiki_userguide.html">User guide</a> in order to start developing.</p>
+<p>Firstly, all the details about the contents of the package will be explained. Going through all of the directory tree explaining the most imporant concepts. Then we will show an example of how to add the entity Student from the domain layer all the way to the controller, so you can understand how the architecture works on this template and how the layers interact with each other.</p>
 </div>
-</div>
-<div class="sect3">
-<h4 id="devonfw-guide_devon4net.wiki_templates.asciidoc_net-core-3.0">Net Core 3.0</h4>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_templates.asciidoc_devon4net.application.webapi">Devon4Net.Application.WebAPI</h5>
 <div class="paragraph">
-<p>The <em>.Net Core 3.0</em> template allows you to start developing an n-layer server application to provide the latest features. The template can be used in Visual Studio Code and Visual Studio 2019.</p>
+<p>This is the startup project of the template. Its main purpose is to launch the api and configure it using the settings files. The following figure shows the directory tree you will find when you first use the template.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/Application.WebAPI_tree.png" alt="Application.WebAPI tree">
+</div>
+<div class="title">Figure 117. Devon4Net.Application.WebAPI Directory tree</div>
 </div>
 <div class="paragraph">
-<p>The application result can be deployed as a console application, microservice or web page.</p>
-</div>
-<div class="paragraph">
-<p>To start developing with devon4Net template, please follow this instructions:</p>
+<p>Everything will be set up in the <code>Program.cs</code> file as for any .Net 6 Core API project. Going through this file, you will find all the configuration included with the template, such as middlewares and Dependency Injection.</p>
 </div>
 <div class="sect5">
-<h6 id="asciidoc_devonfw-guide_devon4net.wiki_templates.asciidoc_using-devon4net-template">Using devon4Net template</h6>
-
+<h6 id="devonfw-guide_devon4net.wiki_templates.asciidoc_appsettings.json">appsettings.json</h6>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">{
+  "devonfw": {
+    "UseDetailedErrorsKey": true,
+    "UseIIS": false,
+    "UseSwagger": true,
+    "UseXsrf": true,
+    "UseModelStateValidation": true,
+    "Environment": "Development",
+    "ForceUseHttpsRedirection": false,
+    "Kestrel": {
+      "UseHttps": false,
+      "HttpProtocol": "Http1AndHttp2",
+      "ApplicationPort": 8085,
+      "SslProtocol": "Tls12",
+      "ExtraSettings": {
+        "KeepAliveTimeout": 120,
+        "MaxConcurrentConnections": 100,
+        "MaxConcurrentUpgradedConnections": 100,
+        "MaxRequestBodySize": 28.6,
+        "Http2MaxStreamsPerConnection": 100,
+        "Http2InitialConnectionWindowSize": 131072,
+        "Http2InitialStreamWindowSize": 98304,
+        "AllowSynchronousIO": true
+      }
+    },
+    "IIS": {
+      "ForwardClientCertificate": true,
+      "AutomaticAuthentication": true,
+      "AuthenticationDisplayName": ""
+    }
+  }
+}</code></pre>
 </div>
-<div class="sect5">
-<h6 id="devonfw-guide_devon4net.wiki_templates.asciidoc_option-1">Option 1</h6>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Open your favourite terminal (Win/Linux/iOS)</p>
-</li>
-<li>
-<p>Go to future project’s path</p>
-</li>
-<li>
-<p>Type <em>dotnet new --install Devon4Net.WebAPI.Template</em></p>
-</li>
-<li>
-<p>Type <em>dotnet new Devon4NetAPI</em></p>
-</li>
-<li>
-<p>Go to project’s path</p>
-</li>
-<li>
-<p>You are ready to start developing with <em>devon4Net</em></p>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect5">
-<h6 id="devonfw-guide_devon4net.wiki_templates.asciidoc_option-2">Option 2</h6>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Create a new dotnet API project from scratch</p>
-</li>
-<li>
-<p>Add the NuGet package reference to your project</p>
-</li>
-<li>
-<p>Type <em>dotnet new --install Devon4Net.WebAPI.Template</em></p>
-</li>
-</ol>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="devonfw-guide_devon4net.wiki_templates.asciidoc_net-core-2.1.x">Net Core 2.1.x</h4>
-<div class="paragraph">
-<p>The <em>.Net Core 2.1.x</em> template allows you to start developing an n-layer server application to provide the latest features. The template can be used in Visual Studio Code and Visual Studio 2017.</p>
 </div>
 <div class="paragraph">
-<p>The application result can be deployed as a console application, microservice or web page.</p>
+<p>In the following list all the configuration fields are described:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>UseIIS</code>: Boolean that indicates if IIS is used.</p>
+</li>
+<li>
+<p><code>ValidateIssuerSigningKey</code>: Boolean that controls if validation of the security key that signed the securityToken is called.</p>
+</li>
+<li>
+<p><code>UseXsrf</code>: Boolean that adds Anti Forgery middleware to prevent XSRF attacks.</p>
+</li>
+<li>
+<p><code>UseModelStateValidation</code>: Boolean that indicates if model validation is called.</p>
+</li>
+<li>
+<p><code>Environment</code>: Running environment to load the corresponding configuration (Development, Production…​)</p>
+</li>
+<li>
+<p><code>ForceUseHttpsRedirection</code>: Boolean to force adding a middleware that redirects HTTP requests to HTTPS.</p>
+</li>
+<li>
+<p><code>Kestrel</code>: Kestrel server configuration</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>UseHttps</code>: Boolean to indicate if the connection needs to be secured via HTTPS.</p>
+</li>
+<li>
+<p><code>HttpProtocol</code>: Hypertext protocol used.</p>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Protocol</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Http1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/1.x (default)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Http2</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">HTTP/2</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Http1andHttp2</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Both HTTP/1.x and HTTP/2</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>none</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p><code>ApplicationPort</code>: Port number where the API will listen</p>
+</li>
+<li>
+<p><code>SslProtocol</code>: SSL encrytion protocol for Https</p>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Protocol</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Tls12</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TLS 1.2 (default, needed for Https2)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Tls13</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TLS 1.3</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>none</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p><code>ExtraSettings</code>: Some extra settings for Kestrel</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>KeepAliveTimeout</code>: Sets the keep-alive timeout in seconds.</p>
+</li>
+<li>
+<p><code>MaxConcurrentConnections</code>: Maximum number of open connections. Null is unlimited. Default is 100.</p>
+</li>
+<li>
+<p><code>MaxConcurrentUpgradedConnections</code>: Maximum number of open upgraded connectinos. Null is unlimited. An upgraded connection is one that has been switched from HTTP to another protocol. Default is 100.</p>
+</li>
+<li>
+<p><code>MaxRequestBodySize</code>: Maximum allowed size of any request body in MB. Default is 28.6MB.</p>
+</li>
+<li>
+<p><code>Http2MaxStreamsPerConnection</code>: Maximum number of concurrent request streams per HTTP/2 connection. Excess streams will be refused. Default is 100.</p>
+</li>
+<li>
+<p><code>Http2InitialConnectionWindowSize</code>: Indicates how much request body data the server is willing to receive and buffer at a time aggregated across all requests (streams) per connection. Value must be greater or equal to 65,535 and less than 2^31. Defaults to 128 KB.</p>
+</li>
+<li>
+<p><code>Http2InitialStreamWindowSize</code>: Indicates how much request body data the server is willing to receive and buffer at a time per stream.</p>
+</li>
+<li>
+<p><code>AllowSynchronousIO</code>: Boolean that controls wether Synchronous IO operations are allowed in requests.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>IIS</code>: Internet Information Services configuration</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ForwardClientCertificate</code>:  Populates the ITLSConnectionFeature if the MS-ASPNETCORE-CLIENTCERT request header is present</p>
+</li>
+<li>
+<p><code>AutomaticAuthentication</code>: If true the middleware should set HttpContext.User. If false the middleware will only provide an identity when explicitly requested by the AuthenticationScheme. Note Windows Authentication must also be enabled in IIS for this to work.</p>
+</li>
+<li>
+<p><code>AuthenticationDisplayName</code>: Sets the display name shown to users on login pages. The default is null</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>To start developing with devon4Net template, please follow this instructions:</p>
+<p>For each environment you can have a different configuration if you wish. You will find an <code>appsettings.Development.json</code> file where the configuration for the different components used in the template is placed. Please go through the documentation of each component to learn more about how are they configured.</p>
 </div>
-<div class="sect5">
-<h6 id="asciidoc_devonfw-guide_devon4net.wiki_templates.asciidoc_using-devon4net-template_2">Using devon4Net template</h6>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Open your favourite terminal (Win/Linux/iOS)</p>
-</li>
-<li>
-<p>Go to future project’s path</p>
-</li>
-<li>
-<p>Type <em>dotnet new --install Devon4Net.WebAPI.Template::1.0.8</em></p>
-</li>
-<li>
-<p>Type <em>dotnet new Devon4NetAPI</em></p>
-</li>
-<li>
-<p>Go to project’s path</p>
-</li>
-<li>
-<p>You are ready to start developing with <em>devon4Net</em></p>
-</li>
-</ol>
+</div>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_templates.asciidoc_devon4net.application.implementation">Devon4Net.Application.Implementation</h5>
+<div class="paragraph">
+<p>This is where all the magic happens. This project holds all the classes needed to implement the API end-points. The following image shows the structure you will find in this project.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/Application.WebAPI.Implementation_tree.png" alt="Application.WebAPI.Implementation tree">
+</div>
+<div class="title">Figure 118. Devon4Net.Application.WebAPI.Implementation Directory tree</div>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -709,17 +824,697 @@ gtag('consent', 'default', {
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-For the latest updates on references packages, please get the sources from <a href="https://github.com/devonfw/devon4net">Github</a>
+Please refer to documentation about Architecture to understand better the proposed architecture which is Onion Architecture.
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="sect5">
+<h6 id="devonfw-guide_devon4net.wiki_templates.asciidoc_configuration">Configuration</h6>
+<div class="paragraph">
+<p>In this directory the Configuration is placed, you will find all the dependency injection code for this project in the static class <code>DevonConfiguration</code>. The code is divided into many private extensions based on their intended use, all of which are called by one main public extension for the <code>IServiceCollection</code> interface in the <code>Program.cs</code> file.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tbody><tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+If you need to segregate chunks of code, don’t be afraid to add extra static classes. This will improve reading and it will make it much easier to locate items later.
 </td>
 </tr>
 </tbody></table>
 </div>
 </div>
+<div class="sect5">
+<h6 id="devonfw-guide_devon4net.wiki_templates.asciidoc_domain">Domain</h6>
+<div class="paragraph">
+<p>As you may have learned thanks to the architecture document, this is the core of the application. It holds the entities and the contracts for the operations you can execute on them, that last being the repository interfaces.</p>
+</div>
+<div class="paragraph">
+<p>You will be able to find also the different database contexts for the application in the Database directory. These contexts will allow <code>EntityFramework</code> to work properly by extending <code>DbContext</code> class.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/Application.WebAPI.Implementation.Domain.png" alt="Application.WebAPI.Implementation.Domain">
+</div>
+<div class="title">Figure 119. Devon4Net.Application.WebAPI.Implementation Domain layer</div>
+</div>
+<div class="paragraph">
+<p>The repositories interfaces extend from a generic repository interface <code>IRepository&lt;T&gt;</code> available in Devon4Net. As you can see in figure 3, Devon4Net already comes with some examples of implementation for some entities. Please revise them so that you have a better understanding of how they work.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="devonfw-guide_devon4net.wiki_templates.asciidoc_data">Data</h6>
+<div class="paragraph">
+<p>The Data directory corresponds to the Data Layer and implements all the interfaces contracts. This Repositories extend from a generic repository implementation <code>Repository&lt;T&gt;</code> available in Devon4Net. As you can see in the next figure, the template also come with some examples of implementation.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/Application.WebAPI.Implementation.Data.png" alt="Application.WebAPI.Implementation.Data">
+</div>
+<div class="title">Figure 120. Devon4Net.Application.WebAPI.Implementation Data layer</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="devonfw-guide_devon4net.wiki_templates.asciidoc_business">Business</h6>
+<div class="paragraph">
+<p>The Business directory is where all the application logic is placed, it corresponds to the Business Layer. You will find a lot of implemented examples as shown in the next image.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/Application.WebAPI.Implementation.Business.png" alt="Application.WebAPI.Implementation.Business">
+</div>
+<div class="title">Figure 121. Devon4Net.Application.WebAPI.Implementation Business layer</div>
+</div>
+<div class="paragraph">
+<p>These are:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>AntiForgeryTokenManagement:</strong> This is an example of how to use the XSRF protection in API controllers. It contains a controller class with a working example.</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/AntiForgeryTokenManagement.png" alt="AntiForgeryTokenManagement">
+</div>
+<div class="title">Figure 122. AntiForgeryTokenManagement directory</div>
+</div>
+</li>
+<li>
+<p><strong>AuthManagement:</strong> This example shows how to use Authorization in API controllers thanks to Json Web Tokens. It contains a controller class and some response entities needed to return information.</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/AuthManagement.png" alt="AuthManagement">
+</div>
+<div class="title">Figure 123. AuthManagement directory</div>
+</div>
+</li>
+<li>
+<p><strong>EmployeeManagement:</strong> This directory contains all the implementation classes for entity type Employee.</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/EmployeeManagement.png" alt="EmployeeManagement">
+</div>
+<div class="title">Figure 124. EmployeeManagement directory</div>
+</div>
+</li>
+<li>
+<p><strong>MediatRManagement:</strong> Example of how implement MediatR for using CQRS pattern.</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/MediatRManagement.png" alt="MediatRManagement">
+</div>
+<div class="title">Figure 125. MediatRManagement directory</div>
+</div>
+</li>
+<li>
+<p><strong>RabbitMqManagement:</strong> Sample of implementation of RabbitMq queues.</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/RabbitMqManagement.png" alt="RabbitMqManagement">
+</div>
+<div class="title">Figure 126. RabbitMqManagement directory</div>
+</div>
+</li>
+<li>
+<p><strong>TodoManagement:</strong> Implementation sample of entity type Todo.</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/TodoManagement.png" alt="TodoManagement">
+</div>
+<div class="title">Figure 127. TodoManagement directory</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_templates.asciidoc_sample-of-use">Sample of use</h5>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you don’t know how to install and use this template, please refer to documentation on how to do it.
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>In this part we will be creating CRUD (Create, Read, Update and Delete) operations for the entity type <code>Student</code>. Before that, we will delete the samples that come with the template.</p>
+</div>
+<div class="sect5">
+<h6 id="devonfw-guide_devon4net.wiki_templates.asciidoc_step-1-entity">Step 1: Entity</h6>
+<div class="paragraph">
+<p>First we will need the object <code>Student</code>. For that we will need to create a new <code>Student.cs</code> class in <code>Domain\Entities</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#">public class Student
+{
+    public long Id { get; set; }
+    public string Name { get; set; }
+    public string Surname { get; set; }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Our student should have an Identifier, and we will also put some interesting properties, name and surname for example.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tbody><tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Is good practice to override <code>object</code> methods: <code>Equals(object o)</code>, <code>GetHashCode()</code> and <code>ToString()</code>.
+</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="devonfw-guide_devon4net.wiki_templates.asciidoc_step-2-context">Step 2: Context</h6>
+<div class="paragraph">
+<p>EntityFramework will need a context to be able to work with Students. Lets create a <code>StudentContext.cs</code> class in <code>Domain\Database</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#">public class StudentContext : DbContext
+{
+    public virtual DbSet&lt;Student&gt; Students { get; set; }
+    public StudentContext(DbContextOptions&lt;StudentContext&gt; options) : base(options)
+    {
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="devonfw-guide_devon4net.wiki_templates.asciidoc_step-3-repository-contract">Step 3: Repository contract</h6>
+<div class="paragraph">
+<p>The repository contract in <code>Data\RepositoryInterfaces</code> will allow us to inject the repository and will increase decoupling. It will be implemented in the next step. You can inherit methods from Devon4Net <code>IRepository</code> as shown, but we will be also implementing a couple of queries:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#">public interface IStudentRepository : IRepository&lt;Student&gt;
+{
+    Task&lt;long&gt; DeleteById(long id);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Everything should be asynchronous making use of the <code>Task</code> class.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="devonfw-guide_devon4net.wiki_templates.asciidoc_step-4-repository-implementation">Step 4: Repository implementation</h6>
+<div class="paragraph">
+<p>Now we will need a repository implementation for the previous interface. It will be placed in <code>Data\Repositories</code>, it will inherit also from Devon4Net generic repository and will implement interface methods:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#">public class StudentRepository : Repository&lt;Student&gt;, IStudentRepository
+{
+    public StudentRepository(StudentContext context) : base(context)
+    {
+    }
+
+    public async Task&lt;long&gt; DeleteById(long id)
+    {
+        var deleted = await Delete(t =&gt; t.Id == id).ConfigureAwait(false);
+        if (deleted) return id;
+        throw  new ArgumentException($"The Todo entity {id} has not been deleted.");
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="devonfw-guide_devon4net.wiki_templates.asciidoc_step-5-studentdto">Step 5: StudentDto</h6>
+<div class="paragraph">
+<p>To increase decoupling, we will create a copy of the entity Student in <code>Business\Dto</code> for the Business layer. To make it a little different we will be including the surname in the property <code>FullName</code> and it will be separated before being stored in the database and viceversa:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#">public class StudentDto
+{
+    public long Id { get; set; }
+    public string FullName { get; set; }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We will need also a converter placed in <code>Business\Converters</code> so we can transform it in both directions:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#">public static class StudentConverter
+{
+    public static StudentDto EntityToDto(Student item)
+    {
+        if (item == null) return new StudentDto();
+        return new StudentDto
+        {
+            Id = item.Id,
+            FullName = item.Name + " " + item.Surname
+        };
+    }
+
+    public static Student DtoToEntity(StudentDto item)
+    {
+        if (item == null) return new Student();
+        return new Student
+        {
+            Id = item.Id,
+            Name = item.FullName.Split(" ")[0],
+            Surname = item.FullName.Split(" ")[1]
+        };
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="devonfw-guide_devon4net.wiki_templates.asciidoc_step-6-service">Step 6: Service</h6>
+<div class="paragraph">
+<p>Now we will need a service in <code>Business\StudentManagement\Service</code>. The service will execute all the necessary operations.  In this case as it is a simple CRUD it will only call the repository. The Devon4Net Service class implements Unit of Work pattern.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#">public interface IStudentService
+{
+    Task&lt;IEnumerable&lt;StudentDto&gt;&gt; GetAllStudents();
+    Task&lt;Student&gt; CreateStudent(StudentDto student);
+    Task&lt;long&gt; DeleteStudentById(long id);
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#">public class StudentService: Service&lt;StudentContext&gt;, IStudentService
+{
+    private readonly IStudentRepository _studentRepository;
+
+    public StudentService(IUnitOfWork&lt;StudentContext&gt; uoW) : base(uoW)
+    {
+        _studentRepository = uoW.Repository&lt;IStudentRepository&gt;();
+    }
+
+    public async Task&lt;IEnumerable&lt;StudentDto&gt;&gt; GetAllStudents()
+    {
+        Devon4NetLogger.Debug("GetTodo method from service TodoService");
+        var result = await _studentRepository.Get().ConfigureAwait(false);
+        return result.Select(StudentConverter.EntityToDto);
+    }
+
+    public async Task&lt;StudentDto&gt; CreateStudent(StudentDto student)
+    {
+        var result = await _studentRepository.Create(StudentConverter.DtoToEntity(student));
+        return StudentConverter.EntityToDto(result);
+    }
+
+    public async Task&lt;long&gt; DeleteStudentById(long id)
+    {
+        var todo = await _studentRepository.GetFirstOrDefault(t =&gt; t.Id == id).ConfigureAwait(false);
+        if (todo == null) throw new ArgumentException($"The provided Id {id} does not exist");
+        return await _studentRepository.DeleteById(id).ConfigureAwait(false);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="devonfw-guide_devon4net.wiki_templates.asciidoc_step-7-controller">Step 7: Controller</h6>
+<div class="paragraph">
+<p>The controller will end up looking like this and needs to be placed in <code>Business\StudentManagement\Controllers</code>. It uses the <code>IStudentService</code> via dependency injection.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#">[EnableCors("CorsPolicy")]
+[ApiController]
+[Route("[controller]")]
+public class StudentController : ControllerBase
+{
+    private readonly IStudentService _studentService;
+
+    public StudentController(IStudentService studentService)
+    {
+        _studentService = studentService;
+    }
+
+    [HttpGet]
+    [ProducesResponseType(typeof(List&lt;StudentDto&gt;), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task&lt;ActionResult&gt; GetStudents()
+    {
+        return Ok(await _studentService.GetAllStudents().ConfigureAwait(false));
+    }
+
+    [HttpPost]
+    [ProducesResponseType(typeof(StudentDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task&lt;ActionResult&gt; Create(StudentDto student)
+    {
+        var result = await _studentService.CreateStudent(student).ConfigureAwait(false);
+        return StatusCode(StatusCodes.Status201Created, result);
+    }
+
+    [HttpDelete]
+    [ProducesResponseType(typeof(long), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task&lt;ActionResult&gt; Delete(long id)
+    {
+        return Ok(await _studentService.DeleteStudentById(id).ConfigureAwait(false));
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="devonfw-guide_devon4net.wiki_templates.asciidoc_step-8-dependency-injection">Step 8: Dependency Injection</h6>
+<div class="paragraph">
+<p>Now we are ready to inject the context in <code>Configuration\DevonConfiguration.cs</code>. In this example we are creating a database stored in memory:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#">services.SetupDatabase&lt;StudentContext&gt;(configuration, "Default", DatabaseType.InMemory).ConfigureAwait(false);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Also the repository and the service, so we can use them in the entire solution.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#">services.AddTransient&lt;IStudentRepository, StudentRepository&gt;();
+services.AddTransient&lt;IStudentService, StudentService&gt;();</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="devonfw-guide_devon4net.wiki_templates.asciidoc_test">Test</h6>
+<div class="paragraph">
+<p>Now you can run the application and go to the path <code>swagger/index.html</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+take a look at your application port and the protocol you configured (http or https).
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/WebApi_template_swagger.png" alt="WebApi template swagger">
+</div>
+<div class="title">Figure 128. Swagger test for Student</div>
+</div>
+</div>
+</div>
 </div>
 <div class="sect3">
-<h4 id="devonfw-guide_devon4net.wiki_templates.asciidoc_links">Links</h4>
+<h4 id="devonfw-guide_devon4net.wiki_templates.asciidoc_grpc-template">gRPC Template</h4>
 <div class="paragraph">
-<p><span class="icon"><i class="fa fa-= fa-floppy-o"></i></span>  <a href="#devonfw-guide/devon4net.wiki_https://github.com/devonfw/devon4net/tree/develop/source/Templates">.Net templates</a></p>
+<p>In this part of the document you will learn what is gRPC and how the devon4net gRPC template works.</p>
+</div>
+<div class="paragraph">
+<p>To help you understand how the template works, we will first go over some general concepts concerning gRPC technology in broad strokes. Then continue describing the contract shared between client and server and how it is formed using Google’s Protocol Buffers. And last but not least, both the GrpcClient and the GrpcServer will be explained.</p>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_templates.asciidoc_grpc">gRPC</h5>
+<div class="paragraph">
+<p>gRPC is a modern open source high performance Remote Procedure Call (RPC) framework. It is totally independent of the language used on the client side and the server side.</p>
+</div>
+<div class="paragraph">
+<p>In gRPC a client app can directly call a method on a server application. Both parts need to share a file that acts as a contract. This way compatibility is ensured between client and server without taking languages into account.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/gRPC.png" alt="gRPC">
+</div>
+<div class="title">Figure 129. gRPC diagram</div>
+</div>
+<div class="paragraph">
+<p>On the server side, we need to develop a service that implements the contract shared between both parts and also listens to client calls and process them using this implementation.</p>
+</div>
+<div class="paragraph">
+<p>On the client side, the client can use the methods provided by this contract thanks to the "stub" (gRPC client).</p>
+</div>
+<div class="paragraph">
+<p>This file is the Protocol Buffer (".proto" file)and needs to be both in the client and the server for them to understand each other.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_templates.asciidoc_protocol-buffers">Protocol Buffers</h5>
+<div class="paragraph">
+<p>Protocol buffers provide a cross-platform mechanism for serializing structured data. It is like a JSON file, but smaller and faster.</p>
+</div>
+<div class="paragraph">
+<p>This protocol buffers are written in an language called <code>proto3</code>. The following piece of code describes an example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-proto" data-lang="proto">syntax = "proto3";
+
+option csharp_namespace = "Devon4Net.Application.GrpcClient.Protos";
+
+package greet;
+
+// The greeting service definition.
+service Greeter {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply);
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings.
+message HelloReply {
+  string message = 1;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The first line, specifies that you are using the <code>proto3</code> version. There are other versions such as <code>proto2</code>.</p>
+</div>
+<div class="paragraph">
+<p>The option <code>csharp_namespace</code> specifies the namespace of the proto file in C#.</p>
+</div>
+<div class="paragraph">
+<p>A message types are definitions of object structures. A message might have different fields, that have:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Type: Type of the field value. It can be any scalar type (int32, double, string…​) or composite type (enumerations, other messages…​).</p>
+</li>
+<li>
+<p>Number: Each field has a unique number which is used to identify the field.</p>
+</li>
+<li>
+<p>Rule: Singular (can have zero or one) or repeated (can be zero or multiple times rpeated)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>You can also see a service contract, which is called <code>Greeter</code> and has a method <code>SayHello</code> that accepts a <code>HelloRequest</code> and returns a <code>HelloReply</code>, both also defined on the file.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_templates.asciidoc_devon4net.application.grpcserver">Devon4Net.Application.GrpcServer</h5>
+<div class="paragraph">
+<p>This project will launch the server that will be called from the GrpcClient and will manage the rpc calls to the available methods.</p>
+</div>
+<div class="paragraph">
+<p>The proto file, which is shown in the previous section, defines the contract for the service, that will need to be implemented in this same project.</p>
+</div>
+<div class="paragraph">
+<p>As you can see in the following figure, the proto file is placed in the directory <code>Protos</code>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/grpc_server.png" alt="grpc server">
+</div>
+<div class="title">Figure 130. GrpcServer directory tree</div>
+</div>
+<div class="paragraph">
+<p>The service <code>GreeterService</code>, will need to extend <code>Greeter.GreeterBase</code> which is generated automatically thanks to the service named <code>Greeter</code> in the proto file.</p>
+</div>
+<div class="paragraph">
+<p>This service will need to override the method <code>SayHello</code> defined in the proto file. This method can be overriden from the class <code>Greeter.GreeterBase</code> as it was already implemented:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#">[GrpcDevonService]
+public class GreeterService : Greeter.GreeterBase
+{
+    public GreeterService()
+    {
+    }
+
+    public override Task&lt;HelloReply&gt; SayHello(HelloRequest request, ServerCallContext context)
+    {
+        return Task.FromResult(new HelloReply
+        {
+            Message = "Hello " + request.Name
+        });
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice the attribute <code>GrpcDevonService</code>. All services marked with this attribute will be auto registered in the <code>Program.cs</code> when adding the following line:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#">builder.Services.AddGrpc();
+.
+.
+.
+app.SetupGrpcServices(new List&lt;string&gt; { "Devon4Net.Application.GrpcServer" });</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The list of strings provided as argument is the list of assemblies where devon will look for gRPC services tagged with that attribute.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Check the component documentation to learn more.
+</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_templates.asciidoc_devon4net.application.grpcclient">Devon4Net.Application.GrpcClient</h5>
+<div class="paragraph">
+<p>The client project will access the GrpcServer project end-point thanks to the protocol buffer and the configuration in the <code>appsettings.{environment}.json</code>. For trying out the communication between the client and the server, you will find an end-point in the <code>GrpcGreeterController</code> class.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/grpc_client.png" alt="grpc client">
+</div>
+<div class="title">Figure 131. GrpcClient directory tree</div>
+</div>
+<div class="paragraph">
+<p>The configuration is done adding the following options to the settings file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json"> "Grpc": {
+    "EnableGrpc": true,
+    "UseDevCertificate": true,
+    "GrpcServer": "https://localhost:5002",
+    "MaxReceiveMessageSize": 16,
+    "RetryPatternOptions": {
+      "MaxAttempts": 5,
+      "InitialBackoffSeconds": 1,
+      "MaxBackoffSeconds": 5,
+      "BackoffMultiplier": 1.5,
+      "RetryableStatus": "Unavailable"
+    }
+  },</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<code>GrpcServer</code> is the direction of the gRPC end-points. To learn more about the component configuration please visit the package documentation.
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>The following line will configure the component to use this configuration in the <code>Program.cs</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#">builder.Services.SetupGrpc(builder.Configuration);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The greeter controller will use a <code>GrpcChannel</code> injected in the constructor as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#">[ApiController]
+[Route("[controller]")]
+public class GrpcGreeterClientController : ControllerBase
+{
+    private GrpcChannel GrpcChannel { get; }
+
+    public GrpcGreeterClientController(GrpcChannel grpcChannel)
+    {
+        GrpcChannel = grpcChannel;
+    }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You will find that the end-point that accesses the gRPC service looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#">[HttpGet]
+public async Task&lt;HelloReply&gt; Get(string name)
+{
+    try
+    {
+        var client = new Greeter.GreeterClient(GrpcChannel);
+        return await client.SayHelloAsync(new HelloRequest { Name = name }).ResponseAsync.ConfigureAwait(false);
+    }
+    catch (Exception ex)
+    {
+        Devon4NetLogger.Error(ex);
+        throw;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>Greeter.GreeterClient</code> is created automatically and can be used when adding the reference to the proto file namespace with the <code>using</code> directive.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_templates.asciidoc_references">References</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://grpc.io/docs/what-is-grpc/introduction/">Introduction to gRPC - gRPC Docs</a></p>
+</li>
+<li>
+<p><a href="https://developers.google.com/protocol-buffers/docs/overview">Protocol Buffers - Google Docs</a></p>
+</li>
+</ul>
+</div>
 </div>
 </div>
 </div>
@@ -837,7 +1632,7 @@ For the latest updates on references packages, please get the sources from <a hr
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-06-03 12:27:55 UTC
+Last updated 2022-06-06 14:01:19 UTC
 </sub></div>
 
 
