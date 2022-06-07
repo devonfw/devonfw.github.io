@@ -17,8 +17,16 @@ export class StepComponent implements OnInit {
   ngOnInit(): void {
   } 
   onClick(title: string) {
-    let stepId = title.replace(/\s/g, "");
-    this.router.navigate([this.router.url + ('/' + stepId)])
 
-  } 
+    let stepId = title.replace(/\s/g, "");
+
+    //this.router.navigate([this.router.url + ('/' + stepId)])
+
+    let journeyId = this.route.snapshot.url[1].path;
+
+    this.router.navigate(['/journeys', journeyId, stepId]);
+
+    //...
+  }
+
 }

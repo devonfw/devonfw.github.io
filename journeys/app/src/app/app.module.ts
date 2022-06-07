@@ -9,11 +9,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { HomeComponent } from './pages/home/home.component';
-import { DataComponent } from './pages/data/data.component';
 import { HttpClientModule } from '@angular/common/http';
-import { PageNotFoundComponent } from './journey-content/page-not-found/page-not-found.component';
-import { MessagesComponent } from './messages/messages.component';
 import { JourneyService } from './state/journeys/journey.service';
 import { CommonModule } from '@angular/common';
 import { StoreModule } from '@ngrx/store';
@@ -32,10 +28,6 @@ import { StepEffect } from './state/steps/step.effect';
 @NgModule({
   declarations: [
     AppComponent,
-    PageNotFoundComponent,
-    MessagesComponent,
-    HomeComponent,
-    DataComponent,
     JourneyDetailComponent,
     JourneyListComponent,
     StepDetailComponent,
