@@ -87,7 +87,7 @@ dirList.forEach(file => {
                 //write id.json
                 let content_json = {
                   title: this.title,
-                  htmlContent: this.htmlContent,
+                  sections: this.htmlContent,
                 };
                 fs.mkdir( `${__dirname}\\..\\app\\src\\assets\\${path.parse(file).name}`, (err) => {
                   if(err) {
@@ -103,7 +103,6 @@ dirList.forEach(file => {
                     }
                   }
                 );
-
                 //sections
                 this.subSections = [];
                 if (num == 0) {

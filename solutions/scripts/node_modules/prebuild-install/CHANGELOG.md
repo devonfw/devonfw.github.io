@@ -1,5 +1,13 @@
 # Changelog
 
+## [7.1.1] - 2022-06-07
+
+### Changed
+
+- Replace use of npmlog dependency with console.error ([#182](https://github.com/prebuild/prebuild-install/issues/182)) ([`4e2284c`](https://github.com/prebuild/prebuild-install/commit/4e2284c)) (Lovell Fuller).
+
+- Ensure script output can be captured by tests ([#181](https://github.com/prebuild/prebuild-install/issues/181)) ([`d1853cb`](https://github.com/prebuild/prebuild-install/commit/d1853cb)) (Lovell Fuller).
+
 ## [7.1.0] - 2022-04-20
 
 ### Changed
@@ -82,6 +90,8 @@
 ### Changed
 
 - Replace `mkdirp` dependency with `mkdirp-classic` ([**@ralphtheninja**](https://github.com/ralphtheninja))
+
+[7.1.1]: https://github.com/prebuild/prebuild-install/releases/tag/v7.1.1
 
 [7.1.0]: https://github.com/prebuild/prebuild-install/releases/tag/v7.1.0
 
