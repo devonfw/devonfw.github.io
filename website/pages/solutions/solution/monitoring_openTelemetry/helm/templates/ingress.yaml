@@ -1,36 +1,36 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ingress
+  name: opentelemetry-ingress
 spec:
   rules:
-  - host: {{ .Values.ingress.application.host }}
-    http:
-      paths:
-      - path: "/"
-        pathType: Prefix
-        backend:
-            service:
-              name: {{ .Values.application.service.name }}
-              port:
-                number: {{ .Values.ingress.application.port }}
-  - host: {{ .Values.ingress.jaeger.host }}
-    http:
-      paths:
-      - path: "/"
-        pathType: Prefix
-        backend:
-            service:
-              name: jaeger-all-in-one
-              port:
-                number: {{ .Values.ingress.jaeger.port }}
-  - host: {{ .Values.ingress.grafana.host }}
-    http:
-      paths:
-      - path: "/"
-        pathType: Prefix
-        backend:
-            service:
-              name: grafana
-              port:
-                number: {{ .Values.ingress.grafana.port }}
+    - http:
+        paths:
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.application.name }}
+                port:
+                  number: {{ .Values.application.port }}
+      host: {{ .Values.application.host }}
+    - http:
+        paths:
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.grafana.name }}
+                port:
+                  number: {{ .Values.grafana.port }}
+      host: {{ .Values.grafana.host }}
+    - http:
+        paths:
+          - path: "/"
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.jaeger.name }}
+                port:
+                  number: {{ .Values.jaeger.port }}
+      host: {{ .Values.jaeger.host }}      

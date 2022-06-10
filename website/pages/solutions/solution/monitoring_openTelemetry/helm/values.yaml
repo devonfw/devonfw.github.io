@@ -1,23 +1,41 @@
-# Application configuration
-application:
-  # Configuration to get the metrics information
-  metrics:
-    jobname: "metrics-jobname"
-    url: "metrics-url"
-  
-  # Configuration of the application service
-  service:
-    name: "application-service-name"
-    port: "application-service-port"
 
-# Ingress configuration
-ingress:
-  application:
-    host: "application.localhost"
+application:
+  name: "demo-quarkus"
+  image:
+    ## TODO: Replacce the registry from which you want to pull the image
+    registry: "your-registry"
+    repository: "your-repo"
+    tag: "latest"
     port: 8080
-  jaeger:
-    host: "jaeger.localhost"
-    port: 16686
-  grafana:
-    host: "grafana.localhost"
-    port: 3000
+    
+  replicas: 1
+
+  livenessProbe:
+    url: /q/health/live
+
+  readinessProbe:
+    url: /q/health/ready
+
+    ## TODO: Replacce with the application host name
+  host: "your.application.host"
+  port: 8080
+  
+  database:
+    image: "docker.io/bitnami/postgresql"
+    imageTag: "12.2.0"
+    port: 5432
+
+grafana:
+  name: "grafana"
+      ## TODO: Replacce with the grafana host name
+  host: "your.grafana.host"
+  port: 3000
+
+jaeger:
+  name: "jaeger-all-in-one"
+      ## TODO: Replacce with the jaeger host name
+  host: "your.jaeger.host"
+  port: 16686
+  
+
+
