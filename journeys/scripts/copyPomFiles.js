@@ -4,6 +4,10 @@ const path = require("path");
 let parentDir = path.dirname(__dirname);
 let targetDir = path.join(parentDir, "journeys");
 
+if (!fs.existsSync(targetDir + "\\" + "title_of_journey_01")) {
+  fs.mkdirSync(targetDir + "\\" + "title_of_journey_01");
+}
+
 fs.readdir(targetDir, (err, files) => {
   if (err) {
     console.error("Could not list the directory.", err);
@@ -12,13 +16,12 @@ fs.readdir(targetDir, (err, files) => {
 
   files.forEach((file) => {
     let path = targetDir + "\\" + file;
-
     try {
       stat = fs.statSync(path);
 
       if (stat.isDirectory()) {
         /*
-        If the Directoryname contains at least one hashtag, the first one which is found will be replaced (or extended by one) by two.
+        If the Directoryname contains at least one hashtag, the first one which is found will be replaced by two (or extended by one).
         What is this code good for ? --> Ask Jahn ( copyPomFile.sh sourcecode line 4)
         */
         let directoryname = file;
