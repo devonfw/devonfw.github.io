@@ -1,10 +1,6 @@
 name: build-and-deploy
 
 on:
-  workflow_run:
-    workflows: ["Update Submodules"]
-    types:
-      - completed
   repository_dispatch:
     types: [dispatch-build-website]
   workflow_dispatch:
@@ -70,6 +66,12 @@ jobs:
           npm install
           cd ../../
           
+      - name: npm install for tutorials
+        run: |
+          cd wiki-tutorials/scripts
+          npm install
+          cd ../../
+          
       - name: Fix includes of solutions
         run: |
           node solutions/scripts/fixIncludeFiles.js ./solutions/solutions/ ./solutions/includes/
@@ -129,7 +131,6 @@ jobs:
           npm install
           node merger.js ../target/generated-docs/devonfw-guide/master.html ../target/generated-docs/website/pages/docs/ ../target/generated-docs/website/pages/docs/
           node merge-explore.js page-explore.html ../target/generated-docs/website/pages/explore/explore.html ../target/generated-docs/website/pages/explore/ ../target/generated-docs/website/pages/explore/ explore.html
-          node video-to-iframe.js ../target/generated-docs/website/pages/resources/resources.html
           node rereferencer/rereference.js ../../target/asciidoc/devonfw-guide/ ../../target/generated-docs/website/pages/docs/
           node highlight-current.js ../target/generated-docs/website
           cd ..
@@ -152,6 +153,14 @@ jobs:
       - name: Copy output of tutorials
         run: |
           cp -avr wiki-tutorials/target/generated-docs/ target/generated-docs/website/pages/learning/
+
+      - name: Create JSONs for journeys
+        run: |
+          node journeys/scripts/createJourneyJsons.js target/generated-docs/website/pages/journey_content/
+
+      - name: Copy journey app
+        run: |
+          cp -avr journeys/app target/generated-docs/website/pages/journeys/
 
       - name: Build and test search engine
         run: |
@@ -182,3 +191,11 @@ jobs:
           ACTIONS_DEPLOY_KEY: ${{ secrets.ACTIONS_DEPLOY_KEY }}
           PUBLISH_BRANCH: master
           PUBLISH_DIR: ./target/generated-docs
+          
+      - name: Dispatch Website Link-Check
+        uses: guilouro/multiple-repositories-dispatch@v1.0.0
+        with:
+          repo_token: ${{ secrets.GHA_TOKEN }}
+          event_type: dispatch-website-linkcheck
+          repositories: |
+            devonfw/devonfw.github.io

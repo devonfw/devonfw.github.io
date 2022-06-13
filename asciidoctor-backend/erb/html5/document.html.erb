@@ -128,8 +128,6 @@ gtag('consent', 'default', {
 <!-- ******************************************** -->
 
 
-<link rel="stylesheet" type="text/css" href="https://cginternal.devonfw.com/websitesnippets/main.css">
-<script src="https://cginternal.devonfw.com/websitesnippets/main.js"></script>
 </head>
 <body<%= @id && %( id="#{@id}") %> class="<%= [(attr :doctype)].compact * ' ' %>"<%= (attr? 'max-width') ? %( style="max-width: #{attr 'max-width'};") : nil %>><%
 unless noheader %>
@@ -206,6 +204,8 @@ end %><%= (docinfo_content = (docinfo :footer)).empty? ? nil : %(
 </div>
 </div><%
 end %>
+<link rel="stylesheet" type="text/css" href="https://cginternal.devonfw.com/websitesnippets/main.css">
+<script async src="https://cginternal.devonfw.com/websitesnippets/main.js"></script>
 <script>
   if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
     anchors.options.visible = 'always';
@@ -236,6 +236,9 @@ end %>
 <script>
       let cookieName = 'cookie_consent';
       let expiryTime = new Date(2037, 11, 21);
+      let today = new Date();
+      let cookieConsentDeclinedDate = localStorage.getItem("cookie_consent_declined");
+      let dateDiffHours = 0;
       let cookieConsentHtml = `
       <div id="cookie-consent">
         <p>
@@ -247,16 +250,24 @@ end %>
         </p>
       </div>
       `;
-
+      dateDiffHours = cookieConsentDeclinedDate ? Math.abs(cookieConsentDeclinedDate - today) / 36e5 : 0;
       if (document.cookie.indexOf(cookieName) < 0) {
-        $("body").append(cookieConsentHtml);
+        if (cookieConsentDeclinedDate) {
+          if (dateDiffHours > 24) {
+            $("body").append(cookieConsentHtml);
+          }
+        } else {
+          $("body").append(cookieConsentHtml);
+        }
       }
       $("#accept-cookie-btn").click(function() {
         document.cookie = `${cookieName}=accept;expires=${expiryTime};path=/`;
+        localStorage.removeItem("cookie_consent_declined");
         consentGranted();
         $("#cookie-consent").hide();
       });
       $("#decline-cookie-btn").click(function() {
+        localStorage.setItem("cookie_consent_declined", today);
         $("#cookie-consent").hide();
       });
 </script>
