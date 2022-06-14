@@ -60,6 +60,12 @@ jobs:
           chmod +x wiki-tutorials/scripts/copyPomFiles.sh
           wiki-tutorials/scripts/copyPomFiles.sh
           
+      - name: npm install for Journey/scripts
+        run: |
+          cd journeys/scripts
+          npm install
+          cd ../../    
+          
       - name: Copy pom files for journeys
         run: |
           node journeys/scripts/copyPomFiles.js
@@ -76,18 +82,12 @@ jobs:
           npm install
           cd ../../
           
-      - name: install for Journeys/app
+      - name: npm install for Journeys/app
         run: |
           cd journeys/app
           npm install
           cd ../../
           
-      - name: npm install for Journey/scripts
-        run: |
-          cd journeys/scripts
-          npm install
-          cd ../../
-
       - name: Fix includes of solutions
         run: |
           node solutions/scripts/fixIncludeFiles.js ./solutions/solutions/ ./solutions/includes/
@@ -174,7 +174,7 @@ jobs:
         run: |
           chmod +x journeys/scripts/createOutput.sh
           journeys/scripts/createOutput.sh
-          
+      
       - name: Copy output of journeys
         run: |
           cp -avr journeys/target/generated-docs/ target/generated-docs/website/pages/journeys/
