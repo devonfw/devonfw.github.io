@@ -4,7 +4,7 @@ const path = require("path");
 const { argv } = require("process");
 
 //journeysDir (htmlDir):  target/generated-docs/journeys
-//outputDir = "..\\target\\generated-docs\\website\\pages\\journeys\\'unterordner'";
+//./target/generated-docs/journeys/journeyData/${subfolder}
 
 //INPUT: HTML File (check you're in the same folder as the html/right path + put the right name in line 7)
 //In this example, the html file tested is Communication.html
@@ -13,6 +13,7 @@ const { argv } = require("process");
 //Run on Terminal with command: node scraperOO_angepasst.js
 function main(journeysDir, outputDir) {
 const dirList = fs.readdirSync(journeysDir);
+outputDir = path.join("./", outputDir);
 dirList.forEach((file) => {
   let pathToFile = journeysDir + "\\" + file;
   try {
