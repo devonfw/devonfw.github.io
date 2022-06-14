@@ -26,15 +26,8 @@ export class SubStepDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.sections.id)
-    this.index$ = this.store.select(findIndexStepExistence({ step_id: this.sections.id }))
-    this.index$.pipe(take(1)).subscribe(indexData => {
-      console.log(indexData)
-      if (indexData == -1) {
-        this.getSubSections(this.sections)
 
-      }
-    })
+    this.getSubSections(this.sections)
     this.step$ = this.store.select(getStepDataState)
   }
 
