@@ -6,8 +6,14 @@ export default function stepdataReducer(state, action) {
     case loadStepSuccess.type: {
       return {
         ...state,
+     
         steps: [
-          ...state.steps, action.payload
+          ...state.steps,
+          {
+            stepId: action.stepId,
+            title: action.payload.title,
+            sections: action.payload.sections,
+          }
         ]
       } 
     }

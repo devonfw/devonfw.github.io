@@ -18,6 +18,7 @@ export interface JourneyData {
 export interface StepData {
   steps: [
     {
+      stepId: string,
       title: string,
       sections: string,
     }
@@ -26,6 +27,8 @@ export interface StepData {
 
 export interface UiState {
   viewStatus: ViewStatus;
+  hasPrevStep?: boolean;
+  hasNextStep?: boolean;
   errorMessage?: string;
 }
 

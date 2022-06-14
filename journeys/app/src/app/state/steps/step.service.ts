@@ -11,8 +11,8 @@ import { Step } from "../../journey-content/step"
 export class StepService {
   constructor(private http: HttpClient, private store: Store<AppState>) { }
 
-  getStep(title: string) {
-    return this.http.get('../../../assets/'+ title +'.json') as Observable <Step>
+  getStep(stepId: string) {
+    return this.http.get('../../../assets/'+ stepId +'.json') as Observable <Step>
 
 
   }

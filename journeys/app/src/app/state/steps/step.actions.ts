@@ -8,7 +8,7 @@ export const loadStep = createAction(
 
 export const loadStepSuccess = createAction(
   '[Step API] Load Step Success',
-    props<{ payload: Step }>(),
+    props<{ payload: Step, stepId : string }>(),
   );
 
 export const loadStepFailure = createAction(

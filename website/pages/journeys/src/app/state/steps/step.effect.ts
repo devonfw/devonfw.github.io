@@ -14,9 +14,9 @@ export class StepEffect {
   loadStep$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(loadStep),
-      mergeMap(payload => this.stepService.getStep(payload.stepId.replace(/\s/g, "")).
+      mergeMap(payload => this.stepService.getStep(payload.stepId).
         pipe(
-          map(journey => loadStepSuccess({ payload: journey })),
+          map(journey => loadStepSuccess({ payload: journey, stepId: payload.stepId })),
           catchError(() => of(loadStepFailure({ errorMessage: "Error" })))
       ))
     )

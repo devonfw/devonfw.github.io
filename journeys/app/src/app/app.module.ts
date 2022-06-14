@@ -24,6 +24,7 @@ import { StepDetailComponent } from './journey-content/step-detail/step-detail.c
 import { StepComponent } from './journey-content/step/step.component'
 import { StepService } from './state/steps/step.service';
 import { StepEffect } from './state/steps/step.effect';
+import { SubStepDetailComponent } from './journey-content/sub-step-detail/sub-step-detail.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { StepEffect } from './state/steps/step.effect';
     JourneyDetailComponent,
     JourneyListComponent,
     StepDetailComponent,
-    StepComponent
+    StepComponent,
+    SubStepDetailComponent
   ],
   imports: [
     BrowserModule,

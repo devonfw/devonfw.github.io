@@ -14,7 +14,7 @@ export class JourneyService {
   constructor(private http: HttpClient, private store: Store<AppState>) { }
 
   getJourney() {
-    return this.http.get('../../../assets/dummy.json') as Observable<Journey>
+    return this.http.get('../../../assets/output.json') as Observable<Journey>
 
   }
 

@@ -17,12 +17,22 @@ export const getUiState = createSelector(
   (state: AppState) => { return state.uiState }
   )
 
-  export const checkStepExistence = ({step_id: step_id}) => createSelector(
+export const checkStepExistence = ({step_id: step_id}) => createSelector(
     getAppState,
-    (state: AppState) => { return state.dataState.stepData.steps.filter(x => x.title.replace(/\s/g, "") == step_id).length > 0 }
+    (state: AppState) => { return state.dataState.stepData.steps.filter(x => x.stepId == step_id).length > 0 }
 );
+
 export const findIndexStepExistence = ({ step_id: step_id }) => createSelector(
   getAppState,
-  (state: AppState) => { return state.dataState.stepData.steps.findIndex(x => x.title.replace(/\s/g, "") == step_id)}
+  (state: AppState) => { return state.dataState.stepData.steps.findIndex(x => x.stepId == step_id) }
 );
+
+export const getJourneySection = createSelector(
+  getAppState,
+  (state: AppState) => { return state.dataState.journeyData.sections.filter(x => !!x)[0] });
+
+// if (journeySections.length >s 0) {
+//   journeySections[0].sections.filter(x => x.id == step_id && x.sections.length > 0 )
+
+// }
 

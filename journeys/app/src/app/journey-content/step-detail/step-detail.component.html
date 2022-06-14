@@ -2,15 +2,20 @@
   <app-journey-detail></app-journey-detail>
 </div>
 
-<div class = "content">
-  <div  *ngIf ="(index$|async) >= 0 && (step$|async)" [ngStyle]="{ marginLeft: '50px'}" >
+<div class="content">
+  <div *ngIf="(index$|async) >= 0 && (step$|async) && (journey$|async)" [ngStyle]="{ marginLeft: '50px'}">
     <p>
       {{(step$|async).steps[(index$|async)].title}}
     </p>
-      <div [innerHTML]=(step$|async).steps[(index$|async)].sections></div>
+    <div [innerHTML]="(step$|async).steps[(index$|async)].sections">  </div>
+    <div *ngFor="let root of (journey$|async).sections">
+      <div *ngFor="let r of root.sections">
+        <app-sub-step-detail *ngFor="let subsec of r.sections" [sections]="subsec"></app-sub-step-detail>
+      </div>
+    </div>
+    <button class="buttonleft buttondesign" id="diss">Previous</button>
+    <button class="buttonright buttondesign">Next </button>
   </div>
-  <button class = "buttonleft buttondesign">Previous</button>
-  <button class = "buttonright buttondesign">Next </button>
 </div>  
 
 

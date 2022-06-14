@@ -14,7 +14,8 @@ const initialJourneyData: JourneyData = {
 }
 const initialStepData: StepData = {
   steps: [
-      {
+    {
+      stepId: "",
       title: "",
       sections: "",
       }
@@ -31,7 +32,7 @@ export const initialState: AppState = {
 };
 
 
-export function appReducer(state = initialState, action)  {
+export function appReducer(state = initialState, action) {
     return {
       uiState: mainUiReducer(state.uiState, action),
       dataState: dataReducer(state.dataState, action)
