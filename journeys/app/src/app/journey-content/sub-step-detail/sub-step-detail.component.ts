@@ -3,7 +3,7 @@ import { Observable} from 'rxjs';
 import { Store } from '@ngrx/store';
 import { AppState, JourneyData, SingleStepData, StepData } from '../../state/app.state';
 import { loadStep } from '../../state/steps/step.actions';
-import { getStepDataState, findIndexStepExistence, getJourneySection } from '../../state/steps/step.selector';
+import { getStepDataState,} from '../../state/steps/step.selector';
 import { take, first } from 'rxjs/operators';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { getFirstStep, getStepData } from "../../state/steps/step.selector";

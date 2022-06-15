@@ -20,8 +20,9 @@ export const getUiState = createSelector(
 
 export const getStepData = ({ step_id: step_id }) => createSelector(
   getAppState,
-  (state: AppState) => { return state.dataState.stepData.steps.find(x => x.stepId == step_id) }
-
+  (state: AppState) => { return state.dataState.stepData.steps.find(x => x.stepId == step_id)
+  }
+  )
 
 export const getFirstStep =  createSelector(
   getAppState,

@@ -6,9 +6,6 @@ import { Observable } from 'rxjs';
 import { loadStep } from '../../state/steps/step.actions';
 
 import {
-  getStepDataState,
-  findIndexStepExistence,
-  getJourneySection,
   getUiState,
   getFirstStep, getStepData
 } from '../../state/steps/step.selector';
@@ -51,12 +48,13 @@ export class StepDetailComponent implements OnInit {
   }
 
 
-  displayNext(){
+  displayNext() {
     console.log("next button clicked");
     this.store.select(getFirstStep).subscribe(stepid => {
     })
   }
-  displayPrevious(){
+  displayPrevious() {
     console.log("previous button clicked");
 
+  }
 }
