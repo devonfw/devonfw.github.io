@@ -6,6 +6,7 @@ import { loadStep } from '../../state/steps/step.actions';
 import { getStepDataState, findIndexStepExistence, getJourneySection } from '../../state/steps/step.selector';
 import { take } from 'rxjs/operators';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { getFirstStep } from "../../state/steps/step.selector";
 
 @Component({
   selector: 'app-sub-step-detail',
@@ -31,9 +32,8 @@ export class SubStepDetailComponent implements OnInit {
     this.step$ = this.store.select(getStepDataState)
   }
 
-
   getSubSections(data) {
-      this.index$ = this.store.select(findIndexStepExistence({ step_id: data.id }))
+    this.index$ = this.store.select(findIndexStepExistence({ step_id: data.id }))
     this.index$.pipe(take(1)).subscribe(indexData => {
         if (indexData == -1) {
             this.store.dispatch(loadStep({ stepId: data.id }));

@@ -36,3 +36,15 @@ export const getJourneySection = createSelector(
 
 // }
 
+export const getFirstStep =  createSelector(
+  getAppState,
+  (state: AppState) => { return state.dataState.journeyData.sections
+  }
+)
+export const getLastStep =  createSelector(
+  getAppState,
+  (state: AppState) => {return state.dataState.journeyData.sections
+  }
+)
+
+
