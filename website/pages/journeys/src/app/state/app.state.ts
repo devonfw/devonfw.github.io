@@ -15,14 +15,13 @@ export interface JourneyData {
   journeyId: string;
   sections: [];
 }
+export interface SingleStepData {
+  stepId: string,
+  title: string,
+  sections: string,
+}
 export interface StepData {
-  steps: [
-    {
-      stepId: string,
-      title: string,
-      sections: string,
-    }
-  ];
+  steps: [SingleStepData]
 }
 
 export interface UiState {

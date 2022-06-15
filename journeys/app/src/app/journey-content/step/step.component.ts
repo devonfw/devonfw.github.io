@@ -16,6 +16,7 @@ export class StepComponent implements OnInit {
   constructor(private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    //hier nach der first id fragen und dann router mit stepID
   } 
   onClick(title: string) {
 
