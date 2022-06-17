@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2022-06-16 10:51:26 UTC">
+<meta name="author" content="Updated at 2022-06-17 11:32:33 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -533,7 +533,7 @@ gtag('consent', 'default', {
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2022-06-16 10:57:16 UTC</span><br>
+<span id="author" class="author">Updated at 2022-06-17 11:38:16 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -574,7 +574,15 @@ gtag('consent', 'default', {
 </li>
 <li><a href="devonfw-guide_devon4net.wiki_howto.asciidoc.html#devonfw-guide_devon4net.wiki_howto.asciidoc_how-to-customize-headers">How to: Customize Headers</a>
 </li>
+<li><a href="devonfw-guide_devon4net.wiki_howto.asciidoc.html#devonfw-guide_devon4net.wiki_howto.asciidoc_how-to-specflow">How to: Specflow</a>
+</li>
 <li><a href="devonfw-guide_devon4net.wiki_howto.asciidoc.html#devonfw-guide_devon4net.wiki_howto.asciidoc_how-to-circuit-breaker-communication-with-certificates">How To: Circuit breaker communication with Certificates</a>
+</li>
+<li><a href="devonfw-guide_devon4net.wiki_howto.asciidoc.html#devonfw-guide_devon4net.wiki_howto.asciidoc_how-to-rabbitmq">How to: RabbitMQ</a>
+</li>
+<li><a href="devonfw-guide_devon4net.wiki_howto.asciidoc.html#devonfw-guide_devon4net.wiki_howto.asciidoc_how-to-kafka">How to: Kafka</a>
+</li>
+<li><a href="devonfw-guide_devon4net.wiki_howto.asciidoc.html#devonfw-guide_devon4net.wiki_howto.asciidoc_how-to-protocol-buffers">How to: Protocol buffers</a>
 </li>
 </ul>
 </li>
@@ -1199,7 +1207,7 @@ Please read documentation about JWT component first to learn what you need to do
 <div class="title">Note</div>
 </td>
 <td class="content">
-The property <code>SecretKey</code> will be encrypted automatically using the algorithm specified.
+The property <code>SecretKey</code> needs to be an encrypted key using the algorithm specified.
 </td>
 </tr>
 </tbody></table>
@@ -1213,7 +1221,7 @@ The property <code>SecretKey</code> will be encrypted automatically using the al
 <p>A token with audience and issuer equal to <code>devon4net</code>.</p>
 </li>
 <li>
-<p>It will expire in 5 minutes</p>
+<p>It will expire in 60 minutes</p>
 </li>
 <li>
 <p>It will validate the signature and if the token is valid in time</p>
@@ -1266,7 +1274,7 @@ var roleClaim = new Claim(ClaimType.Role, "Administrator");</code></pre>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">CreateClientToken</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CreateJwtToken</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">List&lt;Claim&gt; clientClaims</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Returns the encrypted jwt given a list of claims.</p></td>
 </tr>
@@ -1293,6 +1301,18 @@ var roleClaim = new Claim(ClaimType.Role, "Administrator");</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">GetIssuerSigningKey</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Returns the issuer’s signing key.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bool</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ValidateToken</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string jwtToken, out ClaimsPrincipal claimsPrincipal, out SecurityToken securityToken</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns true if the token is valid.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CreateRefreshToken</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Creates a refresh token for the JWT token.</p></td>
 </tr>
 </tbody>
 </table>
@@ -2086,6 +2106,418 @@ If the response header does not have a value or does not appear in the optons, i
 </div>
 </div>
 <div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_howto.asciidoc_how-to-specflow">How to: Specflow</h4>
+<div class="paragraph">
+<p>In this part of the document you will learn to use Specflow in your projects for defining, managing and automatically execute readable acceptance tests in .NET.</p>
+</div>
+<div class="paragraph">
+<p>SpecFlow is a.NET test automation tool based on the BDD (Behavior-driven development) paradigm. Specflow tests use the Gherking language to write test cases that are then bound to your application code through bindings, allowing you to run the tests using your preferred testing framework.</p>
+</div>
+<div class="paragraph">
+<p>Before going into detail on how to use Specflow and how you can use it to implement your tests, you will need know Gherking syntax. It is used to write tests in a form that can be readed perfectly as a sentence. For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gherkin" data-lang="gherkin">Feature: Calculator
+  Scenario: Sum two numbers
+    Given the first number is 10
+    And the second number is  5
+    When the two values are added
+    Then the result is 15</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As you can see, thanks to Gherkin we have written a test for a calculator, which makes sure that when the values ​​<code>10</code> and <code>5</code> are added, the result is <code>15</code>. Because is a natural-language friendly language you can read the test, and understand the statement.</p>
+</div>
+<div class="paragraph">
+<p>The following table shows the keywords used in Gherkin syntax:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Keyword</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Feature</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Provides high level description of a software feature that wants to be tested and group related scenarios.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Rule</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Represents one business rule that should be implemented.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Scenario</code> or <code>Example</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">List of steps that ilustrates a business rule.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Steps</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Each step starts with <code>Given</code>, <code>When</code>, <code>Then</code>, <code>And</code> or <code>But</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Background</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Scenario context run before the <code>Scenario</code> tests but after <code>Before Hooks</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Scenario Outline</code> or <code>Scenario Template</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">It is used to run the same <code>Scenario</code> multiple times, with different combinations of values.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Scenarios</code> or <code>Examples</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Keyword used to define the variables of <code>Scenario Outline</code> in a table.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>""</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Strings</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>@</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tags</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>#</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Comments</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>|</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Tables</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-gherkin" data-lang="gherkin"># Test for the calculator
+@mytag
+Feature: Calculator
+  Scenario Outline: Sum two numbers
+    Given the first number is &lt;first&gt;
+    And the second number is  &lt;second&gt;
+    When the two values are added
+    Then the result is &lt;result&gt;
+
+    Examples:
+    | first | second | result |
+    |    10 |   5    |   15   |
+    |    20 |   5    |   25   |</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Please refer to the <a href="https://cucumber.io/docs/gherkin/">Cucumber Documentation</a> or <a href="https://specflow.org/learn/gherkin/">Specflow Documentation</a> to learn more about the keywords used in Gherkin.
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_howto.asciidoc_specflow-installation">Specflow Installation</h5>
+<div class="paragraph">
+<p>To use specflow you will need to add the Specflow extension to your Visual Studio 2022. This way you can use it in any of your projects. For that open visual studio and navigate to <code>Extensions &gt; Manage Extensions</code>.</p>
+</div>
+<div class="paragraph">
+<p>This will open the extension manager, where you will have to search for the 'SpecFlow' extension and hit download:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/specflow_extension.png" alt="specflow extension">
+</div>
+<div class="title">Figure 93. SpecFlow for VS 2022 in Extension Manager</div>
+</div>
+<div class="paragraph">
+<p>Hitting download will schedule the extension installation. At the time when you close VS2022, you will be able to install the extension by clicking <code>Modify</code> in the pop-up window shown below:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/specflow_installation.png" alt="specflow installation">
+</div>
+<div class="title">Figure 94. SpecFlow installation</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_howto.asciidoc_create-specflow-project">Create specflow project</h5>
+<div class="paragraph">
+<p>To create a specflow project for testing, first we will need to have something to test. In this example we will test a Calculator class that we created inside a class library project in an empty solution like shown in the following image:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/specflow_directory_tree.png" alt="specflow directory tree">
+</div>
+<div class="title">Figure 95. SpecFlowTest solution directory tree</div>
+</div>
+<div class="paragraph">
+<p>Where, the <code>Calculator</code> class implementation is:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#">public class Calculator
+{
+    public int FirstNumber { get; set; }
+    public int SecondNumber { get; set; }
+
+    protected int Add()
+    {
+        return FirstNumber + SecondNumber;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once we have the Calculator ready, we need to create a Specflow project. For that you can <code>Right click on the solution &gt; Add &gt; New Project…​</code>. This will open a window where you can search the specflow project as shown in the next image:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/new_specflow_project.png" alt="new specflow project">
+</div>
+<div class="title">Figure 96. Add new SpecFlow project</div>
+</div>
+<div class="paragraph">
+<p>When creating the project you will be able to choose the .Net version that you are using, the library for the tests and if you want to use FluentAssertions library. For this example we will use the configuration shown below:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/new_specflow_options.png" alt="new specflow options">
+</div>
+<div class="title">Figure 97. Choose the project options</div>
+</div>
+<div class="paragraph">
+<p>The specflow template comes with a calculator test implemented, this is their example. But we will create the files from scratch so you know how to complete your testing project.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/specflow_project_structure.png" alt="specflow project structure">
+</div>
+<div class="title">Figure 98. Initial project structure</div>
+</div>
+<div class="paragraph">
+<p>As you can see also the template comes with a folder structure defined, you can redifine it as you want but this is the recommended one.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_howto.asciidoc_create-specflow-tests">Create specflow tests</h5>
+<div class="paragraph">
+<p>To create a new test using specflow, you can add a new item to your project by <code>Right click in any directory on the project &gt; Add &gt; New item…​</code>:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/new_specflow_feature.png" alt="new specflow feature">
+</div>
+<div class="title">Figure 99. Initial project structure</div>
+</div>
+<div class="paragraph">
+<p>You can type specflow in the search bar to look for the items available thanks to the library and select <code>Feature File for Specflow</code>. You can create a test there in Gherkin syntax:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-Gherkin" data-lang="Gherkin">Feature: Calculator
+
+A short summary of the feature
+
+@mytag
+Scenario: Add two numbers
+	Given the first number is 50
+	And my favourite number is 70
+	When the two numbers are added
+	Then the result should be 120</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once you have your test created you can build the project by navigating to <code>Build &gt; Build Solution</code>. You will see that the test appears in a purple color, this is because it is not mapped to a definition yet. You can automatically create the definition by <code>Right clicking inside the feature file &gt; Define Steps</code>.</p>
+</div>
+<div class="paragraph">
+<p>This will open the following window:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/define_steps.png" alt="define steps">
+</div>
+<div class="title">Figure 100. Define SpecFlow Steps</div>
+</div>
+<div class="paragraph">
+<p>Once you press <code>Create</code> the test will no longer appear in purple and will be shown in a white color. This is because now they have a definition. You can also do this manually creating a class and marking it with the <code>[Binding]</code> attribute.</p>
+</div>
+<div class="paragraph">
+<p>This class will need to define the test steps such as Gherkin syntax can be transformed into <code>C#</code> code. You can implement this class as follows to test the Calculator:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#">using SpecflowCalculator;
+
+namespace SpecFlowProject.StepDefinitions
+{
+    [Binding]
+    public class CalculatorStepDefinitions
+    {
+        private Calculator _calculator;
+        private int _result;
+
+        public CalculatorStepDefinitions()
+        {
+            _calculator = new Calculator();
+        }
+
+        [Given(@"the first number is (.*)")]
+        public void GivenTheFirstNumberIs(int p0)
+        {
+            _calculator.FirstNumber = p0;
+        }
+
+        [Given(@"my favourite number is (.*)")]
+        public void GivenMyFavouriteNumberIs(int p0)
+        {
+            _calculator.SecondNumber = p0;
+        }
+
+        [When(@"the two numbers are added")]
+        public void WhenTheTwoNumbersAreAdded()
+        {
+            _result = _calculator.Add();
+        }
+
+        [Then(@"the result should be (.*)")]
+        public void ThenTheResultShouldBe(int p0)
+        {
+            // xUnit assertions
+            Assert.Equal(_result, p0);
+
+            // FluentAssertions
+            _result.Should().Be(p0);
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now build the solution again to be able to run the tests.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Please revise the <a href="https://specflow.org/learn/gherkin/">Specflow Documentation</a> to learn more about feature bindings.
+</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_howto.asciidoc_run-the-tests">Run the tests</h5>
+<div class="paragraph">
+<p>To run the tests you can navigate to <code>Test &gt; Test Explorer</code>:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/specflow_test_explorer.png" alt="specflow test explorer">
+</div>
+<div class="title">Figure 101. VS2022 Test Explorer</div>
+</div>
+<div class="paragraph">
+<p>By clicking the green play button you can run the tests and see the results as shown in the image above.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_howto.asciidoc_living-documentation">Living documentation</h5>
+<div class="paragraph">
+<p>SpecFlow Living Documentation is a set of tools that allows you to share and collaborate on Gherkin Feature Files. It gives you the option to generate and share an <code>html</code> interactive file. You can do this directly for Azure DevOps or using a CLI (Command Line Interface). In this guide you will learn how to do this with the CLI continuing with the Calculator example.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Please refer to the <a href="https://docs.specflow.org/projects/specflow-livingdoc/en/latest/">Specflow+LivingDoc</a> documentation to learn more.
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="sect5">
+<h6 id="devonfw-guide_devon4net.wiki_howto.asciidoc_step-1---install-cli">Step 1 - Install CLI</h6>
+<div class="paragraph">
+<p>Install the tool by running the following command in your preferred terminal:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-console" data-lang="console">dotnet tool install --global SpecFlow.Plus.LivingDoc.CLI</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="devonfw-guide_devon4net.wiki_howto.asciidoc_step-2---navigate-to-the-build-output-directory">Step 2 - Navigate to the build output directory</h6>
+<div class="paragraph">
+<p>Now we need to navigate to the build directory of the Specflow Project taht contains the tests. In our case we can navigate to this path by running the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-console" data-lang="console">cd C:\Projects\devon4net\samples\SpecflowTest\SpecFlowProject\bin\Debug\net6.0</code></pre>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+Your path may be different depending on the root directory, the file structure of the solution and the .Net version you are using.
+</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="sect5">
+<h6 id="devonfw-guide_devon4net.wiki_howto.asciidoc_step-3---run-command-to-generate-results">Step 3 - Run command to generate results</h6>
+<div class="paragraph">
+<p>To generate the file run the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-console" data-lang="console">livingdoc test-assembly SpecFlowProject.dll -t TestExecution.json</code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="devonfw-guide_devon4net.wiki_howto.asciidoc_step-4---see-html-results">Step 4 - See html results</h6>
+<div class="paragraph">
+<p>The file generated can be seen with your favorite browser and will look like this:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/specflow_html.png" alt="specflow html">
+</div>
+<div class="title">Figure 102. Specflow LivingDoc results</div>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_references_13">References</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://cucumber.io/docs/gherkin/">Gherkin Syntax - Cucumber Docs</a></p>
+</li>
+<li>
+<p><a href="https://specflow.org/learn/gherkin/">Learn Gherkin - Specflow Docs</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect3">
 <h4 id="devonfw-guide_devon4net.wiki_howto.asciidoc_how-to-circuit-breaker-communication-with-certificates">How To: Circuit breaker communication with Certificates</h4>
 <div class="paragraph">
 <p>In this section we are going to configure two services communication for using certificates, and Circuit Breaker Pattern.</p>
@@ -2103,7 +2535,7 @@ Please refer to the component documentation for more information about how to co
 </tbody></table>
 </div>
 <div class="sect4">
-<h5 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_configuration_13">Configuration</h5>
+<h5 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_configuration_14">Configuration</h5>
 <div class="paragraph">
 <p>We have to setup two services in order to implement Circuit Breaker pattern, in this scenario, we’re creating a basic application that connects two services that are similar.</p>
 </div>
@@ -2136,8 +2568,7 @@ Please refer to the component documentation for more information about how to co
         "AllowAutoRedirect": true
       }
     ]
-  }
-}</code></pre>
+  }</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2258,7 +2689,7 @@ Please refer to the component documentation for more information about how to co
 </div>
 </div>
 <div class="sect4">
-<h5 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_video_14">Video</h5>
+<h5 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_video_15">Video</h5>
 <div class="paragraph">
 <p>The preceding example is covered in detail in this video lesson:</p>
 </div>
@@ -2269,6 +2700,563 @@ Please refer to the component documentation for more information about how to co
 Your browser does not support the video tag.
 </video>
 </div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_howto.asciidoc_how-to-rabbitmq">How to: RabbitMQ</h4>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_howto.asciidoc_configure-the-server">Configure the Server</h5>
+<div class="paragraph">
+<p>There are several methods to configure the RabbitMQ server, depending on your operating system.</p>
+</div>
+<div class="paragraph">
+<p>In this tutorial, we will show you how to run a server via Docker, for testing purposes. If you want further information on how to configure and install the RabbitMQ server in a specific operating system, please consult the <a href="https://www.rabbitmq.com/download.html">official RabbitMQ documentation</a></p>
+</div>
+<div class="paragraph">
+<p>First you must have docker installed on your machine. Run the following command to start the server:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-console" data-lang="console">docker run -it --rm --name rabbitmq -e RABBITMQ_DEFAULT_USER=admin -e RABBITMQ_DEFAULT_PASS=password -p 5672:5672 -p 15672:15672 rabbitmq:3.9-management</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command shows several options parameters:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>-it</code>: To create an interactive container</p>
+</li>
+<li>
+<p><code>--rm</code>: To automatically clean up the container and remove the file system when the container exits.</p>
+</li>
+<li>
+<p><code>--name</code>: The name of the container</p>
+</li>
+<li>
+<p><code>-e</code>: Environment variables</p>
+</li>
+<li>
+<p><code>-p</code>: To expose a container’s internal port</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The server will listen on port 5672, and you may access the management plugin at the following url:</p>
+</div>
+<div class="paragraph">
+<p><a href="http://localhost:15672/" class="bare">http://localhost:15672/</a></p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/rabbit-management.png" alt="rabbit management">
+</div>
+<div class="title">Figure 103. RabbitMQ Management Plugin</div>
+</div>
+<div class="paragraph">
+<p>You may customize your Docker container as you like, please see the <a href="https://registry.hub.docker.com/_/rabbitmq/">official Docker  image documentation</a> for more information.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_howto.asciidoc_configure-the-client">Configure the Client</h5>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Install the package in your solution using the Package Manager Console:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-console" data-lang="console">Install-Package Devon4Net.Infrastructure.RabbitMQ</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Create a Configuration static class in order to add the <code>RabbitMqHandler</code> services, for example:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#"> public static class Configuration
+    {
+
+        public static void SetupDependencyInjection(this IServiceCollection services, IConfiguration configuration)
+        {
+
+            var rabbitMq = serviceProvider.GetService&lt;IOptions&lt;RabbitMqOptions&gt;&gt;();
+
+            if (rabbitMq?.Value != null &amp;&amp; rabbitMq.Value.EnableRabbitMq)
+            {
+                SetupRabbitHandlers(services);
+            }
+        }
+
+        private static void SetupRabbitHandlers(IServiceCollection services)
+        {
+            services.AddRabbitMqHandler&lt;TodoRabbitMqHandler&gt;(true);
+        }
+    }</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Add the following lines in the <code>Program.cs</code> class:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#">builder.Services.SetupRabbitMq(builder.Configuration);
+builder.Services.SetupDependencyInjection(builder.Configuration);</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Configure the component in the file <code>appsettings.{environment}.json</code>, for example:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">  "RabbitMq": {
+    "EnableRabbitMq": true,
+    "Hosts": [
+      {
+        "Host": "127.0.0.1",
+        "Port": 5672,
+        "Ssl": false,
+        "SslServerName": "localhost",
+        "SslCertPath": "localhost.pfx",
+        "SslCertPassPhrase": "localhost",
+        "SslPolicyErrors": "RemoteCertificateNotAvailable" //None, RemoteCertificateNotAvailable, RemoteCertificateNameMismatch, RemoteCertificateChainErrors
+      }
+    ],
+
+    "VirtualHost": "/",
+    "UserName": "admin",
+    "Password": "password",
+    "Product": "devon4net",
+    "RequestedHeartbeat": 10, //Set to zero for no heartbeat
+    "PrefetchCount": 50,
+    "PublisherConfirms": false,
+    "PersistentMessages": true,
+    "Platform": "localhost",
+    "Timeout": 10,
+    "Backup": {
+      "UseLocalBackup": true,
+      "DatabaseName": "devon4netMessageBackup.db"
+    }
+  },</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Where:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>EnableRabbitMq</code>: True for enabling the RabbitMQ component</p>
+</li>
+<li>
+<p><code>Hosts</code>: Host configuration, which might be a list of multiple hosts</p>
+</li>
+<li>
+<p><code>VirtualHost</code>:  Virtual host’s name</p>
+</li>
+<li>
+<p><code>UserName</code>: User’s name</p>
+</li>
+<li>
+<p><code>Password</code>: password for connecting</p>
+</li>
+<li>
+<p><code>RequestedHeartbeat</code>: The heartbeat timeout setting specifies how long the peer TCP connection should be considered unreachable by RabbitMQ and client libraries. Should be set to zero for no heartbeat.</p>
+</li>
+<li>
+<p><code>PrefetchCount</code>:  The amount of messages transmitted by RabbitMQ before EasyNetQ sends a response.</p>
+</li>
+<li>
+<p><code>PublisherConfirms</code>: True for enabling Publisher confirms that simply speaking is an AMQP extension that sends a callback when your message is successfully received by the broker.</p>
+</li>
+<li>
+<p><code>PersistentMessages</code>: When set to true, RabbitMQ will retain messages to disk and survive server restarts. When set to false, performance increases might be expected.</p>
+</li>
+<li>
+<p><code>Platform</code>: The value given here will be shown in the RabbitMQ management interface.</p>
+</li>
+<li>
+<p><code>TimeOut</code>: Range from 0 to 65535. Format is in seconds. For infinite timeout please use 0. Throws System.TimeoutException when value exceeded.</p>
+</li>
+<li>
+<p><code>Backup</code>: Configuration of Message’s BackUp. Its default database is LiteDB.</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Check the <a href="devonfw-guide_devon4net.wiki_packages.asciidoc.html">RabbitMQ Component section</a> for examples of the component’s implementation and essential classes.
+</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_references_16">References</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://www.rabbitmq.com/documentation.html">RabbitMQ Documentation</a></p>
+</li>
+<li>
+<p><a href="https://docs.docker.com/engine/reference/run/">Docker docs</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_howto.asciidoc_how-to-kafka">How to: Kafka</h4>
+<div class="paragraph">
+<p>In this part of the document you will learn how to use kafka component and create and use Producers and Consumers for your application. You will also learn to use the different Handlers available in the <code>Devon4Net.Infrastructure.Kafka</code> component and how to configure them.</p>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_howto.asciidoc_previous-steps">Previous steps</h5>
+<div class="paragraph">
+<p>To use Kafka you need to have an active Kafka server. There are multple ways to use a kafka server, we are using a docker image but you can choose any desired form.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+We recommend you to go through <a href="https://kafka.apache.org/">Kafka Documentation</a> to learn how to get started with Apache Kafka.
+</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>Once you have an Apache Kafka Server up and running you will need to create a project using the <code>Devon4Net</code> template or add <code>Devon4Net.Infrastructure.Kafka</code> NuGet package reference to your project.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+You can learn how to set up the component in your project by reading the component documentation.
+</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_configuration_17">Configuration</h5>
+<div class="paragraph">
+<p>When you have both things ready, you can start by adding the following line in your <code>Program.cs</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#">builder.Services.SetupKafka(builder.Configuration);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now is the time to configure all the producers and consumers you will be using in the application. You will later be relating this configuration to the Consumer and Producer Handler classes. For that you will need to complete the following configuration in <code>appsettings.{environment}.json</code> file with your preferred parameters.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-json" data-lang="json">"Kafka": {
+    "EnableKafka": true,
+    "Administration": [
+      {
+        "AdminId": "Admin1",
+        "Servers": "127.0.0.1:9092"
+      }
+    ],
+    "Producers": [
+      {
+        "ProducerId": "Producer1",
+        "Servers": "127.0.0.1:9092",
+        "ClientId": "client1",
+        "Topic": "devonfw",
+        "MessageMaxBytes": 1000000,
+        "CompressionLevel": -1,
+        "CompressionType": "None",
+        "ReceiveMessageMaxBytes": 100000000,
+        "EnableSslCertificateVerification": false,
+        "CancellationDelayMaxMs": 100,
+        "Ack": "None",
+        "Debug": "",
+        "BrokerAddressTtl": 1000,
+        "BatchNumMessages": 1000000,
+        "EnableIdempotence": false,
+        "MaxInFlight": 5,
+        "MessageSendMaxRetries": 5,
+        "BatchSize": 100000000
+      }
+    ],
+    "Consumers": [
+      {
+        "ConsumerId": "Consumer1",
+        "Servers": "127.0.0.1:9092",
+        "GroupId": "group1",
+        "Topics": "devonfw",
+        "AutoCommit": true,
+        "StatisticsIntervalMs": 0,
+        "SessionTimeoutMs": 10000,
+        "AutoOffsetReset": "Largest",
+        "EnablePartitionEof": true,
+        "IsolationLevel": "ReadCommitted",
+        "EnableSslCertificateVerification": false,
+        "Debug": ""
+      }
+    ]
+  }</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Please refer to the component documentation to learn more about the configuration.
+</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_howto.asciidoc_producer">Producer</h5>
+<div class="paragraph">
+<p>After defining the configuration in the <code>appsettings.{environment}.json</code> now you can create your handlers extending the ones available in the Kafka component.</p>
+</div>
+<div class="paragraph">
+<p>For the producer you can do something as the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#">public class MessageProducerHandler : KafkaProducerHandler&lt;string,string&gt;
+{
+    public MessageProducerHandler(IServiceCollection services, IKakfkaHandler kafkaHandler, string producerId) : base(services, kafkaHandler, producerId)
+    {
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You will need to add this handler to your dependencies. For that you can use the following method, and include the <code>Id</code> of the configuration as a parameter:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#">builder.Services.AddKafkaProducer&lt;MessageProducerHandler&gt;("Producer1");</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now you can use the handler in any constructor via dependency injection:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#">public class KafkaController : ControllerBase
+{
+    private MessageProducerHandler MessageProducer { get; }
+
+    public KafkaController(MessageProducerHandler messageProducer)
+    {
+        MessageProducer = messageProducer;
+    }
+
+    [HttpPost]
+    [AllowAnonymous]
+    [ProducesResponseType(typeof(DeliveryResult&lt;string,string&gt;), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [Route("/v1/kafka/deliver")]
+    public async Task&lt;IActionResult&gt; DeliverMessage(string key, string value)
+    {
+        Devon4NetLogger.Debug("Executing DeliverMessage from controller KafkaController");
+        var result = await MessageProducer.SendMessage(key, value).ConfigureAwait(false);
+        return Ok(result);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For example, in the previous piece of code, you can see how we are delivering a message to the Kafka server using a POST method in our API. This is done thanks to the <code>SendMessage</code> method.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_howto.asciidoc_consumer">Consumer</h5>
+<div class="paragraph">
+<p>The consumer is a little different, as you can see in the following piece of code, you will need to override the <code>HandleCommand</code> method. This will handle the process of consuming new messages to which the consumer is subscribed.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#">public class MessageConsumerHandler : KafkaConsumerHandler&lt;string, string&gt;
+{
+    public MessageConsumerHandler(IServiceCollection services, IKakfkaHandler kafkaHandler, string consumerId, bool commit = false, int commitPeriod = 5) : base(services, kafkaHandler, consumerId, commit, commitPeriod)
+    {
+    }
+
+    public override void HandleCommand(string key, string value)
+    {
+        Devon4NetLogger.Information($"Consumed message key: {key} | value: {value}");
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Similar to the producer, the Consumer also needs to be related to a configuration via the <code>Id</code> as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-c#" data-lang="c#">builder.Services.AddKafkaConsumer&lt;MessageConsumerHandler&gt;("Consumer1");</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_howto.asciidoc_how-to-protocol-buffers">How to: Protocol buffers</h4>
+<div class="paragraph">
+<p>Protocol buffers are Google’s language-neutral, platform-neutral, extensible mechanism for serializing structured data. You can see it as a JSON or a XML file, but smaller, faster and with an easier syntax.</p>
+</div>
+<div class="paragraph">
+<p>Protocol buffers are ideal for any situation in which you need to serialize data in a neutral language. Very useful when defining communications such as gRPC protocol.</p>
+</div>
+<div class="paragraph">
+<p>In this guide you will learn how to create a protocol buffer using <code>proto3</code> language.</p>
+</div>
+<div class="paragraph">
+<p>The <code>.proto</code> file starts with a package declaration, which helps to prevent naming conflicts between different projects.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-proto3" data-lang="proto3">syntax = "proto3";
+
+option csharp_namespace = "Devon4Net.Application.GrpcClient.Protos";
+
+package greet;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Also for C#, you can specify the <code>csharp_namespace</code> option. If it wasn’t specified, the generated classes would be placed in a namespace matching the package name.</p>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_howto.asciidoc_messages">Messages</h5>
+<div class="paragraph">
+<p>You also have message definitions, which is an aggregate containing a set of typed fields:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-proto3" data-lang="proto3">message Person {
+  string name = 1;
+  int32 id = 2;
+  string email = 3;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The previous example defines a type Person with <code>name</code>, <code>id</code> and <code>email</code>. Each field needs a unique identifier, which is the number shown after the <code>=</code>. The data types are the standard ones including <code>bool</code>, <code>int32</code>, <code>float</code>, <code>double</code>, and <code>string</code>.</p>
+</div>
+<div class="paragraph">
+<p>Let’s say that this Person can have many phone numbers, we could do something like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-proto3" data-lang="proto3">message Person {
+  string name = 1;
+  int32 id = 2;
+  string email = 3;
+  repeated PhoneNumber phoneNumbers = 4;
+}
+
+message PhoneNumber {
+  string number = 1;
+  PhoneType type = 2;
+}
+
+enum PhoneType {
+  MOBILE = 0;
+  HOME = 1;
+  WORK = 2;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As you can see, if a field is <code>repeated</code>, the field may be repeated any number of times, including 0. You can also define <code>enum</code> types if you want one of your fields to have one of a predefined list of values.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_howto.asciidoc_services">Services</h5>
+<div class="paragraph">
+<p>If you want to use your message types with an RPC system, you may specify an RPC service interface in a.proto file, and the protocol buffer compiler will create code and stubs in your preferred language.</p>
+</div>
+<div class="paragraph">
+<p>For example you could define the following contract:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-proto3" data-lang="proto3">service SearchService {
+  rpc Search(SearchRequest) returns (SearchResponse);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this case we will have a <code>SearchService</code> class with a <code>Search</code> method that accepts a <code>SearchRequest</code> and returns a <code>SearchResponse</code>. Both (SearchRequest and SearchResponse) need to be mapped to a message.</p>
+</div>
+<div class="paragraph">
+<p>The following example shows the complete <code>.proto</code> file used in the devon gRPC templates.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-proto3" data-lang="proto3">syntax = "proto3";
+
+option csharp_namespace = "Devon4Net.Application.GrpcClient.Protos";
+
+package greet;
+
+// The greeting service definition.
+service Greeter {
+  // Sends a greeting
+  rpc SayHello (HelloRequest) returns (HelloReply);
+}
+
+// The request message containing the user's name.
+message HelloRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings.
+message HelloReply {
+  string message = 1;
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Please revise the template documentation and the component documentation to learn more about gRPC
+</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_references_18">References</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://developers.google.com/protocol-buffers">Protocol Buffers - Google Docs</a></p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -2387,7 +3375,7 @@ Your browser does not support the video tag.
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-06-16 10:48:13 UTC
+Last updated 2022-06-17 11:29:04 UTC
 </sub></div>
 
 

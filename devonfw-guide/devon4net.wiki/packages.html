@@ -177,6 +177,20 @@ gtag('consent', 'default', {
 <li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_setting-up-in-other-projects">Setting up in other projects</a></li>
 </ul>
 </li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_devon4net.infrastructure.kafka">Devon4Net.Infrastructure.Kafka</a>
+<ul class="sectlevel2">
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_configuration">Configuration</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_setting-up-in-devon">Setting up in Devon</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_setting-up-in-other-projects">Setting up in other projects</a></li>
+</ul>
+</li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_devon4net.infrastructure.grpc">Devon4Net.Infrastructure.Grpc</a>
+<ul class="sectlevel2">
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_configuration">Configuration</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_setting-up-in-devon">Setting up in Devon</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_setting-up-in-other-projects">Setting up in other projects</a></li>
+</ul>
+</li>
 <li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_devon4net.infrastructure.fluentvalidation">Devon4Net.Infrastructure.FluentValidation</a>
 <ul class="sectlevel2">
 <li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_setting-up-in-devon">Setting up in Devon</a></li>
@@ -280,7 +294,7 @@ gtag('consent', 'default', {
 <i class="icon-note" title=""></i>
 </td>
 <td class="content">
-Because each component is unique, you may find some more directories or less than tose listed above.
+Because each component is unique, you may find some more directories or less than those listed above.
 </td>
 </tr>
 </table>
@@ -607,7 +621,7 @@ Remember to reference the class so you can use the extension methods (<code>usin
 <div class="sect2">
 <h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_setting-up-in-devon">Setting up in Devon</h3>
 <div class="paragraph">
-<p>For setting it up using the Devon4NetApi template just configure it in the <code>appsettings.Development.json</code> file.</p>
+<p>For setting it up using the Devon4NetApi template just configure it in the <code>appsettings.{environment}.json</code> file.</p>
 </div>
 <div class="paragraph">
 <p>Add it using Dependency Injection on this case we instanciate Circuit Breaker in a Service Sample Class</p>
@@ -1082,7 +1096,7 @@ Don&#8217;t set to true on production environments, doing so may expose critical
 <div class="sect2">
 <h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_setting-up-in-devon">Setting up in Devon</h3>
 <div class="paragraph">
-<p>For setting it up using the Devon4NetApi template just configure it in the <code>appsettings.Development.json</code> file.</p>
+<p>For setting it up using the Devon4NetApi template just configure it in the <code>appsettings.{environment}.json</code> file.</p>
 </div>
 <div class="paragraph">
 <p>You can use the methods implemented in Devon4NetLogger class, each method corresponds with a log level in .Net log levels system, for example:</p>
@@ -1221,7 +1235,7 @@ Web clients (for example, Angular) must follow this rule to avoid performing AJA
 <div class="sect2">
 <h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_setting-up-in-devon">Setting up in Devon</h3>
 <div class="paragraph">
-<p>For setting it up using the Devon4NetApi template just configure it in the <code>appsettings.Development.json</code> file.</p>
+<p>For setting it up using the Devon4NetApi template just configure it in the <code>appsettings.{environment}.json</code> file.</p>
 </div>
 <div class="paragraph">
 <p>You can enable CORS per action, per controller, or globally for all Web API controllers in your application:</p>
@@ -1465,9 +1479,10 @@ JSON Web Token (JWT) is an open standard (<a href="https://datatracker.ietf.org/
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="json language-json">"JWT": {
+<pre class="highlight"><code class="json language-json"> "JWT": {
     "Audience": "devon4Net",
     "Issuer": "devon4Net",
+    "ValidateIssuer": true,
     "ValidateIssuerSigningKey": true,
     "ValidateLifetime": true,
     "RequireSignedTokens": true,
@@ -1495,6 +1510,9 @@ JSON Web Token (JWT) is an open standard (<a href="https://datatracker.ietf.org/
 </li>
 <li>
 <p><code>Issuer</code>: Represents a valid issuer that will be used to check against the token&#8217;s issuer.</p>
+</li>
+<li>
+<p><code>ValidateIssuer</code>: Boolean that controls if validation of the Issuer is done.</p>
 </li>
 <li>
 <p><code>ValidateIssuerSigningKey</code>: Boolean that controls if validation of the SecurityKey that signed the securityToken is called.</p>
@@ -1690,7 +1708,7 @@ Please check <a href="https://github.com/AzureAD/azure-activedirectory-identitym
 .
 .
 .
-var token = JwtHandler.CreateClientToken(new List&lt;Claim&gt;
+var token = JwtHandler.CreateJwtToken(new List&lt;Claim&gt;
 {
     new Claim(ClaimTypes.Role, AuthConst.DevonSampleUserRole),
     new Claim(ClaimTypes.Name,user),
@@ -1793,6 +1811,7 @@ Please read the documentation of how to create and add certificates to a project
 <pre class="highlight"><code class="json language-json">"JWT": {
     "Audience": "devon4Net",
     "Issuer": "devon4Net",
+    "ValidateIssuer": true,
     "ValidateIssuerSigningKey": true,
     "ValidateLifetime": true,
     "RequireSignedTokens": true,
@@ -1832,7 +1851,7 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     public IActionResult GetToken()
     {
-        var token = _jwtHandler.CreateClientToken(new List&lt;Claim&gt;
+        var token = _jwtHandler.CreateJwtToken(new List&lt;Claim&gt;
         {
             new Claim(ClaimTypes.Role, "MyRole"),
             new Claim(ClaimTypes.Name, "MyName"),
@@ -1943,7 +1962,7 @@ public class AuthController : ControllerBase
 <div class="sect2">
 <h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_setting-up-in-devon">Setting up in Devon</h3>
 <div class="paragraph">
-<p>For setting it up using the Devon4Net WebApi template just configure it in the <code>appsettings.Development.json</code>.</p>
+<p>For setting it up using the Devon4Net WebApi template just configure it in the <code>appsettings.{environment}.json</code>.</p>
 </div>
 <div class="paragraph">
 <p>Then you will need to inject the repositories. For that go to <code>Devon4Net.Application.WebAPI.Implementation.Configuration.DevonConfiguration</code> and add the folowing lines in <code>SetupDependencyInjection</code> method:</p>
@@ -1974,7 +1993,7 @@ public TodoController(IRepository&lt;Todo&gt; todoRepository)
 <div class="sect2">
 <h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_setting-up-in-other-projects">Setting up in other projects</h3>
 <div class="paragraph">
-<p>For setting it up in other projects install it running the followin command in the Package Manager Console, or using the Package Manager in Visual Studio:</p>
+<p>For setting it up in other projects install it running the following command in the Package Manager Console, or using the Package Manager in Visual Studio:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2061,6 +2080,722 @@ public class WeatherForecastController : ControllerBase
         return _weatherForecastRepository.Get();
     }
 }</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_devon4net.wiki_packages.asciidoc_devon4net.infrastructure.kafka">Devon4Net.Infrastructure.Kafka</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://kafka.apache.org/">Apache Kafka</a> is an open-source distributed event streaming platform. Event streaming is the practice of capturing a stream of events and store it for later being able to retrieve it for processing it in the desired form. It guarantees a continuous flow of data between components in a distributed system. You can think of it as a data bus where components of a system can publish some events and can subscribe to others, the following diagram shows perfectly how the system works:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/kafka.png" alt="kafka">
+</div>
+<div class="title">Figure 2. Kafka diagram</div>
+</div>
+<div class="paragraph">
+<p>In the image you can see how an event is sent to the Kafka server. This <strong>Event</strong> is a record of an action that happened and typically contains a key, value, timestamp and some metadata.</p>
+</div>
+<div class="paragraph">
+<p>This events are published by <strong>Producers</strong>, who are those client applications that write to Kafka; and readed and processed by <strong>Consumers</strong>, who are the clients subscribed to the different topics.</p>
+</div>
+<div class="paragraph">
+<p><strong>Topics</strong> are the organization type of Kafka events, similar to a folder on a filesystem, being events the files in that folder. Unlike message queues, Kafka events are not deleted after being read. Instead you can choose how much time should Kafka keep track of the events.</p>
+</div>
+<div class="paragraph">
+<p>Other interesting concepts about Kafka are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Partitions</strong>: Topics are divided into partitions. When a new event is published to a topic, it is actually appended to one of the topic&#8217;s partitions. Events with the same event key are written to the same partition.</p>
+</li>
+<li>
+<p><strong>Replication</strong>: To make your data fault-tolerant and highly-available, every topic can be replicated so that there are always multiple brokers that have a copy of the data just in case things go wrong.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_configuration">Configuration</h3>
+<div class="paragraph">
+<p>The component configuration can be done in <code>appsettings.{environment}.json</code> with the following section:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"Kafka": {
+    "EnableKafka": true,
+    "Administration": [
+      {
+        "AdminId": "Admin1",
+        "Servers": "127.0.0.1:9092"
+      }
+    ],
+    "Producers": [
+      {
+        "ProducerId": "Producer1",
+        "Servers": "127.0.0.1:9092",
+        "ClientId": "client1",
+        "Topic": "devonfw",
+        "MessageMaxBytes": 1000000,
+        "CompressionLevel": -1,
+        "CompressionType": "None",
+        "ReceiveMessageMaxBytes": 100000000,
+        "EnableSslCertificateVerification": false,
+        "CancellationDelayMaxMs": 100,
+        "Ack": "None",
+        "Debug": "",
+        "BrokerAddressTtl": 1000,
+        "BatchNumMessages": 1000000,
+        "EnableIdempotence": false,
+        "MaxInFlight": 5,
+        "MessageSendMaxRetries": 5,
+        "BatchSize": 100000000
+      }
+    ],
+    "Consumers": [
+      {
+        "ConsumerId": "Consumer1",
+        "Servers": "127.0.0.1:9092",
+        "GroupId": "group1",
+        "Topics": "devonfw",
+        "AutoCommit": true,
+        "StatisticsIntervalMs": 0,
+        "SessionTimeoutMs": 10000,
+        "AutoOffsetReset": "Largest",
+        "EnablePartitionEof": true,
+        "IsolationLevel": "ReadCommitted",
+        "EnableSslCertificateVerification": false,
+        "Debug": ""
+      }
+    ]
+  }</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>EnableKafka</code>: Boolean to activate the use of Apache Kafka.</p>
+</li>
+<li>
+<p><code>Administration</code>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>AdminId</code>: Admin Identifier</p>
+</li>
+<li>
+<p><code>Servers</code>: Host address and port number in the form of <code>host:port</code>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>Producers</code>: List of all kafka producers configuration.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ProducerId</code>: Identifier of the producer in devon.</p>
+</li>
+<li>
+<p><code>Servers</code>: Host address and port number in the form of <code>host:port</code>.</p>
+</li>
+<li>
+<p><code>ClientId</code>: Identifier of the client in Kafka.</p>
+</li>
+<li>
+<p><code>Topic</code>: Topics where the event will be delivered.</p>
+</li>
+<li>
+<p><code>MessageMaxBytes</code>: Maximum Kafka protocol request message size. Due to differing framing overhead between protocol versions the producer is unable to reliably enforce a strict max message limit at produce time and may exceed the maximum size by one message in protocol ProduceRequests, the broker will enforce the the topic&#8217;s <code>max.message.bytes</code> limit (see Apache Kafka documentation).</p>
+</li>
+<li>
+<p><code>CompressionLevel</code>: Compression level parameter for algorithm selected by configuration property compression.codec. Higher values will result in better compression at the cost of more CPU usage. Usable range is algorithm-dependent:</p>
+<div class="paragraph">
+<p>[0-9] for gzip; [0-12] for lz4; only 0 for snappy; -1 = codec-dependent</p>
+</div>
+<div class="paragraph">
+<p>Default is <code>-1</code>.</p>
+</div>
+</li>
+<li>
+<p><code>CompressionType</code>: compression codec to use for compressing message sets. This is the default value for all topics, may be overridden by the topic configuration property compression.codec. Types are: <code>None</code>, <code>Gzip</code>, <code>Snappy</code>, <code>Lz4</code>, <code>Zstd</code>. Default is <code>None</code>.</p>
+</li>
+<li>
+<p><code>ReceiveMessageMaxBytes</code>: Maximum Kafka protocol response message size. Default is <code>100000000</code>.</p>
+</li>
+<li>
+<p><code>EnableSslCertificateVerification</code>: Enable OpenSSL&#8217;s builtin broker (server) certificate verification. Default is <code>true</code>.</p>
+</li>
+<li>
+<p><code>CancellationDelayMaxMs</code>: The maximum time in milliseconds before a cancellation request is acted on. Low values may result in measurably higher CPU usage. Default is <code>100</code>.</p>
+</li>
+<li>
+<p><code>Ack</code>:</p>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Value</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>None</code> - default</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Broker does not send any response/ack to client</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Leader</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The leader will write the record to its local log but will respond without awaiting full acknowledgement from all followers</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>All</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Broker will block until message is committed by all in sync replicas (ISRs). If there are less than min.insync.replicas (broker configuration) in the ISR set the produce request will fail</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Default is <code>None</code>.</p>
+</div>
+</li>
+<li>
+<p><code>Debug</code>:
+A comma-separated list of debug contexts to enable. Detailed Producer debugging: broker,topic,msg. Consumer: consumer,cgrp,topic,fetch</p>
+</li>
+<li>
+<p><code>BrokerAddressTtl</code>: How long to cache the broker address resolving results in milliseconds.</p>
+</li>
+<li>
+<p><code>BatchNumMessages</code>: Maximum size (in bytes) of all messages batched in one MessageSet, including protocol framing overhead. This limit is applied after the first message has been added to the batch, regardless of the first message&#8217;s size, this is to ensure that messages that exceed <code>batch.size</code> are produced. The total MessageSet size is also limited by <code>batch.num.messages</code> and <code>message.max.bytes</code></p>
+</li>
+<li>
+<p><code>EnableIdempotence</code>: When set to <code>true</code>, the producer will ensure that messages are successfully produced exactly once and in the original produce order. The following configuration properties are adjusted automatically (if not modified by the user) when idempotence is enabled: <code>max.in.flight.requests.per.connection=5</code> (must be less than or equal to 5), <code>retries=INT32_MAX</code> (must be greater than 0), <code>acks=all</code>, <code>queuing.strategy=fifo</code>. Producer instantation will fail if user-supplied configuration is incompatible</p>
+</li>
+<li>
+<p><code>MaxInFlight</code>: Maximum number of in-flight requests per broker connection. This is a generic property applied to all broker communication, however it is primarily relevant to produce requests. In particular, note that other mechanisms limit the number of outstanding consumer fetch request per broker to one. Default is <code>5</code>.</p>
+</li>
+<li>
+<p><code>MessageSendMaxRetries</code>: How many times to retry sending a failing Message. Default is <code>5</code>.</p>
+</li>
+<li>
+<p><code>BatchSize</code>: Maximum size (in bytes) of all messages batched in one MessageSet, including protocol framing overhead. This limit is applied after the first message has been added to the batch, regardless of the first message&#8217;s size, this is to ensure that messages that exceed batch.size are produced. The total MessageSet size is also limited by batch.num.messages and <code>message.max.bytes</code>. Default is <code>1000000</code>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>Consumers</code>: List of consumers configurations.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ConsumerId</code>: Identifier of the consumer for devon.</p>
+</li>
+<li>
+<p><code>Servers</code>: Host address and port number in the form of <code>host:port</code>.</p>
+</li>
+<li>
+<p><code>GroupId</code>: Client group id string. All clients sharing the same group.id belong to the same group.</p>
+</li>
+<li>
+<p><code>Topics</code>: Topics where the event will be read from.</p>
+</li>
+<li>
+<p><code>AutoCommit</code>: Automatically and periodically commit offsets in the background. Note: setting this to false does not prevent the consumer from fetching previously committed start offsets. To circumvent this behaviour set specific start offsets per partition in the call to assign()</p>
+</li>
+<li>
+<p><code>StatisticsIntervalMs</code>: librdkafka statistics emit interval. The application also needs to register a stats callback using <code>rd_kafka_conf_set_stats_cb()</code>. The granularity is 1000ms. A value of 0 disables statistics</p>
+</li>
+<li>
+<p><code>SessionTimeoutMs</code>: Client group session and failure detection timeout. The consumer sends periodic heartbeats (heartbeat.interval.ms) to indicate its liveness to the broker. If no hearts are received by the broker for a group member within the session timeout, the broker will remove the consumer from the group and trigger a rebalance. Default is <code>0</code>.</p>
+</li>
+<li>
+<p><code>AutoOffsetReset</code>: Action to take when there is no initial offset in offset store or the desired offset is out of range: 'smallest','earliest' - automatically reset the offset to the smallest offset, 'largest','latest' - automatically reset the offset to the largest offset, 'error' - trigger an error which is retrieved by consuming messages and checking 'message-&gt;err'</p>
+</li>
+<li>
+<p><code>EnablePartitionEof</code>: Verify CRC32 of consumed messages, ensuring no on-the-wire or on-disk corruption to the messages occurred. This check comes at slightly increased CPU usage</p>
+</li>
+<li>
+<p><code>IsolationLevel</code>: Controls how to read messages written transactionally: <code>ReadCommitted</code> - only return transactional messages which have been committed. <code>ReadUncommitted</code> - return all messages, even transactional messages which have been aborted.</p>
+</li>
+<li>
+<p><code>EnableSslCertificateVerification</code>: Enable OpenSSL&#8217;s builtin broker (server) certificate verification. Default is <code>true</code>.</p>
+</li>
+<li>
+<p><code>Debug</code>: A comma-separated list of debug contexts to enable. Detailed Producer debugging: broker,topic,msg. Consumer: consumer,cgrp,topic,fetch</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_setting-up-in-devon">Setting up in Devon</h3>
+<div class="paragraph">
+<p>For setting it up using the Devon4Net WebApi template just configure it in the <code>appsettings.Development.json</code>. You can do this by copying the previously showed configuration with your desired values.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+Please refer to the "How to use Kafka" and "Kafka template" documentation to learn more about Kafka.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_setting-up-in-other-projects">Setting up in other projects</h3>
+<div class="paragraph">
+<p>For setting it up in other projects install it running the following command in the Package Manager Console, or using the Package Manager in Visual Studio:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="console language-console">install-package Devon4Net.Infrastructure.Kafka</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will install all the packages the component needs to work properly. Now set the configuration in the <code>appsettings.{enviroment}.json</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"Kafka": {
+    "EnableKafka": true,
+    "Administration": [
+      {
+        "AdminId": "Admin1",
+        "Servers": "127.0.0.1:9092"
+      }
+    ],
+    "Producers": [
+      {
+        "ProducerId": "Producer1",
+        "Servers": "127.0.0.1:9092",
+        "ClientId": "client1",
+        "Topic": "devonfw",
+        "MessageMaxBytes": 1000000,
+        "CompressionLevel": -1,
+        "CompressionType": "None",
+        "ReceiveMessageMaxBytes": 100000000,
+        "EnableSslCertificateVerification": false,
+        "CancellationDelayMaxMs": 100,
+        "Ack": "None",
+        "Debug": "",
+        "BrokerAddressTtl": 1000,
+        "BatchNumMessages": 1000000,
+        "EnableIdempotence": false,
+        "MaxInFlight": 5,
+        "MessageSendMaxRetries": 5,
+        "BatchSize": 100000000
+      }
+    ],
+    "Consumers": [
+      {
+        "ConsumerId": "Consumer1",
+        "Servers": "127.0.0.1:9092",
+        "GroupId": "group1",
+        "Topics": "devonfw",
+        "AutoCommit": true,
+        "StatisticsIntervalMs": 0,
+        "SessionTimeoutMs": 10000,
+        "AutoOffsetReset": "Largest",
+        "EnablePartitionEof": true,
+        "IsolationLevel": "ReadCommitted",
+        "EnableSslCertificateVerification": false,
+        "Debug": ""
+      }
+    ]
+  }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Navigate to your <code>Program.cs</code> file and add the following lines to configure the component:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="c# language-c#">using Devon4Net.Application.WebAPI.Configuration;
+.
+.
+.
+builder.Services.SetupKafka(builder.Configuration);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As you will be able to tell, the process is very similar to installing other components. Doing the previous actions will allow you to use the different handlers available with kafka. You can learn more</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+Please refer to the "How to use Kafka" and "Kafka template" documentation to learn more about Kafka.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_devon4net.wiki_packages.asciidoc_devon4net.infrastructure.grpc">Devon4Net.Infrastructure.Grpc</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As you may know at this point in Grpc communication two parties are involved: the client and the server. The server provides an implementation of a service that the client can access. Both have access to a file that acts as a contract between them, this way each of them can be written in a different language. This file is the protocol buffer.</p>
+</div>
+<div class="paragraph">
+<p>To learn more you can read "Grpc Template" and "How to use Grpc" in devon documentation or forward to <a href="https://grpc.io/">gRPC official site</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_configuration">Configuration</h3>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_packages.asciidoc_grpc-server">Grpc server</h4>
+<div class="paragraph">
+<p>The server does not need any type of specific configuration options other than the certificates, headers or other components that need to be used in the same project.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_packages.asciidoc_grpc-client">Grpc Client</h4>
+<div class="paragraph">
+<p>On the other hand, the client needs the following configuration on the <code>appsettings.{environment}.json</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"Grpc" : {
+    "EnableGrpc": true,
+    "UseDevCertificate": true,
+    "GrpcServer": "https://localhost:5002",
+    "MaxReceiveMessageSize": 16,
+    "RetryPatternOptions": {
+      "MaxAttempts": 5,
+      "InitialBackoffSeconds": 1,
+      "MaxBackoffSeconds": 5,
+      "BackoffMultiplier": 1.5,
+      "RetryableStatus": "Unavailable"
+    }
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>EnableGrpc</code>: Boolean to enable the use of Grpc component.</p>
+</li>
+<li>
+<p><code>UseDevCertificate</code>: Boolean to bypass validation of client certificate. Only for development purposes.</p>
+</li>
+<li>
+<p><code>GrpcServer</code>: Grpc server host and port number in the form of <code>Host:Port</code></p>
+</li>
+<li>
+<p><code>MaxReceiveMessageSize</code>: Maximum size of message that can be received by the server in MB.</p>
+</li>
+<li>
+<p><code>RetryPatternOptions</code>: Options for the retry pattern applied when communicating with the server.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>MaxAttempts</code>: Maximum number of communication attempts.</p>
+</li>
+<li>
+<p><code>InitialBackoffSeconds</code>: Initial delay time for next try in seconds. A randomized delay between 0 and the current backoff value will determine when the next retry attempt is made.</p>
+</li>
+<li>
+<p><code>MaxBackoffSeconds</code>: Maximum time in seconds that work as an upper limit on exponential backoff growth.</p>
+</li>
+<li>
+<p><code>BackoffMultiplier</code>: The backoff time will be multiplied by this number in its growth.</p>
+</li>
+<li>
+<p><code>RetryableStatus</code>: Status of the requests that may be retried.</p>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Status</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Code</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OK</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cancelled</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unknown</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">InvalidArgument</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DeadlineExceeded</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">NotFound</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AlreadyExists</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PermissionDenied</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">7</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unauthenticated</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0x10</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ResourceExhausted</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">FailedPrecondition</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">9</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Aborted</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OutOfRange</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">11</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unimplemented</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">12</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Internal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">13</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unavailable</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">14</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DataLoss</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0xF</p></td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_setting-up-in-devon">Setting up in Devon</h3>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_packages.asciidoc_grpc-server">Grpc Server</h4>
+<div class="paragraph">
+<p>For setting up a Grpc server in a devon project you will need to first create the service that implements the contract specified in the proto file. Below an example of service is shown:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="c# language-c#">[GrpcDevonServiceAttribute]
+public class GreeterService : Greeter.GreeterBase
+{
+    public GreeterService() { }
+
+    public override Task&lt;HelloReply&gt; SayHello(HelloRequest request, ServerCallContext context)
+    {
+        return Task.FromResult(new HelloReply
+        {
+            Message = "Hello " + request.Name
+        });
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This previous example of service will be extending the following protocol buffer (<code>.proto</code> file):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="proto language-proto">syntax = "proto3";
+option csharp_namespace = "Devon4Net.Application.GrpcServer.Protos";
+package greet;
+
+service Greeter {
+  rpc SayHello (HelloRequest) returns (HelloReply);
+}
+
+message HelloRequest {
+  string name = 1;
+}
+
+message HelloReply {
+  string message = 1;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once you have all your services created you will need to add them as Grpc services on your server. All of the services marked with the <code>GrpcDevonService</code> attribute will be automatically added, but you need to specify the assembly names where they are implemented. For that you can modify the following lines in the <code>Program.cs</code> file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="c# language-c#">app.SetupGrpcServices(new List&lt;string&gt; { "Devon4Net.Application.GrpcServer" });</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>SetupGrpcServices</code> method will accept a list of assembly names so feel free to organize your code as desired.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_packages.asciidoc_grpc-client">Grpc Client</h4>
+<div class="paragraph">
+<p>In the client side, you will need to add the configuration with your own values on the <code>appsettings.{environment}.json</code> file, for that copy the configuration JSON shown in the previous part and add your own values.</p>
+</div>
+<div class="paragraph">
+<p>Everything is ready if you are using the template. So next step will be use the GrpcChanel via dependency injection and use the service created before as shown:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="c# language-c#">[ApiController]
+[Route("[controller]")]
+public class GrpcGreeterClientController : ControllerBase
+{
+    private GrpcChannel GrpcChannel { get; }
+
+    public GrpcGreeterClientController(GrpcChannel grpcChannel)
+    {
+        GrpcChannel = grpcChannel;
+    }
+
+    [HttpGet]
+    [ProducesResponseType(typeof(HelloReply), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task&lt;HelloReply&gt; Get(string name)
+    {
+        try
+        {
+            var client = new Greeter.GreeterClient(GrpcChannel);
+            return await client.SayHelloAsync(new HelloRequest { Name = name }).ResponseAsync.ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            Devon4NetLogger.Error(ex);
+            throw;
+        }
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_setting-up-in-other-projects">Setting up in other projects</h3>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_packages.asciidoc_grpc-server">Grpc Server</h4>
+<div class="paragraph">
+<p>For setting up a Grpc server in other projects you will need to install the component running the following command in the Package Manager Console, or using the Package Manager in Visual Studio:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="console language-console">install-package Devon4Net.Infrastructure.Grpc</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will install all the packages the component needs to work properly. Navigate to your <code>Program.cs</code> file and add the following lines to configure the component.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="c# language-c#">using Devon4Net.Infrastructure.Grpc;
+.
+.
+.
+builder.Services.AddGrpc();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You will need to add the assembly names for the services you created in the following line, so they can be automatically deployed to your server:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="c# language-c#">app.SetupGrpcServices(new List&lt;string&gt; { "Devon4Net.Application.GrpcServer" });</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+Please refer to "Grpc template" and "How to use Grpc" documentation to learn more.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_packages.asciidoc_grpc-client">Grpc Client</h4>
+<div class="paragraph">
+<p>For setting up a Grpc client in other projects you will need to install the component running the following command in the Package Manager Console, or using the Package Manager in Visual Studio:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="console language-console">install-package Devon4Net.Infrastructure.Grpc</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now set the configuration in the <code>appsettings.{enviroment}.json</code> file as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"Grpc" : {
+    "EnableGrpc": true,
+    "UseDevCertificate": true,
+    "GrpcServer": "https://localhost:5002",
+    "MaxReceiveMessageSize": 16,
+    "RetryPatternOptions": {
+      "MaxAttempts": 5,
+      "InitialBackoffSeconds": 1,
+      "MaxBackoffSeconds": 5,
+      "BackoffMultiplier": 1.5,
+      "RetryableStatus": "Unavailable"
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Navigate to your <code>Program.cs</code> file and add the following lines to configure the component:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="c# language-c#">using Devon4Net.Infrastructure.Grpc;
+.
+.
+.
+builder.Services.SetupGrpc(builder.Configuration);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Following this steps will allow you to use <code>GrpcChannel</code> via dependency injection in your classes, so you can call any procedure through Grpc communication.</p>
 </div>
 </div>
 </div>
@@ -2163,7 +2898,7 @@ We can notice this error if we do not enter the needed data:</p>
 <div class="content">
 <img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/fluent-validation-error.png" alt="fluent validation error">
 </div>
-<div class="title">Figure 2. Fluent Validation exceptions</div>
+<div class="title">Figure 3. Fluent Validation exceptions</div>
 </div>
 <div class="paragraph">
 <p>We can also develop Custom Validators by utilizing the Predicate Validator to define a custom validation function.
@@ -2445,7 +3180,7 @@ The flexibility gained by moving to CQRS enables a system to grow more effective
 <div class="content">
 <img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/CQRS.png" alt="CQRS">
 </div>
-<div class="title">Figure 3. CQRS Diagram</div>
+<div class="title">Figure 4. CQRS Diagram</div>
 </div>
 <div class="paragraph">
 <p>In this figure, we can see how we may implement this design by utilizing a Relational Database for Write operations and a <a href="https://docs.microsoft.com/en-us/azure/architecture/patterns/materialized-view">Materialized view</a> of this Database that is synchronized and updated via events.</p>
@@ -2575,7 +3310,7 @@ This expects your request message object as an argument. In the <code>MediatrReq
 <div class="sect2">
 <h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_setting-up-in-devon">Setting up in Devon</h3>
 <div class="paragraph">
-<p>For setting it up using the Devon4NetApi template just configure it in the <code>appsettings.Development.json</code> file.</p>
+<p>For setting it up using the Devon4NetApi template just configure it in the <code>appsettings.{environment}.json</code> file.</p>
 </div>
 <div class="paragraph">
 <p>A template is available in the MediatRManagement folder of the <code>Devon4Net.Application.WebAPI.Implementation</code> Business Layer:</p>
@@ -2584,7 +3319,7 @@ This expects your request message object as an argument. In the <code>MediatrReq
 <div class="content">
 <img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/MediatR-management.png" alt="MediatR management">
 </div>
-<div class="title">Figure 4. MediatR Management Folder Structure</div>
+<div class="title">Figure 5. MediatR Management Folder Structure</div>
 </div>
 <div class="paragraph">
 <p>As we can see, this example adheres to the CQRS pattern structure, with Commands for writing methods and Queries for reading operations, as well as one handler for each method:</p>
@@ -2766,7 +3501,7 @@ Delegate is the core of this C# design pattern.</p>
 <div class="content">
 <img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/publish-suscribe.png" alt="publish suscribe">
 </div>
-<div class="title">Figure 5. RabbitMQ Queue system</div>
+<div class="title">Figure 6. RabbitMQ Queue system</div>
 </div>
 <div class="paragraph">
 <p>To summarize :</p>
@@ -2891,7 +3626,7 @@ Please refer to the <a href="https://github.com/EasyNetQ/EasyNetQ/wiki/Connectin
 <div class="content">
 <img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/RabbitMqManagement.png" alt="RabbitMqManagement">
 </div>
-<div class="title">Figure 6. RabbitMQ Management folder structure</div>
+<div class="title">Figure 7. RabbitMQ Management folder structure</div>
 </div>
 <div class="ulist">
 <ul>
@@ -3006,7 +3741,7 @@ builder.Services.SetupDependencyInjection(builder.Configuration);</code></pre>
 <i class="icon-note" title=""></i>
 </td>
 <td class="content">
-Please see the <a href="https://www.rabbitmq.com/download.html"> RabbitMQ official documentation</a> for instructions on installing the RabbitMQ Server.
+Please see the <a href="https://www.rabbitmq.com/download.html"> RabbitMQ official documentation</a> for instructions on installing the RabbitMQ Server. You can also visit the <a href="#devonfw-guide_devon4net.wiki_howto.asciidoc">RabbitMQ How-to section</a>
 </td>
 </tr>
 </table>
@@ -3028,7 +3763,7 @@ You can see how existing middlewares are organized in a typical app and where ad
 <div class="content">
 <img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/middleware-life-cycle.png" alt="middleware life cycle">
 </div>
-<div class="title">Figure 7. Middleware Order</div>
+<div class="title">Figure 8. Middleware Order</div>
 </div>
 <div class="paragraph">
 <p>The ASP.NET Core request pipeline is composed of a number of request delegates that are called one after the other. This concept is illustrated in the diagram below. The execution thread is shown by the black arrows.</p>
@@ -3037,7 +3772,7 @@ You can see how existing middlewares are organized in a typical app and where ad
 <div class="content">
 <img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/middleware-delegates-flow.png" alt="middleware delegates flow">
 </div>
-<div class="title">Figure 8. Delegates flow in middleware</div>
+<div class="title">Figure 9. Delegates flow in middleware</div>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_configuration">Configuration</h3>
@@ -3111,7 +3846,7 @@ Please refer to the <a href="#devonfw-guide_devon4net.wiki_howto.asciidoc">How T
 <div class="content">
 <img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/headers-middleware.png" alt="headers middleware">
 </div>
-<div class="title">Figure 9. Response Headers</div>
+<div class="title">Figure 10. Response Headers</div>
 </div>
 </li>
 <li>
@@ -3158,7 +3893,7 @@ Please refer to the <a href="#devonfw-guide_devon4net.wiki_howto.asciidoc">How T
 <div class="sect2">
 <h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_setting-up-in-devon">Setting up in Devon</h3>
 <div class="paragraph">
-<p>For setting it up using the Devon4NetApi template just configure it in the appsettings.Development.json file.</p>
+<p>For setting it up using the Devon4NetApi template just configure it in the <code>appsettings.{environment}.json</code> file.</p>
 </div>
 </div>
 <div class="sect2">
@@ -3232,14 +3967,14 @@ app.SetupMiddleware(builder.Services);</code></pre>
 <div class="content">
 <img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/Unit-of-work.png" alt="Unit of work">
 </div>
-<div class="title">Figure 10. Unit of work diagram</div>
+<div class="title">Figure 11. Unit of work diagram</div>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_configuration">Configuration</h3>
 <div class="paragraph">
-<p>Connection strings must be added to the configuration in the file <code>appsettings.environment.json</code> as follows:</p>
+<p>Connection strings must be added to the configuration in the file <code>appsettings.{environment}.json</code> as follows:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3253,7 +3988,7 @@ app.SetupMiddleware(builder.Services);</code></pre>
 <div class="sect2">
 <h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_setting-up-in-devon">Setting up in Devon</h3>
 <div class="paragraph">
-<p>For setting it up using the Devon4NetApi template just configure the connection strings in the <code>appsettings.Development.json</code> file.</p>
+<p>For setting it up using the Devon4NetApi template just configure the connection strings in the <code>appsettings.{environment}.json</code> file.</p>
 </div>
 <div class="paragraph">
 <p>To add Databases, use the SetupDatabase method in the <code>DevonConfiguration.cs</code> file:</p>
@@ -3598,7 +4333,7 @@ builder.Services.SetupUnitOfWork(typeof(Configuration));</code></pre>
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-06-16 10:44:18 UTC
+Last updated 2022-06-17 11:24:53 UTC
 </sub></div>
 </div>
 </div>

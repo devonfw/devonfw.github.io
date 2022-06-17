@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>OWASP Top 10</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="/website/assets/scripts/lunr.min.js"></script>
+<!-- JQuery -->
+<script src="/website/assets/scripts/jquery.min.js"></script>
+<link rel="stylesheet" href="/website/assets/styles/font-awesome.min.css">
+<link rel="stylesheet" href="/website/assets/styles/googlecode.min.css">
+<script src="/website/assets/scripts/highlight.min.js"></script>
+<script src="/website/assets/scripts/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="/website/assets/styles/bootstrap.min.css">
+
+<script src="/website/assets/scripts/anchor.min.js"></script>
+
+<script src="/website/components/header/search-engine/bundle.js"></script>
+
+<script src="/website/shared/rightmenu.js"></script>
+
+<!-- ************** Google analytics ************ -->
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+
+gtag('consent', 'default', {
+  'analytics_storage': 'denied'
+});
+</script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+<script>
+  function consentGranted() {
+    gtag('consent', 'update', {
+      'analytics_storage': 'granted'
+    });
+  }
+</script>
+
+<!-- ******************************************** -->
+
+
+</head>
+<body id="devonfw-guide_devon4net.wiki_security.asciidoc" class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="https://www.katacoda.com/devonfw">Tutorials</a></p>
+</li>
+<li>
+<p><a href="/website/pages/solutions/index.html">Solutions</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Docs</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"
+      autocomplete="off"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div id="preamble">
+<div class="sectionbody">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#devonfw-guide_devon4net.wiki_security.asciidoc_overview">Overview</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_security.asciidoc_categories">Categories</a>
+<ul class="sectlevel2">
+<li><a href="#devonfw-guide_devon4net.wiki_security.asciidoc_a012021-broken-access-control">A01:2021-Broken Access Control</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_security.asciidoc_a022021-cryptographic-failures">A02:2021-Cryptographic Failures</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_security.asciidoc_a032021-injection">A03:2021-Injection</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_security.asciidoc_a042021-insecure-design">A04:2021-Insecure Design</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_security.asciidoc_a052021-security-misconfiguration">A05:2021-Security Misconfiguration</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_security.asciidoc_a062021-vulnerable-and-outdated-components">A06:2021-Vulnerable and Outdated Components</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_security.asciidoc_a072021-identification-and-authentication-failures">A07:2021-Identification and Authentication Failures</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_security.asciidoc_a082021-software-and-data-integrity-failures">A08:2021-Software and Data Integrity Failures</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_security.asciidoc_a092021-security-logging-and-monitoring-failures">A09:2021-Security Logging and Monitoring Failures</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_security.asciidoc_a102021-server-side-request-forgery">A10:2021-Server-Side Request Forgery</a></li>
+</ul>
+</li>
+<li><a href="#devonfw-guide_devon4net.wiki_security.asciidoc_sonarqube">SonarQube</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_security.asciidoc_references">References</a></li>
+</ul>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_devon4net.wiki_security.asciidoc_overview">Overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The OWASP Top 10 is a standard awareness document for web application security and developers.
+It reflects widespread agreement on the most serious security threats to web applications.</p>
+</div>
+<div class="paragraph">
+<p>In the Top 10 for 2021, there are three new categories, four with nomenclature and scoping modifications, and some consolidation.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/OWASP-Top10.png" alt="OWASP Top10">
+</div>
+<div class="title">Figure 1. Changes between OWASP top 10 (2017-2021)</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_devon4net.wiki_security.asciidoc_categories">Categories</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Name</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A01:2021-Broken Access Control</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Access control ensures that users do not exceed their intended permissions.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A02:2021-Cryptographic Failures</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cryptographic failures (or lack thereof), which frequently result in the exposing of sensitive data</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A03:2021-Injection</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This category includes <code>Cross-site Scripting</code>, <code>SQL Injection</code> and <code>External Control of File Name or Path</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A04:2021-Insecure Design</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Missing or ineffective control design.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A05:2021-Security Misconfiguration</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Including unnecessary features enabled or installed, default accounts and their passwords enabled and unchanged, among <a href="https://owasp.org/Top10/A05_2021-Security_Misconfiguration/">other vulnerabilities</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A06:2021-Vulnerable and Outdated Components</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Every corporation must have a continuous process in place for monitoring, triaging, and implementing updates or configuration changes during the life of the application.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A07:2021-Identification and Authentication Failures</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">To prevent against authentication-related threats, user identity verification, authentication, and session management are crucial.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A08:2021-Software and Data Integrity Failures</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Failures in software and data integrity are caused by code and infrastructure that do not prevent against integrity violations.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A09:2021-Security Logging and Monitoring Failures</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Breach detection is unachievable without logging and monitoring.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A10:2021-Server-Side Request Forgery</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SSRF issues occur when a web application retrieves a remote resource without verifying the user-supplied URL.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_security.asciidoc_a012021-broken-access-control">A01:2021-Broken Access Control</h3>
+<div class="paragraph">
+<p>Access control, also commonly referred to as authorization, is a set of mechanisms and policies that manage access over resources. Usually, once the server has determined your credentials using an authentication mechanism, it will then grant or restrict what resources you can access in the system.</p>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_security.asciidoc_how-to-prevent">How to prevent</h4>
+<div class="paragraph">
+<p>Access control is only effective in trusted server-side code or server-less API, where the attacker cannot modify the access control check or metadata.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Except for public resources, deny by default.</p>
+</li>
+<li>
+<p>Implement access control mechanisms once and re-use them throughout the application, including minimizing Cross-Origin Resource Sharing (CORS) usage.</p>
+</li>
+<li>
+<p>Model access controls should enforce record ownership rather than accepting that the user can create, read, update, or delete any record.</p>
+</li>
+<li>
+<p>Unique application business limit requirements should be enforced by domain models.</p>
+</li>
+<li>
+<p>Disable web server directory listing and ensure file metadata (e.g., .git) and backup files are not present within web roots.</p>
+</li>
+<li>
+<p>Log access control failures, alert admins when appropriate (e.g., repeated failures).</p>
+</li>
+<li>
+<p>Rate limit API and controller access to minimize the harm from automated attack tooling.</p>
+</li>
+<li>
+<p>Stateful session identifiers should be invalidated on the server after logout. Stateless JWT tokens should rather be short-lived so that the window of opportunity for an attacker is minimized. For longer lived JWTs it&#8217;s highly recommended to follow the OAuth standards to revoke access.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_security.asciidoc_solve-it-with-devon">Solve it with Devon</h4>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_security.asciidoc_jwt">JWT</h5>
+<div class="paragraph">
+<p>In devon4net we have the <code>Devon4Net.Infrastructure.JWT</code> component available. This component allows developers restrict access to different functionalities using a Json Web Token. This token has encrypted information, a time-to-live period, and can be verified, refreshed and discarded using cryptographic functions.</p>
+</div>
+<div class="paragraph">
+<p>This JWT verification occurs in the backend of the application so it cannot be bypassed easily.</p>
+</div>
+<div class="paragraph">
+<p>In addition, a developer that uses this component will have to come up with a secure sign in method that provides this token to the application client.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_security.asciidoc_cors">CORS</h5>
+<div class="paragraph">
+<p>Devon implements <code>Devon4Net.Infrastructure.CORS</code>, which allows control over cross-origin resources.
+The user can set it to allow the required hosts.
+CORS policies can also be defined by method, class, or globally.
+There is a pre-configured policy that accepts any origins by default; the program will alert you about it, and it is not recommended in production environments.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_security.asciidoc_a022021-cryptographic-failures">A02:2021-Cryptographic Failures</h3>
+<div class="paragraph">
+<p>The first step is to identify the security requirements for data in transit and at rest.
+Passwords, credit card numbers, health records, personal information, and business secrets, for example, require additional safeguards, particularly if the data is subject to privacy regulations.</p>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_security.asciidoc_how-to-prevent">How to prevent</h4>
+<div class="paragraph">
+<p>Do the following, at a minimum, and consult the references:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Classify data processed, stored, or transmitted by an application. Identify which data is sensitive according to privacy laws, regulatory requirements, or business needs.</p>
+</li>
+<li>
+<p>Don&#8217;t store sensitive data unnecessarily. Discard it as soon as possible or use PCI DSS compliant tokenization or even truncation. Data that is not retained cannot be stolen.</p>
+</li>
+<li>
+<p>Make sure to encrypt all sensitive data at rest.</p>
+</li>
+<li>
+<p>Ensure up-to-date and strong standard algorithms, protocols, and keys are in place; use proper key management.</p>
+</li>
+<li>
+<p>Encrypt all data in transit with secure protocols such as TLS with forward secrecy (FS) ciphers, cipher prioritization by the server, and secure parameters. Enforce encryption using directives like HTTP Strict Transport Security (HSTS).</p>
+</li>
+<li>
+<p>Disable caching for response that contain sensitive data.</p>
+</li>
+<li>
+<p>Apply required security controls as per the data classification.</p>
+</li>
+<li>
+<p>Do not use legacy protocols such as FTP and SMTP for transporting sensitive data.</p>
+</li>
+<li>
+<p>Store passwords using strong adaptive and salted hashing functions with a work factor (delay factor), such as Argon2, scrypt, bcrypt or PBKDF2.</p>
+</li>
+<li>
+<p>Initialization vectors must be chosen appropriate for the mode of operation. For many modes, this means using a CSPRNG (cryptographically secure pseudo random number generator). For modes that require a nonce, then the initialization vector (IV) does not need a CSPRNG. In all cases, the IV should never be used twice for a fixed key.</p>
+</li>
+<li>
+<p>Always use authenticated encryption instead of just encryption.</p>
+</li>
+<li>
+<p>Keys should be generated cryptographically randomly and stored in memory as byte arrays. If a password is used, then it must be converted to a key via an appropriate password base key derivation function.</p>
+</li>
+<li>
+<p>Ensure that cryptographic randomness is used where appropriate, and that it has not been seeded in a predictable way or with low entropy. Most modern APIs do not require the developer to seed the CSPRNG to get security.</p>
+</li>
+<li>
+<p>Avoid deprecated cryptographic functions and padding schemes, such as MD5, SHA1, PKCS number 1 v1.5 .</p>
+</li>
+<li>
+<p>Verify independently the effectiveness of configuration and settings.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_security.asciidoc_solve-it-with-devon">Solve it with Devon</h4>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_security.asciidoc_https">HTTPS</h5>
+<div class="paragraph">
+<p>Although HTTP communication protocol can be used between the server and the client, HTTPS is highly recommended. In devon4net you can easily configure certificates for secure communication with latest public key cryptographic algorithms.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_security.asciidoc_tls">TLS</h5>
+<div class="paragraph">
+<p>HTTPS protocol uses Transport Layer Security (TLS) protocol. So any information floating around in the net is encrypted.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_security.asciidoc_a032021-injection">A03:2021-Injection</h3>
+<div class="paragraph">
+<p>Some of the more common injections are SQL, NoSQL, OS command, Object Relational Mapping (ORM), LDAP, and Expression Language (EL) or Object Graph Navigation Library (OGNL) injection.</p>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_security.asciidoc_how-to-prevent">How to prevent</h4>
+<div class="paragraph">
+<p>Preventing injection requires keeping data separate from commands and queries:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The preferred option is to use a safe API, which avoids using the interpreter entirely, provides a parameterized interface, or migrates to Object Relational Mapping Tools (ORMs).</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+Even when parameterized, stored procedures can still introduce SQL injection if PL/SQL or T-SQL concatenates queries and data or executes hostile data with EXECUTE IMMEDIATE or exec().
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Use positive server-side input validation. This is not a complete defense as many applications require special characters, such as text areas or APIs for mobile applications.</p>
+</li>
+<li>
+<p>For any residual dynamic queries, escape special characters using the specific escape syntax for that interpreter.</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+SQL structures such as table names, column names, and so on cannot be escaped, and thus user-supplied structure names are dangerous. This is a common issue in report-writing software.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Use LIMIT and other SQL controls within queries to prevent mass disclosure of records in case of SQL injection.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_security.asciidoc_solve-it-with-devon">Solve it with Devon</h4>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_security.asciidoc_entity-framework">Entity Framework</h5>
+<div class="paragraph">
+<p>Entity Framework Core is a modern object-database mapper for .NET. It supports LINQ queries, change tracking, updates, and schema migrations. By using EntityFramework we are using parametrized queries, which are a big protection against SQL injection attacks for example.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_security.asciidoc_validation-middleware">Validation Middleware</h5>
+<div class="paragraph">
+<p>In devon4net we use FluentValidation library which can be used through the component <code>Devon4net.Infrastructure.FluentValidation</code>. This component provides a middleware that not only validates the stronged type data, but also any type of injection such as SQL Injection or XSS.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_security.asciidoc_a042021-insecure-design">A04:2021-Insecure Design</h3>
+<div class="paragraph">
+<p>Insecure design is a broad category representing different weaknesses, expressed as “missing or ineffective control design.”
+One factor that contributes to insecure design is a lack of business risk profile inherent in the software or system being produced, which results in a failure to decide what level of security design is necessary.</p>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_security.asciidoc_how-to-prevent">How to Prevent</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Establish and use a secure development lifecycle with AppSec professionals to help evaluate and design security and privacy-related controls</p>
+</li>
+<li>
+<p>Establish and use a library of secure design patterns or paved road ready to use components</p>
+</li>
+<li>
+<p>Use threat modeling for critical authentication, access control, business logic, and key flows</p>
+</li>
+<li>
+<p>Integrate security language and controls into user stories</p>
+</li>
+<li>
+<p>Integrate plausibility checks at each tier of your application (from frontend to backend)</p>
+</li>
+<li>
+<p>Write unit and integration tests to validate that all critical flows are resistant to the threat model. Compile use-cases and misuse-cases for each tier of your application.</p>
+</li>
+<li>
+<p>Segregate tier layers on the system and network layers depending on the exposure and protection needs</p>
+</li>
+<li>
+<p>Segregate tenants robustly by design throughout all tiers</p>
+</li>
+<li>
+<p>Limit resource consumption by user or service</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_security.asciidoc_solve-it-with-devon">Solve it with Devon</h4>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_security.asciidoc_onion-architecture">Onion Architecture</h5>
+<div class="paragraph">
+<p>In devon we use a layered architecture that increases decoupling between components, avoids dependencies of the Internal layer with external layers and can be quickly tested because the application core does not depend on anything.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_security.asciidoc_a052021-security-misconfiguration">A05:2021-Security Misconfiguration</h3>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_security.asciidoc_how-to-prevent">How to prevent</h4>
+<div class="paragraph">
+<p>Secure installation processes should be implemented, including:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A repeatable hardening process makes it fast and easy to deploy another environment that is appropriately locked down. Development, QA, and production environments should all be configured identically, with different credentials used in each environment. This process should be automated to minimize the effort required to set up a new secure environment.</p>
+</li>
+<li>
+<p>A minimal platform without any unnecessary features, components, documentation, and samples. Remove or do not install unused features and frameworks.</p>
+</li>
+<li>
+<p>A task to review and update the configurations appropriate to all security notes, updates, and patches as part of the patch management process (see A06:2021-Vulnerable and Outdated Components). Review cloud storage permissions (e.g., S3 bucket permissions).</p>
+</li>
+<li>
+<p>A segmented application architecture provides effective and secure separation between components or tenants, with segmentation, containerization, or cloud security groups (ACLs).</p>
+</li>
+<li>
+<p>Sending security directives to clients, e.g., Security Headers.</p>
+</li>
+<li>
+<p>An automated process to verify the effectiveness of the configurations and settings in all environments.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_security.asciidoc_solve-it-with-devon">Solve it with Devon</h4>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_security.asciidoc_environment">Environment</h5>
+<div class="paragraph">
+<p>Devon4net is configurable and has many packages that can be adjusted to your needs through a configuration file.</p>
+</div>
+<div class="paragraph">
+<p>This file can have variations for each available environment, for example, we can have a configuration file for the production environment <code>appsettings.Production.json</code> and another for development <code>appsettings.Development.json</code>, each with different configuration.</p>
+</div>
+<div class="paragraph">
+<p>Thanks to .Net we can also specify some code for different environments. For example, maybe we want to add a default user if the environment is Development so we can do our testing. We can specify the code for adding this user with the condition of the environment being Development and this code wont be compiled in other enviroment than the specified.</p>
+</div>
+<div class="paragraph">
+<p>This provides the application with security because we treat each environment differently, increasing security in released versions.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_security.asciidoc_middleware">Middleware</h5>
+<div class="paragraph">
+<p>Talking to remove unnecesary information, devon4net provides developers with a middleware that allows you to hide headers that could consist a vulnerability for the application revealing unnecesary data such as server OS.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_security.asciidoc_a062021-vulnerable-and-outdated-components">A06:2021-Vulnerable and Outdated Components</h3>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_security.asciidoc_how-to-prevent">How to prevent</h4>
+<div class="paragraph">
+<p>There should be a patch management process in place to:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Remove unused dependencies, unnecessary features, components, files, and documentation.</p>
+</li>
+<li>
+<p>Continuously inventory the versions of both client-side and server-side components (e.g., frameworks, libraries) and their dependencies using tools like versions, OWASP Dependency Check, retire.js, etc. Continuously monitor sources like Common Vulnerability and Exposures (CVE) and National Vulnerability Database (NVD) for vulnerabilities in the components. Use software composition analysis tools to automate the process. Subscribe to email alerts for security vulnerabilities related to components you use.</p>
+</li>
+<li>
+<p>Only obtain components from official sources over secure links. Prefer signed packages to reduce the chance of including a modified, malicious component (See A08:2021-Software and Data Integrity Failures).</p>
+</li>
+<li>
+<p>Monitor for libraries and components that are unmaintained or do not create security patches for older versions. If patching is not possible, consider deploying a virtual patch to monitor, detect, or protect against the discovered issue.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_security.asciidoc_solve-it-with-devon">Solve it with Devon</h4>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_security.asciidoc_packages-and-libraries">Packages and libraries</h5>
+<div class="paragraph">
+<p>In our framework, we keep all of the libraries and components up to date, constantly evaluating and monitoring all of our libraries searching for vulnerabilities and updated versions, and we don&#8217;t have any unnecessary dependencies. Every time we modify our code, we use <a href="https://www.sonarqube.org/features/security/owasp/?gads_campaign=Europe-1-Generic&amp;gads_ad_group=OWASP&amp;gads_keyword=owasp%20top%2010&amp;gclid=Cj0KCQjw4PKTBhD8ARIsAHChzRJBUhY1kl96yyGXFzbChZKcCRqTlXNbHIkpS_Dy7M7moOBUhuCjCJUaAipdEALw_wcB">SonarQube</a> to check the code quality and vulnerabilities.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_security.asciidoc_a072021-identification-and-authentication-failures">A07:2021-Identification and Authentication Failures</h3>
+<div class="paragraph">
+<p>Confirmation of the user&#8217;s identity, authentication, and session management is critical to protect against authentication-related attacks.</p>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_security.asciidoc_how-to-prevent">How to prevent</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Where possible, implement multi-factor authentication to prevent automated credential stuffing, brute force, and stolen credential reuse attacks.</p>
+</li>
+<li>
+<p>Do not ship or deploy with any default credentials, particularly for admin users.</p>
+</li>
+<li>
+<p>Implement weak password checks, such as testing new or changed passwords against the top 10,000 worst passwords list.</p>
+</li>
+<li>
+<p>Align password length, complexity, and rotation policies with National Institute of Standards and Technology (NIST) 800-63b&#8217;s guidelines in section 5.1.1 for Memorized Secrets or other modern, evidence-based password policies.</p>
+</li>
+<li>
+<p>Ensure registration, credential recovery, and API pathways are hardened against account enumeration attacks by using the same messages for all outcomes.</p>
+</li>
+<li>
+<p>Limit or increasingly delay failed login attempts, but be careful not to create a denial of service scenario. Log all failures and alert administrators when credential stuffing, brute force, or other attacks are detected.</p>
+</li>
+<li>
+<p>Use a server-side, secure, built-in session manager that generates a new random session ID with high entropy after login. Session identifier should not be in the URL, be securely stored, and invalidated after logout, idle, and absolute timeouts.</p>
+</li>
+</ul>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_security.asciidoc_jwt">JWT</h5>
+<div class="paragraph">
+<p>The authentication service must be implemented by the developer. But devon4net promotes the use of secure session variables thanks to the JWT component <code>Devon4Net.Infrastructure.JWT</code>.</p>
+</div>
+<div class="paragraph">
+<p>This component is prepared to provide session variables that expire and can be refreshed securely if necessary.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_security.asciidoc_a082021-software-and-data-integrity-failures">A08:2021-Software and Data Integrity Failures</h3>
+<div class="paragraph">
+<p>Software and data integrity failures relate to code and infrastructure that does not protect against integrity violations. An example of this is where an application relies upon plugins, libraries, or modules from untrusted sources, repositories, and content delivery networks (CDNs).</p>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_security.asciidoc_how-to-prevent">How to prevent</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Use digital signatures or similar mechanisms to verify the software or data is from the expected source and has not been altered.</p>
+</li>
+<li>
+<p>Ensure libraries and dependencies, such as npm or Maven, are consuming trusted repositories. If you have a higher risk profile, consider hosting an internal known-good repository that&#8217;s vetted.</p>
+</li>
+<li>
+<p>Ensure that a software supply chain security tool, such as OWASP Dependency Check or OWASP CycloneDX, is used to verify that components do not contain known vulnerabilities</p>
+</li>
+<li>
+<p>Ensure that there is a review process for code and configuration changes to minimize the chance that malicious code or configuration could be introduced into your software pipeline.</p>
+</li>
+<li>
+<p>Ensure that your CI/CD pipeline has proper segregation, configuration, and access control to ensure the integrity of the code flowing through the build and deploy processes.</p>
+</li>
+<li>
+<p>Ensure that unsigned or unencrypted serialized data is not sent to untrusted clients without some form of integrity check or digital signature to detect tampering or replay of the serialized data</p>
+</li>
+</ul>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_security.asciidoc_packages-and-libraries">Packages and libraries</h5>
+<div class="paragraph">
+<p>In devon4net we take great care in which packages we include or use.</p>
+</div>
+<div class="paragraph">
+<p>all packages used are official, open source and updated to the latest version available with long-term support (LTS).</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_security.asciidoc_a092021-security-logging-and-monitoring-failures">A09:2021-Security Logging and Monitoring Failures</h3>
+<div class="paragraph">
+<p>This category is to help detect, escalate, and respond to active breaches. Without logging and monitoring, breaches cannot be detected.</p>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_security.asciidoc_how-to-prevent">How to prevent</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>Ensure all login, access control, and server-side input validation failures can be logged with sufficient user context to identify suspicious or malicious accounts and held for enough time to allow delayed forensic analysis.</p>
+</li>
+<li>
+<p>Ensure that logs are generated in a format that log management solutions can easily consume.</p>
+</li>
+<li>
+<p>Ensure log data is encoded correctly to prevent injections or attacks on the logging or monitoring systems.</p>
+</li>
+<li>
+<p>Ensure high-value transactions have an audit trail with integrity controls to prevent tampering or deletion, such as append-only database tables or similar.</p>
+</li>
+<li>
+<p>DevSecOps teams should establish effective monitoring and alerting such that suspicious activities are detected and responded to quickly.</p>
+</li>
+<li>
+<p>Establish or adopt an incident response and recovery plan, such as National Institute of Standards and Technology (NIST) 800-61r2 or later.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_security.asciidoc_solve-it-with-devon">Solve it with Devon</h4>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_security.asciidoc_logging">Logging</h5>
+<div class="paragraph">
+<p>In devon we have the Devon4Net.Infrastructure.Logger component that allows developers to log all the information that they need. It can be organiced in different log levels according to its purpose, for example you can log debugging information or critical errors, into a file or a database.
+Furthermore all the devon4net components have their own logging implemented.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_security.asciidoc_a102021-server-side-request-forgery">A10:2021-Server-Side Request Forgery</h3>
+<div class="paragraph">
+<p>SSRF flaws occur whenever a web application is fetching a remote resource without validating the user-supplied URL. It allows an attacker to coerce the application to send a crafted request to an unexpected destination, even when protected by a firewall, VPN, or another type of network access control list (ACL).</p>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_security.asciidoc_how-to-prevent">How to prevent</h4>
+<div class="ulist">
+<ul>
+<li>
+<p>From Network layer</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Segment remote resource access functionality in separate networks to reduce the impact of SSRF</p>
+</li>
+<li>
+<p>Enforce “deny by default” firewall policies or network access control rules to block all but essential intranet traffic.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>From Application layer:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Sanitize and validate all client-supplied input data</p>
+</li>
+<li>
+<p>Enforce the URL schema, port, and destination with a positive allow list</p>
+</li>
+<li>
+<p>Do not send raw responses to clients</p>
+</li>
+<li>
+<p>Disable HTTP redirections</p>
+</li>
+<li>
+<p>Be aware of the URL consistency to avoid attacks such as DNS rebinding and “time of check, time of use” (TOCTOU) race conditions</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_devon4net.wiki_security.asciidoc_sonarqube">SonarQube</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>SonarQube is a tool for automatically detecting bugs, vulnerabilities, and code smells in your code.
+It may be integrated into your existing workflow to allow for continuous code analysis across project branches and pull requests.</p>
+</div>
+<div class="paragraph">
+<p>It covers also security by raising OWASP Top 10-related issues to developers early in the process,
+SonarQube helps you protect your systems, your data and your users.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/SonarQube-owasp.png" alt="SonarQube owasp">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_devon4net.wiki_security.asciidoc_references">References</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://owasp.org/www-project-top-ten/">OWASP Top 10</a></p>
+</li>
+<li>
+<p><a href="https://www.sonarqube.org/features/security/owasp/?gads_campaign=Europe-1-Generic&amp;gads_ad_group=OWASP&amp;gads_keyword=owasp%20top%2010&amp;gclid=Cj0KCQjw4PKTBhD8ARIsAHChzRJBUhY1kl96yyGXFzbChZKcCRqTlXNbHIkpS_Dy7M7moOBUhuCjCJUaAipdEALw_wcB">SonarQube</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/welcome/welcome.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_getting-started.wiki_introduction-why-should-i-use-devonfw.asciidoc_features.html">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_devon4j.wiki_architecture.asciidoc.html#devonfw-guide_devon4j.wiki_architecture.asciidoc_technology-stack#">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_getting-started.wiki_getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_devon4j.wiki_architecture.asciidoc.html">Architecture</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_ide.wiki_devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_general_master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-guide_ide.wiki_LICENSE.asciidoc.html">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script src="/website/assets/scripts/popper.min.js"></script>
+    <script src="/website/assets/scripts/bootstrap.min.js"></script>
+<div class="footnote"><sub>
+
+Last updated 2022-06-17 11:24:57 UTC
+</sub></div>
+</div>
+</div>
+<link rel="stylesheet" type="text/css" href="https://cginternal.devonfw.com/websitesnippets/main.css">
+<script async src="https://cginternal.devonfw.com/websitesnippets/main.js"></script>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+<script>
+  var internalUrls = ["https://cginternal.devonfw.com/websitesnippets/"];
+  $(".internal").each(function(){
+    internalUrls.forEach((internalUrl, index) => {
+      $.ajax({url: internalUrl + $(this).text() + "/index.html" })
+      .then(r => {
+        var leftDiv = $('<div class="info"><span class="infoText">Internal</span><img class="infoImage" src="' + internalUrl + 'logo.png"/></div>');
+        var rightFirstDiv = $('<div class="message">This is only visible inside of the corporate network.</div>');
+        var rightLastDiv = $('<div class="content"></div>');
+        rightLastDiv.html(r);
+        var rightDiv = $('<div class="right"></div>');
+        rightDiv.append(rightFirstDiv);
+        rightDiv.append(rightLastDiv);
+        $(this).html(leftDiv);
+        $(this).append(rightDiv);
+        $(this).addClass("internal-active");
+        $(this).removeClass("internal");
+      })
+    });
+	});
+</script>
+<script>
+      let cookieName = 'cookie_consent';
+      let expiryTime = new Date(2037, 11, 21);
+      let today = new Date();
+      let cookieConsentDeclinedDate = localStorage.getItem("cookie_consent_declined");
+      let dateDiffHours = 0;
+      let cookieConsentHtml = `
+      <div id="cookie-consent">
+        <p>
+          We use cookies to perform analytics and enhance user experience. Do you accept to the use of cookies?
+        </p>
+        <p class="cookie-consent-buttons">
+          <a id="decline-cookie-btn" class="btn white-button" href="javascript:void(0)">Decline</a>
+          <a id="accept-cookie-btn" class="btn blue-button" href="javascript:void(0)">Accept</a>
+        </p>
+      </div>
+      `;
+      dateDiffHours = cookieConsentDeclinedDate ? Math.abs(cookieConsentDeclinedDate - today) / 36e5 : 0;
+      if (document.cookie.indexOf(cookieName) < 0) {
+        if (cookieConsentDeclinedDate) {
+          if (dateDiffHours > 24) {
+            $("body").append(cookieConsentHtml);
+          }
+        } else {
+          $("body").append(cookieConsentHtml);
+        }
+      }
+      $("#accept-cookie-btn").click(function() {
+        document.cookie = `${cookieName}=accept;expires=${expiryTime};path=/`;
+        localStorage.removeItem("cookie_consent_declined");
+        consentGranted();
+        $("#cookie-consent").hide();
+      });
+      $("#decline-cookie-btn").click(function() {
+        localStorage.setItem("cookie_consent_declined", today);
+        $("#cookie-consent").hide();
+      });
+</script>
+</body>
+</html>
