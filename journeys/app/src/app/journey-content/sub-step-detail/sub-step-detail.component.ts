@@ -6,7 +6,7 @@ import { loadStep } from '../../state/steps/step.actions';
 import { getStepDataState,} from '../../state/steps/step.selector';
 import { take, first } from 'rxjs/operators';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { getFirstStep, getStepData } from "../../state/steps/step.selector";
+import {  getStepData } from "../../state/steps/step.selector";
 
 @Component({
   selector: 'app-sub-step-detail',

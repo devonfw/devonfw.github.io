@@ -24,16 +24,17 @@ export const getStepData = ({ step_id: step_id }) => createSelector(
   }
   )
 
-export const getFirstStep =  createSelector(
+export const getStepArray  =  createSelector(
   getAppState,
-  (state: AppState) => { return state.dataState.journeyData.sections
-  }
+  (state: AppState) => { return state.dataState.journeyData.sections}
 )
-export const getLastStep =  createSelector(
-  getAppState,
-  (state: AppState) => {return state.dataState.journeyData.sections
-  }
-)
+
+// export const getFirstStep  =  createSelector(
+//   getAppState,
+//   (state: AppState) => { return state.dataState.journeyData.sections.filter(x => typeof x!==undefined).shift().sections[0]}
+// )
+
+
 
 
 
