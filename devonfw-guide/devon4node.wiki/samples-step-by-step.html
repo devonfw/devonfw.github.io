@@ -21,7 +21,7 @@
 <!-- ************************************* -->
 
 
-<title>Create the employee sample step by step</title>
+<title>Create the employee sample application step by step</title>
 <!-- devonfw website stylesheet -->
 <link rel="stylesheet" type="text/css" href="/devonfw.css">
 <!-- Lunr -->
@@ -118,263 +118,542 @@ gtag('consent', 'default', {
 <div class="toc2">
 <div class="title">Table of Contents</div>
 <ul class="sectlevel0">
-<li><a href="#devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc">Create the employee sample step by step</a>
+<li><a href="#devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc">Create the employee sample application step by step</a>
 <ul class="sectlevel1">
+<li><a href="#devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_prerequisites">Prerequisites</a>
+<ul class="sectlevel2">
+<li><a href="#devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_typescript">Typescript</a></li>
+<li><a href="#devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_node.js">Node.js</a></li>
+<li><a href="#devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_nestjs">NestJS</a></li>
+</ul>
+</li>
+<li><a href="#devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_employee-application">Employee application</a>
+<ul class="sectlevel2">
 <li><a href="#devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_application-requisites">Application requisites</a></li>
-<li><a href="#devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_create-the-application">Create the application</a></li>
+</ul>
+</li>
+<li><a href="#devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_create-the-application">Create the application</a>
+<ul class="sectlevel2">
+<li><a href="#devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_first-steps-optional">First steps (optional)</a></li>
+<li><a href="#devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_create-the-application-skeleton">Create the application skeleton</a></li>
+<li><a href="#devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_configuration-module">Configuration Module</a></li>
+<li><a href="#devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_database">Database</a></li>
+<li><a href="#devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_security">Security</a></li>
+<li><a href="#devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_openapi">OpenAPI</a></li>
+<li><a href="#devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_authentication">Authentication</a></li>
+<li><a href="#devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_create-the-employee-crud">Create the employee CRUD</a></li>
 </ul>
 </li>
 </ul>
-<h1 id="devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc" class="sect0">Create the employee sample step by step</h1>
+</li>
+</ul>
+<h1 id="devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc" class="sect0">Create the employee sample application step by step</h1>
+<div class="paragraph">
+<p>Here, you will learn step by step how to create a devon4node application.</p>
+</div>
 <div class="sect1">
-<h2 id="devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_application-requisites">Application requisites</h2>
+<h2 id="devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_prerequisites">Prerequisites</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_typescript">Typescript</h3>
+<div class="paragraph">
+<p>In order to follow this guide, you must have a basic knowledge about typescript and its syntax. You can learn Typescript using these resources:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#devonfw-guide/devon4node.wiki_https://github.com/soyrochus/diggingjsandts/blob/master/Digging%20(in)%20JavaScript%20and%20TypeScript.pdf">Digging (in) Javascript and Typescript</a></p>
+</li>
+<li>
+<p><a href="#devonfw-guide/devon4node.wiki_https://www.typescriptlang.org/docs/handbook/intro.html">Typescript handbook</a></p>
+</li>
+<li>
+<p><a href="#devonfw-guide/devon4node.wiki_https://basarat.gitbook.io/typescript/">Typescript Deep Dive</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_node.js">Node.js</h3>
+<div class="paragraph">
+<p>Node.js is the runtime used in devon4node. It is required a basic knowledge about Node.js before starting to use devon4node.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="#devonfw-guide/devon4node.wiki_https://nodejs.dev/learn/">Learn Node.js</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_nestjs">NestJS</h3>
+<div class="paragraph">
+<p>devon4node is not a framework, is a set of good practices, modules and code generators to use with NestJS. In order to use devon4node, it requires NestJS basic knowledge. You can learn about NestJS in its <a href="#devonfw-guide/devon4node.wiki_https://docs.nestjs.com/">official documentation</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_employee-application">Employee application</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The employee application needs:</p>
+<p>The <code>employee</code> is an application that allows you to manage your employee&#8217;s information. With this applacation you will be able to register employees with its details, update existing employees details, get the registered employees and delete exiting employees.</p>
 </div>
+<div class="paragraph">
+<p>In this guide, we will create the employee&#8217;s application step by step, showing you how to create a devon4node application from scratch.</p>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_application-requisites">Application requisites</h3>
 <div class="ulist">
 <ul>
 <li>
-<p>A configuration module</p>
+<p>A <a href="#devonfw-guide_devon4node.wiki_guides-configuration-module.asciidoc">configuration module</a>, to manage different environments configuration properly.</p>
 </li>
 <li>
-<p>A SQLite in memory database</p>
+<p>A SQLite in memory database managed by <a href="#devonfw-guide/devon4node.wiki_https://typeorm.io/">TypeORM</a>.</p>
 </li>
 <li>
-<p>Security: CORS</p>
+<p>Security: <a href="#devonfw-guide/devon4node.wiki_https://docs.nestjs.com/security/cors">CORS</a> + <a href="#devonfw-guide/devon4node.wiki_https://docs.nestjs.com/security/helmet">security headers</a>.</p>
 </li>
 <li>
-<p>Swagger support</p>
+<p><a href="#devonfw-guide/devon4node.wiki_https://docs.nestjs.com/openapi/introduction">OpenAPI</a> (aka Swagger) support following code-fist strategy.</p>
 </li>
 <li>
-<p>Authentication using JWT</p>
+<p><a href="devonfw-guide/devon4node.wiki_https://docs.nestjs.com/security/authentication.html#jwt-functionality">Authentication</a> using JWT.</p>
 </li>
 <li>
-<p>CRUD for manage employees. The employees will have the following properties:</p>
+<p>CRUD to manage employees.</p>
 <div class="ulist">
 <ul>
 <li>
-<p>name</p>
+<p>Create: only available for registered users.</p>
 </li>
 <li>
-<p>surname</p>
+<p>Read: available for everyone.</p>
 </li>
 <li>
-<p>email</p>
+<p>Update: only available for registered users.</p>
+</li>
+<li>
+<p>Delete: only available for admins.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Employees properties:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>name: mandatory string</p>
+</li>
+<li>
+<p>surname: mandatory string</p>
+</li>
+<li>
+<p>email: mandatory email string</p>
+</li>
+<li>
+<p>address: optional string</p>
 </li>
 </ul>
 </div>
 </li>
 </ul>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_create-the-application">Create the application</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_first-steps-optional">First steps (optional)</h3>
+<div class="paragraph">
+<p>If this is the first time that you are using <code>NestJS</code> or <code>devon4node</code>, you need some packages installed globally in your machine:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Nest</code> CLI</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">npm i -g @nestjs/cli</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will provide you the <code>nest</code> command.</p>
+</div>
+</li>
+<li>
+<p><code>devon4node</code> schematics</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">npm i -g @devon4node/schematics</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will provide you the <code>devon4node</code> code generators.</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><code>Yarn</code> is our preferred package manager. However, in this case we have used <code>npm</code> because the folder where npm global packages are installed is added to the PATH by default, while yarn&#8217;s is not. You can use <code>yarn global add</code> if you add the yarn&#8217;s bin folder to the PATH manually (use <code>yarn global bin</code> to get the bin folder path)</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_create-the-application-skeleton">Create the application skeleton</h3>
+<div class="paragraph">
+<p>To create a <code>devon4node</code> application, you must run the <code>nest new</code> command. If you use it without any extra parameter you will create a <code>NestJS</code> application. In order to generate a <code>devon4node</code> application, you need to run the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">nest new -c @devon4node/schematics employee</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When asked for package manager, you must choose <code>yarn</code>.</p>
+</div>
+<div class="paragraph">
+<p>The output should be something like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>❯ nest new -c @devon4node/schematics employee
+⚡  We will scaffold your app in a few seconds..
+
+CREATE employee/.prettierrc (228 bytes)
+CREATE employee/README.md (3340 bytes)
+CREATE employee/nest-cli.json (121 bytes)
+CREATE employee/package.json (2243 bytes)
+CREATE employee/tsconfig.build.json (97 bytes)
+CREATE employee/tsconfig.json (657 bytes)
+CREATE employee/src/main.ts (836 bytes)
+CREATE employee/test/app.e2e-spec.ts (630 bytes)
+CREATE employee/test/jest-e2e.json (183 bytes)
+CREATE employee/src/app/app.controller.spec.ts (617 bytes)
+CREATE employee/src/app/app.controller.ts (274 bytes)
+CREATE employee/src/app/app.module.ts (308 bytes)
+CREATE employee/src/app/app.service.ts (142 bytes)
+CREATE employee/.eslintrc.js (859 bytes)
+CREATE employee/.husky/pre-commit (88 bytes)
+CREATE employee/.vscode/extensions.json (63 bytes)
+CREATE employee/.vscode/settings.json (150 bytes)
+CREATE employee/src/app/core/core.module.ts (401 bytes)
+CREATE employee/src/app/shared/exceptions/entity-not-found.exception.ts (419 bytes)
+CREATE employee/src/app/shared/filters/entity-not-found.filter.ts (711 bytes)
+CREATE employee/src/app/shared/logger/winston.logger.ts (2665 bytes)
+
+? Which package manager would you ❤️  to use? yarn</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now you have a clean base application to start building. To do that, you can choose the pieces that you need, some provided by <code>devon4node</code> <a href="#devonfw-guide_devon4node.wiki_guides-code-generation.asciidoc">code generators</a>, others not, but you must always follow the <code>devon4node</code> <a href="#devonfw-guide_devon4node.wiki_guides-key-principles.asciidoc">key principles</a> and <a href="#devonfw-guide_devon4node.wiki_guides-coding-conventions.asciidoc">coding conventions</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_configuration-module">Configuration Module</h3>
+<div class="paragraph">
+<p>There are many options to manage the application configuration. <code>NestJS</code> provides a <a href="#devonfw-guide/devon4node.wiki_https://docs.nestjs.com/techniques/configuration">module</a>, but out prefered way is to use our own <a href="#devonfw-guide_devon4node.wiki_guides-configuration-module.asciidoc">configuration module</a>. The fastest way to include the configuration module into your project is using the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>nest g config-module</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>❯ nest g config-module
+CREATE src/app/shared/model/config/config.model.ts (720 bytes)
+CREATE src/config/default.ts (391 bytes)
+CREATE src/config/develop.ts (209 bytes)
+CREATE src/config/production.ts (210 bytes)
+CREATE src/config/test.ts (366 bytes)
+CREATE src/config/uat.ts (210 bytes)
+UPDATE package.json (2323 bytes)
+UPDATE src/app/shared/logger/winston.logger.ts (3179 bytes)
+UPDATE src/app/core/core.module.ts (593 bytes)
+UPDATE src/main.ts (1074 bytes)
+✔ Packages installed successfully.</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_database">Database</h3>
+<div class="paragraph">
+<p>In the <code>NodeJS</code> ecosystem there are many alternatives to connect to the database. You can use the drivers directly or use a ORM, but our recommendation is to use <code>TypeORM</code>.</p>
+</div>
+<div class="paragraph">
+<p><code>devon4node</code> provides a generator to integrate into your project <a href="#devonfw-guide/devon4node.wiki_https://typeorm.io/">TypeORM</a>. You only need to execute the command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="bash language-bash">nest g typeorm</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then, you must select the database when asked. In this example we will use <code>SQLite</code>.</p>
+</div>
+<div class="paragraph">
+<p>The output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>❯ nest g typeorm
+? What kind of database do you want to use? sqlite
+CREATE docker-compose.yml (25 bytes)
+CREATE ormconfig.json (467 bytes)
+CREATE src/app/shared/model/entities/base-entity.entity.ts (484 bytes)
+UPDATE package.json (2415 bytes)
+UPDATE src/app/core/core.module.ts (863 bytes)
+UPDATE src/app/shared/model/config/config.model.ts (863 bytes)
+UPDATE src/config/default.ts (409 bytes)
+UPDATE src/config/develop.ts (573 bytes)
+UPDATE src/config/production.ts (574 bytes)
+UPDATE src/config/test.ts (730 bytes)
+UPDATE src/config/uat.ts (574 bytes)
+✔ Packages installed successfully.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now, you have your project already configured to work with <code>TypeORM</code>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_security">Security</h3>
+<div class="paragraph">
+<p>To secure your application against common attacks, you only have to execute the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>nest g security</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>❯ nest g security
+UPDATE package.json (2439 bytes)
+UPDATE src/main.ts (1277 bytes)
+✔ Packages installed successfully.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This installs in your application <a href="#devonfw-guide/devon4node.wiki_https://github.com/helmetjs/helmet">helmet</a>, and enables <a href="#devonfw-guide/devon4node.wiki_https://docs.nestjs.com/security/helmet">helmet</a> and <a href="#devonfw-guide/devon4node.wiki_https://docs.nestjs.com/security/cors">CORS</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_openapi">OpenAPI</h3>
+<div class="paragraph">
+<p>To generate <code>OpenAPI</code> (aka <code>swagger</code>) documentation based in your code, you only need to execute:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>nest g swagger</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>❯ nest g swagger
+UPDATE package.json (2508 bytes)
+UPDATE src/app/shared/model/config/config.model.ts (1162 bytes)
+UPDATE src/config/default.ts (547 bytes)
+UPDATE src/config/develop.ts (711 bytes)
+UPDATE src/config/test.ts (868 bytes)
+UPDATE src/main.ts (1876 bytes)
+UPDATE nest-cli.json (196 bytes)
+UPDATE src/app/shared/model/entities/base-entity.entity.ts (598 bytes)
+✔ Packages installed successfully.</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_authentication">Authentication</h3>
+<div class="paragraph">
+<p>To know all the details about <code>authenticaiton</code> in a <code>devon4node</code> (or <code>NestJS</code>) application, you can follow this <a href="#devonfw-guide/devon4node.wiki_https://docs.nestjs.com/security/authentication">guide</a>.</p>
+</div>
+<div class="paragraph">
+<p>In order to improve the productivity, <code>devon4node</code> has a code generator to add into your project everything described in that <a href="devonfw-guide/devon4node.wiki_https://docs.nestjs.com/security/authentication.html#jwt-functionality">guide</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>nest g auth-jwt</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The output should something similar to:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>❯ nest g auth-jwt
+CREATE src/app/core/auth/auth.module.ts (850 bytes)
+CREATE src/app/core/auth/controllers/auth.controller.spec.ts (3037 bytes)
+CREATE src/app/core/auth/controllers/auth.controller.ts (1311 bytes)
+CREATE src/app/core/auth/decorators/get-user.decorator.ts (331 bytes)
+CREATE src/app/core/auth/decorators/roles.decorator.spec.ts (869 bytes)
+CREATE src/app/core/auth/decorators/roles.decorator.ts (163 bytes)
+CREATE src/app/core/auth/guards/roles.guard.spec.ts (2277 bytes)
+CREATE src/app/core/auth/guards/roles.guard.ts (708 bytes)
+CREATE src/app/core/auth/model/login.dto.ts (360 bytes)
+CREATE src/app/core/auth/model/roles.enum.ts (39 bytes)
+CREATE src/app/core/auth/model/user-request.interface.ts (133 bytes)
+CREATE src/app/core/auth/services/auth.service.spec.ts (3373 bytes)
+CREATE src/app/core/auth/services/auth.service.ts (1263 bytes)
+CREATE src/app/core/auth/strategies/jwt.strategy.spec.ts (690 bytes)
+CREATE src/app/core/auth/strategies/jwt.strategy.ts (669 bytes)
+CREATE src/app/core/user/user.module.ts (359 bytes)
+CREATE src/app/core/user/model/dto/create-user.dto.ts (325 bytes)
+CREATE src/app/core/user/model/dto/user-payload.dto.ts (181 bytes)
+CREATE src/app/core/user/model/entities/user.entity.ts (542 bytes)
+CREATE src/app/core/user/services/user.service.spec.ts (2083 bytes)
+CREATE src/app/core/user/services/user.service.ts (1088 bytes)
+CREATE test/auth/auth.service.mock.ts (913 bytes)
+CREATE test/user/user.repository.mock.ts (1024 bytes)
+UPDATE package.json (2779 bytes)
+UPDATE src/app/core/core.module.ts (1017 bytes)
+UPDATE src/app/shared/model/config/config.model.ts (1279 bytes)
+UPDATE src/config/default.ts (617 bytes)
+UPDATE src/config/develop.ts (781 bytes)
+UPDATE src/config/production.ts (644 bytes)
+UPDATE src/config/test.ts (938 bytes)
+UPDATE src/config/uat.ts (644 bytes)
+✔ Packages installed successfully.</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4node.wiki_samples-step-by-step.asciidoc_create-the-employee-crud">Create the employee CRUD</h3>
+<div class="paragraph">
+<p>Generate a CRUD into your project is fast and easy, your only need to execute the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>nest g resource employees</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The output should something similar to:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>❯ nest g resource employees
+? What transport layer do you use? REST API
+? Would you like to generate CRUD entry points? Yes
+? Which ORM are you using? (No efect if you are not generating the CRUD) TypeORM
+CREATE src/app/employees/employees.module.ts (458 bytes)
+CREATE src/app/employees/controllers/employees.controller.spec.ts (616 bytes)
+CREATE src/app/employees/controllers/employees.controller.ts (1224 bytes)
+CREATE src/app/employees/services/employees.service.spec.ts (481 bytes)
+CREATE src/app/employees/services/employees.service.ts (1999 bytes)
+CREATE src/app/employees/model/dtos/create-employee.dto.ts (34 bytes)
+CREATE src/app/employees/model/dtos/update-employee.dto.ts (180 bytes)
+CREATE src/app/employees/model/entities/employee.entity.ts (169 bytes)
+UPDATE src/app/app.module.ts (389 bytes)
+UPDATE package.json (2817 bytes)
+UPDATE test/app.e2e-spec.ts (609 bytes)
+✔ Packages installed successfully.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This generate the entity, DTOs, controllers and services to expose the CRUD for an empty <code>entity</code>, so now we need to customize it to add the properties, secure the endpoints as described before and improve the default generated OpenAPI documentation.</p>
+</div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Install Nest CLI</p>
-<div class="paragraph">
-<p>Execute the command <code>yarn global add @nestjs/cli</code></p>
-</div>
-</li>
-<li>
-<p>Install devon4node schematics</p>
-</li>
-<li>
-<p>Execute the command <code>yarn global add @devon4node/schematics</code></p>
-</li>
-<li>
-<p>Create the new application</p>
-<div class="paragraph">
-<p>Execute the command <code>nest g -c @devon4node/schematics application employee</code></p>
-</div>
-</li>
-<li>
-<p>Then, we need to add some components, go inside the project folder and execute the following commands:</p>
-<div class="paragraph">
-<p>Go inside project folder: <code>cd employee</code>.</p>
-</div>
-<div class="paragraph">
-<p>Config module: <code>nest g -c @devon4node/schematics config-module</code>.</p>
-</div>
-<div class="paragraph">
-<p>TypeORM database, choose sqlite DB when asked <code>nest g -c @devon4node/schematics typeorm</code>.</p>
-</div>
-<div class="paragraph">
-<p>Add security: <code>nest g -c @devon4node/schematics security</code>.</p>
-</div>
-<div class="paragraph">
-<p>Swagger module: <code>nest g -c @devon4node/schematics swagger</code>.</p>
-</div>
-<div class="paragraph">
-<p>Auth-jwt authentication: <code>nest g -c @devon4node/schematics auth-jwt</code>.</p>
-</div>
-<div class="paragraph">
-<p>Add an application module: <code>nest g -c @devon4node/schematics module employee</code>.</p>
-</div>
-<div class="paragraph">
-<p>Add CRUD component: <code>nest g -c @devon4node/schematics crud employee/employee</code>.</p>
-</div>
-<div class="paragraph">
-<p>With this, you will generate the following files:</p>
-</div>
+<p>Fill the <a href="#devonfw-guide/devon4node.wiki_https://typeorm.io/entities">entity</a> (<code>src/app/employees/model/entities/employee.entity.ts</code>) with the properties and ORM decorators.</p>
 <div class="listingblock">
-<div class="content">
-<pre>/employee/.prettierrc
-/employee/nest-cli.json
-/employee/package.json
-/employee/README.md
-/employee/tsconfig.build.json
-/employee/tsconfig.json
-/employee/tslint.json
-/employee/src/main.ts
-/employee/test/app.e2e-spec.ts
-/employee/test/jest-e2e.json
-/employee/src/app/app.controller.spec.ts
-/employee/src/app/app.controller.ts
-/employee/src/app/app.module.ts
-/employee/src/app/app.service.ts
-/employee/src/app/core/core.module.ts
-/employee/src/app/shared/logger/winston.logger.ts
-/employee/src/app/core/configuration/configuration.module.ts
-/employee/src/app/core/configuration/model/index.ts
-/employee/src/app/core/configuration/model/types.ts
-/employee/src/app/core/configuration/services/configuration.service.spec.ts
-/employee/src/app/core/configuration/services/configuration.service.ts
-/employee/src/app/core/configuration/services/index.ts
-/employee/src/config/default.ts
-/employee/src/config/develop.ts
-/employee/src/config/production.ts
-/employee/src/config/test.ts
-/employee/src/config/uat.ts
-/employee/docker-compose.yml
-/employee/ormconfig.json
-/employee/src/app/shared/model/entities/base-entity.entity.ts
-/employee/src/app/core/auth/auth.module.ts
-/employee/src/app/core/auth/controllers/auth.controller.spec.ts
-/employee/src/app/core/auth/controllers/auth.controller.ts
-/employee/src/app/core/auth/controllers/index.ts
-/employee/src/app/core/auth/decorators/index.ts
-/employee/src/app/core/auth/decorators/roles.decorator.spec.ts
-/employee/src/app/core/auth/decorators/roles.decorator.ts
-/employee/src/app/core/auth/guards/index.ts
-/employee/src/app/core/auth/guards/roles.guard.spec.ts
-/employee/src/app/core/auth/guards/roles.guard.ts
-/employee/src/app/core/auth/model/index.ts
-/employee/src/app/core/auth/model/roles.enum.ts
-/employee/src/app/core/auth/model/user-request.interface.ts
-/employee/src/app/core/auth/services/auth.service.spec.ts
-/employee/src/app/core/auth/services/auth.service.ts
-/employee/src/app/core/auth/services/index.ts
-/employee/src/app/core/auth/strategies/index.ts
-/employee/src/app/core/auth/strategies/jwt.strategy.spec.ts
-/employee/src/app/core/auth/strategies/jwt.strategy.ts
-/employee/src/app/core/user/user.module.ts
-/employee/src/app/core/user/model/index.ts
-/employee/src/app/core/user/model/dto/user-payload.dto.ts
-/employee/src/app/core/user/model/entities/user.entity.ts
-/employee/src/app/core/user/services/index.ts
-/employee/src/app/core/user/services/user.service.spec.ts
-/employee/src/app/core/user/services/user.service.ts
-/employee/test/auth/auth.service.mock.ts
-/employee/test/user/user.repository.mock.ts
-/employee/src/app/employee/employee.module.ts
-/employee/src/app/employee/model/entities/employee.entity.ts
-/employee/src/app/employee/model/index.ts
-/employee/src/app/employee/controllers/employee.crud.controller.ts
-/employee/src/app/employee/services/employee.crud.service.ts
-/employee/src/app/employee/services/index.ts
-/employee/src/app/employee/controllers/index.ts</pre>
-</div>
-</div>
-</li>
-<li>
-<p>Open the VSCode</p>
-<div class="paragraph">
-<p>Execute the commands:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>yarn install
-code .</pre>
-</div>
-</div>
-</li>
-<li>
-<p>Fill in the entity: src/app/employee/model/entities/employee.entity.ts</p>
-<div class="olist loweralpha">
-<ol class="loweralpha" type="a">
-<li>
-<p>Add the columns</p>
-<div class="listingblock">
+<div class="title">Listing 1. <code>src/app/employees/model/entities/employee.entity.ts</code></div>
 <div class="content">
 <pre class="highlight"><code class="typescript language-typescript">@Entity()
 export class Employee extends BaseEntity {
-  @Column('varchar', { length: 255, nullable: true })
-  name?: string;
+  @Column({ length: 255, nullable: false })
+  name!: string;
 
-  @Column('varchar', { length: 255, nullable: true })
-  surname?: string;
+  @Column({ length: 255, nullable: false })
+  surname!: string;
 
-  @Column('varchar', { length: 255, nullable: true })
-  email?: string;
+  @Column({ length: 255, nullable: false })
+  email!: string;
+
+  @Column({ length: 255, nullable: true })
+  address?: string;
 }</code></pre>
 </div>
 </div>
 </li>
 <li>
-<p>Add the validations</p>
+<p>Fill the <code>DTOs</code> with the properties, the validators and the transformations.</p>
 <div class="listingblock">
+<div class="title">Listing 2. <code>src/app/employees/model/dtos/create-employee.dto.ts</code></div>
 <div class="content">
-<pre class="highlight"><code class="typescript language-typescript">@Entity()
-export class Employee extends BaseEntity {
-  @IsDefined({ groups: [CrudValidationGroups.CREATE] })
-  @IsOptional({ groups: [CrudValidationGroups.UPDATE] })
+<pre class="highlight"><code class="typescript language-typescript">export class CreateEmployeeDto {
+  @IsDefined()
+  @IsString()
   @MaxLength(255)
-  @Column('varchar', { length: 255, nullable: true })
-  name?: string;
+  @Expose()
+  name!: string;
 
-  @IsDefined({ groups: [CrudValidationGroups.CREATE] })
-  @IsOptional({ groups: [CrudValidationGroups.UPDATE] })
+  @IsDefined()
+  @IsString()
   @MaxLength(255)
-  @Column('varchar', { length: 255, nullable: true })
-  surname?: string;
+  @Expose()
+  surname!: string;
 
-  @IsDefined({ groups: [CrudValidationGroups.CREATE] })
-  @IsOptional({ groups: [CrudValidationGroups.UPDATE] })
-  @MaxLength(255)
+  @IsDefined()
+  @IsString()
   @IsEmail()
-  @Column('varchar', { length: 255, nullable: true })
-  email?: string;
+  @MaxLength(255)
+  @Expose()
+  email!: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  @Expose()
+  address?: string;
 }</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>The <code>@Expose()</code> decorator is important, if you forget it the <a href="devonfw-guide/devon4node.wiki_https://docs.nestjs.com/pipes.html#transformation-use-case">transformation pipe</a> will ignore it. It works in that way in order to ignore extra fields that are not defined in the DTO.</p>
+</div>
 </li>
 <li>
-<p>Add the transformations</p>
+<p>secure endpoints:</p>
 <div class="paragraph">
-<p>In this specific case, we will not transform any property, but you can see an example in the <code>src/app/shared/model/entities/base-entity.entity.ts</code> file.</p>
+<p>In order to require authentication to your enpoints, you only need to add the <code>AuthGuard</code> guard as shown below:</p>
 </div>
 <div class="listingblock">
+<div class="title">Listing 3. <code>src/app/employees/controllers/employees.controller.ts</code></div>
 <div class="content">
-<pre class="highlight"><code class="typescript language-typescript">export abstract class BaseEntity {
-  @PrimaryGeneratedColumn('increment')
-  id!: number;
-
-  @VersionColumn({ default: 1 })
-  @Exclude({ toPlainOnly: true })
-  version!: number;
-
-  @CreateDateColumn()
-  @Exclude({ toPlainOnly: true })
-  createdAt!: string;
-
-  @UpdateDateColumn()
-  @Exclude({ toPlainOnly: true })
-  updatedAt!: string;
+<pre class="highlight"><code class="typescript language-typescript">@Post()
+@UseGuards(AuthGuard())
+create(@Body() createEmployeeDto: CreateEmployeeDto): Promise&lt;Employee&gt; {
+  return this.service.create(createEmployeeDto);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now, you need to provide a valid <code>Bearer JWT token</code> in order to use the create endpoint. Also, to require a specific role to use an endpoint, you need to use the provided <code>RolesGuard</code> and specify the allowed roles by using the <code>@Roles</code> decorator:</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 4. <code>src/app/employees/controllers/employees.controller.ts</code></div>
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">@Delete(':id')
+@UseGuards(AuthGuard(), RolesGuard)
+@Roles(roles.ADMIN)
+remove(@Param('id') id: string): Promise&lt;Employee&gt; {
+  return this.service.remove(+id);
 }</code></pre>
 </div>
 </div>
@@ -382,84 +661,100 @@ export class Employee extends BaseEntity {
 <li>
 <p>Add swagger metadata</p>
 <div class="listingblock">
+<div class="title">Listing 5. <code>src/app/employees/controllers/employees.controller.ts</code></div>
 <div class="content">
-<pre class="highlight"><code class="typescript language-typescript">@Entity()
-export class Employee extends BaseEntity {
-  @ApiPropertyOptional()
-  @IsDefined({ groups: [CrudValidationGroups.CREATE] })
-  @IsOptional({ groups: [CrudValidationGroups.UPDATE] })
-  @MaxLength(255)
-  @Column('varchar', { length: 255, nullable: true })
-  name?: string;
-
-  @ApiPropertyOptional()
-  @IsDefined({ groups: [CrudValidationGroups.CREATE] })
-  @IsOptional({ groups: [CrudValidationGroups.UPDATE] })
-  @MaxLength(255)
-  @Column('varchar', { length: 255, nullable: true })
-  surname?: string;
-
-  @ApiPropertyOptional()
-  @IsDefined({ groups: [CrudValidationGroups.CREATE] })
-  @IsOptional({ groups: [CrudValidationGroups.UPDATE] })
-  @MaxLength(255)
-  @IsEmail()
-  @Column('varchar', { length: 255, nullable: true })
-  email?: string;
-}</code></pre>
+<pre class="highlight"><code class="typescript language-typescript">@ApiTags('employees')</code></pre>
 </div>
-</div>
-</li>
-</ol>
 </div>
 </li>
 <li>
-<p>Add swagger metadata to <code>src/app/employee/controllers/employee.crud.controller.ts</code></p>
+<p>Add swagger metadata</p>
+<div class="paragraph">
+<p>By default, devon4node installs the <a href="#devonfw-guide/devon4node.wiki_https://docs.nestjs.com/openapi/cli-plugin"><code>@nestjs/swagger</code> plugin</a>. With that plugin, most of the <code>OpenAPI</code> documentation will be generated automatically, but you can provide more information with decorators:</p>
+</div>
 <div class="listingblock">
+<div class="title">Listing 6. <code>src/app/employees/controllers/employees.controller.ts</code></div>
 <div class="content">
-<pre class="highlight"><code class="typescript language-typescript">@ApiTags('employee')</code></pre>
+<pre class="highlight"><code class="typescript language-typescript">@Controller('employees')
+@ApiTags('employees')
+export class EmployeesController {
+  ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Also, you can add to the <code>OpenAPI</code> documentation the secured endpoints:</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 7. <code>src/app/employees/controllers/employees.controller.ts</code></div>
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">@ApiBearerAuth()</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As the <code>findAll</code> returns a complex type, the plugin can&#8217;t infer the return type properly. To document properly the return type of the <code>findAll</code> you can use the <code>@nestjs/swagger</code> decorators:</p>
+</div>
+<div class="listingblock">
+<div class="title">Listing 8. <code>src/app/employees/controllers/employees.controller.ts</code></div>
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">@Get()
+@ApiQuery({ name: 'pageNumber', type: String, required: false })
+@ApiQuery({ name: 'pageSize', type: String, required: false })
+@ApiOkResponse({
+  schema: {
+    oneOf: [
+      { type: 'array', items: { $ref: getSchemaPath(Employee) } },
+      {
+        type: 'object',
+        properties: {
+          content: { type: 'array', items: { $ref: getSchemaPath(Employee) } },
+          page: {
+            type: 'object',
+            properties: { pageNumber: { type: 'number' }, total: { type: 'number' }, pageSize: { type: 'number' } },
+          },
+        },
+      },
+    ],
+  },
+})
+findAll(@GetPage() page?: PageRequest): Promise&lt;Employee[] | Page&lt;Employee&gt;&gt; {
+  return this.service.findAll(page);
+}</code></pre>
 </div>
 </div>
 </li>
 <li>
 <p>Generate database migrations</p>
-<div class="olist loweralpha">
-<ol class="loweralpha" type="a">
-<li>
-<p>Build the application: <code>yarn build</code></p>
-</li>
-<li>
-<p>In order to create migration scripts with TypeORM, you need to install ts-node: <code>yarn global add ts-node</code></p>
-</li>
-<li>
-<p>Generate the tables creation migration: <code>yarn run typeorm migration:generate -n CreateTables</code></p>
-<div class="imageblock">
+<div class="paragraph">
+<p>As you&#8217;re building a new application you also need to create the database tables. <code>TypeORM</code> provides a mechanism to generate the database migrations based on your entities:</p>
+</div>
+<div class="listingblock">
 <div class="content">
-<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/sample/generate-migrations.PNG" alt="generate migrations">
+<pre class="highlight"><code>yarn build
+npx typeorm migration:generate -n CreateTables</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>The output will be something similar to:</p>
 </div>
 <div class="listingblock">
+<div class="title">Listing 9. <code>src/migration/1655725262254-CreateTables.ts</code></div>
 <div class="content">
-<pre class="highlight"><code class="typescript language-typescript">export class CreateTables1572480273012 implements MigrationInterface {
-  name = 'CreateTables1572480273012';
+<pre class="highlight"><code class="typescript language-typescript">export class CreateTables1655725262254 implements MigrationInterface {
+  name = 'CreateTables1655725262254';
 
-  public async up(queryRunner: QueryRunner): Promise&lt;any&gt; {
+  public async up(queryRunner: QueryRunner): Promise&lt;void&gt; {
     await queryRunner.query(
-      `CREATE TABLE "user" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "version" integer NOT NULL DEFAULT (1), "createdAt" datetime NOT NULL DEFAULT (datetime('now')), "updatedAt" datetime NOT NULL DEFAULT (datetime('now')), "username" varchar(255) NOT NULL, "password" varchar(255) NOT NULL, "role" integer NOT NULL DEFAULT (0))`,
-      undefined,
+      `CREATE TABLE "employee" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "version" integer NOT NULL DEFAULT (1), "createdAt" datetime NOT NULL DEFAULT (datetime('now')), "updatedAt" datetime NOT NULL DEFAULT (datetime('now')), "name" varchar(255) NOT NULL, "surname" varchar(255) NOT NULL, "email" varchar(255) NOT NULL, "address" varchar(255))`,
     );
     await queryRunner.query(
-      `CREATE TABLE "employee" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "version" integer NOT NULL DEFAULT (1), "createdAt" datetime NOT NULL DEFAULT (datetime('now')), "updatedAt" datetime NOT NULL DEFAULT (datetime('now')), "name" varchar(255), "surname" varchar(255), "email" varchar(255))`,
-      undefined,
+      `CREATE TABLE "user" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "version" integer NOT NULL DEFAULT (1), "createdAt" datetime NOT NULL DEFAULT (datetime('now')), "updatedAt" datetime NOT NULL DEFAULT (datetime('now')), "username" varchar(255) NOT NULL, "password" varchar(255) NOT NULL, "role" integer NOT NULL DEFAULT (0))`,
     );
   }
 
-  public async down(queryRunner: QueryRunner): Promise&lt;any&gt; {
-    await queryRunner.query(`DROP TABLE "employee"`, undefined);
-    await queryRunner.query(`DROP TABLE "user"`, undefined);
+  public async down(queryRunner: QueryRunner): Promise&lt;void&gt; {
+    await queryRunner.query(`DROP TABLE "user"`);
+    await queryRunner.query(`DROP TABLE "employee"`);
   }
 }</code></pre>
 </div>
@@ -467,20 +762,21 @@ export class Employee extends BaseEntity {
 <div class="paragraph">
 <p>The number in the name is a timestamp, so may change in your application.</p>
 </div>
-</li>
-<li>
-<p>Create a migration to insert data:`yarn run typeorm migration:generate -n InsertData`</p>
-<div class="imageblock">
+<div class="paragraph">
+<p>Now, you can populate the database with the initial data:</p>
+</div>
+<div class="listingblock">
 <div class="content">
-<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/sample/insert-data.PNG" alt="insert data">
+<pre class="highlight"><code>npx typeorm migration:create -n InsertData</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>and fill in with the following code:</p>
 </div>
 <div class="listingblock">
+<div class="title">Listing 10. <code>src/migration/1655725316517-CreateTables.ts</code></div>
 <div class="content">
-<pre class="highlight"><code class="typescript language-typescript">export class InsertData1572480830290 implements MigrationInterface {
+<pre class="highlight"><code class="typescript language-typescript">export class InsertData1655725316517 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise&lt;any&gt; {
     await queryRunner.query(
       `INSERT INTO EMPLOYEE(id, name, surname, email) VALUES(1, 'Santiago', 'Fowler', 'Santiago.Fowler@example.com');`,
@@ -516,9 +812,6 @@ export class Employee extends BaseEntity {
 </div>
 </div>
 </li>
-</ol>
-</div>
-</li>
 <li>
 <p>Start the application: <code>yarn start:dev</code></p>
 <div class="imageblock">
@@ -536,94 +829,15 @@ export class Employee extends BaseEntity {
 </div>
 </li>
 <li>
-<p>Make petitions to the employee CRUD: <code><a href="http://localhost:3000/v1/employee/employees" class="bare">http://localhost:3000/v1/employee/employees</a></code></p>
+<p>Make petitions to the employee CRUD: <code><a href="http://localhost:3000/v1/employees" class="bare">http://localhost:3000/v1/employees</a></code></p>
 <div class="imageblock">
 <div class="content">
 <img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/sample/employees.png" alt="employees">
 </div>
 </div>
 </li>
-<li>
-<p>Write the tests</p>
-<div class="paragraph">
-<p>As we do not create any method, only add some properties to the entity, all application must be tested by the autogenerated code. As we add some modules, you need to uncomment some lines in the <code>src/app/core/configuration/services/configuration.service.spec.ts</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="typescript language-typescript">describe('ConfigurationService', () =&gt; {
-  const configService: ConfigurationService = new ConfigurationService();
-
-  it('should return the values of test config file', () =&gt; {
-    expect(configService.isDev).toStrictEqual(def.isDev);
-    expect(configService.host).toStrictEqual(def.host);
-    expect(configService.port).toStrictEqual(def.port);
-    expect(configService.clientUrl).toStrictEqual(def.clientUrl);
-    expect(configService.globalPrefix).toStrictEqual(def.globalPrefix);
-    // Remove comments if you add those modules
-    expect(configService.database).toStrictEqual(def.database);
-    expect(configService.swaggerConfig).toStrictEqual(def.swaggerConfig);
-    expect(configService.jwtConfig).toStrictEqual(def.jwtConfig);
-    // expect(configService.mailerConfig).toStrictEqual(def.mailerConfig);
-  });
-  it('should take the value of environment varible if defined', () =&gt; {
-    process.env.isDev = 'true';
-    process.env.host = 'notlocalhost';
-    process.env.port = '123456';
-    process.env.clientUrl = 'http://theclienturl.net';
-    process.env.globalPrefix = 'v2';
-    process.env.swaggerConfig = JSON.stringify({
-      swaggerTitle: 'Test Application',
-    });
-    process.env.database = JSON.stringify({
-      type: 'oracle',
-      cli: { entitiesDir: 'src/notentitiesdir' },
-    });
-    process.env.jwtConfig = JSON.stringify({ secret: 'NOTSECRET' });
-    // process.env.mailerConfig = JSON.stringify({ mailOptions: { host: 'notlocalhost' }});
-
-    expect(configService.isDev).toBe(true);
-    expect(configService.host).toBe('notlocalhost');
-    expect(configService.port).toBe(123456);
-    expect(configService.clientUrl).toBe('http://theclienturl.net');
-    expect(configService.globalPrefix).toBe('v2');
-    const database: any = { ...def.database, type: 'oracle' };
-    database.cli.entitiesDir = 'src/notentitiesdir';
-    expect(configService.database).toStrictEqual(database);
-    expect(configService.swaggerConfig).toStrictEqual({
-      ...def.swaggerConfig,
-      swaggerTitle: 'Test Application',
-    });
-    expect(configService.jwtConfig).toStrictEqual({
-      ...def.jwtConfig,
-      secret: 'NOTSECRET',
-    });
-    // const mail: any = { ...def.mailerConfig };
-    // mail.mailOptions.host = 'notlocalhost';
-    // expect(configService.mailerConfig).toStrictEqual(mail);
-
-    process.env.isDev = undefined;
-    process.env.host = undefined;
-    process.env.port = undefined;
-    process.env.clientUrl = undefined;
-    process.env.globalPrefix = undefined;
-    process.env.database = undefined;
-    process.env.swaggerConfig = undefined;
-    process.env.jwtConfig = undefined;
-    // process.env.mailerConfig = undefined;
-  });
-});</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>And the output should be:</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/sample/test.png" alt="test">
-</div>
-</div>
-</li>
 </ol>
+</div>
 </div>
 </div>
 </div>
@@ -738,7 +952,7 @@ export class Employee extends BaseEntity {
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-06-20 09:08:35 UTC
+Last updated 2022-06-20 15:27:18 UTC
 </sub></div>
 </div>
 </div>

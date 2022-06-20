@@ -120,21 +120,36 @@ gtag('consent', 'default', {
 <ul class="sectlevel0">
 <li><a href="#devonfw-guide_devon4node.wiki_guides-configuration-module.asciidoc">Configuration Module</a>
 <ul class="sectlevel1">
+<li><a href="#devonfw-guide_devon4node.wiki_guides-configuration-module.asciidoc_include-configuration-module-in-your-project">Include Configuration Module in your project</a></li>
+<li><a href="#devonfw-guide_devon4node.wiki_guides-configuration-module.asciidoc_configure-the-configmodule">Configure the <code>ConfigModule</code></a></li>
 <li><a href="#devonfw-guide_devon4node.wiki_guides-configuration-module.asciidoc_use-the-configuration-service">Use the configuration service</a></li>
 <li><a href="#devonfw-guide_devon4node.wiki_guides-configuration-module.asciidoc_choose-an-environment-file">Choose an environment file</a></li>
 <li><a href="#devonfw-guide_devon4node.wiki_guides-configuration-module.asciidoc_override-configuration-properties">Override configuration properties</a></li>
 <li><a href="#devonfw-guide_devon4node.wiki_guides-configuration-module.asciidoc_add-a-configuration-property">Add a configuration property</a></li>
+<li><a href="#devonfw-guide_devon4node.wiki_guides-configuration-module.asciidoc_validate-your-configuration">Validate your configuration</a></li>
 </ul>
 </li>
 </ul>
 <h1 id="devonfw-guide_devon4node.wiki_guides-configuration-module.asciidoc" class="sect0">Configuration Module</h1>
+<div class="paragraph">
+<p>Devon4node configuration module allows you to manage the multiple configurations that your application can have. Its a built in package that you can install in your project: <code>@devon4node/config</code>.</p>
+</div>
+<div class="paragraph">
+<p>The main difference with other configuration modules is that <code>@devon4node/config</code> stores all configuration in typescript files. With that you will be able to configure different values depending on the environment, but also you can configure functions, arrays, objects and so on. As some configurations must secret and that configuration will be known only at runtime, it also provides a mechanism to override your configuration by using environment variables.</p>
+</div>
+<div class="paragraph">
+<p>With <code>@devon4node/config</code> you will be able to validate your configuration based on class-validator.</p>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_devon4node.wiki_guides-configuration-module.asciidoc_include-configuration-module-in-your-project">Include Configuration Module in your project</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>devon4node provides a way to generate a configuration module inside your application. To generate it you only need to execute the command <code>nest g -c @devon4node/schematics config-module</code>. This command will generate inside your application:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Configuration module inside the core module.</p>
+<p>Imports configuration module in the core module.</p>
 </li>
 <li>
 <p>config folder where all environment configuration are stored.</p>
@@ -147,10 +162,7 @@ gtag('consent', 'default', {
 <p>develop environment configuration for the develop environment.</p>
 </li>
 <li>
-<p>uat environment configuration for the uat environment.</p>
-</li>
-<li>
-<p>production environment configuration for the production environment.</p>
+<p>UAT environment configuration for the UAT environment.</p>
 </li>
 <li>
 <p>production environment configuration for the production environment.</p>
@@ -175,6 +187,49 @@ some code generators will add some properties to this module, so, be sure that t
 </tr>
 </table>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_devon4node.wiki_guides-configuration-module.asciidoc_configure-the-configmodule">Configure the <code>ConfigModule</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When you register the <code>ConfigModule</code> in your application you can configure it. As the <code>ConfigModule</code> should be a module that you will need in all modules in your application, it is registered by default in the <code>CoreModule</code> (remember that <code>CoreModule</code> is global).</p>
+</div>
+<div class="paragraph">
+<p>Example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="typescript language-typescript">@Global()
+@Module({
+  imports: [
+    ConfigModule.register({
+      configDir: './dist/config',
+      configType: Config,
+    }),
+  ],
+  controllers: [],
+  providers: [],
+  exports: [ConfigModule],
+})
+export class CoreModule {}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The values that you can provide to the <code>ConfigModule</code> are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>configDir</code>: path to the directory where all config files are stored. This is the path to the compiled JavaScript files, not the path that include the TypeScript files. The default value is: './dist/config'</p>
+</li>
+<li>
+<p><code>configType</code>: the type of the config files. You can use the default type generated at <strong>shared/config/config.model.ts</strong> or generate you own type. In this type is where you can define the validation by using the <strong>class-validator</strong> decorators.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 <div class="sect1">
 <h2 id="devonfw-guide_devon4node.wiki_guides-configuration-module.asciidoc_use-the-configuration-service">Use the configuration service</h2>
 <div class="sectionbody">
@@ -184,13 +239,16 @@ some code generators will add some properties to this module, so, be sure that t
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="typescript language-typescript">export class MyProvider {
-  constructor(public readonly configService: ConfigurationService) {}
+  constructor(public readonly configService: ConfigService&lt;Config&gt;) {}
 
   myMethod() {
-    return this.confiService.isDev;
+    return this.confiService.values.isDev;
   }
 }</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>The generic type is required in order to provide the <code>intellisense</code> to <code>configService.values</code>.</p>
 </div>
 </div>
 </div>
@@ -198,7 +256,10 @@ some code generators will add some properties to this module, so, be sure that t
 <h2 id="devonfw-guide_devon4node.wiki_guides-configuration-module.asciidoc_choose-an-environment-file">Choose an environment file</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>By default, when you use the configuration service it will take the properties defined in the default.ts file. If you want to change the configuration file, you only need to set the NODE_ENV environment property with the name of the desired environment. Examples: in windows execute <code>set NODE_ENV=develop</code> before executing the application, in linux execute <code>NODE_ENV=develop</code> before executing the application or <code>NODE_ENV=develop yarn start</code>.</p>
+<p>By default, when you use the configuration service it will take the properties defined in the default.ts file. If you want to change the configuration file, you only need to set the NODE_ENV environment property with the name of the desired environment. Examples: in windows execute <code>set NODE_ENV=develop</code> before executing the application, in Linux execute <code>NODE_ENV=develop</code> before executing the application or <code>NODE_ENV=develop yarn start</code>.</p>
+</div>
+<div class="paragraph">
+<p>In most scenarios, when you want to use a environment file you want to use the same values as the default.ts file and override some properties. For that, what @devon4node/config do is a merge of the default configuration file with the selected configuration file, so you don&#8217;t need to repeat all configuration values in all configuration files, you need to put only the values that are different to the default one.</p>
 </div>
 </div>
 </div>
@@ -206,7 +267,19 @@ some code generators will add some properties to this module, so, be sure that t
 <h2 id="devonfw-guide_devon4node.wiki_guides-configuration-module.asciidoc_override-configuration-properties">Override configuration properties</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Sometimes, you want to keep some configuration property secure, and you do not want to publish it to the repository, or you want to reuse some configuration file but you need to change some properties. For those scenarios, you can override configuration properties by defining a environment variable with the same name. For example, if you want to override the property host, you can do: <code>set host="newhost"</code>. It also works with objects. For example, if you want to change the value of secret in the property <code>jwtConfig</code> for <a href="#devonfw-guide/devon4node.wiki_https://github.com/devonfw/devon4node/blob/develop/samples/employee/src/config/develop.ts">this example</a>, you can set a environment variable like this: <code>set jwtConfig="{"secret": "newsecret"}"</code>. As you can see, this environment variable has a JSON value. It will take object and merge the <code>jwtConfig</code> property with the properties defined inside the environment variable. It other properties maintain their value. The behaviour is the same for the nested objects.</p>
+<p>Sometimes, you want to keep some configuration property secure, and you do not want to publish it to the repository, or you want to reuse some configuration file but you need to change some properties. For those scenarios, you can override configuration properties by defining a environment variable. The pattern for the environment variables name is: the property name in upper case, if it is a nested object you must separate the properties with underscores (<code>_</code>). For example, if you want to override the property <code>host</code>, you can do: <code>export HOST="newhost"</code> (in windows: <code>set HOST="newhost"</code>). It also works with objects. For example, if you want to change the value of secret in the property <code>jwtConfig</code> for <a href="#devonfw-guide/devon4node.wiki_https://github.com/devonfw/devon4node/blob/develop/samples/employee/src/config/develop.ts">this example</a>, you can set a environment variable like this: <code>export JWTCONFIG_SECRET="newsecret"</code>. If you want to override <code>jwtConfig</code> totally (or partially) you can set a JSON string. It will take object and merge the <code>jwtConfig</code> property with the properties defined inside the environment variable. The other properties maintain their value. The behavior is the same for the nested objects. Example: JWTCONFIG='{"secret":"mysecret"}' will override the <code>jwtConfig</code>.secret value, but the other values will remain with the value defined at configuration file.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+you can only override properties that exists in the config file. If you want to use a secret configuration that will be setted at runtime, first you must define it in the config file and set a fake value or just an empty string.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -219,13 +292,13 @@ some code generators will add some properties to this module, so, be sure that t
 <div class="ulist">
 <ul>
 <li>
-<p>Add the property to IConfig interface in <code>src/app/core/configuration/types.ts</code> file. With this, we can ensure that the <code>ConfigurationService</code> and the environment files has those property at compiling time.</p>
+<p>Add the property to Config class at <code>src/app/shared/configuration/model/config/config.model.ts</code> file (or your custom Config class).</p>
 </li>
 <li>
-<p>Add the new property getter to <code>ConfigurationService</code>. You must use the <code>get</code> method of <code>ConfigurationService</code> to ensure that the property will be loaded from the desired config file. You can also add extra logic if needed.</p>
+<p>Add the validation decorators (only if you want to use the validation feature)</p>
 </li>
 <li>
-<p>Add the property to all config files inside the <code>src/config</code> folder.</p>
+<p>Add the property the config files inside the <code>src/config</code> folder. If you want to use the same value for all environments, just put the value inside default.ts file.</p>
 </li>
 </ul>
 </div>
@@ -233,33 +306,42 @@ some code generators will add some properties to this module, so, be sure that t
 <p>Example:</p>
 </div>
 <div class="paragraph">
-<p>We want to add the property <code>devonfwUrl</code> to our ConfigurationService, so:</p>
+<p>We want to add the property <code>devonfwUrl</code> to our <code>ConfigService</code>, so:</p>
 </div>
 <div class="paragraph">
-<p>We add the following code in IConfig interface:</p>
+<p>We add the following code in Config class:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="typescript language-typescript">devonfwUrl: string;</code></pre>
+<pre class="highlight"><code class="typescript language-typescript">@IsString()
+@IsDefined()
+devonfwUrl!: string;</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Then, we add the getter in the <code>ConfigurationService</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="typescript language-typescript">get devonfwUrl(): string {
-  return this.get('devonfwUrl')!;
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Finally, we add the definition in all config files:</p>
+<p>Then, we add the definition the config files:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="typescript language-typescript">devonfwUrl: 'https://devonfw.com',</code></pre>
 </div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_devon4node.wiki_guides-configuration-module.asciidoc_validate-your-configuration">Validate your configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order to make you able to validate your configuration, this package includes a feature to do that by using the <code>class-decorator</code> package.</p>
+</div>
+<div class="paragraph">
+<p>To configure your validations you only need to add the <code>class-validator</code> decorators to your Config class.</p>
+</div>
+<div class="paragraph">
+<p>To enable the validation you only must set the <code>VALIDATE_CONFIG</code> environment variable to <code>true</code>.</p>
+</div>
+<div class="paragraph">
+<p>When enable it will execute the config validation when the application starts. If the validation fail, the application will not start.</p>
 </div>
 </div>
 </div>
@@ -374,7 +456,7 @@ some code generators will add some properties to this module, so, be sure that t
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-06-20 09:08:26 UTC
+Last updated 2022-06-20 15:27:10 UTC
 </sub></div>
 </div>
 </div>
