@@ -59,7 +59,17 @@ jobs:
         run: |
           chmod +x wiki-tutorials/scripts/copyPomFiles.sh
           wiki-tutorials/scripts/copyPomFiles.sh
-
+          
+      - name: npm install for Journey/scripts
+        run: |
+          cd journeys/scripts
+          npm install
+          cd ../../    
+          
+      - name: Copy pom files for journeys
+        run: |
+          node journeys/scripts/copyPomFiles.js
+      
       - name: npm install for solutions
         run: |
           cd solutions/scripts
@@ -69,6 +79,12 @@ jobs:
       - name: npm install for tutorials
         run: |
           cd wiki-tutorials/scripts
+          npm install
+          cd ../../
+          
+      - name: npm install for Journeys/app
+        run: |
+          cd journeys/app
           npm install
           cd ../../
           
@@ -154,6 +170,15 @@ jobs:
         run: |
           cp -avr wiki-tutorials/target/generated-docs/ target/generated-docs/website/pages/learning/
 
+      - name: Create output for journeys
+        run: |
+          chmod +x journeys/scripts/createOutput.sh
+          journeys/scripts/createOutput.sh
+      
+      - name: Copy output of journeys
+        run: |
+          cp -avr journeys/target/generated-docs/ target/generated-docs/website/pages/journeys/
+          
       - name: Create JSONs for journeys
         run: |
           node journeys/scripts/createJourneyJsons.js target/generated-docs/website/pages/journey_content/
@@ -162,6 +187,12 @@ jobs:
         run: |
           cp -avr journeys/app target/generated-docs/website/pages/journeys/
 
+      - name: ng build for journeys
+        run: |
+          cd journeys/app
+          ng build --base-href /website/pages/journeys
+          cp /dist/devon4ng-matlayout/. target/generated-docs/website/pages/journeys/
+    
       - name: Build and test search engine
         run: |
           cd website/components/header/search-engine
