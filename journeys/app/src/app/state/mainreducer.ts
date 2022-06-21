@@ -2,6 +2,8 @@ import { ViewStatus, JourneyData, StepData,  UiState, AppState, DataState, Singl
 import journeydataReducer from './journeys/reducers/journey.data.reducer'
 import stepdataReducer from './steps/reducers/step.data.reducer'
 import mainUiReducer from './mainUiReducer'
+import { resetStore } from './reset.action';
+
 
 export const initialUiState: UiState = {
   viewStatus: ViewStatus.Initial,
@@ -33,7 +35,13 @@ export const initialState: AppState = {
 
 
 export function appReducer(state = initialState, action) {
+  if (action.type == resetStore.type) {
     return {
+      uiState: initialUiState,
+      dataState: initialDataState
+    }
+  }
+else  return {
       uiState: mainUiReducer(state.uiState, action),
       dataState: dataReducer(state.dataState, action)
     }
@@ -42,8 +50,8 @@ export function appReducer(state = initialState, action) {
 export function dataReducer(state, action) {
     return {
       journeyData: journeydataReducer(state.journeyData, action),
-      stepData: stepdataReducer(state.stepData, action)
-    
+      stepData: stepdataReducer(state.stepData, action),
   }
+
 }
   

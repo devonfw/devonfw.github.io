@@ -13,6 +13,7 @@ export default function journeydataReducer(state, action) {
           sections: action.payload.sections,
         
       }
+      
     }
     default:
       return state

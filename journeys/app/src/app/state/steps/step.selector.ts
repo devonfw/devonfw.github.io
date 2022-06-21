@@ -10,7 +10,10 @@ export const getStepDataState = createSelector(
 export const getStepDataStateCurrentStep = createSelector(
   getAppState,
   (state: AppState) => { return state.dataState.stepData.steps }
-  )
+)
+export const getStepsLength = createSelector(
+  getAppState,
+  (state: AppState) => { return state.dataState.stepData.steps.length })
 
 export const getUiState = createSelector(
   getAppState,
@@ -29,10 +32,6 @@ export const getStepArray  =  createSelector(
   (state: AppState) => { return state.dataState.journeyData.sections}
 )
 
-// export const getFirstStep  =  createSelector(
-//   getAppState,
-//   (state: AppState) => { return state.dataState.journeyData.sections.filter(x => typeof x!==undefined).shift().sections[0]}
-// )
 
 
 

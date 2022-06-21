@@ -8,7 +8,7 @@ import { loadStep } from '../../state/steps/step.actions';
 import {getUiState, getStepData, getStepArray,} from '../../state/steps/step.selector';
 
 import { take} from 'rxjs/operators';
-import { getDataState } from '../../state/journeys/journey.selector';
+import { getDataState, getFirstStep, getLastStep } from '../../state/journeys/journey.selector';
 
 @Component({
   selector: 'app-step-detail',
@@ -40,27 +40,26 @@ export class StepDetailComponent implements OnInit {
 
       this.journey$ = this.store.select(getDataState)
 
-      this.store.select(getStepArray).subscribe(data => {
-        let journeySections: any = data.filter(x => typeof x!==undefined).shift()
+      let firstStep;
+      this.store.select(getFirstStep).pipe(take(1)).subscribe(data => {
+        firstStep = data;
+       if (firstStep.id == id) {
+         (document.getElementById('previousButton') as HTMLInputElement).disabled = true
+       }
+       else {
+         (document.getElementById('previousButton') as HTMLInputElement).disabled = false
+       }
+      })
 
-        let currentStepId = this.route.snapshot.url[2].path;
-        let nextStepId = +currentStepId + +1
-        let nextStepExistence = journeySections.sections.find(x => x.id == nextStepId)
-        if (!nextStepExistence) {
-          (document.getElementById('nextButton') as HTMLInputElement).disabled = true
-        }
-        else {
-          (document.getElementById('nextButton') as HTMLInputElement).disabled = false
-        }
-
-        let previousStepId = +currentStepId - +1
-        let previousStepExistence = journeySections.sections.find(x => x.id == previousStepId)
-        if (!previousStepExistence) {
-          (document.getElementById('previousButton') as HTMLInputElement).disabled = true
-        }
-        else {
-          (document.getElementById('previousButton') as HTMLInputElement).disabled = false
-        }
+      let lastStep;
+      this.store.select(getLastStep).pipe(take(1)).subscribe(data => {
+        lastStep = data;
+       if (lastStep.id == id) {
+         (document.getElementById('nextButton') as HTMLInputElement).disabled = true
+       }
+       else {
+         (document.getElementById('nextButton') as HTMLInputElement).disabled = false
+       }
       })
     })
   }

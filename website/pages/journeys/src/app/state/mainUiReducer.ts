@@ -2,6 +2,7 @@ import { ViewStatus} from './app.state';
 import { loadJourney, loadJourneySuccess, loadJourneyFailure } from './journeys/journey.actions';
 import { loadStep, loadStepSuccess, loadStepFailure } from './steps/step.actions';
 
+
 export default function uiReducer(state, action) {
   switch (action.type) {
     case loadJourney.type: {
@@ -38,6 +39,7 @@ export default function uiReducer(state, action) {
           viewStatus: ViewStatus.Failure,
           errorMessage: action.errorMessage
         }
+    
     }
     default:
       return state

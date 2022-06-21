@@ -33,7 +33,6 @@ export class SubStepDetailComponent implements OnInit {
       }
     })
     this.stepData$ = this.store.select(getStepData({ step_id: this.sections.id }))
-
   }
 }
 
