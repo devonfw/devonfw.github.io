@@ -12,7 +12,7 @@ export class StepService {
   constructor(private http: HttpClient, private store: Store<AppState>) { }
 
   getStep(stepId: string) {
-    return this.http.get('../../../assets/'+ stepId +'.json') as Observable <Step>
+    return this.http.get('/website/pages/journeys/journeyData/index/'+ stepId +'.json') as Observable <Step>
 
 
   }
