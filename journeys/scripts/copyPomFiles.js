@@ -4,8 +4,8 @@ const path = require("path");
 let parentDir = path.dirname(__dirname);
 let targetDir = path.join(parentDir, "journeys");
 
-if (!fs.existsSync(targetDir + "\\" + "title_of_journey_01")) {
-  fs.mkdirSync(targetDir + "\\" + "title_of_journey_01");
+if (!fs.existsSync(targetDir + "/" + "title_of_journey_01")) {
+  fs.mkdirSync(targetDir + "/" + "title_of_journey_01");
 }
 
 fs.readdir(targetDir, (err, files) => {
@@ -15,7 +15,7 @@ fs.readdir(targetDir, (err, files) => {
   }
 
   files.forEach((file) => {
-    let path = targetDir + "\\" + file;
+    let path = targetDir + "/" + file;
     try {
       stat = fs.statSync(path);
 

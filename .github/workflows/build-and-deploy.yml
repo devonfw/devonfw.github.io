@@ -59,7 +59,17 @@ jobs:
         run: |
           chmod +x wiki-tutorials/scripts/copyPomFiles.sh
           wiki-tutorials/scripts/copyPomFiles.sh
-
+          
+      - name: npm install for Journey/scripts
+        run: |
+          cd journeys/scripts
+          npm install
+          cd ../../    
+          
+      - name: Copy pom files for journeys
+        run: |
+          node journeys/scripts/copyPomFiles.js
+      
       - name: npm install for solutions
         run: |
           cd solutions/scripts
@@ -69,6 +79,12 @@ jobs:
       - name: npm install for tutorials
         run: |
           cd wiki-tutorials/scripts
+          npm install
+          cd ../../
+          
+      - name: npm install for Journeys/app
+        run: |
+          cd journeys/app
           npm install
           cd ../../
           
@@ -154,14 +170,28 @@ jobs:
         run: |
           cp -avr wiki-tutorials/target/generated-docs/ target/generated-docs/website/pages/learning/
 
-      - name: Create JSONs for journeys
+      - name: Create output for journeys
         run: |
-          node journeys/scripts/createJourneyJsons.js target/generated-docs/website/pages/journey_content/
+          chmod +x journeys/scripts/createOutput.sh
+          journeys/scripts/createOutput.sh
+      
+      - name: Copy output of journeys
+        run: |
+          cp -avr target/generated-docs/journeys/journeyData target/generated-docs/website/pages/journeys/
 
       - name: Copy journey app
         run: |
           cp -avr journeys/app target/generated-docs/website/pages/journeys/
 
+      - name: ng build for journeys
+        run: |
+          cd journeys/app
+          npm i -g @angular/cli
+          ng build --base-href /website/pages/journeys
+          chmod +x ../scripts/debugging.sh
+          ../scripts/debugging.sh
+
+    
       - name: Build and test search engine
         run: |
           cd website/components/header/search-engine
