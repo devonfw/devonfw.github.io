@@ -15,7 +15,7 @@ function renderTutorial(tutorial){
 	<div class = "card-paths">
 		<a href="${tutorial['paths']['eclipse']}"><img src="./wiki-images/eclipse.png" class="card-img zoom" title="Click here to read the Eclipse tutorial"></img></a>
 		<a href="${tutorial['paths']['vscode']}"><img src="./wiki-images/vscode.png" class="card-img zoom" title="Click here to read the VSCode tutorial"></img></a>
-		<a href="${tutorial['paths']['katacoda']}"><img src="./wiki-images/katacoda.png" class="card-img zoom" title="Click here to try the interactive tutorial on Katacoda"></img></a>
+		<a href="${tutorial['paths']['killercoda']}"><img src="./wiki-images/killercodaLogo.png" class="card-img zoom" title="Click here to try the interactive tutorial on Killercoda [still in Beta]"></img></a>
 	</div>`
 	);
 	$("#tutorials").append(tutorialCard);
