@@ -58,7 +58,7 @@ function tutorialPaths(tutorial){
 	paths = {}
 	paths["eclipse"] = `https://devonfw.com/website/pages/learning/tutorials/wiki_eclipse/${tutorial}/`;
 	paths["vscode"] = `https://devonfw.com/website/pages/learning/tutorials/wiki_vscode/${tutorial}/`;
-	paths["killercoda"] = `https://killercoda.com/devonfw/scenario/create-your-own-tutorial/${tutorial}/`;
+	paths["killercoda"] = `https://killercoda.com/devonfw/scenario/${tutorial}/`;
 	return paths;
 	
 }
