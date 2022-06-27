@@ -21,7 +21,7 @@
 <!-- ************************************* -->
 
 
-<title>Setting up a Java library package pipeline on Azure DevOps</title>
+<title>Setting up a library package pipeline on Azure DevOps</title>
 <!-- devonfw website stylesheet -->
 <link rel="stylesheet" type="text/css" href="/devonfw.css">
 <!-- Lunr -->
@@ -118,7 +118,7 @@ gtag('consent', 'default', {
 <div class="toc2">
 <div class="title">Table of Contents</div>
 <ul class="sectlevel0">
-<li><a href="#devonfw-guide_hangar.wiki_azure-devops_setup-library-package-pipeline.asciidoc">Setting up a Java library package pipeline on Azure DevOps</a>
+<li><a href="#devonfw-guide_hangar.wiki_azure-devops_setup-library-package-pipeline.asciidoc">Setting up a library package pipeline on Azure DevOps</a>
 <ul class="sectlevel1">
 <li><a href="#devonfw-guide_hangar.wiki_azure-devops_setup-library-package-pipeline.asciidoc_prerequisites">Prerequisites</a></li>
 <li><a href="#devonfw-guide_hangar.wiki_azure-devops_setup-library-package-pipeline.asciidoc_creating-the-pipeline-using-provided-script">Creating the pipeline using provided script</a>
@@ -137,18 +137,18 @@ gtag('consent', 'default', {
 </ul>
 </li>
 </ul>
-<h1 id="devonfw-guide_hangar.wiki_azure-devops_setup-library-package-pipeline.asciidoc" class="sect0">Setting up a Java library package pipeline on Azure DevOps</h1>
+<h1 id="devonfw-guide_hangar.wiki_azure-devops_setup-library-package-pipeline.asciidoc" class="sect0">Setting up a library package pipeline on Azure DevOps</h1>
 <div class="paragraph">
-<p>In this section we will create a package pipeline to generate a distributable of a Java library and push it to a Maven feed in Azure DevOps. This pipeline will be configured in order to be triggered every time quality pipeline is executed successfully on a commit for <code>release/*</code> and <code>develop</code> branches, requiring manual launch for other branches but still enforcing that quality pipeline has passed. It consumes the artifact produced by the build pipeline.</p>
+<p>In this section we will create a package pipeline to generate a distributable of a library and push it to a feed in Azure DevOps. This pipeline will be configured in order to be triggered every time quality pipeline is executed successfully on a commit for <code>release/*</code> and <code>develop</code> branches, requiring manual launch for other branches but still enforcing that quality pipeline has passed. Depending on the language, it consumes the artifact produced by the build pipeline.</p>
 </div>
 <div class="paragraph">
-<p>The creation of this pipeline will follow the project workflow, so a new branch named feature/library-package-pipeline will be created. The YAML file and the bash script for the pipeline will be pushed to it, as well as a generated <code>settings.xml</code> containing required credentials for connecting to Maven feed.</p>
+<p>The creation of this pipeline will follow the project workflow, so a new branch named feature/library-package-pipeline will be created. The YAML file and the bash script for the pipeline will be pushed to it, as well as a generated file containing required credentials for connecting to the feed.</p>
 </div>
 <div class="paragraph">
 <p>Then, a Pull Request (PR) will be created in order to merge the new branch into the appropriate branch (provided in -b flag). The PR will be automatically merged if the repository policies are met. If the merge is not possible, either the PR URL will be shown as output, or it will be opened in your web browser if using -w flag.</p>
 </div>
 <div class="paragraph">
-<p>The script located at <code>/scripts/pipelines/azure-devops/pipeline_generator.sh</code> will automatically create this new branch, create a Java library package pipeline based on a YAML template appropriate for Maven, create the Maven feed, create a PAT token with permission to push to that feed, create the Pull Request, and if it is possible, merge this new branch into the specified branch.</p>
+<p>The script located at <code>/scripts/pipelines/azure-devops/pipeline_generator.sh</code> will automatically create this new branch, create a library package pipeline based on a YAML template, create the feed, create a PAT token with permission to push to that feed, create the Pull Request, and if it is possible, merge this new branch into the specified branch.</p>
 </div>
 <div class="sect1">
 <h2 id="devonfw-guide_hangar.wiki_azure-devops_setup-library-package-pipeline.asciidoc_prerequisites">Prerequisites</h2>
@@ -197,7 +197,7 @@ The config file for the library package pipeline is located at <code>/scripts/pi
 -n, --pipeline-name            [Required] Name that will be set to the pipeline.
 -l, --language                 [Required] Language or framework of the project.
 -d, --local-directory          [Required] Local directory of your project.
-    --build-pipeline-name      [Required] Build pipeline name.
+    --build-pipeline-name      [Required, if Java/Maven] Build pipeline name.
     --quality-pipeline-name    [Required] Quality pipeline name.
 -b, --target-branch                       Name of the branch to which the Pull Request will target. PR is not created if the flag is not provided.
 -w                                        Open the Pull Request on the web browser if it cannot be automatically merged. Requires -b flag.</code></pre>
@@ -211,6 +211,14 @@ The config file for the library package pipeline is located at <code>/scripts/pi
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>./pipeline_generator.sh -c ./templates/library-package/library-package-pipeline.cfg -n library-package-pipeline -l java -d C:/Users/$USERNAME/Desktop/java-library-project --build-pipeline-name java-library-build --quality-pipeline-name java-library-quality</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_hangar.wiki_azure-devops_setup-library-package-pipeline.asciidoc_node.js-project">Node.js project</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/library-package/library-package-pipeline.cfg -n library-package-pipeline -l node -d C:/Users/$USERNAME/Desktop/node-library-project --quality-pipeline-name node-library-quality</code></pre>
 </div>
 </div>
 </div>
@@ -242,6 +250,8 @@ Ignore the settings.xml part as it is created by the script. Only pom.xml modifi
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="devonfw-guide_hangar.wiki_azure-devops_setup-library-package-pipeline.asciidoc_consume-library-from-the-main-project">Consume library from the main project</h3>
+<div class="sect3">
+<h4 id="devonfw-guide_hangar.wiki_azure-devops_setup-library-package-pipeline.asciidoc_maven-feed">Maven feed</h4>
 <div class="paragraph">
 <p>Go to Azure Artifacts and click on the artifact of the library. Then copy the contents of the &lt;dependency&gt; element and paste it inside the <code>&lt;dependencies&gt;</code> element of your <code>pom.xml</code> file.</p>
 </div>
@@ -259,6 +269,7 @@ Ignore the settings.xml part as is not necessary to consume an artifact. Only po
 </td>
 </tr>
 </table>
+</div>
 </div>
 </div>
 </div>
@@ -374,7 +385,7 @@ Ignore the settings.xml part as is not necessary to consume an artifact. Only po
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-06-27 10:23:44 UTC
+Last updated 2022-06-27 15:57:06 UTC
 </sub></div>
 </div>
 </div>
