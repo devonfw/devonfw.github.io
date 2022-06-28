@@ -7,7 +7,6 @@ import { getStepDataState,} from '../../state/steps/step.selector';
 import { take, first } from 'rxjs/operators';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import {  getStepData } from "../../state/steps/step.selector";
-
 @Component({
   selector: 'app-sub-step-detail',
   templateUrl: './sub-step-detail.component.html',
@@ -16,8 +15,6 @@ import {  getStepData } from "../../state/steps/step.selector";
 export class SubStepDetailComponent implements OnInit {
 
   @Input() sections: any;
-
-
   step$: Observable<StepData>;
   journey$: Observable<JourneyData>;
   stepData$: Observable<SingleStepData>
@@ -34,8 +31,13 @@ export class SubStepDetailComponent implements OnInit {
     })
     this.stepData$ = this.store.select(getStepData({ step_id: this.sections.id }))
   }
+  getTitleOfSection(innerHTMLValue: string): string {
+    const startInnerText = innerHTMLValue.indexOf('>') + 1;
+    const endFirstTag = innerHTMLValue.indexOf('</');
+    const title = innerHTMLValue.slice(startInnerText, endFirstTag);
+    return title;
+  }
 }
-
 
 
 

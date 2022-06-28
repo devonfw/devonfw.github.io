@@ -1,21 +1,19 @@
 <div class="steps">
   <app-journey-detail></app-journey-detail>
 </div>
-
 <div class="content">
-  <div *ngIf=" (journey$|async) && (stepData$|async)"  >
+  <div class="contentwrapper" *ngIf=" (journey$|async) && (stepData$|async)"  >
+    <p>
+      {{(stepData$|async).title}}    </p>
     <div [innerHTML]="(stepData$|async).sections">  </div>
-    <div *ngFor="let root of (journey$|async).sections">
+    <div  *ngFor="let root of (journey$|async).sections">
       <div *ngFor="let r of root.sections">
           <app-sub-step-detail *ngIf=" root.title == (stepData$|async).title" [sections]="r"></app-sub-step-detail>
       </div>
     </div>
-  </div>  
+  </div>
 </div>
   <div class="buttondiv">
 <button (click)="displayPrevious()" class="buttonleft buttondesign" id="previousButton">Previous</button>
 <button (click)="displayNext()" class="buttonright buttondesign" id="nextButton">Next </button>
   </div>
-
-
-
