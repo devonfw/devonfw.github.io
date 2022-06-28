@@ -62,9 +62,11 @@ export class StepComponent implements OnInit {
       for(let i = 0; i<step_titles.length; i++){
         if(step_titles[i].innerText == stepTitle){
           step_titles[i].style.color = "blue"
+          step_titles[i].style.fontWeight = "bold"
         }
         else{
           step_titles[i].style.color = "black"
+          step_titles[i].style.fontWeight = "normal"
         }
       }
     }, 50)
