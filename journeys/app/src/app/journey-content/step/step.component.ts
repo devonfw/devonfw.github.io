@@ -39,17 +39,7 @@ export class StepComponent implements OnInit {
 
   }
 
-
   onClick(routerTitle: string, stepTitle: string) {
-    console.log("stepTitle: " + stepTitle)
-    console.log("routerTitle: " + routerTitle)
-    let step_titles = document.getElementsByClassName("step_titles") as HTMLCollectionOf<HTMLElement>;
-    for(let i = 0; i<step_titles.length; i++){
-      if(step_titles[i].style.color == "blue"){
-        step_titles[i].style.color = "blue"
-      }
-
-    }
     let stepId = routerTitle;
     let journeyId = this.route.snapshot.url[1].path;
     this.router.navigate(['/journeys', journeyId, stepId]);
@@ -59,8 +49,9 @@ export class StepComponent implements OnInit {
   changeColor(stepTitle: string){
     setTimeout(() => {
       let step_titles = document.getElementsByClassName("step_titles") as HTMLCollectionOf<HTMLElement>;
-      for(let i = 0; i<step_titles.length; i++){
-        if(step_titles[i].innerText == stepTitle){
+      for(let i = 0; i < step_titles.length; i++){
+        if(step_titles[i].innerHTML === stepTitle){
+
           step_titles[i].style.color = "blue"
           step_titles[i].style.fontWeight = "bold"
         }
@@ -72,7 +63,6 @@ export class StepComponent implements OnInit {
     }, 50)
 
   }
-
 
   scroll(title: string) {
     if ( document.getElementById(title)) {
