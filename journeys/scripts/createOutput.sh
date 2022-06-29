@@ -26,7 +26,7 @@ printf "\n"
 echo "../target/generated-docs/journeys/journeyData/index"
 ls ../target/generated-docs/journeys/journeyData/index
 
-cp -avr devonfw_overview_small.drawio.svg ../target/generated-docs/
+cp -avr devonfw_overview_small.drawio.svg ../target/generated-docs/journeys/journeyData/index
 #cp -avr devonfw_overview_small.drawio.svg ../target/generated-docs/website/pages/journeys/
 
 
