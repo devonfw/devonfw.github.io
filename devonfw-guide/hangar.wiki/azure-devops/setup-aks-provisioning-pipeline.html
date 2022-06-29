@@ -118,7 +118,7 @@ gtag('consent', 'default', {
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this section we will create a pipeline which will provision an Azure AKS cluster. This pipeline will be configured to be manually triggered by the user. As part of AKS cluster provisioning, a NGINX Ingress controller is deployed and a variable group with the name <code>aks-variables</code> is created, which contains, among others, the DNS name of the Ingress controller, that you you will need to add as CNAME record on the domains used in your application Ingress manifest files. Refer to the appendix to retrieve the DNS name of the Ingress controller independently.</p>
+<p>In this section we will create a pipeline which will provision an Azure AKS cluster. This pipeline will be configured to be manually triggered by the user. As part of AKS cluster provisioning, a NGINX Ingress controller is deployed and a variable group with the name <code>aks-variables</code> is created, which contains, among others, the DNS name of the Ingress controller, that you you will need to add as CNAME record on the domains used in your application Ingress manifest files. Refer to the appendix for more details.</p>
 </div>
 <div class="paragraph">
 <p>The creation of the pipeline will follow the project workflow, so a new branch named <code>feature/aks-provisioning</code> will be created, the YAML file for the pipeline and the terraform files for creating the cluster will be pushed to it.</p>
@@ -207,6 +207,7 @@ gtag('consent', 'default', {
   --resource-group &lt;resource group name&gt; \
   --storage-account &lt;storage account name&gt; \
   --storage-container &lt;storage container name&gt; \
+  [--rancher] \
   [-b &lt;branch&gt;] \
   [-w]</code></pre>
 </div>
@@ -234,6 +235,7 @@ The config file for the AKS provisioning pipeline is located at <code>/scripts/p
     --resource-group     [Required] Name of the resource group for the cluster.
     --storage--account   [Required] Name of the storage account for the cluster.
     --storage-container  [Required] Name of the storage container where the Terraform state of the cluster will be stored.
+    --rancher                       Install Rancher to manage the cluster.
 -b, --target-branch                 Name of the branch to which the Pull Request will target. PR is not created if the flag is not provided.
 -w                                  Open the Pull Request on the web browser if it cannot be automatically merged. Requires -b flag.</code></pre>
 </div>
@@ -243,8 +245,20 @@ The config file for the AKS provisioning pipeline is located at <code>/scripts/p
 <h3 id="devonfw-guide_hangar.wiki_azure-devops_setup-aks-provisioning-pipeline.asciidoc_example">Example</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/aks/aks-pipeline.cfg -n aks-provisioning -d C:/Users/$USERNAME/Desktop/quarkus-project --resource-group devonfw --storage-account hangar --storage-container aks-state -b develop -w</code></pre>
+<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/aks/aks-pipeline.cfg -n aks-provisioning -d C:/Users/$USERNAME/Desktop/quarkus-project --resource-group devonfw --storage-account hangar --storage-container aks-state --rancher -b develop -w</code></pre>
 </div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+Rancher is installed on the cluster after provisioning when using the above command.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -273,6 +287,23 @@ kubectl &lt;command&gt;
 # via command-line flag
 kubectl &lt;command&gt; --kubeconfig=&lt;path to downloaded kubeconfig&gt;</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>To get the DNS name of the NGINX Ingress controller on the EKS cluster, go into Azure DevOps &gt; Pipelines &gt; Library &gt; <code>aks-variables</code>.</p>
+</div>
+<div class="paragraph">
+<p>Rancher, if installed, will be available on <code><a href="https://&lt;ingress" class="bare">https://&lt;ingress</a> controller domain&gt;/dashboard</code>. You will be asked for an initial password, which can be retrieved with:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>kubectl get secret --namespace cattle-system bootstrap-secret -o go-template='{{.data.bootstrapPassword|base64decode}}{{"\n"}}'</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_hangar.wiki_azure-devops_setup-aks-provisioning-pipeline.asciidoc_appendix-destroying-the-cluster">Appendix: Destroying the cluster</h3>
+<div class="paragraph">
+<p>To destroy the provisioned resources, set <code>operation</code> pipeline variable value to <code>destroy</code> and run the pipeline.</p>
 </div>
 </div>
 </div>
@@ -388,7 +419,7 @@ kubectl &lt;command&gt; --kubeconfig=&lt;path to downloaded kubeconfig&gt;</code
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-06-29 16:05:26 UTC
+Last updated 2022-06-29 16:29:49 UTC
 </sub></div>
 </div>
 </div>

@@ -201,13 +201,6 @@ gtag('consent', 'default', {
 <pre class="highlight"><code>./set-terraform-variables.sh --region &lt;region name&gt; --instance_type &lt;workers instance type&gt; --existing_vpc_id &lt;vpc id&gt; --existing_vpc_private_subnets &lt;array of subnet ids&gt;</code></pre>
 </div>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>Rancher is installed by default on the cluster after provisioning. If you wish to change this, please update <code>eks-pipeline.cfg</code> accordingly.</p>
-</li>
-</ul>
-</div>
 <div class="sect2">
 <h3 id="devonfw-guide_hangar.wiki_azure-devops_setup-eks-provisioning-pipeline.asciidoc_usage">Usage</h3>
 <div class="listingblock">
@@ -246,6 +239,7 @@ The config file for the EKS provisioning pipeline is located at <code>/scripts/p
     --cluster-name       [Required] Name for the cluster."
     --s3-bucket          [Required] Name of the S3 bucket where the Terraform state of the cluster will be stored.
     --s3-key-path        [Required] Path within the S3 bucket where the Terraform state of the cluster will be stored.
+    --rancher                       Install Rancher to manage the cluster.
 -b, --target-branch                 Name of the branch to which the Pull Request will target. PR is not created if the flag is not provided.
 -w                                  Open the Pull Request on the web browser if it cannot be automatically merged. Requires -b flag.</code></pre>
 </div>
@@ -255,8 +249,20 @@ The config file for the EKS provisioning pipeline is located at <code>/scripts/p
 <h3 id="devonfw-guide_hangar.wiki_azure-devops_setup-eks-provisioning-pipeline.asciidoc_example">Example</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/eks/eks-pipeline.cfg -n eks-provisioning -d C:/Users/$USERNAME/Desktop/quarkus-project --cluster-name hangar-eks-cluster --s3-bucket terraformStateBucket --s3-key-path eks/state -b develop -w</code></pre>
+<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/eks/eks-pipeline.cfg -n eks-provisioning -d C:/Users/$USERNAME/Desktop/quarkus-project --cluster-name hangar-eks-cluster --s3-bucket terraformStateBucket --s3-key-path eks/state --rancher -b develop -w</code></pre>
 </div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+Rancher is installed on the cluster after provisioning when using the above command.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -287,7 +293,12 @@ The config file for the EKS provisioning pipeline is located at <code>/scripts/p
 </div>
 </div>
 <div class="paragraph">
-<p>Rancher will be available on <code><a href="https://&lt;ingress" class="bare">https://&lt;ingress</a> controller domain&gt;/dashboard</code>.</p>
+<p>Rancher, if installed, will be available on <code><a href="https://&lt;ingress" class="bare">https://&lt;ingress</a> controller domain&gt;/dashboard</code>. You will be asked for an initial password, which can be retrieved with:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>kubectl get secret --namespace cattle-system bootstrap-secret -o go-template='{{.data.bootstrapPassword|base64decode}}{{"\n"}}'</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -431,7 +442,7 @@ The config file for the EKS provisioning pipeline is located at <code>/scripts/p
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-06-29 16:05:27 UTC
+Last updated 2022-06-29 16:29:50 UTC
 </sub></div>
 </div>
 </div>
