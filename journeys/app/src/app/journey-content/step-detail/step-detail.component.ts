@@ -4,8 +4,8 @@ import { Store } from '@ngrx/store';
 import { AppState, JourneyData, SingleStepData } from '../../state/app.state';
 import { Observable } from 'rxjs';
 import { loadStep } from '../../state/steps/step.actions';
-
-import {getUiState, getStepData, getStepArray,} from '../../state/steps/step.selector';
+import { changeColour } from '../step/step.component'
+import { getUiState, getStepData, getStepArray, } from '../../state/steps/step.selector';
 
 import { take} from 'rxjs/operators';
 import { getDataState, getFirstStep, getLastStep } from '../../state/journeys/journey.selector';
@@ -21,6 +21,7 @@ export class StepDetailComponent implements OnInit {
   journeySection$: Observable<any>;
   journey$: Observable<JourneyData>;
   stepData$: Observable<SingleStepData>;
+  
 
   constructor(private store: Store<AppState>, private router: Router, private route: ActivatedRoute) {
   }
@@ -68,14 +69,25 @@ export class StepDetailComponent implements OnInit {
     let currentStepId = this.route.snapshot.url[2].path;
     let nextStepId = +currentStepId + +1
     let journeyId = this.route.snapshot.url[1].path;
+    let currentStep
+    this.store.select(getStepData({ step_id: nextStepId })).subscribe(data => {
+      currentStep = data
+     changeColour(currentStep.title)
+    })
     this.router.navigate(['/journeys', journeyId, nextStepId]);
+    
   }
 
   displayPrevious() {
     let currentStepId = this.route.snapshot.url[2].path;
-    let nextStepId = +currentStepId - +1
+    let previousStepId = +currentStepId - +1
     let journeyId = this.route.snapshot.url[1].path;
-    this.router.navigate(['/journeys', journeyId, nextStepId]);
+    let currentStep
+    this.store.select(getStepData({ step_id: previousStepId })).subscribe(data => {
+      currentStep = data
+      changeColour(currentStep.title)
+    })
+    this.router.navigate(['/journeys', journeyId, previousStepId]);
   }
   
 }
