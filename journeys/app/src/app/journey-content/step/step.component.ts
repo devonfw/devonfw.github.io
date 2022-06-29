@@ -32,6 +32,7 @@ export class StepComponent implements OnInit {
       if (data <= 1) {
         this.store.select(getFirstStep).pipe(take(1)).subscribe(firsStepData => {
           firstStep = firsStepData
+          changeColour(firstStep.title)
           this.router.navigate(['/journeys', this.route.snapshot.url[1].path, firstStep.id])
         })
       }
@@ -41,9 +42,6 @@ export class StepComponent implements OnInit {
 
 
   onClick(routerTitle: string, stepTitle: string) {
-
-    changeColour(stepTitle)
-
     let stepId = routerTitle;
     let journeyId = this.route.snapshot.url[1].path;
     this.router.navigate(['/journeys', journeyId, stepId]);
@@ -72,7 +70,7 @@ export function  changeColour(stepTitle: string) {
   setTimeout(() => {
     let step_titles = document.getElementsByClassName("step_titles") as HTMLCollectionOf<HTMLElement>;
     for (let i = 0; i < step_titles.length; i++) {
-      if (step_titles[i].innerText == stepTitle) {
+      if (step_titles[i].innerHTML == stepTitle) {
         step_titles[i].style.color = "blue"
         step_titles[i].style.fontWeight = "bold"
       }
