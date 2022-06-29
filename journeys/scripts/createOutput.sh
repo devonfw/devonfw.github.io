@@ -17,13 +17,18 @@ echo "../target/generated-docs/journeys:"
 ls ../target/generated-docs/journeys
 printf "\n"
 
-echo "../target/generated-docs/journeys/journeys/journeyData"
-ls ../target/generated-docs/journeys/journeys/journeyData
-printf "\n"
-echo "../target/generated-docs/journeys/journeys/journeyData/index"
-ls ../target/generated-docs/journeys/journeys/journeyData/index
+echo "../target/generated-docs/journeys/journeys"
+ls ../target/generated-docs/journeys/journeys
 
-cp -avr devonfw_overview_small.drawio.svg ../target/generated-docs/journeys/journeys/journeyData/index
+echo "../target/generated-docs/journeys/journeyData"
+ls ../target/generated-docs/journeys/journeyData
+printf "\n"
+echo "../target/generated-docs/journeys/journeyData/index"
+ls ../target/generated-docs/journeys/journeyData/index
+
+cp -avr devonfw_overview_small.drawio.svg ../target/generated-docs/
+#cp -avr devonfw_overview_small.drawio.svg ../target/generated-docs/website/pages/journeys/
+
 
 echo "AFTER Manually COPYING the image: ../target/generated-docs/journeys/journeys/journeyData/index"
 ls ../target/generated-docs/journeys/journeys/journeyData/index
@@ -35,4 +40,13 @@ cp -avr ../target/generated-docs/journeys/ ../target/generated-docs/website/page
 
 echo "../target/generated-docs/website/pages/journeys/ AFTER copy of generated-docs/journeys"
 ls ../target/generated-docs/website/pages/journeys/
+
+
+
+echo "../target/generated-docs/website/pages/journeys/journeyData AFTER copy of generated-docs/journeys"
+ls ../target/generated-docs/website/pages/journeys/journeyData
+echo "../target/generated-docs/website/pages/journeys/journeys AFTER copy of generated-docs/journeys"
+ls ../target/generated-docs/website/pages/journeys/journeys
+echo "../target/generated-docs/website/pages/journeys/journeyData/index AFTER copy of generated-docs/journeys"
+ls ../target/generated-docs/website/pages/journeys/journeyData/index
 echo "End Create Outpu.sh"
