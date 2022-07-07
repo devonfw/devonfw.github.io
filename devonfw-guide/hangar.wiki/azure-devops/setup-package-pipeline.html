@@ -21,7 +21,7 @@
 <!-- ************************************* -->
 
 
-<title>Setting up a Package Pipeline on Azure DevOps</title>
+<title>Setting up a Package pipeline on Azure DevOps</title>
 <!-- devonfw website stylesheet -->
 <link rel="stylesheet" type="text/css" href="/devonfw.css">
 <!-- Lunr -->
@@ -118,7 +118,7 @@ gtag('consent', 'default', {
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>In this section we will create a package pipeline to build and push a container image of the project application into the specified container registry. This pipeline will be configured in order to be triggered every time quality pipeline is executed successfully on a commit for <code>release/*</code> and <code>develop</code> branches, requiring manual launch for other branches but still enforcing that quality pipeline has passed. It consumes the artifact produced by the build pipeline.</p>
+<p>In this section we will create a package pipeline to build and push a container image of the project application into the specified container registry. This pipeline will be configured in order to be triggered every time quality pipeline is executed successfully on a commit for release/* and develop branches, requiring manual launch for other branches but still enforcing that quality pipeline has passed. It consumes the artifact produced by the build pipeline.</p>
 </div>
 <div class="paragraph">
 <p>The creation of the pipeline will follow the project workflow, so a new branch named <code>feature/package-pipeline</code> will be created and the YAML file for the pipeline will be pushed to it.</p>
@@ -137,11 +137,10 @@ gtag('consent', 'default', {
 <div class="paragraph">
 <p>This script will commit and push the corresponding YAML template into your repository, so please be sure your local repository is up-to-date (i.e you have pulled latest changes with <code>git pull</code>).</p>
 </div>
+<div class="paragraph">
+<p><a id="devonfw-guide_hangar.wiki_azure-devops_setup-package-pipeline.asciidoc_creating-the-pipeline-using-provided-script"></a>
+== Creating the pipeline using provided script</p>
 </div>
-</div>
-<div class="sect1">
-<h2 id="devonfw-guide_hangar.wiki_azure-devops_setup-package-pipeline.asciidoc_creating-the-pipeline-using-provided-script">Creating the pipeline using provided script</h2>
-<div class="sectionbody">
 <div class="sect2">
 <h3 id="devonfw-guide_hangar.wiki_azure-devops_setup-package-pipeline.asciidoc_usage">Usage</h3>
 <div class="listingblock">
@@ -191,9 +190,9 @@ The config file for the package pipeline is located at <code>/scripts/pipelines/
 -i, --image-name               [Required] Name (excluding tag) for the generated container image.
 -u, --registry-user            [Required, unless AWS] Container registry login user.
 -p, --registry-password        [Required, unless AWS] Container registry login password.
-    --aws-access-key           [Required, if AWS] AWS account access key ID. Takes precedence over registry credentials.
-    --aws-secret-access-key    [Required, if AWS] AWS account secret access key.
-    --aws-region               [Required, if AWS] AWS region for ECR.
+    --aws-access-key           [Required, if AWS] AWS account access key ID. Takes precedence over registry credentials."
+    --aws-secret-access-key    [Required, if AWS] AWS account secret access key."
+    --aws-region               [Required, if AWS] AWS region for ECR."
 -b, --target-branch                       Name of the branch to which the Pull Request will target. PR is not created if the flag is not provided.
 -w                                        Open the Pull Request on the web browser if it cannot be automatically merged. Requires -b flag.</code></pre>
 </div>
@@ -207,7 +206,7 @@ The config file for the package pipeline is located at <code>/scripts/pipelines/
 <h5 id="devonfw-guide_hangar.wiki_azure-devops_setup-package-pipeline.asciidoc_generic-container-registry">Generic container registry</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/package/package-pipeline.cfg -n quarkus-project-package -l quarkus -d C:/Users/$USERNAME/Desktop/quarkus-project --build-pipeline-name quarkus-project-build --quality-pipeline-name quarkus-project-quality -i username/quarkus-project -u username -p password -b develop -w</code></pre>
+<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/package/package-pipeline.cfg -n quarkus-project-package -l quarkus -d C:/Users/$USERNAME/Desktop/quarkus-project -i username/quarkus-project -u username -p password --build-pipeline-name quarkus-project-build --quality-pipeline-name quarkus-project-quality -b develop -w</code></pre>
 </div>
 </div>
 </div>
@@ -215,7 +214,7 @@ The config file for the package pipeline is located at <code>/scripts/pipelines/
 <h5 id="devonfw-guide_hangar.wiki_azure-devops_setup-package-pipeline.asciidoc_aws-ecr">AWS ECR</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/package/package-pipeline.cfg -n quarkus-project-package -l quarkus -d C:/Users/$USERNAME/Desktop/quarkus-project --build-pipeline-name quarkus-project-build --quality-pipeline-name quarkus-project-quality -i username/quarkus-project --aws-access-key AKIAIOSFODNN7EXAMPLE --aws-secret-access-key wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY --aws-region eu-west-1 -b develop -w</code></pre>
+<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/package/package-pipeline.cfg -n quarkus-project-package -l quarkus -d C:/Users/$USERNAME/Desktop/quarkus-project -i username/quarkus-project --aws-access-key AKIAIOSFODNN7EXAMPLE --aws-secret-access-key wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY --aws-region eu-west-1 --build-pipeline-name quarkus-project-build --quality-pipeline-name quarkus-project-quality -b develop -w</code></pre>
 </div>
 </div>
 </div>
@@ -226,7 +225,7 @@ The config file for the package pipeline is located at <code>/scripts/pipelines/
 <h5 id="devonfw-guide_hangar.wiki_azure-devops_setup-package-pipeline.asciidoc_generic-container-registry">Generic container registry</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/package/package-pipeline.cfg -n node-project-package -l node -d C:/Users/$USERNAME/Desktop/node-project --build-pipeline-name node-project-build --quality-pipeline-name node-project-quality -i username/node-project -u username -p password -b develop -w</code></pre>
+<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/package/package-pipeline.cfg -n node-project-package -l node -d C:/Users/$USERNAME/Desktop/node-project -i username/node-project -u username -p password --build-pipeline-name node-project-build --quality-pipeline-name node-project-quality -b develop -w</code></pre>
 </div>
 </div>
 </div>
@@ -234,7 +233,7 @@ The config file for the package pipeline is located at <code>/scripts/pipelines/
 <h5 id="devonfw-guide_hangar.wiki_azure-devops_setup-package-pipeline.asciidoc_aws-ecr">AWS ECR</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/package/package-pipeline.cfg -n node-project-package -l node -d C:/Users/$USERNAME/Desktop/node-project --build-pipeline-name node-project-build --quality-pipeline-name node-project-quality -i username/node-project --aws-access-key AKIAIOSFODNN7EXAMPLE --aws-secret-access-key wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY --aws-region eu-west-1 -b develop -w</code></pre>
+<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/package/package-pipeline.cfg -n node-project-package -l node -d C:/Users/$USERNAME/Desktop/node-project -i username/node-project --aws-access-key AKIAIOSFODNN7EXAMPLE --aws-secret-access-key wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY --aws-region eu-west-1 --build-pipeline-name node-project-build --quality-pipeline-name node-project-quality -b develop -w</code></pre>
 </div>
 </div>
 </div>
@@ -372,7 +371,7 @@ The config file for the package pipeline is located at <code>/scripts/pipelines/
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-07-07 10:11:19 UTC
+Last updated 2022-07-07 12:30:17 UTC
 </sub></div>
 </div>
 </div>
