@@ -256,6 +256,13 @@ gtag('consent', 'default', {
 <li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_references">References</a></li>
 </ul>
 </li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_devon4net.infrastructure.aws.serverless">Devon4Net.Infrastructure.AWS.Serverless</a>
+<ul class="sectlevel2">
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_configuration">Configuration</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_set-up-in-devon">Set up in devon</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_set-up-in-other-projects">Set up in other projects</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -2611,6 +2618,18 @@ Please refer to the "How to use Kafka" and "Kafka template" documentation to lea
 </li>
 </ul>
 </div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+For macOS and older versions of Windows systems such as Windows 7, please disable TLS from the kestrel configuration in the <code>appsettings.json</code>. HTTP/2 without TLS should only be used during app development. Production apps should always use transport security. For more information, Refer to <a href="#devonfw-guide_devon4net.wiki_howto.asciidoc">How to: Create a new devon4net project</a> section for more information.
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -4550,6 +4569,167 @@ You can learn more in the <code>How to: AWS Lambda Function</code>
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="devonfw-guide_devon4net.wiki_packages.asciidoc_devon4net.infrastructure.aws.serverless">Devon4Net.Infrastructure.AWS.Serverless</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This component is part of the AWS Stack in Devon4Net. It has the necessary classes to configure the connection with the AWS Cloud.</p>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_configuration">Configuration</h3>
+<div class="paragraph">
+<p>The component configuration must be done in the file <code>appsettings.{environment}.json</code> as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+    "AWS": {
+    "EnableAws": true,
+    "UseSecrets": true,
+    "UseParameterStore": true,
+    "Credentials": {
+      "Profile": "default",
+      "Region": "eu-west-1",
+      "AccessKeyId": "",
+      "SecretAccessKey": ""
+    },
+    "Cognito": {
+      "IdentityPools": [
+        {
+          "IdentityPoolId": "",
+          "IdentityPoolName": "",
+          "ClientId": ""
+        }
+      ]
+    },
+    "SqSQueueList": [
+      {
+        "QueueName": "", // Mandatory. Put the name of the queue here
+        "Url": "", //optional. If it is not present, it will be requested to AWS
+        "UseFifo": false,
+        "MaximumMessageSize": 256,
+        "NumberOfThreads": 2,
+        "DelaySeconds": 0,
+        "ReceiveMessageWaitTimeSeconds": 0,
+        "MaxNumberOfMessagesToRetrievePerCall": 1,
+        "RedrivePolicy": {
+          "MaxReceiveCount": 1,
+          "RedrivePolicy": {
+            "MaxReceiveCount": 1,
+            "DeadLetterQueueUrl": ""
+          }
+        }
+      }
+    ]
+  }
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>UseSecrets</code>: Boolean to indicate if AWS Secrets Manager is being used.</p>
+</li>
+<li>
+<p><code>UseParameterStore</code>: Boolean to indicate if AWS Parameter Store is being used.</p>
+</li>
+<li>
+<p><code>Credentials</code>: Credentials for connecting the app with your AWS profile.</p>
+</li>
+<li>
+<p><code>Cognito</code>: Amazon Cognito identity pools provide temporary AWS credentials for users who are guests (unauthenticated) and for users who have been authenticated and received a token. An identity pool is a store of user identity data specific to your account. In this section you can configure multiple IdentityPools.</p>
+</li>
+<li>
+<p><code>SqSQueueList</code>: This section is used to configure the Amazon Simple Queue Service (SQS). You must configure some parameters about the queue:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>QueueName</code>: The name of the queue, this field is required.</p>
+</li>
+<li>
+<p><code>Url</code>: The queue&#8217;s url, this parameter is optional.</p>
+</li>
+<li>
+<p><code>UseFifo</code>: We have two queue types in Amazon SQS, use <strong>false</strong> for Standard Queues or set this parameter to <strong>true</strong> for FIFO Queues.</p>
+</li>
+<li>
+<p><code>MaximumMessageSize</code>: The maximum message size for this queue.</p>
+</li>
+<li>
+<p><code>NumberOfThreads</code>: The number of threads of the queue.</p>
+</li>
+<li>
+<p><code>DelaySeconds</code>: The amount of time that Amazon SQS will delay before delivering a message that is added to the queue.</p>
+</li>
+<li>
+<p><code>ReceiveMessageWaitTimeSeconds</code>: The maximum amount of time that Amazon SQS waits for messages to become available after the queue gets a receive request.</p>
+</li>
+<li>
+<p><code>MaxNumberOfMessagesToRetrievePerCall</code>: The maximum number of messages to retrieve per call.</p>
+</li>
+<li>
+<p><code>RedrivePolicy</code>: Defines which source queues can use this queue as the dead-letter queue</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+Read the <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-queue-parameters.html">AWS SQS documentation</a> to learn more about the configuration of this kind of queues.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_set-up-in-devon">Set up in devon</h3>
+<div class="paragraph">
+<p>For using it in a devon project, you can use the <code>Devon4Net.Application.WebAPI.AwsServerless</code> template. This template is ready to be used.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+Read the template documentation to learn more about it.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Once you create your project using the template, you can configure it following the parameters shown above.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_set-up-in-other-projects">Set up in other projects</h3>
+<div class="paragraph">
+<p>For setting it up in other projects, you will need first to install the package via NuGet:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="console language-console">install-package Devon4Net.Infrastructure.AWS.Serverless</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once installed you will need to add the configuration to your <code>appsettings.{environment}.json</code> and then add the following line to your <code>Program.cs</code> so that the configuration can be applied:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="c# language-c#">builder.Services.ConfigureDevonfwAWS(builder.Configuration, true);</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer" class="footer">
 <div class="openblock footerLinks">
@@ -4661,7 +4841,7 @@ You can learn more in the <code>How to: AWS Lambda Function</code>
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-07-14 07:39:39 UTC
+Last updated 2022-07-19 06:38:10 UTC
 </sub></div>
 </div>
 </div>
