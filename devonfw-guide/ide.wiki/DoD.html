@@ -122,64 +122,93 @@ gtag('consent', 'default', {
 </ul>
 <h1 id="devonfw-guide_ide.wiki_DoD.asciidoc" class="sect0">definition of done</h1>
 <div class="paragraph">
-<p>Before a pull request for a new commandlet to the devonfw/ide repository can be approved, there are several requirements that have to be satisfied.
-After completing an assignment and before starting a new pull request please check if the following acceptance criteria are complied with.</p>
+<p>Before a pull request (PR) for devonfw-ide is ready for review, this <em>definition of done</em> (DoD) should be satisfied.
+Please note that external contributors are not strictly required to address all of these points as we love to get contributions and do not want to scare people from contributing with too much constraints.
+However, chances to get your change merged quickly are higher if you address all the following points.</p>
 </div>
-<div class="ulist">
-<ul>
+<div class="ulist checklist">
+<ul class="checklist">
 <li>
-<p>A new Mirror is added and a pull request for devonfw/ide-mirrors made.</p>
+<p><i class="icon-check-empty"></i> All checks have passed:</p>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><i class="icon-check-empty"></i> The build and all automated tests (including shellcheck) succeeded</p>
 </li>
 <li>
-<p>The mirror repository is found under <a href="https://github.com/devonfw/ide-mirrors" class="bare">https://github.com/devonfw/ide-mirrors</a></p>
+<p><i class="icon-check-empty"></i> The contributors license agreement (CLA) is signed by all contributors of the PR.</p>
 </li>
 <li>
-<p>There is a new commandlet that allows to install and launch the given software.</p>
-</li>
-<li>
-<p>The given software can be installed automatically (during setup via settings) or via the commandlet call.</p>
-</li>
-<li>
-<p>During the installation process reasonable progress and status information are displayed.</p>
-</li>
-<li>
-<p>The software can be installed and used together with any of the devon IDE standard tools without any interference.</p>
-</li>
-<li>
-<p>This can be tested by installing the software and test-using the standard tools.</p>
-</li>
-<li>
-<p>The software is integrated in a way that complies with the multi-tenancy of the devon IDE.</p>
-</li>
-<li>
-<p>This can be tested by installing multiple instances of the devonfw IDE in different folders.</p>
-</li>
-<li>
-<p>The new commandlet is documented, the documentation is up to date and on the website.</p>
-</li>
-<li>
-<p>There are three files found under /documentation that have to be adjusted. They are /documentation/cli.asciidoc, /documentation/devonfw-ide-usage.asciidoc and /documentation/scripts.asciidoc.
-Links and Includes have to be added in alphabetical order.</p>
-</li>
-<li>
-<p>The new commandlet is tested on all plattforms it is availible for.</p>
-</li>
-<li>
-<p>Assuming you are using Windows, testing for Linux can be done with the Windows Subsystem for Linux.</p>
-</li>
-<li>
-<p>Testing for Mac can be done on the virtual MacOS instance. Check the corresponding Teams channel for further information.</p>
+<p><i class="icon-check-empty"></i> Git-Gardian did not report any security issue</p>
 </li>
 </ul>
 </div>
-<div class="paragraph">
-<p>There are more requirements that have to be satisfied ONLY if applicable
-- The new commandlet is a wrapper for a given Software CLI.
-  - Meaning that when a CLI is availible, the "devon software" command enables the CLI.
-- Added licence documentation.
-  - This is done by adding the neccesary information to /documentation/LICENSE.asciidoc
-- Neccessary dependencies are installed.
-- Any components needed for a frictionless usage of the software are installed (for instance pip for python).</p>
+</li>
+<li>
+<p><i class="icon-check-empty"></i> The feature branch of the PR is up-to-date with the <code>master</code> branch. If you see <code>This branch is out-of-date with the base branch</code> in the PR click the <code>Update branch</code> button to fix (or manually merge with the <code>master</code> from upstream locally and push your changes).</p>
+</li>
+<li>
+<p><i class="icon-check-empty"></i> You followed all coding conventions (indent with 2 spaces, no tabs, functions start with <code>do</code> prefix, variables are enclosed with curly braces, etc.)</p>
+</li>
+<li>
+<p><i class="icon-check-empty"></i> You have already added the issue implemented by your PR in <a href="https://github.com/devonfw/ide/blob/master/CHANGELOG.asciidoc">CHANGELOG.asciidoc</a> to the next open release (see milestones or <a href="https://github.com/devonfw/ide/blob/master/.mvn/maven.config">maven.config</a>). If there is no issue for your PR consider creating it or directly link the PR itself.</p>
+</li>
+<li>
+<p><i class="icon-check-empty"></i> In case your PR adds a new tool <code>«tool»</code> as commandlet there are the following additional checks:</p>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><i class="icon-check-empty"></i> The tool is already available as folder <code>«tool»</code> in <a href="https://github.com/devonfw/ide-mirrors">ide-mirrors</a></p>
+</li>
+<li>
+<p><i class="icon-check-empty"></i> A new commandlet named <code>«tool»</code> has been added to <a href="https://github.com/devonfw/ide/tree/master/scripts/src/main/resources/scripts/command">command</a> that allows to install and launch the given software.</p>
+</li>
+<li>
+<p><i class="icon-check-empty"></i> The tool can be installed automatically (during setup via settings) or via the commandlet call.</p>
+</li>
+<li>
+<p><i class="icon-check-empty"></i> During the installation process (<code>devon «tool» setup</code>) reasonable progress and status information are displayed.</p>
+</li>
+<li>
+<p><i class="icon-check-empty"></i> The tool is integrated in a way that complies with the multi-tenancy of the devonfw-ide. That is the tool will be installed locally only to the <code>software</code> folder inside the devonfw-ide installation (<code>${DEVON_IDE_HOME}</code>). There are very few tools as exception to this rule like docker (RancherDesktop). But by default every new tool should be installed locally. Otherwise already get in touch and clarify your design upfront before implementing.</p>
+</li>
+<li>
+<p><i class="icon-check-empty"></i> The tool can even be configured in a way that complies with the multi-tenancy of the devonfw-ide. That is configuration files can be placed inside the devonfw-ide installation (<code>${DEVON_IDE_HOME}</code>) - typically inside the <code>conf</code> folder. Note: If a tool reads configuration files from the users home directory this is not given as two installations of devonfw-ide using the same tool then would read the same config so one installation would influence the other.</p>
+</li>
+<li>
+<p><i class="icon-check-empty"></i> The new commandlet is documented as <code>«tool».asciidoc</code> in the <a href="https://github.com/devonfw/ide/tree/master/documentation">documentation</a> folder.</p>
+</li>
+<li>
+<p><i class="icon-check-empty"></i> The new commandlet is added and linked in <a href="https://github.com/devonfw/ide/blob/master/documentation/cli.asciidoc#commandlet-overview">cli.asciidoc</a>.</p>
+</li>
+<li>
+<p><i class="icon-check-empty"></i> The new commandlet is added and linked in <a href="https://github.com/devonfw/ide/blob/master/documentation/scripts.asciidoc">scripts.asciidoc</a>.</p>
+</li>
+<li>
+<p><i class="icon-check-empty"></i> The new commandlet is included to <a href="https://github.com/devonfw/ide/blob/master/documentation/devonfw-ide-usage.asciidoc">devonfw-ide-usage.asciidoc</a>.</p>
+</li>
+<li>
+<p><i class="icon-check-empty"></i> The links and includes (see above) have to be added in alphabetical order.</p>
+</li>
+<li>
+<p><i class="icon-check-empty"></i> The new tool is added to the table of tools in <a href="https://github.com/devonfw/ide/blob/master/documentation/LICENSE.asciidoc#license">LICENSE.asciidoc</a> with its according licesne. If that license is not yet included, the full license text needs to be added.</p>
+</li>
+<li>
+<p><i class="icon-check-empty"></i> The new commandlet is a <a href="https://github.com/devonfw/ide/blob/master/documentation/cli.asciidoc#command-wrapper">command-wrapper</a> for <code>«tool»</code>.</p>
+</li>
+<li>
+<p><i class="icon-check-empty"></i> The new commandlet installs potential dependencies automatically (e.g. <code>doDevonCommand «required-other-tool» setup silent</code>).</p>
+</li>
+<li>
+<p><i class="icon-check-empty"></i> The variable <code>«TOOL»_VERSION</code> is honored by your commandlet so if present that version will be downloaded and installed.</p>
+</li>
+<li>
+<p><i class="icon-check-empty"></i> The new commandlet is tested on all plattforms it is availible for. Assuming you are using Windows, testing for Linux can be done with the Windows Subsystem for Linux and for MacOS we have a virtual cloud instance.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
 </div>
 </div>
 <div id="footer" class="footer">
@@ -292,7 +321,7 @@ Links and Includes have to be added in alphabetical order.</p>
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-07-21 08:29:56 UTC
+Last updated 2022-07-25 17:07:26 UTC
 </sub></div>
 </div>
 </div>
