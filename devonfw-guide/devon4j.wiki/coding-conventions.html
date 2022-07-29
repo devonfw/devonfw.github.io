@@ -133,6 +133,7 @@ gtag('consent', 'default', {
 <li><a href="#devonfw-guide_devon4j.wiki_coding-conventions.asciidoc_code-style">Code-Style</a>
 <ul class="sectlevel2">
 <li><a href="#devonfw-guide_devon4j.wiki_coding-conventions.asciidoc_blobs">BLOBs</a></li>
+<li><a href="#devonfw-guide_devon4j.wiki_coding-conventions.asciidoc_daten-and-time">Daten and Time</a></li>
 <li><a href="#devonfw-guide_devon4j.wiki_coding-conventions.asciidoc_stateless-programming">Stateless Programming</a></li>
 <li><a href="#devonfw-guide_devon4j.wiki_coding-conventions.asciidoc_closing-resources">Closing Resources</a></li>
 <li><a href="#devonfw-guide_devon4j.wiki_coding-conventions.asciidoc_catching-and-handling-exceptions">Catching and handling Exceptions</a></li>
@@ -334,6 +335,21 @@ gtag('consent', 'default', {
 <h3 id="devonfw-guide_devon4j.wiki_coding-conventions.asciidoc_blobs">BLOBs</h3>
 <div class="paragraph">
 <p>Avoid using <code>byte[]</code> for BLOBs as this will load them entirely into your memory. This will cause performance issues or out of memory errors. Instead, use streams when dealing with BLOBs. For further details see <a href="#devonfw-guide_devon4j.wiki_guide-blob-support.asciidoc">BLOB support</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4j.wiki_coding-conventions.asciidoc_daten-and-time">Daten and Time</h3>
+<div class="paragraph">
+<p>Avoid using <code>java.util.Calendar</code>, <code>java.util.Date</code>, <code>java.sql.Date</code>, <code>java.util.Timestamp</code>, or anything directly related.
+Instead use types from <code>java.time</code> package.
+The most important types are:
+* <code>Instant</code> for an exact timestamp
+* <code>LocalDateTime</code> for exact date and time but without timezone information.
+* <code>ZonedDateTime</code> or <code>OffsetDateTime</code> for exact date and time with timezone information.
+* <code>LocalDate</code> for a specific day (e.g. birthday).</p>
+</div>
+<div class="paragraph">
+<p>When mapping types to XML, JSON, database, etc. nowadays there is support for <code>java.time</code> so please <strong>stop</strong> using <code>Date</code> and <code>Calendar</code> and end the pain.</p>
 </div>
 </div>
 <div class="sect2">
@@ -827,7 +843,7 @@ public boolean isEmpty {
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-07-28 07:26:48 UTC
+Last updated 2022-07-29 11:47:22 UTC
 </sub></div>
 </div>
 </div>
