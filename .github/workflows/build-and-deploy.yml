@@ -8,7 +8,15 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    steps:
+    steps:          
+      - name: Configure git
+        run: |
+          git config --global fetch.parallel 20
+
+      - name: Shallow Clone with Submodules
+        run: |
+          git clone https://${{ github.token }}@github.com/${{ github.repository }}.git --recurse-submodules --single-branch .
+          
       - name: Starting RubyGem Maven Proxy
         run: |
           # mvn org.apache.maven.plugins:maven-dependency-plugin:3.0.2:copy -Dartifact=de.saumya.mojo:rubygems:0.2.3:war -DoutputDirectory=.
@@ -17,15 +25,6 @@ jobs:
           mvn package -DskipTests
           java -jar target/rubygems-0.2.4-SNAPSHOT.war &
           cd ..
-          
-      - name: Configure git
-        run: |
-          git config --global fetch.parallel 20
-
-      - name: Shallow Clone with Submodules
-        run: |
-          git clone https://${{ github.token }}@github.com/${{ github.repository }}.git --recurse-submodules --single-branch .
-
       - name: SetupRuby
         uses: actions/setup-ruby@v1
         with:
