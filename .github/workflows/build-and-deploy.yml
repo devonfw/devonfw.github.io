@@ -8,7 +8,16 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    steps:     
+    steps:
+      - name: Starting RubyGem Maven Proxy
+        run: |
+          # mvn org.apache.maven.plugins:maven-dependency-plugin:3.0.2:copy -Dartifact=de.saumya.mojo:rubygems:0.2.3:war -DoutputDirectory=.
+          git clone https://github.com/maybeec/rubygems-servlets.git
+          cd rubygems-servlets
+          mvn package -DskipTests
+          java -jar target/rubygems-0.2.4-SNAPSHOT.war &
+          cd ..
+          
       - name: Configure git
         run: |
           git config --global fetch.parallel 20
