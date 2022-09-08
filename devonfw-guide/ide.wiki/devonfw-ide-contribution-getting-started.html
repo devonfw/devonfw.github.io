@@ -151,7 +151,9 @@ gtag('consent', 'default', {
 <div class="sectionbody">
 <div class="paragraph">
 <p>To start developing devonfw-ide, you must first install it on your computer.
-Therefore simply follow the <a href="#devonfw-guide_ide.wiki_setup.asciidoc">setup</a> guide.</p>
+Therefore simply follow the <a href="#devonfw-guide_ide.wiki_setup.asciidoc">setup</a> guide.
+It is important to notice that this installation gives you the latest published version of the devonfw-ide with which you can execute commands like eclipse or docker whose scripts are located inside the "${DEVON_IDE_HOME}$/scripts/command, but for commiting code we use a differing folder structure.
+This will be addressed under <a href="#devonfw-guide_ide.wiki_devonfw-ide-contribution-getting-started.asciidoc_Contribution">Contribution</a>.</p>
 </div>
 </div>
 </div>
@@ -160,16 +162,60 @@ Therefore simply follow the <a href="#devonfw-guide_ide.wiki_setup.asciidoc">set
 <div class="sectionbody">
 <div class="paragraph">
 <p>To begin, read through the <a href="https://github.com/devonfw/.github/blob/master/CONTRIBUTING.asciidoc">Contribution Guidelines</a>, which you should be sure to follow.
-First steps regarding forks or cloning of repos and creating branches, as well as some git commands, <a href="https://github.com/firstcontributions/first-contributions">can be found here</a>.
-Clone the <a href="https://github.com/devonfw/ide">project IDE</a> at the beginning.
-For further development and testing, it is recommended to <a href="#devonfw-guide_ide.wiki_devonfw-ide-contribution-getting-started.asciidoc_symbolic-links">symlink</a> the modified scripts into your devonfw-ide installation.
+First steps regarding forks or cloning of repos and creating branches, as well as some git commands, can be found in the <a href="https://github.com/firstcontributions/first-contributions">first contributions guideline</a>.
+To contribute code or documentation regarding the devonfw-ide at first you need to fork the <a href="https://github.com/devonfw/ide">devonfw-ide</a> repository and then you can clone your fork into the folder <code>workspaces/main</code> in your devonfw-ide installation.
+Open git-bash in the cloned fork at <code>workspaces/main/ide</code> and run the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>git remote add upstream https://github.com/devonfw/ide.git
+git fetch upstream</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Whenever you want to implement a new change first do the following things:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>git checkout master
+git pull upstream/master
+git checkout -b feature/«issue-id»-«brief-feature-description»</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now you can do the changes, improvements, and fixes.
+Once they are tested and seem to work, you can commit them (<code>git commit -m "#«issue-id»: «description»"</code>).
+If some days have passed meanwhile you should merge changes that meanwhile happened on the offical <code>ide</code> repo:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>git pull upstream/master</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once you are complete and everything is merged and comitted, you can push your local feature branch and make it a remote branch of your fork on github:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>git push -u origin feature/«issue-id»-«brief-feature-description»</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now you can go to <a href="https://github.com/devonfw/ide/pulls" class="bare">https://github.com/devonfw/ide/pulls</a> and create the pull-request (PR) from your new feature.
+Therefore, please click on the right down arrow of the green button and choose <code>Create draft pull request</code> and then click on <code>Draft pull request</code>.
+When the checks have completed you can check the <a href="#devonfw-guide_ide.wiki_DoD.asciidoc">Definition-of-Done</a> (DoD).
+Once, all checks of the DoD are addressed, you can go the the very bottom of the PR and click on <code>Ready for review</code> what will take the PR out of the draft mode.
+FYI: If you forgot the upstream merge (<code>git pull upstream/master</code>) or the upstream changed again while your PR is still open, you will see <code>This branch is out-of-date with the base branch</code> at the bottom of your PR and can click on <code>Update branch</code>.</p>
+</div>
+<div class="paragraph">
+<p>For further development and testing, it is recommended to <a href="#devonfw-guide_ide.wiki_devonfw-ide-contribution-getting-started.asciidoc_symbolic-links">symlink</a> the modified scripts into your devonfw-ide installation.
 Alternatively, the scripts can be adapted in the installation folder and then committed to the project.
 For creating a contribution also check the <a href="#devonfw-guide_ide.wiki_DoD.asciidoc">Definition of Done</a> (DoD).</p>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_devonfw-ide-contribution-getting-started.asciidoc_shellcheck">ShellCheck</h3>
 <div class="paragraph">
-<p>To improve the code quality the <a href="https://github.com/koalaman/shellcheck/">ShellCheck</a> is used for devon-ide.
+<p>To improve the code quality the <a href="https://github.com/koalaman/shellcheck/">ShellCheck</a> is used for devonfw-ide.
 There is a GitHub action <em>CI build PR</em> for this. If this fails at the PR, you can find the error messages in the big logfile under <em>Build project with Maven</em>.
 For example, these look like this:</p>
 </div>
@@ -304,7 +350,7 @@ In the configuration files many <a href="#devonfw-guide_ide.wiki_variables.ascii
 <p>With <a href="devonfw-guide/ide.wiki_advanced-tooling-windows.asciidoc_#create-symbolic-links">symbolic links</a> you can use one file or folder that is located inside one directory in one or multiple other directories, without copying the whole file or folder into the other directories.
 The file is still only saved at the initial location, but can be accessed through the  created links in a much more comfortable way.
 So you are actually just linked to the original file and therefore don&#8217;t have to worry about differing versions of the file in your directories.
-This is very helpful for testing our devon-ide, because e.g. the commandlets folder for testing is not the same as the commandlets folder for git-commits.
+This is very helpful for testing our devonfw-ide, because e.g. the commandlets folder for testing is not the same as the commandlets folder for git-commits.
 Install <a href="https://schinagl.priv.at/nt/hardlinkshellext/linkshellextension.html">link shell extension</a> and follow the instructions for installation and  usage first.
 Later on you can make symbolic links of files or folder from your "git folder" and add them into the folder in which the testing is supposed to take place:</p>
 </div>
@@ -336,7 +382,7 @@ That&#8217;s why it is often enough to implement code for Mac or Linux (at least
 <p>Let&#8217;s get to the practical part of the Bash-usage.</p>
 </div>
 <div class="paragraph">
-<p><strong>If you are using Windows</strong>, make sure that you have git-bash installed, so you can execute the Bash commands mentioned in this intruduction. [Here you can find git for windows](<a href="https://git-scm.com/download/win" class="bare">https://git-scm.com/download/win</a>). In some cases later on you may want or need to use WSL. Our project teams standard way is to install WSL via Rancher Desktop, which is easily installable with the devon-ide by using the command <code>devon docker setup</code>. If you don&#8217;t have the devon-ide yet, then you can follow [this guide](<a href="https://github.com/devonfw/ide/blob/master/documentation/setup.asciidoc" class="bare">https://github.com/devonfw/ide/blob/master/documentation/setup.asciidoc</a>)</p>
+<p><strong>If you are using Windows</strong>, make sure that you have git-bash installed, so you can execute the Bash commands mentioned in this intruduction. [Here you can find git for windows](<a href="https://git-scm.com/download/win" class="bare">https://git-scm.com/download/win</a>). In some cases later on you may want or need to use WSL. Our project teams standard way is to install WSL via Rancher Desktop, which is easily installable with the devonfw-ide by using the command <code>devon docker setup</code>. If you don&#8217;t have the devonfw-ide yet, then you can follow [this guide](<a href="https://github.com/devonfw/ide/blob/master/documentation/setup.asciidoc" class="bare">https://github.com/devonfw/ide/blob/master/documentation/setup.asciidoc</a>)</p>
 </div>
 <div class="paragraph">
 <p>The <a href="https://www.youtube.com/watch?v=oxuRxtrO2Ag">following video</a> gives you some important and helpful basics, still you don&#8217;t need to know all of these commands directly by heart. Instead under the video you&#8217;ll find a list with the commands mentioned in the video to make a command return to your mind. Also directly play around with those commands while watching the video to learn faster.</p>
@@ -493,7 +539,7 @@ There are also some basic exercises related to our project that are not official
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-08-02 10:21:41 UTC
+Last updated 2022-09-08 11:55:09 UTC
 </sub></div>
 </div>
 </div>

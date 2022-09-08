@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>IoT Edge Data Processing</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="/website/assets/scripts/lunr.min.js"></script>
+<!-- JQuery -->
+<script src="/website/assets/scripts/jquery.min.js"></script>
+<link rel="stylesheet" href="/website/assets/styles/font-awesome.min.css">
+<link rel="stylesheet" href="/website/assets/styles/googlecode.min.css">
+<script src="/website/assets/scripts/highlight.min.js"></script>
+<script src="/website/assets/scripts/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="/website/assets/styles/bootstrap.min.css">
+
+<script src="/website/assets/scripts/anchor.min.js"></script>
+
+<script src="/website/components/header/search-engine/bundle.js"></script>
+
+<script src="/website/shared/rightmenu.js"></script>
+
+<!-- ************** Google analytics ************ -->
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+
+gtag('consent', 'default', {
+  'analytics_storage': 'denied'
+});
+</script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+<script>
+  function consentGranted() {
+    gtag('consent', 'update', {
+      'analytics_storage': 'granted'
+    });
+  }
+</script>
+
+<!-- ******************************************** -->
+
+
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="/website/pages/welcome/welcome.html"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="https://devonfw.com/website/pages/learning/">Tutorials</a></p>
+</li>
+<li>
+<p><a href="/website/pages/solutions/index.html">Solutions</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Docs</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"
+      autocomplete="off"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#solutions_solutions_iot_edge_processing_ms_index.asciidoc">IoT Edge Data Processing</a>
+<ul class="sectlevel1">
+<li><a href="#solutions_solutions_iot_edge_processing_ms_index.asciidoc_iot-edge-data-processing-introduction">IoT Edge Data Processing Introduction</a>
+<ul class="sectlevel2">
+<li><a href="#solutions_solutions_iot_edge_processing_ms_index.asciidoc_context--problems">Context &amp; Problems</a></li>
+<li><a href="#iot-platforms">IoT Platforms</a></li>
+<li><a href="#solutions_solutions_iot_edge_processing_ms_index.asciidoc_standard-problems">Standard Problems</a></li>
+</ul>
+</li>
+<li><a href="#solutions_solutions_iot_edge_processing_ms_index.asciidoc_iot-edge-data-processing-platforms">IoT Edge Data Processing Platforms</a>
+<ul class="sectlevel2">
+<li><a href="#solutions_solutions_iot_edge_processing_ms_index.asciidoc_microsoft">Microsoft</a></li>
+</ul>
+</li>
+<li><a href="#solutions_solutions_iot_edge_processing_ms_index.asciidoc_iot-edge-data-processing-solutions">IoT Edge Data Processing Solutions</a>
+<ul class="sectlevel2">
+<li><a href="#solutions_solutions_iot_edge_processing_ms_index.asciidoc_microsoft">Microsoft</a></li>
+<li><a href="#solutions_solutions_iot_edge_processing_ms_index.asciidoc_third-party-container-offerings">Third Party Container Offerings</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="solutions_solutions_iot_edge_processing_ms_index.asciidoc" class="sect0">IoT Edge Data Processing</h1>
+<div class="sect1">
+<h2 id="solutions_solutions_iot_edge_processing_ms_index.asciidoc_iot-edge-data-processing-introduction">IoT Edge Data Processing Introduction</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="solutions_solutions_iot_edge_processing_ms_index.asciidoc_context--problems">Context &amp; Problems</h3>
+<div class="paragraph">
+<p>The solutions focus is at the data processing part at the edge within IoT platforms.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="iot-platforms">IoT Platforms</h3>
+<div class="paragraph">
+<p>The <strong>Internet of things (IoT)</strong> describes physical objects (or groups of such objects) with sensors, processing ability, software, and other technologies that connect and exchange data with other devices and systems over the Internet or other local communications networks. The location of the devices is also known as edge. Industrial IoT (IIoT) is a subcategory of IoT. IIoT utilizes the principles of the internet of things in industrial settings or, in short, “the elements are identical, but the usage varies.” IIoT is often used about Industry 4.0, a term that encapsulates the manufacturing industry’s current trend to utilize a combination of IoT, Big Data, cloud, and edge computing.</p>
+</div>
+<div class="paragraph">
+<p>Broadly conceived, an <strong>IoT platform</strong> is a multi-layer technology that facilitates the provisioning and management of connected devices within the IoT ecosystem consisting of IoT endpoints, edge hardware, networks, and a broader value chain. IoT platforms are often referred to as middleware solutions as they act as the connective tissue between the data collected from edge devices and the end-user applications. According to Gartner: “An IoT platform is an on-premises software suite or a cloud service…that monitors and may manage and control various types of endpoints, often via applications business units deploy on the platform.” The broader value chain consists of the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Sensors, actuators, controllers gathering data</p>
+</li>
+<li>
+<p>A communication network</p>
+</li>
+<li>
+<p>An IoT edge device/gateway that aggregates the data and transmits it across the network</p>
+</li>
+<li>
+<p>Data processing platforms e.g. for transforming, modeling, and visualizing data</p>
+</li>
+<li>
+<p>End-user applications
+Some IoT platforms are less comprehensive than others. Depending on your Applications, you may require an IoT platform that only covers a certain portion of the value chain or needs a complete solution. An end-to-end IoT platform that covers the full IoT development cycle will typically include the following (<a href="https://www.iotforall.com/iiot-iot-or-mes-platforms-whats-the-difference" class="bare">https://www.iotforall.com/iiot-iot-or-mes-platforms-whats-the-difference</a>):</p>
+</li>
+<li>
+<p>IoT device management</p>
+</li>
+<li>
+<p>Data collection capabilities</p>
+</li>
+<li>
+<p>IoT data modeling, analytics, visualization</p>
+</li>
+<li>
+<p>App development capabilities or a marketplace for IoT apps</p>
+</li>
+<li>
+<p>IoT collaboration enablement, social features</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>An <strong>IIoT platform</strong> is special case of an IoT platform with a wider scope of offered features, the specific industry focus, and the emphasis on industry-level security standards.</p>
+</div>
+<div class="paragraph">
+<p>To implementing IoT platforms two major approaches can be distinguished:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Traditional approach used so far</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p><strong>MES</strong>, or manufacturing execution systems, have been the traditional way to streamline operations all the way down to the shop floor. They manage industrial assets, collect data, and ensure traceability in an industrial setting, among others. As a more traditional approach to IIoT, MES are centralized solutions. They tend to encounter difficulties when having to perform outside of their main functionalities. MES tend to be vendor-specific and proprietary, so industrial manufacturers can only work with their vendor’s modules. And you can buy the vendor’s apps only. The manufacturers have little control over the applications they develop and deploy. (Source: <a href="https://www.iotforall.com/iiot-iot-or-mes-platforms-whats-the-difference" class="bare">https://www.iotforall.com/iiot-iot-or-mes-platforms-whats-the-difference</a>)</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>newer (I)IoT platforms</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>IIoT platforms are more flexible as they tend to be microservice-based and decentralized. They usually consist of communication software for monitoring, troubleshooting, and managing the connected IoT devices, the network, and data flows. On top of that, some IIoT platforms come with advanced analytics capabilities and support for IoT app development.</p>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The picture below summarizes the major actors of a full blown decentralized (I)IoT Platform:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/iot_platforms_overview.png" alt="(I)IoT Platforms Overview" width="925" height="666">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="solutions_solutions_iot_edge_processing_ms_index.asciidoc_standard-problems">Standard Problems</h3>
+<div class="paragraph">
+<p>The described problems are split in following categories:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Functional problems
+Focus is the compute capacity that is connected to the device and the cloud.</p>
+</li>
+<li>
+<p>Non-Functional
+Refers to standard non-functional problems such as Monitoring, Provisioning, Business Continuity, Scaling or Security.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The list below describes the standard functional problems in the above scenarios:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Connectivity (Device &#8656;&#8658; Edge Processing)</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>This might be challenging for various reasons:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Devices might not support standard protocols such as OPC-UA/ MQTT/ AMQP &#8658; might require protocol translation</p>
+</li>
+<li>
+<p>Devices might require small footprint of installed software &#8658; requires protocols that don’t need big software packages on device side</p>
+</li>
+<li>
+<p>Device might not support protocols with encryption</p>
+</li>
+<li>
+<p>Connection might be shaky</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Typical protocols in that area are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>HTTPS as fallback if nothing else works</p>
+</li>
+<li>
+<p>MQTT especially for shaky connections and has a smaller footprint compared to AMQP</p>
+</li>
+<li>
+<p>AMQP has a larger footprint but extra features like connection multiplexing
+MQTT/ AMQP use special ports that are normally blocked by firewalls. A common solution is to run MQTT/ AMQP over WebSockets.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Connectivity (Edge Processing &#8656;&#8658; Cloud)
+Cloud connectivity might be limited so that caching solutions are required.</p>
+</li>
+<li>
+<p>Processing</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Processing must be able to handle the incoming frequency of data. If data cannot be processed and forwarded at the incoming speed an overflow of storage might happen.</p>
+</div>
+<div class="paragraph">
+<p>Device Data Normalization/ Aggregation
+Data received from the devices might differ in various aspects:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The same logical value such as 100°C might be encoded by a different data type or by a different value</p>
+</li>
+<li>
+<p>The interval by which devices send data might differ</p>
+</li>
+<li>
+<p>Data received from devices is a snapshot at a certain point in time. For processing an average for a certain time window needs to be calculated.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Data enrichment</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Data received from the devices might need to be enriched with additional metadata. A classic example is the corresponding customer for a rented device such as a container. The sensor only sends a technical identifier and measured values but not the current owner of the container.</p>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The list below describes the standard non-functional problems in the above scenarios:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Monitoring:</strong> Major options are between monitoring on-premises within the edge or remotely via cloud. The concrete platform depends heavily on the processing platform.</p>
+</li>
+<li>
+<p><strong>Provisioning:</strong> The concrete platform depends heavily on the processing platform.</p>
+</li>
+<li>
+<p><strong>Scaling:</strong> Scaling mechanisms of the processing platform apply if that feature exists out of the box. Otherwise, manual scaling must be implemented if the processing platform is not node aware.</p>
+</li>
+<li>
+<p>Security</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Security in transit, at rest and in extreme cases during processing must be ensured. If the device cannot send the data encrypted the transmission must be hardened by additional measures.</p>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="solutions_solutions_iot_edge_processing_ms_index.asciidoc_iot-edge-data-processing-platforms">IoT Edge Data Processing Platforms</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="solutions_solutions_iot_edge_processing_ms_index.asciidoc_microsoft">Microsoft</h3>
+<div class="sect3">
+<h4 id="solutions_solutions_iot_edge_processing_ms_index.asciidoc_overview">Overview</h4>
+<div class="paragraph">
+<p>The subsequent chapters give an overview about infrastructure services/ components from Microsoft and Third Party to host processing logic within an IoT platform at the edge. Recommendations are given to allow a solution architect to choose an option.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="solutions_solutions_iot_edge_processing_ms_index.asciidoc_offerings-categories">Offerings Categories</h4>
+<div class="paragraph">
+<p>Various Microsoft offerings use Azure Arc as enabling technology for on-premises/ edge. Azure Arc allows it to move operations of edge resources (VM, Kubernetes based) in the cloud. This includes monitoring and governance by applying security policies. Key component is an agent on the edge resources that establishes a bidirectional communication channel to the cloud. Edge resources appear then in the Azure control plane as cloud hosted service instances. The picture below shows the major idea:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/azure_arc.png" alt="AKS Overview" width="794" height="568">
+</div>
+</div>
+<div class="paragraph">
+<p>The presented offerings fall in the following categories:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Private Azure datacenter:</strong> The offering is intended if you create your own on-premises datacenter that is running Azure cloud software and certified hardware from Microsoft.</p>
+</li>
+<li>
+<p>Cluster of nodes</p>
+</li>
+<li>
+<p><strong>Pluggable Device:</strong> The device is plugged into the on-premises host to extend its functionality.</p>
+</li>
+<li>
+<p>IoT specialized Operating System (=Single Server)</p>
+</li>
+<li>
+<p>Container based platforms (Software only)</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>The major options are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Non node aware modular platform &#8658; This can be combined with Kubernetes for node awareness and scaling</p>
+</li>
+<li>
+<p>Bare metal Kubernetes platforms which can be further split into lightweight platforms especially targeted for IoT or standard Kubernetes options</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="solutions_solutions_iot_edge_processing_ms_index.asciidoc_iot-edge-data-processing-solutions">IoT Edge Data Processing Solutions</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="solutions_solutions_iot_edge_processing_ms_index.asciidoc_microsoft">Microsoft</h3>
+<div class="paragraph">
+<p>The Microsoft offerings are as follows:</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 7%;">
+<col style="width: 5%;">
+<col style="width: 14%;">
+<col style="width: 13%;">
+<col style="width: 9%;">
+<col style="width: 14%;">
+<col style="width: 12%;">
+<col style="width: 26%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Service</th>
+<th class="tableblock halign-left valign-top">Category</th>
+<th class="tableblock halign-left valign-top">Architecture</th>
+<th class="tableblock halign-left valign-top">Supported OS</th>
+<th class="tableblock halign-left valign-top">Limitations</th>
+<th class="tableblock halign-left valign-top">Additional Functionality</th>
+<th class="tableblock halign-left valign-top">Cloud Integration</th>
+<th class="tableblock halign-left valign-top">Costs</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Azure stack HUB</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cluster (Own Datacenter)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/tab_arch_azure_stack_hub.png" alt="image"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Windows/ Linux (<a href="https://docs.microsoft.com/de-de/azure-stack/operator/azure-stack-supported-os?view=azs-2108&amp;tabs=os1">Detailed Versions</a>)</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>Only integrated OEM HW + Azure Microsoft</p>
+</div>
+<div class="paragraph">
+<p>Minimum 4-16 servers for one scale unit</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>Azure general services like Azure Resource Manager + Subset of Azure Services</p>
+</div>
+<div class="paragraph">
+<p>Connected/ disconnected</p>
+</div>
+<div class="paragraph">
+<p>Azure Marketplace connection</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes (via <a href="https://azure.microsoft.com/en-us/updates/azure-iot-hub-on-azure-stack-hub-preview-will-be-retired-and-it-will-not-go-to-ga/">IoT Edge Gateway</a> in Stack Hub)</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>Pay-as-you go as in Azure (same subscriptions, Azure Prepayments, and billing tools as Azure)</p>
+</div>
+<div class="paragraph">
+<p>Discount for reserved instances not possible</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Azure Stack Edge</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pluggable device (Intended for AI inference) due to powerful hardware</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/tab_arch_azure_stack_edge.png" alt="image"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Windows/ Linux (<a href="https://docs.microsoft.com/en-us/azure/databox-online/azure-stack-edge-pro-r-system-requirements">Detailed Versions</a>)</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>Software requirements hosts (OS, protocols device access, storage accounts)</p>
+</div>
+<div class="paragraph">
+<p>Networking requirements device (Port, protocol)</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>Kubernetes</p>
+</div>
+<div class="paragraph">
+<p>Azure Arc Integration possible</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes (via registration in IoT Hub)</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p><a href="https://azure.microsoft.com/en-us/pricing/calculator/?service=azure-stack-edge">monthly subscription</a> fee for using Azure Stack Edge for a period of thirty (30) calendar days</p>
+</div>
+<div class="paragraph">
+<p>Shipping and customs will be charged extra</p>
+</div>
+<div class="paragraph">
+<p>No upfront cost</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Azure Stack HCI</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cluster (Not entire datacenter)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/tab_arch_azure_stack_edge.png" alt="image"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Windows/ Linux (<a href="https://azure.microsoft.com/en-gb/products/azure-stack/hci/">Detailed Version</a>)</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>Minimum HW: Single node</p>
+</div>
+<div class="paragraph">
+<p>Validated HW from <a href="https://azurestackhcisolutions.azure.microsoft.com/">catalog</a> (with over 200 entries)</p>
+</div>
+<div class="paragraph">
+<p>Bought either HW + SW or SW only</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>Storage Spaces (Software Defined Storage)</p>
+</div>
+<div class="paragraph">
+<p>Azure Arc enabled cloud operations incl. Backup, Monitoring, Compliance, deployment target as custom location</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes (via registration in IoT Hub)</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p><a href="https://azure.microsoft.com/en-gb/pricing/details/azure-stack/hci/">Usage fee</a> on a per-core basis on your on-premises serve</p>
+</div>
+<div class="paragraph">
+<p>Azure subscription</p>
+</div>
+<div class="paragraph">
+<p>Additional fees for guests</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>AKS on Azure Stack HCI</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cluster (Not entire datacenter)</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>Host can be windows due to windows server</p>
+</div>
+<div class="paragraph">
+<p><a href="https://docs.microsoft.com/en-us/azure/aks/node-updates-kured">Kubernetes nodes</a> Linux per default</p>
+</div>
+<div class="paragraph">
+<p>Windows container require windows nodes</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Many <a href="https://docs.microsoft.com/en-us/azure-stack/aks-hci/system-requirements?tabs=allow-table">additional system</a> requirements on top of HCI (AD, HW, networking, Windows Admin Center, Azure)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AKS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">yes</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p><a href="https://docs.microsoft.com/en-gb/azure-stack/aks-hci/pricing">Usage per vCPU</a> of running worker nodes within workload clusters (If hyperthreading activated only half of the costs)</p>
+</div>
+<div class="paragraph">
+<p>Billing data sent to Azure</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Azure IoT Edge</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Container based platform</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/tab_arch_azure_stack_edge.png" alt="image"></span></p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>Windows container only to windows hosts</p>
+</div>
+<div class="paragraph">
+<p>Linux containers to windows and Linux hosts</p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/MicrosoftDocs/azure-docs/blob/main/articles/iot-edge/support.md">Supported OS</a> host</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>Assumes Moby-engine as container platform</p>
+</div>
+<div class="paragraph">
+<p>Minimum assumption <a href="https://docs.microsoft.com/en-us/azure/iot-edge/support?view=iotedge-2020-11">regarding host</a> since Linux/ Windows virtualization platform (e.g. works in Hyper-V, vSphere, IoT Device)</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>Integration with IoT Hub</p>
+</div>
+<div class="paragraph">
+<p>Modul systems with built-in communication</p>
+</div>
+<div class="paragraph">
+<p>Modules available via Marketplace (Functions, Azure Stream Analytics)</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>Fee per device for Azure Stream Analytics</p>
+</div>
+<div class="paragraph">
+<p>Costs for IoT Hub (IoT Hub used for device mgmt and services deployed to edge)</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Windows IoT</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Operating system</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/tab_arch_windows_iot.png" alt="image"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Windows</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>IoT Core limited windows 10 support (e.g. only Universal Windows Platform)</p>
+</div>
+<div class="paragraph">
+<p>Runs on any hardware with the "Certified for Windows Server" logo. See the WindowsServerCatalog</p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Device Mgmt for supported devices</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Yes (integration <a href="https://docs.microsoft.com/en-us/windows/iot-core/connect-to-cloud/managedevices">possible</a>)</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>IoT Core: Online Licensing Agreement and Embedded OEM Agreements, Royalty-free</p>
+</div>
+<div class="paragraph">
+<p>IoT Enterprise: Direct and Indirect Embedded OEM Agreements</p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The following recommendations exist:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>No built-in functionality required such as Azure Arc, device mgmt &amp; IoT Hub, specialized HW, caching or other showstoppers (Know-how, Budget) ,</p>
+<div class="ulist">
+<ul>
+<li>
+<p>None of the presented options  Whatever you like</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Hardware constraints new/ existing violated or software only</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Azure IoT Edge especially when modular systems + IoT Hub. This option is not node aware. To combine this option on Kubernetes Microsoft recommends Virtual Kubes (<a href="https://docs.microsoft.com/en-us/azure/iot-edge/how-to-install-iot-edge-kubernetes?view=iotedge-2020-11" class="bare">https://docs.microsoft.com/en-us/azure/iot-edge/how-to-install-iot-edge-kubernetes?view=iotedge-2020-11</a>).</p>
+</li>
+<li>
+<p>Windows 10 IoT if modular needed</p>
+</li>
+<li>
+<p>Manual Azure Arc installation if required</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>No HW constraints violations</p>
+<div class="ulist">
+<ul>
+<li>
+<p>HCI biggest package (Arc, Kubernetes)</p>
+</li>
+<li>
+<p>Special focus AI/ powerful HW  Azure Stack Edge</p>
+</li>
+<li>
+<p>Entire Datacenter  Azure Stack Hub</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="solutions_solutions_iot_edge_processing_ms_index.asciidoc_third-party-container-offerings">Third Party Container Offerings</h3>
+<div class="paragraph">
+<p>Bare metal platforms lightweight Kubernetes platforms that might be also installed on the device itself are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>MiniKube: Downvoted since for testing purposes only (<a href="https://www.itprotoday.com/cloud-computing-and-edge-computing/lightweight-kubernetes-showdown-minikube-vs-k3s-vs-microk8s" class="bare">https://www.itprotoday.com/cloud-computing-and-edge-computing/lightweight-kubernetes-showdown-minikube-vs-k3s-vs-microk8s</a>)</p>
+</li>
+<li>
+<p><strong>MicroK8s:</strong> Conformant "Low Ops" Kubernetes by Canonical (HA support with multiple master nodes has been added recently)</p>
+</li>
+<li>
+<p><strong>K3s:</strong> Certified Kubernetes distribution built for IoT and edge computing</p>
+</li>
+<li>
+<p>KubeEdge</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>It assumes control plane in cloud and worker nodes can also be at the <a href="https://capgemini-engineering.com/us/en/insight/how-kubernetes-benefits-iot-edge/">edge</a>. KubEdge can be installed on the device itself (See here for source <a href="https://groups.google.com/g/kubeedge/c/VBhKAJSqmDc" class="bare">https://groups.google.com/g/kubeedge/c/VBhKAJSqmDc</a>). The <a href="https://www.cncf.io/blog/2022/08/18/kubernetes-on-the-edge-getting-started-with-kubeedge-and-kubernetes-for-edge-computing/">architecture</a> is shown below (Red boxes mark KubeEdge components):</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/kubeedge.png" alt="image"></span></p>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Bare metal platforms standard compute:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>KubeAdm</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Kubernetes tool for creating ground-up Kubernetes clusters which is good for standard compute (Linux/Windows) (<a href="https://medium.com/@sven_50828/setting-up-a-high-availability-kubernetes-cluster-with-multiple-masters-31eec45701a2" class="bare">https://medium.com/@sven_50828/setting-up-a-high-availability-kubernetes-cluster-with-multiple-masters-31eec45701a2</a>). KubeAdm supports multi master Kubernetes clusters. A Kubernetes cluster with a broken single master cannot be administrated anymore e.g., to add new nodes. Running pods will still continue to run.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/kubeadm.png" alt="image"></span></p>
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The following decision tree can be used. "Low Ops" in the tree refers to the decreased cost of operations when some operational tasks are abstracted or made easier, like auto updates or simplified upgrades:</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/decision_tree_baremetal_k8.png" alt="image"></span></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/welcome/welcome.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_getting-started.wiki_introduction-why-should-i-use-devonfw.asciidoc_features.html">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_devon4j.wiki_architecture.asciidoc.html#devonfw-guide_devon4j.wiki_architecture.asciidoc_technology-stack">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_getting-started.wiki_getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_devon4j.wiki_architecture.asciidoc.html">Architecture</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_ide.wiki_devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_general_master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-guide_ide.wiki_LICENSE.asciidoc.html">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script src="/website/assets/scripts/popper.min.js"></script>
+    <script src="/website/assets/scripts/bootstrap.min.js"></script>
+<div class="footnote"><sub>
+
+Last updated 2022-09-08 11:57:31 UTC
+</sub></div>
+</div>
+</div>
+<link rel="stylesheet" type="text/css" href="https://cginternal.devonfw.com/websitesnippets/main.css">
+<script async src="https://cginternal.devonfw.com/websitesnippets/main.js"></script>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+<script>
+  var internalUrls = ["https://cginternal.devonfw.com/websitesnippets/"];
+  $(".internal").each(function(){
+    internalUrls.forEach((internalUrl, index) => {
+      $.ajax({url: internalUrl + $(this).text() + "/index.html" })
+      .then(r => {
+        var leftDiv = $('<div class="info"><span class="infoText">Internal</span><img class="infoImage" src="' + internalUrl + 'logo.png"/></div>');
+        var rightFirstDiv = $('<div class="message">This is only visible inside of the corporate network.</div>');
+        var rightLastDiv = $('<div class="content"></div>');
+        rightLastDiv.html(r);
+        var rightDiv = $('<div class="right"></div>');
+        rightDiv.append(rightFirstDiv);
+        rightDiv.append(rightLastDiv);
+        $(this).html(leftDiv);
+        $(this).append(rightDiv);
+        $(this).addClass("internal-active");
+        $(this).removeClass("internal");
+      })
+    });
+	});
+</script>
+<script>
+      let cookieName = 'cookie_consent';
+      let expiryTime = new Date(2037, 11, 21);
+      let today = new Date();
+      let cookieConsentDeclinedDate = localStorage.getItem("cookie_consent_declined");
+      let dateDiffHours = 0;
+      let cookieConsentHtml = `
+      <div id="cookie-consent">
+        <p>
+          We use cookies to perform analytics and enhance user experience. Do you accept to the use of cookies?
+        </p>
+        <p class="cookie-consent-buttons">
+          <a id="decline-cookie-btn" class="btn white-button" href="javascript:void(0)">Decline</a>
+          <a id="accept-cookie-btn" class="btn blue-button" href="javascript:void(0)">Accept</a>
+        </p>
+      </div>
+      `;
+      dateDiffHours = cookieConsentDeclinedDate ? Math.abs(cookieConsentDeclinedDate - today) / 36e5 : 0;
+      if (document.cookie.indexOf(cookieName) < 0) {
+        if (cookieConsentDeclinedDate) {
+          if (dateDiffHours > 24) {
+            $("body").append(cookieConsentHtml);
+          }
+        } else {
+          $("body").append(cookieConsentHtml);
+        }
+      }
+      $("#accept-cookie-btn").click(function() {
+        document.cookie = `${cookieName}=accept;expires=${expiryTime};path=/`;
+        localStorage.removeItem("cookie_consent_declined");
+        consentGranted();
+        $("#cookie-consent").hide();
+      });
+      $("#decline-cookie-btn").click(function() {
+        localStorage.setItem("cookie_consent_declined", today);
+        $("#cookie-consent").hide();
+      });
+</script>
+</body>
+</html>

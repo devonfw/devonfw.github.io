@@ -8,7 +8,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    steps:     
+    steps:          
       - name: Configure git
         run: |
           git config --global fetch.parallel 20
@@ -17,14 +17,14 @@ jobs:
         run: |
           git clone https://${{ github.token }}@github.com/${{ github.repository }}.git --recurse-submodules --single-branch .
           
-      - name: Cache local Maven repository
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-
+      - name: Starting RubyGem Maven Proxy
+        run: |
+          # mvn org.apache.maven.plugins:maven-dependency-plugin:3.0.2:copy -Dartifact=de.saumya.mojo:rubygems:0.2.3:war -DoutputDirectory=.
+          git clone https://github.com/ssarmokadam/rubygems-servlets.git
+          cd rubygems-servlets
+          mvn clean package -Pexecutable
+          java -jar target/rubygems.war &
+          cd ..
       - name: SetupRuby
         uses: actions/setup-ruby@v1
         with:
@@ -120,7 +120,11 @@ jobs:
           cd ../
 
       - name: Build
-        run: mvn -s ./.m2/unblock-rubygem-proxy-settings.xml clean package
+        run: |
+          mvn org.apache.maven.plugins:maven-dependency-plugin:3.0.2:copy -Dartifact=de.saumya.mojo:rubygems:0.2.3:war -DoutputDirectory=.
+          java -jar rubygems-0.2.3.war &
+          sleep 30
+          mvn -s ./.m2/settings-local-rubygems-proxy.xml clean package -Doutput.format=html
         
       - name: Make IDs unique
         run: |

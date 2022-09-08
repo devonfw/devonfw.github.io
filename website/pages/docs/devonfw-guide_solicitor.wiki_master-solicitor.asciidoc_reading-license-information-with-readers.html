@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2022-08-02 10:26:03 UTC">
+<meta name="author" content="Updated at 2022-09-08 11:59:20 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -533,7 +533,7 @@ gtag('consent', 'default', {
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2022-08-02 10:31:29 UTC</span><br>
+<span id="author" class="author">Updated at 2022-09-08 12:04:49 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -577,6 +577,8 @@ gtag('consent', 'default', {
 <li><a href="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_reading-license-information-with-readers.html#devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_yarn">Yarn</a>
 </li>
 <li><a href="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_reading-license-information-with-readers.html#devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_pip">Pip</a>
+</li>
+<li><a href="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_reading-license-information-with-readers.html#devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_oss-review-toolkit-ort">OSS Review Toolkit (ORT)</a>
 </li>
 <li><a href="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_reading-license-information-with-readers.html#devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_gradle-windows">Gradle (Windows)</a>
 </li>
@@ -879,7 +881,7 @@ line in the csv file for each license.</p>
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-The CSV reader currently does not fill the attribute <code>packageUrl</code>. Any functionality/reporting based on this attribute will be disfunctional for data read bythe CSV reader.
+The CSV reader currently does not fill the attribute <code>packageUrl</code>. Any functionality/reporting based on this attribute will be disfunctional for data read by the CSV reader.
 </td>
 </tr>
 </tbody></table>
@@ -888,10 +890,82 @@ The CSV reader currently does not fill the attribute <code>packageUrl</code>. An
 <div class="sect3">
 <h4 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_npm">NPM</h4>
 <div class="paragraph">
-<p>For NPM based projects either the NPM License Crawler (<a href="https://www.npmjs.com/package/npm-license-crawler" class="bare">https://www.npmjs.com/package/npm-license-crawler</a>) or the NPM License Checker (<a href="https://www.npmjs.com/package/license-checker" class="bare">https://www.npmjs.com/package/license-checker</a>) might be used. The NPM License Crawler can process several node packages in one run.</p>
+<p>For NPM based projects, the NPM License Checker (<a href="https://www.npmjs.com/package/license-checker" class="bare">https://www.npmjs.com/package/license-checker</a>) plugin can be used. The NPM License Crawler plugin is deprecated.</p>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_npm-license-checker">NPM License Checker</h5>
+<div class="paragraph">
+<p>To install the NPM License Checker the following command needs to be executed.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>npm i license-checker -g</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To get the licenses, the checker needs to be executed like the following example. We require JSON output here with "--json" and developer dependencies can/should be excluded with "--production".</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>license-checker --production --json &gt; /path/to/licenses.json</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The export should look like the following</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>{
+  "foo@0.0.1": {
+    "licenses": "MIT",
+    "repository": "https://github.com/somebody/foo",
+    "url": "http://www.somebody.com/",
+    "path": "C:\\Users\\me\\foo",
+    "licenseFile": "C:\\Users\\me\\foo\\LICENSE"
+  },
+  ...
+  "foo-bar@1.0.0": {
+    "licenses": [
+      "AFLv2.1",
+      "BSD"
+    ],
+    "repository": "https://github.com/nobody/foo-bar",
+    "path": "C:\\Users\\me\\foo-bar"
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Source: <a href="https://www.npmjs.com/package/license-checker" class="bare">https://www.npmjs.com/package/license-checker</a></p>
+</div>
+<div class="paragraph">
+<p>In <em>Solicitor</em> the data is read with the following part of the config</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>"readers" : [ {
+  "type" : "npm-license-checker",
+  "source" : "file:path/to/licenses.json",
+  "usagePattern" : "DYNAMIC_LINKING",
+  "repoType" : "npm"
+} ]</pre>
+</div>
+</div>
 </div>
 <div class="sect4">
 <h5 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_npm-license-crawler">NPM License Crawler</h5>
+<div class="admonitionblock warning">
+<table>
+<tbody><tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+This reader is deprecated and should no longer be used. It requires a specific dependency (license-checker) which is not available on official npm repositories anymore and scans additional developer dependencies. Use <a href="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_reading-license-information-with-readers.html#devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_npm-license-checker">NPM License Checker</a> (with --production option) instead. See <a href="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_feature-deprecation.html#devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_list-of-deprecated-features">List of Deprecated Features</a>.
+</td>
+</tr>
+</tbody></table>
+</div>
 <div class="paragraph">
 <p>To install the NPM License Crawler the following command needs to be executed.</p>
 </div>
@@ -939,71 +1013,11 @@ The CSV reader currently does not fill the attribute <code>packageUrl</code>. An
 </div>
 </div>
 </div>
-<div class="sect4">
-<h5 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_npm-license-checker">NPM License Checker</h5>
-<div class="paragraph">
-<p>To install the NPM License Checker the following command needs to be executed.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>npm i license-checker -g</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>To get the licenses, the checker needs to be executed like the following example (we require JSON output here)</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>license-checker --json &gt; /path/to/licenses.json</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The export should look like the following</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>{
-  "foo@0.0.1": {
-    "licenses": "MIT",
-    "repository": "https://github.com/somebody/foo",
-    "url": "http://www.somebody.com/",
-    "path": "C:\\Users\\me\\foo",
-    "licenseFile": "C:\\Users\\me\\foo\\LICENSE"
-  },
-  ...
-  "foo-bar@1.0.0": {
-    "licenses": [
-      "AFLv2.1",
-      "BSD"
-    ],
-    "repository": "https://github.com/nobody/foo-bar",
-    "path": "C:\\Users\\me\\foo-bar"
-  }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Source: <a href="https://www.npmjs.com/package/license-checker" class="bare">https://www.npmjs.com/package/license-checker</a></p>
-</div>
-<div class="paragraph">
-<p>In <em>Solicitor</em> the data is read with the following part of the config</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>"readers" : [ {
-  "type" : "npm-license-checker",
-  "source" : "file:path/to/licenses.json",
-  "usagePattern" : "DYNAMIC_LINKING",
-  "repoType" : "npm"
-} ]</pre>
-</div>
-</div>
-</div>
 </div>
 <div class="sect3">
 <h4 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_yarn">Yarn</h4>
 <div class="paragraph">
-<p>To generate the input file required for Solicitor yarn needs to be executed with the following command within the directory that contains the project’s package.json (we require JSON output here):</p>
+<p>To generate the input file required for Solicitor, yarn needs to be executed with the following command within the directory that contains the project’s package.json (we require JSON output here):</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1042,7 +1056,7 @@ The CSV reader currently does not fill the attribute <code>packageUrl</code>. An
 <div class="sect3">
 <h4 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_pip">Pip</h4>
 <div class="paragraph">
-<p>To generate the input file required for Solicitor one has follow two steps:</p>
+<p>To generate the input file required for Solicitor, one has to follow two steps:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1104,6 +1118,182 @@ The CSV reader currently does not fill the attribute <code>packageUrl</code>. An
   "repoType" : "pip"
 } ]</pre>
 </div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_oss-review-toolkit-ort">OSS Review Toolkit (ORT)</h4>
+<div class="paragraph">
+<p>In order to use the <a href="https://github.com/oss-review-toolkit/ort#analyzer">analyzer library of ORT</a>, one must first install the software and run it to generate the result file.
+The detailed way on installing ORT can be found <a href="https://github.com/oss-review-toolkit/ort#installation">here</a> and a tutorial on how to run the analyzer library can be found <a href="https://github.com/oss-review-toolkit/ort/blob/main/docs/getting-started.md#4-run-the-analyzer-on-mime-types">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>Usually, the command to run the analyzer and get extract the result file from a project looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>docker run -v C:\\path\\to\\project/:/project ort --info analyze -f JSON -i /project -o /project/ort/analyzer</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that this command only works for the installation via <a href="https://www.docker.com/">Docker</a> and that we require JSON as the output format. For other installation methods, you need to adjust the command accordingly.</p>
+</div>
+<div class="paragraph">
+<p>It might also be necessary to set up a customized configuration for the analyzer. This can be achieved through a configuration file. The default path for that is the .ort/config/ directory below the current user’s home directory. We can place a ort.conf file there, in which we can declare various configurations e.g. allowing dynamic versions in npm components via</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>analyzer {
+    allowDynamicVersions = true
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Further information about the configuration file can be found <a href="https://github.com/oss-review-toolkit/ort#configuration">here</a>.</p>
+</div>
+<div class="paragraph">
+<p>The result file should look like the following</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>{
+  "repository" : {
+    "vcs" : {
+      "type" : "",
+      "url" : "",
+      "revision" : "",
+      "path" : ""
+    },
+    "vcs_processed" : {
+      "type" : "",
+      "url" : "",
+      "revision" : "",
+      "path" : ""
+    },
+    "config" : { }
+  },
+  "analyzer" : {
+    "start_time" : "testStartTime",
+    "end_time" : "testEndTime",
+    "environment" : {
+      "ort_version" : "23ca00df86",
+      "java_version" : "11.0.15",
+      "os" : "Linux",
+      "processors" : 4,
+      "max_memory" : 1631584256,
+      "variables" : {
+        "JAVA_HOME" : "/opt/java/openjdk",
+        "ANDROID_HOME" : "/opt/android-sdk",
+        "GOPATH" : "/tmp/go"
+      },
+      "tool_versions" : {
+        "NPM" : "8.5.0"
+      }
+    },
+    "config" : {
+      "allow_dynamic_versions" : false
+    },
+    "result" : {
+      "projects" : [ {
+        "id" : "Maven:groupId:artifactId:version",
+        "definition_file_path" : "",
+        "declared_licenses" : [ ],
+        "declared_licenses_processed" : { },
+        "vcs" : {
+          "type" : "",
+          "url" : "",
+          "revision" : "",
+          "path" : ""
+        },
+        "vcs_processed" : {
+          "type" : "",
+          "url" : "",
+          "revision" : "",
+          "path" : ""
+        },
+        "homepage_url" : "",
+        "scope_names" : [ "compile" ]
+      }],
+      "packages" : [ {
+        "package" : {
+          "id" : "Maven:testGroupId:testArtifactId:testVersion",
+          "purl" : "pkg:maven/testGroupId/testArtifactId@testVersion",
+          "authors" : [ "testAuthor" ],
+          "declared_licenses" : [ "Apache License, Version 2.0" ],
+          "declared_licenses_processed" : {
+            "spdx_expression" : "Apache-2.0",
+            "mapped" : {
+              "Apache License, Version 2.0" : "Apache-2.0"
+            }
+          },
+          "description" : "testDescription",
+          "homepage_url" : "https://test.com/test",
+          "binary_artifact" : {
+            "url" : "https://repo.maven.apache.org/maven2/testGroupId/testArtifactId/testVersion/testArtifactId-testVersion.jar",
+            "hash" : {
+              "value" : "testHash",
+              "algorithm" : "SHA-1"
+            }
+          },
+          "source_artifact" : {
+            "url" : "https://repo.maven.apache.org/maven2/testGroupId/testArtifactId/testVersion/testArtifactId-testVersion-sources.jar",
+            "hash" : {
+              "value" : "testHash2",
+              "algorithm" : "SHA-1"
+            }
+          },
+          "vcs" : {
+            "type" : "",
+            "url" : "",
+            "revision" : "",
+            "path" : ""
+          },
+          "vcs_processed" : {
+            "type" : "Git",
+            "url" : "https://github.com/testproject.git",
+            "revision" : "",
+            "path" : "testproject"
+          }
+        },
+		"curations" : [ ]
+      } ],
+      "issues" : {},
+      "dependency_graphs" : {},
+      "has_issues" : true
+    }
+  },
+  "scanner" : null,
+  "advisor" : null,
+  "evaluator" : null
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Source: <a href="https://github.com/oss-review-toolkit/ort#analyzer" class="bare">https://github.com/oss-review-toolkit/ort#analyzer</a></p>
+</div>
+<div class="paragraph">
+<p>In <em>Solicitor</em> the data is read with the following part of the config</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>"readers" : [ {
+  "type" : "ort",
+  "source" : "file:path/to/analyzer-result.json",
+  "usagePattern" : "DYNAMIC_LINKING",
+  "repoType" : "ort"
+} ]</pre>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tbody><tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+The ORT reader currently does not yet fill the attribute <code>licenseUrl</code>. Any functionality/reporting based on this attribute will be disfunctional for data read by the ORT reader.
+</td>
+</tr>
+</tbody></table>
 </div>
 </div>
 <div class="sect3">
@@ -1444,7 +1634,7 @@ The former reader of type <code>gradle</code> is deprecated and should no longer
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-08-02 10:22:21 UTC
+Last updated 2022-09-08 11:55:49 UTC
 </sub></div>
 
 

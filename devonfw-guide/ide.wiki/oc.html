@@ -21,7 +21,7 @@
 <!-- ************************************* -->
 
 
-<title>Steps to install Opentelemetry including Jaeger and grafana with your application.</title>
+<title>OpenShift CLI</title>
 <!-- devonfw website stylesheet -->
 <link rel="stylesheet" type="text/css" href="/devonfw.css">
 <!-- Lunr -->
@@ -115,112 +115,46 @@ gtag('consent', 'default', {
 <div id="sidebar" class="wiki-sidebar"></div>
 
 <div id="content" class="mt-4 mt-sm-5">
-<div class="sect1">
-<h2 id="solutions_solutions_monitoring_opentelemetry_howto-setup.asciidoc_steps-to-install-opentelemetry-including-jaeger-and-grafana-with-your-application.">Steps to install Opentelemetry including <code>Jaeger</code> and <code>grafana</code> with your application.</h2>
-<div class="sectionbody">
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Install <code>nginx</code> in the <code>azure</code> environment. Login to <code>azure</code> using the command shell and execute the below commands.</p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>helm repo add bitnami https://charts.bitnami.com/bitnami
-helm repo update
-helm install nginx-ingress bitnami/nginx-ingress-controller --set ingressClassResource.default=true --set containerSecurityContext.allowPrivilegeEscalation=false --namespace nginx-ingress --create-namespace</pre>
-</div>
-</div>
-<div class="olist arabic">
-<ol class="arabic" start="2">
-<li>
-<p>Create two more services to get public ip/domain to configure <code>grafana</code> and <code>jaeger</code>. Use the below commands.</p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>kubectl apply -f ingress-grafana-service.yaml --namespace nginx-ingress
-kubectl apply -f ingress-jaeger-service.yaml  --namespace nginx-ingress</pre>
-</div>
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#devonfw-guide_ide.wiki_oc.asciidoc">OpenShift CLI</a></li>
+</ul>
+<h1 id="devonfw-guide_ide.wiki_oc.asciidoc" class="sect0">OpenShift CLI</h1>
+<div class="paragraph">
+<p>The <code>oc</code> commandlet is used to install OpenShift CLI. The instructions on how to use it can be found <a href="https://docs.openshift.com/container-platform/4.7/cli_reference/openshift_cli/getting-started-cli.html">here</a>.
+Call <code>devon oc «args»</code> with the arguments described <a href="https://docs.openshift.com/container-platform/latest/cli_reference/openshift_cli/getting-started-cli.html#cli-using-cli_cli-developer-commands">here</a>.</p>
 </div>
 <div class="paragraph">
-<p>While executing the above commands and if any port already used issue, configure different port in <code>ingress-xxx-service.yaml</code></p>
+<p><strong>ATTENTION:</strong>
+Currently this feature is new and therefore experimental.
+It may change in incompatible ways in the next releases until we reach a stable state.
+We hope that all is working fine for you.
+However, do not expect everything to work out of the box.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic" start="3">
-<li>
-<p>Configure the subdomain names for the application, <code>grafana</code> &amp; <code>jaeger</code>.
-Login to the azure console and open "Public IP addresses"
-Select each IP addresses having names like <code>kubernetes-xxxx</code>.
-  Open configuration of each on of it and add the below names.</p>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><code>applicaiton</code></p>
-</li>
-<li>
-<p><code>grafana</code></p>
-</li>
-<li>
-<p><code>jaeger</code></p>
-</li>
-</ol>
-</div>
-</li>
-</ol>
-</div>
-<div class="olist arabic">
-<ol class="arabic" start="4">
-<li>
-<p>Now open the <code>vlaues.yaml</code> file and add the hosts.</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>Here is a sample configuration</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>jaeger:
-  name: "jaeger-all-in-one"
-  host: "jaeger.westeurope.cloudapp.azure.com"
-  port: 16686</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Also configure the application container information:</p>
-</div>
-<div class="paragraph">
-<p>Here is a sample configuration</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre> image:
-    registry: "dockerregistry101"
-    repository: "azure_devops_image_store"
-    tag: "latest"
-    port: 8080</pre>
-</div>
-</div>
-<div class="olist arabic">
-<ol class="arabic" start="5">
-<li>
-<p>Install <code>helm chart</code>.</p>
-</li>
-</ol>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>helm install otlp ./helm --namespace nginx-ingress</pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Verify the the deployments in browser using the host names.</p>
-</div>
-</div>
-</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<caption class="title">Table 1. Usage of <code>devon oc</code></caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Argument(s)</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Meaning</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>setup</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">install OpenShift CLI on your machine.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>«args»</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">call oc with the specified arguments. Call <code>oc --help</code> for details or use <code>oc</code> directly as preferred."</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="footer" class="footer">
 <div class="openblock footerLinks">
@@ -332,7 +266,7 @@ Select each IP addresses having names like <code>kubernetes-xxxx</code>.
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-08-02 10:24:05 UTC
+Last updated 2022-09-08 11:55:15 UTC
 </sub></div>
 </div>
 </div>
