@@ -123,6 +123,7 @@ gtag('consent', 'default', {
 <li><a href="#devonfw-guide_ide.wiki_eclipse.asciidoc_plugins">plugins</a>
 <ul class="sectlevel2">
 <li><a href="#devonfw-guide_ide.wiki_eclipse.asciidoc_legacy-plugin-config">legacy plugin config</a></li>
+<li><a href="#devonfw-guide_ide.wiki_eclipse.asciidoc_mirroring-update-sites">mirroring update sites</a></li>
 </ul>
 </li>
 <li><a href="#devonfw-guide_ide.wiki_eclipse.asciidoc_dictionary">dictionary</a>
@@ -191,6 +192,10 @@ To launch eclipse for your current workspace and devonfw-ide installation simply
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>create-script</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">create launch script for this IDE, your current workspace and your OS</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mirror «id» [«url»]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mirror the content of an update-site</p></td>
+</tr>
 </tbody>
 </table>
 <div class="paragraph">
@@ -234,6 +239,7 @@ Here you can create a properties file for each plugin. This is an example <a hre
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>plugin_url=http://download.eclipse.org/tm/terminal/marketplace
+plugin_mirror_url=https://my-server.com/terminal-2022-09-13
 plugin_id=org.eclipse.tm.terminal.feature.feature.group,org.eclipse.tm.terminal.view.feature.feature.group,org.eclipse.tm.terminal.control.feature.feature.group,org.eclipse.tm.terminal.connector.ssh.feature.feature.group,org.eclipse.tm.terminal.connector.telnet.feature.feature.group
 plugin_active=true</code></pre>
 </div>
@@ -245,6 +251,9 @@ plugin_active=true</code></pre>
 <ul>
 <li>
 <p><code>plugin_url</code> defines the URL of the Eclipse update site of the plugin</p>
+</li>
+<li>
+<p><code>plugin_mirror_url</code> defines the URL of the Eclipse mirrored update site of the plugin. See <a href="#devonfw-guide_ide.wiki_eclipse.asciidoc_mirroring update sites">Mirroring Eclipse Update Site</a></p>
 </li>
 <li>
 <p><code>plugin_id</code> defines the feature group ID(s) to install. To install multiple features/plugins provide a coma-separated list of IDs. If you want to customize <code>devonfw-ide</code> with new plugins you can first install them manually and then go to <code>About Eclipse &gt; Installation Details</code> then you can filter for your newly installed plugin and find the values in the <code>Id</code> column. Copy &amp; paste them from here to make up your own custom config.</p>
@@ -285,6 +294,35 @@ Be aware that this comes at your own risk and sometimes plugins can conflict and
 </div>
 <div class="paragraph">
 <p>Of course you may also mix plugin IDs with fully qualified plugins.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_ide.wiki_eclipse.asciidoc_mirroring-update-sites">mirroring update sites</h3>
+<div class="paragraph">
+<p>A common problem with eclipse plugins is that they are provided decentralized as so-called update sites via URLs.
+The maintainer of that URL is in full control of the availability and the content behind that URL.
+If the service gets broken, obviously the plugin can not be downloaded.
+Even worse, if existing content gets updated, the result is not reproducible anymore.</p>
+</div>
+<div class="paragraph">
+<p>While the plugin artifact itself is versioned, the request to install a plugin can not specify a version but always downloads the "latest" version from the update site.
+If at all some kind of versioning for stability is in place it happens via the URL itself so for different major versions different URLs are provided.
+A possible solution is to mirror the update site locally and then make it available on your own webserver.
+This way you always have access to the plugin version you need as a developer without being dependent on the plugin provider.
+Below is the process to mirror a plugin update-site.</p>
+</div>
+<div class="paragraph">
+<p>To mirror with only one paramter, you just need the <code>«plugin-id»</code> of an existing plugin in <code>${DEVON_IDE_HOME}/settings/eclipse/plugins</code> (e.g. checkstyle).
+Open any CLI in <code>${DEVON_IDE_HOME}</code> and run the following command.</p>
+</div>
+<div class="paragraph">
+<p><code>devon eclipse mirror «plugin-id» [«url»]</code></p>
+</div>
+<div class="paragraph">
+<p>This command will automatically mirror the content of an update site to a specific directory named by <code>«plugin-id»</code> together with the current date in <code>${DEVON_DOWNLOAD_DIR}/update-sites/</code> (e.g. checkstyle-2022-09-14).
+Afterwards, the folder can be uploaded to your own webserver and the URL can be put manually in <code>«plugin_mirror_url»</code> in the <code>«plugin-id».properties</code> file.
+This only works if a valid <code>plugin_url</code> is already set in the properties for the given <code>plugin_id</code> (see <a href="#devonfw-guide_ide.wiki_eclipse.asciidoc_plugins">plugins</a>).
+If you want to mirror an update site independently of <code>«plugin-id».properties</code>, you can enter an update site URL for the optional <code>«url»</code> parameter (e.g. <a href="https://checkstyle.org/eclipse-cs-update-site" class="bare">https://checkstyle.org/eclipse-cs-update-site</a>).</p>
 </div>
 </div>
 </div>
@@ -434,7 +472,7 @@ Here we collect a list of such dictionaries that you can download and merge into
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-09-15 12:05:46 UTC
+Last updated 2022-09-16 15:13:42 UTC
 </sub></div>
 </div>
 </div>
