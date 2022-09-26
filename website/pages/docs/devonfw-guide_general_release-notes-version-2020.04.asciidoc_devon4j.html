@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2022-09-26 08:14:07 UTC">
+<meta name="author" content="Updated at 2022-09-26 11:25:13 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -533,7 +533,7 @@ gtag('consent', 'default', {
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2022-09-26 08:22:51 UTC</span><br>
+<span id="author" class="author">Updated at 2022-09-26 11:30:44 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -834,7 +834,7 @@ The full list of changes for this release can be found in <a href="https://githu
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-09-26 08:09:08 UTC
+Last updated 2022-09-26 11:22:03 UTC
 </sub></div>
 
 
@@ -884,6 +884,16 @@ Last updated 2022-09-26 08:09:08 UTC
         </p>
       </div>
       `;
+      
+      const parseCookie = str =>
+        str
+        .split(';')
+        .map(v => v.split('='))
+        .reduce((acc, v) => {
+          acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());
+          return acc;
+        }, {});
+      
       dateDiffHours = cookieConsentDeclinedDate ? Math.abs(cookieConsentDeclinedDate - today) / 36e5 : 0;
       if (document.cookie.indexOf(cookieName) < 0) {
         if (cookieConsentDeclinedDate) {
@@ -893,7 +903,13 @@ Last updated 2022-09-26 08:09:08 UTC
         } else {
           $("body").append(cookieConsentHtml);
         }
+      } else {
+        cookies = parseCookie(document.cookie);
+        if (cookies["cookie_consent"] == "accept") {
+          consentGranted();
+        }
       }
+      
       $("#accept-cookie-btn").click(function() {
         document.cookie = `${cookieName}=accept;expires=${expiryTime};path=/`;
         localStorage.removeItem("cookie_consent_declined");

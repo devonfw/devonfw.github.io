@@ -442,7 +442,7 @@ The exception facade has to &#8230;&#8203;</p>
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-09-26 08:00:46 UTC
+Last updated 2022-09-26 11:16:54 UTC
 </sub></div>
 </div>
 </div>
@@ -492,6 +492,16 @@ Last updated 2022-09-26 08:00:46 UTC
         </p>
       </div>
       `;
+      
+      const parseCookie = str =>
+        str
+        .split(';')
+        .map(v => v.split('='))
+        .reduce((acc, v) => {
+          acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());
+          return acc;
+        }, {});
+      
       dateDiffHours = cookieConsentDeclinedDate ? Math.abs(cookieConsentDeclinedDate - today) / 36e5 : 0;
       if (document.cookie.indexOf(cookieName) < 0) {
         if (cookieConsentDeclinedDate) {
@@ -501,7 +511,13 @@ Last updated 2022-09-26 08:00:46 UTC
         } else {
           $("body").append(cookieConsentHtml);
         }
+      } else {
+        cookies = parseCookie(document.cookie);
+        if (cookies["cookie_consent"] == "accept") {
+          consentGranted();
+        }
       }
+      
       $("#accept-cookie-btn").click(function() {
         document.cookie = `${cookieName}=accept;expires=${expiryTime};path=/`;
         localStorage.removeItem("cookie_consent_declined");
