@@ -141,6 +141,7 @@ gtag('consent', 'default', {
 <li><a href="#devonfw-guide_devon4net.wiki_templates.asciidoc_aws-introduction">AWS Introduction</a></li>
 <li><a href="#devonfw-guide_devon4net.wiki_templates.asciidoc_devon4net.application.lambda">Devon4Net.Application.Lambda</a></li>
 <li><a href="#devonfw-guide_devon4net.wiki_templates.asciidoc_devon4net.application.webapi.serverless">Devon4Net.Application.WebAPI.Serverless</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_templates.asciidoc_devon4net.application.dynamodb">Devon4Net.Application.DynamoDb</a></li>
 </ul>
 </li>
 </ul>
@@ -1207,7 +1208,7 @@ Read the AWS components documentation to learn more about the configuration you 
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>function-handler</code> option is the function handler location in the form of <code>{DLL_NAME}::{NAMESPACE}::{FUNCTION_HANDLER_NAME}</code>. And the <code>template</code> option will point to a configuration file for the cloud formation.</p>
+<p>The <code>function-handler</code> option is the function handler location in the form of <code>Assembly::Namespace.ClassName::MethodName</code>. And the <code>template</code> option will point to a configuration file for the cloud formation.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1537,6 +1538,260 @@ Read the <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDe
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_templates.asciidoc_devon4net.application.dynamodb">Devon4Net.Application.DynamoDb</h3>
+<div class="paragraph">
+<p>This package contains a template for building a DynamoDb database.
+It makes use of the <code>Devon4Net.Infrastructure.DynamoDb</code> component, therefore please read the documentation about it before using the template.
+You also have a 'How to: DynamoDb' section that explains how to use the component with some examples.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+This template uses Lambda functions to get and set data into the DynamoDb database. if you don&#8217;t know about lambda functions, please read the 'How to: AWS Lambda Function' documentation.
+</td>
+</tr>
+</table>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/aws_dynamo_template_structure.png" alt="aws dynamo template structure">
+</div>
+<div class="title">Figure 18. DynamoDb Template File structure</div>
+</div>
+<div class="paragraph">
+<p>In the previous figure you can see the whole structure of the package:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Domain</code>: Here are placed the necessary classes of the custom objects that are used to input and output the data in the lambda functions. The <code>Entity Repository</code> is used to manage these objects.</p>
+</li>
+<li>
+<p><code>Dto</code>: Here are placed the necessary classes of the custom objects that are used to input and output the data in the lambda functions. These objects are managed with the <code>Table Repository</code>.</p>
+</li>
+<li>
+<p><code>Functions</code>: This folder will contain the function definition for the lambda functions.</p>
+</li>
+<li>
+<p><code>Handlers</code>: In this directory the classes that implement the <code>FunctionHandler</code> method that will define the lambda function behaviour.</p>
+<div class="paragraph">
+<p>In this case, we have a function that creates a DynamoDb table if it does not already exist and inserts data into it, it returns the value that was entered into the database.</p>
+</div>
+<div class="paragraph">
+<p>This has been achieved in two ways: by making use of the <strong>Table repository</strong> (low-level model) or through the use of the <strong>Entity repository</strong> (persistence programming model)</p>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+If you need more information about Table or Entity Repository please check the documentation about the DynamoDb component.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_templates.asciidoc_configuration">Configuration</h4>
+<div class="paragraph">
+<p>The configuration files are the following:</p>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_templates.asciidoc_appsettings.json">appsettings.json</h5>
+<div class="paragraph">
+<p>This file contains the configuration for all of the components and the project in general. It can contain subversions following the structure <code>appsettings.{environment}.json</code> and it contains the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+  "AWS": {
+    "UseSecrets": true,
+    "UseParameterStore": true,
+    "Credentials": {
+      "Profile": "",
+      "Region": "eu-west-1",
+      "AccessKeyId": "",
+      "SecretAccessKey": ""
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>UseSecrets</code>: Boolean to indicate if AWS Secrets Manager is being used.</p>
+</li>
+<li>
+<p><code>UseParameterStore</code>: Boolean to indicate if AWS Parameter Store is being used.</p>
+</li>
+<li>
+<p><code>Credentials</code>: Credentials for connecting the app with your AWS profile.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_templates.asciidoc_aws-lambda-tools-defaults.json">aws-lambda-tools-defaults.json</h5>
+<div class="paragraph">
+<p>This file provides default values to the AWS CLI for configuring and deploy with Visual Studio.</p>
+</div>
+<div class="paragraph">
+<p>You can run this command to learn more:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="console language-console">dotnet lambda deploy-serverless --help</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is the file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+  "Information": [
+    "This file provides default values for the deployment wizard inside Visual Studio and the AWS Lambda commands added to the .NET Core CLI.",
+    "To learn more about the Lambda commands with the .NET Core CLI execute the following command at the command line in the project root directory.",
+    "dotnet lambda help",
+    "All the command line options for the Lambda command can be specified in this file."
+  ],
+  "profile": "default",
+  "region": "eu-west-1",
+  "framework": "net6.0",
+  "function-runtime": "dotnet6",
+  "configuration": "Release",
+  "s3-prefix": "AWSServerlessTest/",
+  "function-memory-size": 256,
+  "function-timeout": 30,
+  "function-handler": "Devon4Net.Application.DynamoDb::Devon4Net.Application.DynamoDb.business.DynamoDbManagement.Functions.DynamoDbManagementFunction::FunctionHandler",
+  "template": "serverless.template"
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>function-handler</code> option is the function handler location in the form of <code>Assembly::Namespace.ClassName::MethodName</code>. And the <code>template</code> option will point to a configuration file for the cloud formation.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+Read the AWS documentation to learn more about this configuration.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_templates.asciidoc_serverless.template">serverless.template</h5>
+<div class="paragraph">
+<p>This configuration sends all of the information to the Cloud System, so you don&#8217;t have to change anything when deploying the functions.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Transform": "AWS::Serverless-2016-10-31",
+  "Description": "An AWS Serverless Application that uses the ASP.NET Core framework running in Amazon Lambda.",
+  "Parameters": {},
+  "Conditions": {},
+  "Resources": {
+    "DynamoDbFunction": {...},
+    "DynamoDbComplesObjectFunctionEventHandler": {...},
+  },
+  "Outputs": {
+    "ApiURL": {
+      "Description": "API endpoint URL for Prod environment",
+      "Value": {
+        "Fn::Sub": "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+      }
+    }
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As you can see, the <code>Resources</code> section includes the configuration for each function.</p>
+</div>
+<div class="paragraph">
+<p>This configuration will appear as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"DynamoDbFunction": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "Devon4Net.Application.DynamoDb::Devon4Net.Application.DynamoDb.business.DynamoDbManagement.Functions.DynamoDbManagementFunction::FunctionHandler",
+        "Runtime": "dotnet6",
+        "CodeUri": "",
+        "MemorySize": 256,
+        "Timeout": 30,
+        "Role": null,
+        "Policies": [
+          "AWSLambdaFullAccess",
+          "AmazonSSMReadOnlyAccess",
+          "AWSLambdaVPCAccessExecutionRole"
+        ],
+        "Environment": {
+          "Variables": {}
+        },
+        "Events": {
+          "ProxyResource": {
+            "Type": "Api",
+            "Properties": {
+              "Path": "/{proxy+}",
+              "Method": "ANY"
+            }
+          },
+          "RootResource": {
+            "Type": "Api",
+            "Properties": {
+              "Path": "/",
+              "Method": "ANY"
+            }
+          }
+        }
+      }
+    },</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>Properties</code> section will contain the value of the location, as seen in the <code>aws-lambda-tools-defaults.json</code> file in the form of <code>Assembly::Namespace.ClassName::MethodName</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_templates.asciidoc_references">References</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.html">Getting started with DynamoDB and AWS SDKs</a></p>
+</li>
+<li>
+<p><a href="https://docs.aws.amazon.com/sdk-for-net/v3/developer-guide/dynamodb-intro.html">Using Amazon DynamoDB NoSQL databases</a></p>
+</li>
+<li>
+<p><a href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithTables.Basics.html">Basic operations on DynamoDB tables</a></p>
+</li>
+<li>
+<p><a href="https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/SettingUp.DynamoWebService.html">Setting up DynamoDB (web service)</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1650,7 +1905,7 @@ Read the <a href="https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDe
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-10-04 16:51:05 UTC
+Last updated 2022-10-06 06:24:53 UTC
 </sub></div>
 </div>
 </div>

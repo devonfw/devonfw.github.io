@@ -139,6 +139,14 @@ gtag('consent', 'default', {
 <li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_setting-up-in-other-projects">Setting up in other projects</a></li>
 </ul>
 </li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_devon4net.infrastructure.nexus">Devon4Net.Infrastructure.Nexus</a>
+<ul class="sectlevel2">
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_key-classes">Key Classes</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_configuration">Configuration</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_setting-up-in-devon">Setting up in Devon</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_setting-up-in-other-projects">Setting up in other projects</a></li>
+</ul>
+</li>
 <li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_devon4net.infrastructure.swagger">Devon4Net.Infrastructure.Swagger</a>
 <ul class="sectlevel2">
 <li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_configuration">Configuration</a></li>
@@ -261,6 +269,39 @@ gtag('consent', 'default', {
 <li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_configuration">Configuration</a></li>
 <li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_set-up-in-devon">Set up in devon</a></li>
 <li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_set-up-in-other-projects">Set up in other projects</a></li>
+</ul>
+</li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_devon4net.infrastructure.aws.dynamodb">Devon4Net.Infrastructure.AWS.DynamoDb</a>
+<ul class="sectlevel2">
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_key-classes">Key Classes</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_configuration">Configuration</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_set-up-in-devon">Set up in devon</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_set-up-in-other-projects">Set up in other projects</a></li>
+</ul>
+</li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_devon4net.infrastructure.aws.s3">Devon4Net.Infrastructure.AWS.S3</a>
+<ul class="sectlevel2">
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_set-up-in-devon">Set up in devon</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_set-up-in-other-projects">Set up in other projects</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_references">References</a></li>
+</ul>
+</li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_devon4net.infrastructure.aws.parameterstore">Devon4Net.Infrastructure.AWS.ParameterStore</a>
+<ul class="sectlevel2">
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_configuration">Configuration</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_key-classes">Key Classes</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_set-up-in-devon">Set up in devon</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_set-up-in-other-projects">Set up in other projects</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_references">References</a></li>
+</ul>
+</li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_devon4net.infrastructure.aws.secrets">Devon4Net.Infrastructure.AWS.Secrets</a>
+<ul class="sectlevel2">
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_configuration">Configuration</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_key-classes">Key Classes</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_set-up-in-devon">Set up in devon</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_set-up-in-other-projects">Set up in other projects</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_packages.asciidoc_references">References</a></li>
 </ul>
 </li>
 </ul>
@@ -810,6 +851,358 @@ builder.Services.SetupCircuitBreaker(builder.Configuration);</code></pre>
 </tr>
 </tbody>
 </table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_devon4net.wiki_packages.asciidoc_devon4net.infrastructure.nexus">Devon4Net.Infrastructure.Nexus</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This section of the wiki explains how to use the Nexus module, which internally uses the CircuitBreaker module to make requests to Nexus.</p>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_key-classes">Key Classes</h3>
+<div class="paragraph">
+<p>The <code>INexusHandler</code> interface contains the methods needed to use the component, we can divide them into the following sections:</p>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_packages.asciidoc_component-management">Component Management</h4>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Method</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Task&lt;IList&lt;Component&gt;&gt; GetComponents(string repositoryName)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns the list of existing components based on the repository name.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Task&lt;IList&lt;Component&gt;&gt; GetComponents(string repositoryName, string componentGroup)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns the list of existing components based on the repository name and component group name.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Task&lt;Component&gt; GetComponent(string repositoryName, string componentName)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns a component based on the repository name and the component name.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Task&lt;Component&gt; GetComponent(string componentId)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns a component based on the component&#8217;s unique identifier.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Task UploadComponent&lt;T&gt;(T uploadComponent)</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>Uploads a new component. The types of components supported to be uploaded are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Apt, Docker, Helm, Maven, Npm, Nuget, Pypi, Raw, R, Rubygems, Yum.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Thus, in order to upload a new component, a new class must first be created, whose name must follow the following structure</p>
+</div>
+<div class="paragraph">
+<p><em>{ComponentType}UploadComponent</em></p>
+</div>
+<div class="paragraph">
+<p>As an example the name of the class that will be needed to upload a new Nuget Component will be:</p>
+</div>
+<div class="paragraph">
+<p><em>NugetUploadComponent</em></p>
+</div>
+<div class="paragraph">
+<p>Remark: It is important that the type of repository to which you want to upload the component is of the same type and format.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Task DeleteComponent(string componentId)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A component will be deleted based on its unique identifier.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_packages.asciidoc_asset-management">Asset Management</h4>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Method</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Task&lt;IList&lt;Asset&gt;&gt; GetAssets(string repositoryName)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns the list of existing assets based on the repository name.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Task&lt;IList&lt;Asset&gt;&gt; GetAssets(string repositoryName, string assetGroup)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns the list of existing assets based on the repository name and asset group name.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Task&lt;Asset&gt; GetAsset(string repositoryName, string assetName)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns an asset based on the repository name and the asset name.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Task&lt;Asset&gt; GetAsset(string assetId)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns an asset based on the asset&#8217;s unique identifier.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Task&lt;string&gt; DownloadAsset(string repositoryName, string assetName)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The content of the asset will be obtained in string format. Content will be obtained based on the repository name and asset name provided.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Task DeleteAsset(string assetId)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An asset will be deleted based on its unique identifier.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_packages.asciidoc_repository-management">Repository Management</h4>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Method</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Task CreateRepository&lt;T&gt;(T repositoryDto)</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>A repository of defined type will be created. In order to create a repository, it will first be necessary to create this repository format class. Nexus allows to work with three different types of repositories which are "Proxy", "Group" and "Hosted". For each of these types, the following repositories formats can be created:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Proxy:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Apt, Bower, Cocoapods, Conan, Conda, Docker, Go, Helm, Maven, Npm, Nuget, Pypi, Raw, R, Rubygems, Yum.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Group:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Bower, Docker, Go, Maven, Npm, Nuget, Pypi, Raw, R, Rubygems, Yum.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Hosted:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Apt, Bower, Docker, Gitlfs, Helm, Maven, Npm, Nuget, Pypi, Raw, R, Rubygems, Yum.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The name of the class to be created shall follow the following structure:</p>
+</div>
+<div class="paragraph">
+<p><em>{RepositoryFormat}{RepositoryType}Repository</em></p>
+</div>
+<div class="paragraph">
+<p>As an example the name of the class that will need to be created to create a Hosted repository for the Apt format will be:</p>
+</div>
+<div class="paragraph">
+<p><em>AptHostedRepository</em></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Task DeleteRepository(string repositoryName)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A repository will be deleted based on repository name provided.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_configuration">Configuration</h3>
+<div class="paragraph">
+<p>In order to configure the Nexus module, the following steps are necessary:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Add to the application options (<code>appsettings.{environment}.json</code>) the object that will host the nexus access credentials. This object is:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"Nexus":
+ {
+    "Username": "username",
+    "Password": "password"
+ }</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"><strong>Property</strong></th>
+<th class="tableblock halign-left valign-top"><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Username</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nexus user username</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Password</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nexus user password</p></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>Finally it will be necessary to configure the Circuitbreaker module options with the host where the Nexus service is hosted. The following example shows an example configuration:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"CircuitBreaker": {
+    "CheckCertificate": false,
+    "Endpoints": [
+      {
+        "Name": "Nexus",
+        "BaseAddress": "{http_protocol}://{hostname}:{port}/",
+        "WaitAndRetrySeconds": [
+          0.0001,
+          0.0005,
+          0.001
+        ],
+        "DurationOfBreak": 0.0005
+      }
+    ]
+}</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+Extra information about CircuitBreaker component configuration can be found <a href="https://github.com/devonfw/devon4net/wiki/packages#devon4net-infrastructure-circuitbreaker">here</a>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_setting-up-in-devon">Setting up in Devon</h3>
+<div class="paragraph">
+<p>To set this component up in devon4net template will be necessary to call the <code>SetUpNexus</code> method from program class in region "devon services". An example of this step is shown below:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="C# language-C#">#region devon services
+builder.Services.SetupDevonfw(builder.Configuration);
+builder.Services.SetupMiddleware(builder.Configuration);
+builder.Services.SetupLog(builder.Configuration);
+builder.Services.SetupSwagger(builder.Configuration);
+builder.Services.SetupNexus(builder.Configuration);
+#endregion</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Add it using Dependency Injection on this case we instanciate Nexus Handler in a Service Sample Class</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="C# language-C#">public class SampleService: Service&lt;SampleContext&gt;, ISampleService
+    {
+        private readonly ISampleRepository _sampleRepository;
+        private readonly INexusHandler _nexusHandler;
+
+        /// &lt;summary&gt;
+        /// Constructor
+        /// &lt;/summary&gt;
+        /// &lt;param name="uoW"&gt;&lt;/param&gt;
+        /// &lt;param name="nexusHandler"&gt;&lt;/param&gt;
+        public SampleService(IUnitOfWork&lt;SampleContext&gt; uoW, INexusHandler nexusHandler) : base(uoW)
+        {
+            _nexusHandler = nexusHandler;
+            _sampleRepository = uoW.Repository&lt;ISampleRepository&gt;();
+        }
+    }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Add the necessary references.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="C# language-C#">using Devon4Net.Infrastructure.Nexus.Handler;</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_setting-up-in-other-projects">Setting up in other projects</h3>
+<div class="paragraph">
+<p>Install the package on your solution using the Package Manager Console:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="console language-console">Install-Package Devon4Net.Infrastructure.Nexus</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>First it is needed to configure Nexus component in <code>Program.cs</code> adding the following lines:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="C# language-C#">using Devon4Net.Infrastructure.Nexus;
+.
+.
+.
+builder.Services.SetupNexus(builder.Configuration);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In order to start using it in a service class, it will be needed to add via Dependency Injection the nexus instance.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="C# language-C#">public class SampleService : ISampleService
+ {
+   private readonly INexusHandler _nexusHandler;
+
+    public SampleService(INexusHandler nexusHandler)
+      {
+        _nexusHandler = nexusHandler;
+      }
+ }</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -4730,6 +5123,618 @@ Read the template documentation to learn more about it.
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="devonfw-guide_devon4net.wiki_packages.asciidoc_devon4net.infrastructure.aws.dynamodb">Devon4Net.Infrastructure.AWS.DynamoDb</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This component is part of the AWS Stack in Devon4Net. It has the necessary classes to configure the connection with the AWS Cloud.</p>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_key-classes">Key Classes</h3>
+<div class="paragraph">
+<p>This section will provide a brief overview of the component&#8217;s most important classes. The component has the following structure:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/aws_dynamodb_structure.png" alt="aws dynamodb structure">
+</div>
+<div class="title">Figure 12. Structure of the DynamoDb component</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Common: This folder contains the classes that allow us to use the DynamoDB query and scan methods.</p>
+</li>
+<li>
+<p>Constants: Contains the <code>DynamoDbGeneralObjectStorageAttributes</code> class, which defines generic DynamoDb object attributes that we can use in our application.</p>
+</li>
+<li>
+<p>Converters: Folder containing a Nullable Date Converter, which is used to convert values to make them compatible with the DynamoDB database. It makes use of the <code>IPropertyConverter</code> interface from the <code>AWSSDK.DynamoDBv2</code> package.</p>
+</li>
+<li>
+<p>Domain: This folder contains the different repositories that we will explain in more detail in the following section.</p>
+</li>
+<li>
+<p>Extensions: It includes a JSON Helper for performing operations like serialization and deserialization.</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_packages.asciidoc_entity-repository-dynamodbentityrepository.cs">Entity Repository (<code>DynamoDbEntityRepository.cs</code>)</h4>
+<div class="paragraph">
+<p>It works with the object persistence programming model.
+This model is specifically designed for storing, loading, and querying <code>.NET</code> objects in DynamoDB. You may access this model through the <code>Amazon.DynamoDBv2.DataModel</code> namespace.
+Is the easiest to code against whenever you are storing, loading, or querying DynamoDB data.
+It makes use of annotations to define the tables and their properties.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_packages.asciidoc_table-repository-dynamodbtablerepository.cs">Table Repository (<code>DynamoDbTableRepository.cs</code>)</h4>
+<div class="paragraph">
+<p>It uses a low-level model to manage objects directly and converts <code>.Net</code> data types to their DynamoDB equivalents</p>
+</div>
+<div class="paragraph">
+<p>It includes methods for searching, updating, and deleting database data.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_packages.asciidoc_dynamo-search-criteria-dynamosearchcriteria.cs">Dynamo Search Criteria (<code>DynamoSearchCriteria.cs</code>)</h4>
+<div class="paragraph">
+<p>DynamoDB provides two kinds of read operations: query and scan.</p>
+</div>
+<div class="paragraph">
+<p>A query operation uses either the primary key or the index key to find information.
+Scan is a read call that, as the name suggests, scans the entire table for a specific result.
+Scan operations are less efficient than Query operations.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+In the 'How to: AWS DynamoDB' documentation, you can find examples of how to use the repositories and search methods.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_configuration">Configuration</h3>
+<div class="paragraph">
+<p>The following configuration is for AWS in general and can be done in <code>appsettings.{environment}.json</code> file as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"AWS": {
+  "UseSecrets": true,
+  "UseParameterStore": true,
+  "Credentials": {
+    "Profile": "",
+    "Region": "eu-west-1",
+    "AccessKeyId": "",
+    "SecretAccessKey": ""
+  }
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>UseSecrets</code>: Boolean that indicates if AWS Secrets Manager is being used.</p>
+</li>
+<li>
+<p><code>UseParameterStore</code>: Boolean to indicate if AWS Parameter Store is being used.</p>
+</li>
+<li>
+<p><code>Credentials</code>: Credentials for connecting with AWS.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Profile</code>: A collection of settings is called a profile. This would be the name for the current settings.</p>
+</li>
+<li>
+<p><code>Region</code>: AWS Region whose servers you want to send your requests to by default. This is typically the Region closest to you.</p>
+</li>
+<li>
+<p><code>AccessKeyId</code>: Access key ID portion of the keypair configured to access your AWS account.</p>
+</li>
+<li>
+<p><code>SecretAccessKey</code>: Secret access key portion of the keypair configured to access your AWS account.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+Access keys consist of an access key ID and secret access key, which are used to sign programmatic requests that you make to AWS. If you don&#8217;t have access keys, you can create them from the AWS Management Console.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_set-up-in-devon">Set up in devon</h3>
+<div class="paragraph">
+<p>For using it in a devon4net project, you could very easily do it by using the template.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+Read the template documentation to learn more about it.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_set-up-in-other-projects">Set up in other projects</h3>
+<div class="paragraph">
+<p>Install the package on your solution using the Package Manager Console:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="console language-console">install-package Devon4Net.Infrastructure.AWS.DynamoDb</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+Please see the 'How to: AWS DynamoDB' documentation for more information and examples of how to use the component.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_devon4net.wiki_packages.asciidoc_devon4net.infrastructure.aws.s3">Devon4Net.Infrastructure.AWS.S3</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This component is part of the AWS Stack in Devon4Net. It has the necessary classes to manage Amazon Simple Storage Service (S3).</p>
+</div>
+<div class="paragraph">
+<p>Providing durability, availability, scalability and optimal performance, amazon simple storage service gives you the oportunity to store any type of object, which allows you to use it for any purpose you want, it being backups, storage for internet applications, data lakes for analytics. Amazon S3 provides management features so that you can optimize, organize, and configure access to your data to meet your specific business, organizational, and compliance requirements.</p>
+</div>
+<div class="paragraph">
+<p>In S3 objects consist of data, a unique key and some information in the form of metadata. This objects are stored in buckets. A bucket is a container for objects stored in Amazon S3. You can store any number of objects in a bucket and have many buckets in your account.</p>
+</div>
+<div class="paragraph">
+<p>In the NuGet package you have a handler available with a number of different methods that will help you manage your buckets and store and retrieve objects from them. The <code>IAwsS3Handler</code> interface  and <code>AwsS3Handler</code> implementation provides you with some syncrhonous and asynchronous operations like the following:</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Returns</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Method</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Task&lt;Stream&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GetObject(string bucketName, string objectKey)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Retreives an object from an S3 bucket by its key.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Task&lt;bool&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">UploadObject(Stream streamFile, string keyName, string bucketName, string contentType, bool autoCloseStream = false, List&lt;Tag&gt; tagList = null)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Uploads an object to a bucket.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_set-up-in-devon">Set up in devon</h3>
+<div class="paragraph">
+<p>For using it in a devon project you only need to inject the class <code>AwsS3Handler</code> provided with the package or create an instance. The handler instance will need the <strong>region</strong>, the <strong>secret key id</strong> and the <strong>secret key</strong> to be linked to your account.</p>
+</div>
+<div class="paragraph">
+<p>There is no configuration class for the component so you will need to do something similar to the following in your startup project if you want to use it via depencency injection:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="c# language-c#">AwsS3Handler awsS3Handler = new AwsS3Handler(myRegion, myKeyId, mySecretKey);
+services.AddSingleton&lt;IAwsS3Handler&gt;(awsS3Handler);</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_set-up-in-other-projects">Set up in other projects</h3>
+<div class="paragraph">
+<p>For setting it up in other projects you will need to install the package:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="console language-console">install-package Devon4Net.Infrastructure.AWS.S3</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And then you can start using via dependency injection or by creating instances as shown in the previous section.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_references">References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html">What is Amazon S3? - AWS Docs</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_devon4net.wiki_packages.asciidoc_devon4net.infrastructure.aws.parameterstore">Devon4Net.Infrastructure.AWS.ParameterStore</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>AWS Systems Manager&#8217;s Parameter Store offers safe, hierarchical storage for the administration of configuration data and secrets.</p>
+</div>
+<div class="paragraph">
+<p>You can store any type of data in the form of text by using a key-value form where you choose a name for the parameter (key) and store a value for it. It can be any type of configuration value such as connections, api keys, encrypted credentials&#8230;&#8203;</p>
+</div>
+<div class="paragraph">
+<p>You can use tags to organize and restrict access to your parameter creating policies.</p>
+</div>
+<div class="paragraph">
+<p>Parameter Store is also integrated with Secrets Manager. You can retrieve Secrets Manager secrets when using other AWS services that already support references to Parameter Store parameters.</p>
+</div>
+<div class="paragraph">
+<p>The main difference with <strong>Secrets Manager</strong> is that it was designed specifically for storing confidential information (like database credentials, API keys) that needs to be encrypted. It also gives additional functionality like rotation of keys.</p>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_configuration">Configuration</h3>
+<div class="paragraph">
+<p>The following configuration is for AWS in general and can be done in <code>appsettings.{environment}.json</code> file as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"AWS": {
+  "UseSecrets": true,
+  "UseParameterStore": true,
+  "Credentials": {
+    "Profile": "",
+    "Region": "eu-west-1",
+    "AccessKeyId": "",
+    "SecretAccessKey": ""
+  }
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>UseSecrets</code>: Boolean that indicates if AWS Secrets Manager is being used.</p>
+</li>
+<li>
+<p><code>UseParameterStore</code>: Boolean to indicate if AWS Parameter Store is being used.</p>
+</li>
+<li>
+<p><code>Credentials</code>: Credentials for connecting with AWS.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Profile</code>: A collection of settings is called a profile. This would be the name for the current settings.</p>
+</li>
+<li>
+<p><code>Region</code>: AWS Region whose servers you want to send your requests to by default. This is typically the Region closest to you.</p>
+</li>
+<li>
+<p><code>AccessKeyId</code>: Access key ID portion of the keypair configured to access your AWS account.</p>
+</li>
+<li>
+<p><code>SecretAccessKey</code>: Secret access key portion of the keypair configured to access your AWS account.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+Access keys consist of an access key ID and secret access key, which are used to sign programmatic requests that you make to AWS. If you don&#8217;t have access keys, you can create them from the AWS Management Console.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_key-classes">Key Classes</h3>
+<div class="paragraph">
+<p>There are two ways of using the parameters from your Parameter Store. One is by using the available <code>AwsParameterStoreHandler</code> and the other one, is by including the parameters in your <code>ConfigurationBuilder</code>.</p>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_packages.asciidoc_handler">Handler</h4>
+<div class="paragraph">
+<p>You have available the handler <code>AwsParameterStoreHandler</code> and its interface <code>IAwsParameterStoreHandler</code> with the following methods:</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Returns</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Method</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Task&lt;List&lt;ParameterMetadata&gt;&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GetAllParameters(CancellationToken cancellationToken = default)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Retreives a list with all the parameters metadata.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Task&lt;string&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GetParameterValue(string parameterName, CancellationToken cancellationToken = default)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Gets the parameter value given its name.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>You can create an instance of the Handler by using its constructor. You can also inject it in your Services Collection as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="c# language-c#">AwsParameterStoreHandler awsParameterStoreHandler = new AwsParameterStoreHandler(awsCredentials, regionEndpoint);
+services.AddSingleton&lt;IAwsParameterStoreHandler&gt;(awsParameterStoreHandler);</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_packages.asciidoc_configuration-builder">Configuration Builder</h4>
+<div class="paragraph">
+<p>Thanks to the <code>AwsParameterStoreConfigurationBuilder</code> you can include all the parameters very easily by adding them to the configuration builder as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="c# language-c#">ConfigurationBuilder.AddParameterStoreHandler(awsCredentials, regionEndpoint);</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_set-up-in-devon">Set up in devon</h3>
+<div class="paragraph">
+<p>Some templates have already all he packages referenced so you won&#8217;t need to install anything. If that is not the case, you can install it as explained in <code>Set up in other projects</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+Read the template documentation to learn more about it.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_set-up-in-other-projects">Set up in other projects</h3>
+<div class="paragraph">
+<p>Install the package in your solution using the Package Manager or by running the following command in the Console:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="console language-console">install-package Devon4Net.Infrastructure.AWS.ParameterStore</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_references">References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html">AWS Systems Manager Parameter Store - AWS Docs</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_devon4net.wiki_packages.asciidoc_devon4net.infrastructure.aws.secrets">Devon4Net.Infrastructure.AWS.Secrets</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Secrets Manager</strong> allows you to replace hardcoded credentials, such as passwords, in your code with an API call to Secrets Manager to retrieve the secret programmatically.
+Because the secret no longer exists in the code, it cannot be compromised by someone examining your code.
+You can also set Secrets Manager to automatically rotate the secret for you on a predefined schedule.
+This allows you to replace long-term secrets with short-term ones, lowering the risk of compromise significantly.</p>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_configuration">Configuration</h3>
+<div class="paragraph">
+<p>The following configuration is for AWS in general and can be done in <code>appsettings.{environment}.json</code> file as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"AWS": {
+  "UseSecrets": true,
+  "UseParameterStore": true,
+  "Credentials": {
+    "Profile": "",
+    "Region": "eu-west-1",
+    "AccessKeyId": "",
+    "SecretAccessKey": ""
+  }
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>UseSecrets</code>: Boolean that indicates if AWS Secrets Manager is being used.</p>
+</li>
+<li>
+<p><code>UseParameterStore</code>: Boolean to indicate if AWS Parameter Store is being used.</p>
+</li>
+<li>
+<p><code>Credentials</code>: Credentials for connecting with AWS.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>Profile</code>: A collection of settings is called a profile. This would be the name for the current settings.</p>
+</li>
+<li>
+<p><code>Region</code>: AWS Region whose servers you want to send your requests to by default. This is typically the Region closest to you.</p>
+</li>
+<li>
+<p><code>AccessKeyId</code>: Access key ID portion of the keypair configured to access your AWS account.</p>
+</li>
+<li>
+<p><code>SecretAccessKey</code>: Secret access key portion of the keypair configured to access your AWS account.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_key-classes">Key Classes</h3>
+<div class="paragraph">
+<p>We have to ways to work with this component. One of them is to inject the <code>AwsSecretsHandler</code> and use its methods, and the other way to use the component is using the Configuration Builder.</p>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_packages.asciidoc_handler">Handler</h4>
+<div class="paragraph">
+<p>The <code>IAwsSecretsHandler</code> interface  and <code>AwsSecretsHandler</code> implementation provides you with some asynchronous operations like the following:</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Returns</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Method</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Task&lt;IReadOnlyList&lt;SecretListEntry&gt;&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GetAllSecrets(CancellationToken cancellationToken)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Retreives all secrets list.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Task&lt;T&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GetSecretString&lt;T&gt;(string secretId)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Retrieves a string secret from Secrets Manager by its Id.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Task&lt;byte[]&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GetSecretBinary(string secretId)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Retrieves a binary secret from Secrets Manager by its Id.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Task&lt;GetSecretValueResponse&gt;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GetSecretValue(GetSecretValueRequest request, CancellationToken cancellationToken = default)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Retrieves the contents of the encrypted fields SecretString or SecretBinary from the specified version of a secret, whichever contains content.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>To use it inject the class <code>AwsSecretsHandler</code> provided with the package or create an instance. The handler instance will need the <code>awsCredentials</code> and the <code>regionEndpoint</code>.</p>
+</div>
+<div class="paragraph">
+<p>There is no configuration class for the component so you will need to do something similar to the following in your startup project if you want to use it via depencency injection:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="c# language-c#">AwsSecretsHandler awsSecretsHandler = new AwsSecretsHandler(awsCredentials, regionEndpoint);
+services.AddSingleton&lt;IAwsSecretsHandler&gt;(awsSecretsHandler);</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_packages.asciidoc_configuration-builder">Configuration Builder</h4>
+<div class="paragraph">
+<p>The <code>AwsSecretsConfigurationBuilder</code> allows you to configure the component in a different way, by including all the paremeters in the configuration builder, you can do it as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="c# language-c#">ConfigurationBuilder.AddSecretsHandler(awsCredentials, regionEndpoint);</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_set-up-in-devon">Set up in devon</h3>
+<div class="paragraph">
+<p>Some templates have already all he packages referenced so you won&#8217;t need to install anything. If that is not the case, you can install it as explained in Set up in other projects.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+Read the template documentation to learn more about it.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_set-up-in-other-projects">Set up in other projects</h3>
+<div class="paragraph">
+<p>For setting it up in other projects you will need to install the package:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="console language-console">install-package Devon4Net.Infrastructure.AWS.Secrets</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And then you can start using via dependency injection or by creating instances as shown in the Configuration section.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_packages.asciidoc_references">References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html">Secrets Manager User Guide</a></p>
+</li>
+<li>
+<p><a href="https://docs.aws.amazon.com/secretsmanager/latest/apireference/Welcome.html">Secrets Manager API Reference</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer" class="footer">
 <div class="openblock footerLinks">
@@ -4841,7 +5846,7 @@ Read the template documentation to learn more about it.
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-10-04 16:50:57 UTC
+Last updated 2022-10-06 06:24:46 UTC
 </sub></div>
 </div>
 </div>
