@@ -239,31 +239,39 @@ gtag('consent', 'default', {
 <h2 id="devonfw-guide_ide.wiki_functions.asciidoc_functions-for-testing-flags">1. Functions for testing flags</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The functions for testing flags return a 0 if the corresponding flag is set in the form of a variable.
+<p>The functions for testing flags return <code>0</code> (true) if flag is set and <code>1</code> (false) otherwise.
 The name of the flag is part of the function name.</p>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_doisbatch">1.1. doIsBatch</h3>
 <div class="paragraph">
-<p>This function returns a 0 if the variable "batch" is set.</p>
+<p>Determines if <code>batch</code> mode is active.
+This mode shall be used for non-interactive usage (e.g. in automated invocations) where no user is available for interactive feedback.
+It can be enabled with <code>-b</code> or <code>--batch</code>.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_doisdebug">1.2. doIsDebug</h3>
 <div class="paragraph">
-<p>This function returns a 0 if the variable "debug" is set and the -q option is not specified.</p>
+<p>Determines if <code>debug</code> mode is active.
+This mode activates more verbose output for debugging.
+It can be enabled with <code>-d</code> or <code>--debug</code>.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_doisforce">1.3. doIsForce</h3>
 <div class="paragraph">
-<p>This function returns a 0 if the variable "force" is set.</p>
+<p>Determines if <code>force</code> mode is active.
+This mode enforces specific aspects such as <a href="#devonfw-guide_ide.wiki_functions.asciidoc_doDownload">downloading</a> cached resources again or to answer <a href="#devonfw-guide_ide.wiki_functions.asciidoc_doAskToContinue">questions to continue</a> automatically with <code>yes</code>.
+It can be enabled with option <code>-f</code> or <code>--force</code>.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_doisquiet">1.4. doIsQuiet</h3>
 <div class="paragraph">
-<p>This function returns a 0 if the variable "quiet" is set.</p>
+<p>Determines if <code>quiet</code> mode is active.
+This mode reduces the output to a minimum so information messages are suppressed.
+It can be enabled with option <code>-q</code> or <code>--quiet</code>.</p>
 </div>
 </div>
 </div>
@@ -271,125 +279,174 @@ The name of the flag is part of the function name.</p>
 <div class="sect1">
 <h2 id="devonfw-guide_ide.wiki_functions.asciidoc_functions-for-input-and-output">2. Functions for input and output</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>Output functions like <a href="#devonfw-guide_ide.wiki_functions.asciidoc_doEcho">devonfw-guide_ide.wiki_functions.asciidoc_doEcho</a> support backslash-escaped characters, for example "\n" for new line.</p>
+</div>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_doasktocontinue">2.1. doAskToContinue</h3>
 <div class="paragraph">
-<p>A message can be passed as the first parameter to the doAskToContinue function.
-If this is not done, the standard message "Do you want to continue?" used.
-If the variable force is set, the message is output and the function ends directly with the return value 0.
-If neither the variable force nor the variable batch is set, the message is output in a loop and the input of yes, no or no input at all is awaited.
-With "yes" or no specification at all, it ends the function with the return value 0, and with "no" it is checked whether return was passed as the second parameter.
-If this is the case, the function ends with the return value 255, otherwise the entire program ends with the return value 255.</p>
+<p>Display a question and ask the user if he wants to continue.
+In <a href="#devonfw-guide_ide.wiki_functions.asciidoc_doIsForce">force</a> or <a href="#devonfw-guide_ide.wiki_functions.asciidoc_doIsBatch">batch</a> mode, it will continue automatically.</p>
 </div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Param</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Name</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">question</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The question to display. Defaults to <code>Do you want to continue?</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$2</code></p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_doconfirmwarning">2.2. doConfirmWarning</h3>
 <div class="paragraph">
-<p>The doConfirmWarning function calls the doWarning function with the message passed to it, and then calls the doAskToContinue function with no parameters.</p>
+<p>Passes all arguments to <a href="#devonfw-guide_ide.wiki_functions.asciidoc_doWarning">devonfw-guide_ide.wiki_functions.asciidoc_doWarning</a> to print as warning.
+Then it calls <a href="#devonfw-guide_ide.wiki_functions.asciidoc_doAskToContinue">devonfw-guide_ide.wiki_functions.asciidoc_doAskToContinue</a>.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_dodebug">2.3. doDebug</h3>
 <div class="paragraph">
-<p>The doDebug function is called with arguments that are printed if the variable debug is set.
-Backslash-escaped characters, for example "\n" for new line, are also allowed in the arguments.</p>
+<p>Prints the given arguments as debug message with according coloring (in gray).
+Debug messages will be printed in <a href="#devonfw-guide_ide.wiki_functions.asciidoc_doIsDebug">debug</a> mode.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_doecho">2.4. doEcho</h3>
 <div class="paragraph">
-<p>The doEcho function prints the arguments passed to it if the variable quiet is not set.
-Backslash-escaped characters, for example "\n" for new line, are also allowed in the message.</p>
+<p>Prints the given arguments as regular info message.
+The message will be suppressed in <a href="#devonfw-guide_ide.wiki_functions.asciidoc_doIsQuiet">quiet</a> mode.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_doechoattention">2.5. doEchoAttention</h3>
 <div class="paragraph">
-<p>The doEchoAttention function returns the header <strong><strong></strong><strong></strong> ATTENTION </strong><strong><strong></strong></strong> followed by the message specified as a parameter.
-Backslash-escaped characters, for example "\n" for new line, are also allowed in the message.</p>
+<p>Like <a href="#devonfw-guide_ide.wiki_functions.asciidoc_doWarning">devonfw-guide_ide.wiki_functions.asciidoc_doWarning</a> but prefixes the message with an <code>ATTENTION</code> header.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_doechointeraction">2.6. doEchoInteraction</h3>
 <div class="paragraph">
-<p>The doEchoInteraction function outputs the message passed as a parameter in light blue and appends a blank line, and allows backslash-escaped characters, for example "\n" for new line.</p>
+<p>Prints the given arguments as interaction message with according coloring (in light blue).
+An interaction message is an information or question the end-user should react to with interactive feedback.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_doechooption">2.7. doEchoOption</h3>
 <div class="paragraph">
-<p>The doEchoOption function outputs the message passed as a parameter in light blue, and allows backslash-escaped characters, e.g.
-"\n" for new line.</p>
+<p>Prints the given arguments as option message with according coloring (in light blue).
+An option message is an option the user can choose from.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_doechostep">2.8. doEchoStep</h3>
 <div class="paragraph">
-<p>The doEchoStep function prints the message passed as a parameter with three asterisks before and after the message in purple, and allows backslash-escaped characters, for example "\n" for new line.</p>
+<p>Prints the given arguments as step message with according coloring (in purple).
+A step message informs about a step as part of a command or process that has been completed.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_doerror">2.9. doError</h3>
 <div class="paragraph">
-<p>The doError function prints the message passed to it in bright red.</p>
+<p>Prints the given arguments as error message with according coloring (in bright red).
+An error message informs the user that something went wrong.
+The coloring should help to highlight such problems.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_dofail">2.10. doFail</h3>
 <div class="paragraph">
-<p>The doFail function is called with an error message as the first parameter and an exit code as the second parameter.
-The function first calls the doEchoAttention function without parameter, followed by the specified error message and a message on how to proceed.
-If a 0 is specified as the exit code, the function ends with exit code 1, otherwise with the specified exit code.
-If no exit code is specified, the function terminates with exit code 255.</p>
+<p>Prints an <a href="#devonfw-guide_ide.wiki_functions.asciidoc_doEchoAttention">ATTENTION</a> banner.
+Then it prints the first argument followed by a generic text as <a href="#devonfw-guide_ide.wiki_functions.asciidoc_doError">error</a> message.
+Then this function immediately exists the program with an error code.
+The error code can be provided as second argument but <code>0</code> will be replaced with <code>1</code> and if omitted <code>255</code> is used.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_doinfo">2.11. doInfo</h3>
 <div class="paragraph">
-<p>The doInfo function prints the message passed as a parameter in blue and appends an extra blank line, and allows backslash-escaped characters, for example "\n" for new line.</p>
+<p>Prints the given arguments as info message with according coloring (in blue).
+An information message is a more important message but not indicating any problem (like warning or error).</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_dolicenseagreement">2.12. doLicenseAgreement</h3>
 <div class="paragraph">
-<p>The doLicenseAgreement function checks whether the DEVON_HOME_DIR/.devon/.license.agreement file exists locally.
-If the file exists, the function exits with the return value 0.
-If the file does not exist, the function calls doLogo and then license information about devonfw-ide.
-Then the website with the license conditions is called up or an error is output if the variable batch is set.
-Now the question is asked in a loop until either "yes" or "no" is entered.
-If "no" is entered, the function ends with a return value of 255.
-If "yes" is entered, the license from the opened website is saved in the local file DEVON_HOME_DIR/.devon/.license.agreement stored and the function ends with return value 0.</p>
+<p>Ensures that the end-user confirms the license agreement of <code>devonfw-ide</code> on the first usage on his machine.
+If the user has already confirmed, this function will have no effect.
+Otherwise it will <a href="#devonfw-guide_ide.wiki_functions.asciidoc_doLogo">print the logo</a> followed by the license information.
+This contains a link that will also be opened automatically in the web-browser.
+Then <a href="#devonfw-guide_ide.wiki_functions.asciidoc_doAskToContinue">devonfw-guide_ide.wiki_functions.asciidoc_doAskToContinue</a> is used to let the user confirm the license agreement.
+If the user does not confirm or runs in <a href="#devonfw-guide_ide.wiki_functions.asciidoc_doIsBatch">batch</a> mode this function will fail with an error message.
+Otherwise, the user confirmation will be saved to <code>$DEVON_HOME_DIR/.devon/.license.agreement</code>.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_dologo">2.13. doLogo</h3>
 <div class="paragraph">
-<p>The doLogo function prints out the devon logo.</p>
+<p>Prints out the devon logo with clipping if the width of the terminal is too small to prevent line-wrapping.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_doquestion">2.14. doQuestion</h3>
 <div class="paragraph">
-<p>The doQuestion function outputs the message passed to it in light blue.</p>
+<p>Passes arguments to <a href="#devonfw-guide_ide.wiki_functions.asciidoc_doEchoInteraction">devonfw-guide_ide.wiki_functions.asciidoc_doEchoInteraction</a>.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_doresult">2.15. doResult</h3>
 <div class="paragraph">
-<p>The function doResult outputs the message passed as the first parameter, depending on the second parameter as Succeeded for 0 or Failed for all other values.
-If the second parameter is not specified, Failed (internal error missing exit code) is output.</p>
+<p>Handles the result of a command.
+Will print the operation (<code>$1</code>) as <a href="#devonfw-guide_ide.wiki_functions.asciidoc_doSuccess">success</a> message if exitCode (<code>$2</code>) is <code>0</code>.
+Otherwise it will pass it to <a href="#devonfw-guide_ide.wiki_functions.asciidoc_doFail">devonfw-guide_ide.wiki_functions.asciidoc_doFail</a>.</p>
 </div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Param</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Name</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">operation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The operation that failed or succeeded.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$2</code></p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_dosuccess">2.16. doSuccess</h3>
 <div class="paragraph">
-<p>The doSuccess function outputs the message passed to it in green.</p>
+<p>Prints the given arguments as success message with according coloring (in green).</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_dowarning">2.17. doWarning</h3>
 <div class="paragraph">
-<p>The doWarning function outputs the text "WARNING:" with the message passed in the parameter and allows backslash-escaped characters, for example "\n" for new line.</p>
+<p>Prints the given arguments as warning message with according coloring (in orange).</p>
 </div>
 </div>
 </div>
@@ -397,18 +454,19 @@ If the second parameter is not specified, Failed (internal error missing exit co
 <div class="sect1">
 <h2 id="devonfw-guide_ide.wiki_functions.asciidoc_environment-checks">3. Environment Checks</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>The functions for testing environments return <code>0</code> (true) if the operating-system matches and <code>1</code> (false) otherwise.</p>
+</div>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_doismacos">3.1. doIsMacOs</h3>
 <div class="paragraph">
-<p>The doIsMacOs function returns 0 if the operating system is detected as MacOs.
-If not, a 255 is returned.</p>
+<p>Checks if  the operating system is detected as MacOs.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_doiswindows">3.2. doIsWindows</h3>
 <div class="paragraph">
-<p>The doIsWindows function returns 0 if the operating system is detected as Windows.
-If not, a 255 is returned.</p>
+<p>Checks if  the operating system is detected as Windows.</p>
 </div>
 </div>
 </div>
@@ -425,7 +483,7 @@ If not, a 255 is returned.</p>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_dorequirewsl">4.2. doRequireWsl</h3>
 <div class="paragraph">
-<p>Checks whether WSL for Windows is installed and whether it is activated and issues a corresponding message via doFail if one of the two requirements is not met.</p>
+<p>Checks whether Windows Subsystem for Linux (WSL) is installed and whether it is activated and issues a corresponding message via <a href="#devonfw-guide_ide.wiki_functions.asciidoc_doFail">devonfw-guide_ide.wiki_functions.asciidoc_doFail</a> if one of the two requirements is not met.</p>
 </div>
 </div>
 </div>
@@ -436,39 +494,83 @@ If not, a 255 is returned.</p>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_dodevoncommand">5.1. doDevonCommand</h3>
 <div class="paragraph">
-<p>The doDevonCommand function calls the doDevonCommandAndReturn function and passes it all the parameters.
-If the return value of the doDevonCommandAndReturn function is not equal to 0, the script that called the doDevonCommand function is ended with the return value.</p>
+<p>Calls <a href="#devonfw-guide_ide.wiki_functions.asciidoc_doDevonCommandAndReturn">devonfw-guide_ide.wiki_functions.asciidoc_doDevonCommandAndReturn</a> and passes all the parameters.
+On success it calls <a href="#devonfw-guide_ide.wiki_functions.asciidoc_doUpdatePath">devonfw-guide_ide.wiki_functions.asciidoc_doUpdatePath</a> to ensure the PATH is updated after an installation.
+On failure it will <a href="#devonfw-guide_ide.wiki_functions.asciidoc_doAskToContinue">ask to continue</a> if not in <a href="#devonfw-guide_ide.wiki_functions.asciidoc_doIsBatch">batch</a> mode or exit immediately with the error code.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_dodevoncommandallworkspaces">5.2. doDevonCommandAllWorkspaces</h3>
 <div class="paragraph">
-<p>The doDevonCommandAllWorkspaces function is given a devon command as a parameter that is executed in all directories in the workspaces directory.
-If other directories or the readme.txt file are found in the workspaces directory, a corresponding message is output.
-If a directory change does not work, the function ends with the return value 1.</p>
+<p>Iterates over all workspaces (sub-folders of <code>workspaces</code> folder) and executes the given commandlet in each of them.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_dodevoncommandandreturn">5.3. doDevonCommandAndReturn</h3>
 <div class="paragraph">
-<p>The doDevonCommandAndReturn function is passed a command from the devon environment with parameters as a parameter, i.e.
-a command that must be installed under DEVON_IDE_HOME/scripts/command.
-If no parameter is given, an error message is output using the doFail function.
-If the specified command does not exist, an error message is also output using doFail.
-If the command exists, it is checked whether it is executable and, if not so, set to executable.
-Then the command is called with the options batch, force, debug and quiet, if set, and the specified parameters.
-If the command encounters an error, an error message is output with the return value passed by the command.
-Otherwise the function ends with the return value 0.</p>
+<p>Runs the commandlet at <code>$DEVON_IDE_HOME/scripts/command/$1</code> with the further given arguments.
+It will automatically pass mode options like <a href="#devonfw-guide_ide.wiki_functions.asciidoc_doIsBatch">batch</a> to the commandlet before other given arguments.
+Further it <a href="#devonfw-guide_ide.wiki_functions.asciidoc_doError">prints an error message</a> if the commandlet was not successful.
+It will return with the exit code of the commandlet that has been invoked.</p>
 </div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Param</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Name</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">commandlet</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The devonfw-ide commandlet to call. E.g. <code>help</code> or <code>ide</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$2</code>-$n</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_doruncommand">5.4. doRunCommand</h3>
 <div class="paragraph">
-<p>Takes 3 parameters: the command to be executed, a message to be printed and the directory in which the command is to be executed.
-First, the function is checked whether the specified directory exists.
-If the directory does not exist, it will take the current directory.
-Then the command is executed and depending on the return value of the command, a message is output that starts with "Succeed" or "Failed".</p>
+<p>Executes the given command (<code>$1</code>).
+If a a third parameter (<code>$3</code>) is provided, it has to point to an existing directory where to command will be executed and the function will return back to the original directory afterwards.
+It will use <a href="#devonfw-guide_ide.wiki_functions.asciidoc_doResult">devonfw-guide_ide.wiki_functions.asciidoc_doResult</a> using the <code>message</code> (<code>$2</code>) to handle the result of the command execution (success or failure).</p>
 </div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Param</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Name</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">command</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The command to execute including all its parameters.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$2</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">message</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional description of the command. Will fall back to "run command" followed by a simplification of the command (<code>$1</code>).</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$3</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">dir</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </div>
@@ -478,7 +580,7 @@ Then the command is executed and depending on the return value of the command, a
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_dobackup">6.1. doBackup</h3>
 <div class="paragraph">
-<p>Takes a file or directory as the first parameter and the date after which the backup directory is named that is to be created in the /updates/backups subdirectory for the backup as the second parameter.
+<p>Takes a file or directory as the first parameter and the date after which the backup directory is named that is to be created in the <code>updates/backups</code> subdirectory for the backup as the second parameter.
 If the second parameter is not specified, the current date is used.
 If a single file is specified in the first parameter and such a file already exists in the backup directory, then a time stamp is added to the backup directory as an additional subdirectory.
 Then the backup directory is created and the files to be backed up are moved there.</p>
@@ -487,7 +589,9 @@ Then the backup directory is created and the files to be backed up are moved the
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_dobrewinstall">6.2. doBrewInstall</h3>
 <div class="paragraph">
-<p>TODO</p>
+<p>Installs a tool using homebrew.
+If homebrew is installed (<code>brew</code> command found), the desired tool will be installed using <code>brew install</code>.
+Otherwise, the function will fail with an error message guiding the user to install homebrew.</p>
 </div>
 </div>
 <div class="sect2">
@@ -496,6 +600,64 @@ Then the backup directory is created and the files to be backed up are moved the
 <p>Downloads an artifact from the internet.
 If the URL is not provided as first argument, it will use the <code>mirrors</code> config to automatically determine the URL from the other arguments.</p>
 </div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Param</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Name</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">URL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The explicit URL to download from or <code>-</code> to compute in <a href="#devonfw-guide_ide.wiki_functions.asciidoc_doDownload">devonfw-guide_ide.wiki_functions.asciidoc_doDownload</a>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$2</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">dir</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The optional target directory where to save the downloaded file.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$3</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">name</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the software to download.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$4</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">version</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The version of the software to download. May be omitted to download the latest version.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$5</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">edition</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The optional edition of the software to install (e.g. "enterprise" or "community").</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$6</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">code</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The optional technical code used for specific software to compute download URL.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$7</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">os</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The optional OS indicator ('-' if OS independent). If omitted the OS will be determined automatically.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$8</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">arch</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The optional architecture (e.g. x86_64).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$9</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ext</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The optional extension (e.g. 'tar.gz' or 'zip').</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$10</code></p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_dodownloadinternal">6.4. doDownloadInternal</h3>
@@ -556,6 +718,70 @@ Following the doInstall call in the commandlet, the installation of the software
 </li>
 </ul>
 </div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Param</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Name</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">URL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The explicit URL to download from or <code>-</code> to compute in <a href="#devonfw-guide_ide.wiki_functions.asciidoc_doDownload">devonfw-guide_ide.wiki_functions.asciidoc_doDownload</a>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$2</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The absolute target path where to install the software.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$3</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">name</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The name of the software to install.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$4</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">version</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The version of the software to install. May be omitted to install the latest version.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$5</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">edition</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The optional edition of the software to install (e.g. "enterprise" or "community").</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$6</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">code</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The optional technical code used for specific software to compute download URL.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$7</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">os</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The optional OS indicator ('-' if OS independent). If omitted the OS will be determined automatically.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$8</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">arch</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The optional architecture (e.g. x86_64).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$9</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ext</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The optional extension (e.g. 'tar.gz' or 'zip').</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$10</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">repo</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The optional software repository.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$11</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">noUnpack</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_ide.wiki_functions.asciidoc_doinstallwithpackagemanager">6.8. doInstallWithPackageManager</h3>
@@ -939,7 +1165,7 @@ If none of these options are passed, the return value is 255.</p>
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-10-07 14:58:34 UTC
+Last updated 2022-10-07 19:23:48 UTC
 </sub></div>
 </div>
 </div>
