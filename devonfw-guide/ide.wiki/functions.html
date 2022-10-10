@@ -204,10 +204,11 @@ gtag('consent', 'default', {
 <li><a href="#devonfw-guide_ide.wiki_functions.asciidoc_version-handling">8. Version handling</a>
 <ul class="sectlevel2">
 <li><a href="#devonfw-guide_ide.wiki_functions.asciidoc_dogetnextversion">8.1. doGetNextVersion</a></li>
-<li><a href="#devonfw-guide_ide.wiki_functions.asciidoc_doisdevversion">8.2. doIsDevVersion</a></li>
-<li><a href="#devonfw-guide_ide.wiki_functions.asciidoc_dolistsoftwareversions">8.3. doListSoftwareVersions</a></li>
-<li><a href="#devonfw-guide_ide.wiki_functions.asciidoc_dosetsoftwareversion">8.4. doSetSoftwareVersion</a></li>
-<li><a href="#devonfw-guide_ide.wiki_functions.asciidoc_doversioncompare">8.5. doVersionCompare</a></li>
+<li><a href="#devonfw-guide_ide.wiki_functions.asciidoc_dogetsoftwareversion">8.2. doGetSoftwareVersion</a></li>
+<li><a href="#devonfw-guide_ide.wiki_functions.asciidoc_doisdevversion">8.3. doIsDevVersion</a></li>
+<li><a href="#devonfw-guide_ide.wiki_functions.asciidoc_dolistsoftwareversions">8.4. doListSoftwareVersions</a></li>
+<li><a href="#devonfw-guide_ide.wiki_functions.asciidoc_dosetsoftwareversion">8.5. doSetSoftwareVersion</a></li>
+<li><a href="#devonfw-guide_ide.wiki_functions.asciidoc_doversioncompare">8.6. doVersionCompare</a></li>
 </ul>
 </li>
 <li><a href="#devonfw-guide_ide.wiki_functions.asciidoc_functions-on-workspaces">9. Functions on workspaces</a>
@@ -953,27 +954,62 @@ If so, the function returns 0, otherwise 255.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="devonfw-guide_ide.wiki_functions.asciidoc_doisdevversion">8.2. doIsDevVersion</h3>
+<h3 id="devonfw-guide_ide.wiki_functions.asciidoc_dogetsoftwareversion">8.2. doGetSoftwareVersion</h3>
 <div class="paragraph">
-<p>The doIsDevVersion function checks whether one of the two values "dev-SNAPSHOT" or "0-SNAPSHOT" was passed to it as a parameter.
-If this is the case, it ends with the return value 0 otherwise 1.</p>
+<p>Determines the currently installed version of a software and prints it out for the end-user.</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Param</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Name</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Description</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$1</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">software</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The software tool to check (e.g. <code>maven</code> or <code>java</code>).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$2</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">version_cmd</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The command to determine the version via the software. Maybe <code>-</code> if the software is a regular installation but does not support this.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>$3</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">commandlet</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The commandlet corresponding to the software. Typically the same as <code>$1</code> but may differ (e.g. <code>mvn</code> instead of <code>maven</code>). Only used for log messages to assist end-user.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_ide.wiki_functions.asciidoc_doisdevversion">8.3. doIsDevVersion</h3>
+<div class="paragraph">
+<p>Checks whether one of the two values "dev-SNAPSHOT" or "0-SNAPSHOT" was passed to it as a parameter.
+If this is the case, it ends with the return value <code>0</code> otherwise <code>1</code>.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="devonfw-guide_ide.wiki_functions.asciidoc_dolistsoftwareversions">8.3. doListSoftwareVersions</h3>
+<h3 id="devonfw-guide_ide.wiki_functions.asciidoc_dolistsoftwareversions">8.4. doListSoftwareVersions</h3>
 <div class="paragraph">
 <p>Takes the name of the tool as a parameter and displays the available versions.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="devonfw-guide_ide.wiki_functions.asciidoc_dosetsoftwareversion">8.4. doSetSoftwareVersion</h3>
+<h3 id="devonfw-guide_ide.wiki_functions.asciidoc_dosetsoftwareversion">8.5. doSetSoftwareVersion</h3>
 <div class="paragraph">
 <p>Used to set a specific version of a software tool, and requires 2 parameters: the name of the software tool and the desired version.
 The version is saved as <code>«tool»_VERSION</code> variable in <code>settings/devon.properties</code>.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="devonfw-guide_ide.wiki_functions.asciidoc_doversioncompare">8.5. doVersionCompare</h3>
+<h3 id="devonfw-guide_ide.wiki_functions.asciidoc_doversioncompare">8.6. doVersionCompare</h3>
 <div class="paragraph">
 <p>Two version numbers are passed to the doVersionCompare function as parameters.
 If the versions are equal, the function returns 0, if the first version is higher than the second, returns 1, and if the second version is higher than the first, the function returns 2.</p>
@@ -1183,7 +1219,7 @@ If none of these options are passed, the return value is 255.</p>
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-10-10 08:30:13 UTC
+Last updated 2022-10-10 14:56:12 UTC
 </sub></div>
 </div>
 </div>
