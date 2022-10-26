@@ -4,7 +4,7 @@ env:
   BUILD_USER_EMAIL:  ${{ secrets.BUILD_USER_EMAIL }}
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   repository_dispatch:
     types: [dispatch-update-website]
   workflow_dispatch:
@@ -20,7 +20,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           submodules: recursive
-          ref: master
+          ref: main
       - name: update latest changes of devonfw-guide
         id: update-submodules
         run: |
@@ -34,7 +34,7 @@ jobs:
             echo "::set-output name=updated::false"
           else
             git commit -m "[DocUpdate]"
-            git push origin master
+            git push origin main
             echo "::set-output name=updated::true"
           fi
       - name: Dispatch Website Build
