@@ -73,7 +73,7 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../integration/rest-service.html">REST</a>
+    <a class="nav-link" href="../integration/rest_service.html">REST</a>
 <ul class="nav-list">
   <li class="nav-item" data-depth="3">
     <a class="nav-link" href="../integration/rest_exception_handling.html">RESTful Exception Handling</a>
@@ -117,7 +117,7 @@
     <a class="nav-link" href="configuration.html">Configuration</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="dependency-injection.html">Dependency Injection</a>
+    <a class="nav-link" href="dependency_injection.html">Dependency Injection</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="exceptions.html">Exceptions</a>
@@ -229,6 +229,9 @@ or the <a href="https://www.baeldung.com/java-8-localization">Baeldung article</
 <li>
 <p><a href="https://docs.oracle.com/javase/7/docs/api/java/text/MessageFormat.html">Java SEs MessageFormat</a> for formatting the messages (for example variable replacement)</p>
 </li>
+<li>
+<p>For more complex translations, use the <a href="https://unicode-org.github.io/icu-docs/apidoc/released/icu4j/com/ibm/icu/text/MessageFormat.html">ICU MessageFormat</a> library.</p>
+</li>
 </ul>
 </div>
 <div class="sect2">
@@ -251,20 +254,10 @@ Also consider:</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>Check <a href="https://docs.oracle.com/javase/7/docs/api/java/text/MessageFormat.html">Java SEs MessageFormat</a> for further links on specialized formatters</p>
+<p>Check <a href="https://docs.oracle.com/javase/7/docs/api/java/text/MessageFormat.html">Java SEs MessageFormat</a> for further links on specialized formatters.</p>
 </div>
-</div>
-<div class="sect2">
-<h3 id="_further_references"><a class="anchor" href="#_further_references"></a>Further references</h3>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://docs.oracle.com/javase/8/docs/api/java/util/ResourceBundle.html" class="bare">https://docs.oracle.com/javase/8/docs/api/java/util/ResourceBundle.html</a></p>
-</li>
-<li>
-<p><a href="https://www.baeldung.com/java-localization-messages-formatting" class="bare">https://www.baeldung.com/java-localization-messages-formatting</a></p>
-</li>
-</ul>
+<div class="paragraph">
+<p>To test ICU patterns, use this <a href="http://format-message.github.io/icu-message-format-for-translators/index.html">Demo page</a>.</p>
 </div>
 </div>
 </div>
@@ -274,25 +267,235 @@ Also consider:</p>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_use_only_property_files"><a class="anchor" href="#_use_only_property_files"></a>Use only property files</h3>
-<div class="paragraph">
-<p>Do not store key value pairs of messages and the corresponding localized message in code.
-Always create a default property and localized properties in the same folder to make it easy to keep them in sync.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_always_use_country_locale_for_the_property_name"><a class="anchor" href="#_always_use_country_locale_for_the_property_name"></a>Always use country locale for the property name.</h3>
-<div class="paragraph">
-<p>Do not use just the language to specify locale properties.
-Instead always use the country in combination with the language.
-This is no big overhead at the beginning and future proof.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Do not store key value pairs of messages and the corresponding localized message in code.</p>
+</li>
+<li>
+<p>Always create a default property and localized properties in the same folder to make it easy to keep them in sync.</p>
+</li>
+<li>
+<p>The language files should store a speaking key and a pattern containing the text to translate.</p>
+</li>
+<li>
+<p>Always use the country code in combination with the language code. This is no big overhead at the beginning and future proof.</p>
+</li>
+<li>
+<p>All language files are stored in the following structure.</p>
+</li>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">// Don't use just the language (en)
-message_en.properties // LOCALE.EN
+<pre class="highlightjs highlight"><code class="language-asciidoc hljs" data-lang="asciidoc">src/main/
+├─ resources/
+│  ├─ i18n/
+│  │  ├─ [{moduleName}]/
+│  │  │  ├─ message.properties
+│  │  │  ├─ message_de_DE.properties
+│  │  │  ├─ message_en_US.properties
+│  │  │  ├─ message_[{languageCode}]_{countryCode}].properties</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_translation_pattern"><a class="anchor" href="#_translation_pattern"></a>Translation pattern</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To make it easy to translate messages inside the application, it&#8217;s recommended to use an enum pattern.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The keys are referenced in an enum so that they can be easily used in code.</p>
+</li>
+<li>
+<p>The messages can be split according to the needs into different modules. For each module, an own enum is created.</p>
+</li>
+<li>
+<p>The enums have a translation method leading to an easy translation into the selected locale.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>View the code snipped <code>BookingMessages</code> for an example.</p>
+</div>
+<div class="paragraph">
+<p>For the translation, the enums call a translator that encapsulates the library. This wrapper makes it easy to change the library in later. For example, when starting without ICU and pluralization is required later, it&#8217;s easy to switch out the native Message Formatter with the ICU Message Formatter.</p>
+</div>
+<div class="paragraph">
+<p>View the code snipped <code>MessageTranslator</code> for an example.</p>
+</div>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset1_bookingmessages"></a>BookingMessages</p>
+</li>
+<li>
+<p><a id="tabset1_messagetranslator"></a>MessageTranslator</p>
+</li>
+<li>
+<p><a id="tabset1_message_en_us-properties"></a>message_en_US.properties</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset1_bookingmessages">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public enum BookingMessages {
+    WELCOME("welcome"),<i class="conum" data-value="1"></i><b>(1)</b>
+    BOOKING_DATE_SHORT("bookingDateShort");
 
-// Use the Country with language locale (language: en, country: US)
-messages_en_US.properties // LOCALE.US</code></pre>
+    private final String value;
+    private static final String MESSAGE_BUNDLE_NAME = "booking"; <i class="conum" data-value="2"></i><b>(2)</b>
+    private static final MessageTranslator MESSAGE_TRANSLATOR = MessageTranslator.getInstance(MESSAGE_BUNDLE_NAME); <i class="conum" data-value="3"></i><b>(3)</b>
+
+    public BookingMessage(value) { ... }
+
+    public String translate(Locale locale, Map&lt;String, Object&gt; arguments) {  <i class="conum" data-value="4"></i><b>(4)</b>
+        return MESSAGE_TRANSLATOR.translate(this.value, locale, arguments);
+    }
+    public String translate() {
+        return MESSAGE_TRANSLATOR.translate(this.value, Locale.getDefault(), Collections.emptyMap());
+    }
+
+    public String translate(Locale locale) {
+        return MESSAGE_TRANSLATOR.translate(this.value, locale,  Collections.emptyMap());
+    }
+
+    public String translate(Map&lt;String, Object&gt; arguments) {
+        return MESSAGE_TRANSLATOR.translate(this.value, Locale.getDefault(), arguments);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>One enum per message. The value is the message key in the properties file</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The name of the location of the corresponding message bundle (/i18n/&lt;MESSAGE_BUNDLE_NAME&gt;/messages/)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The translator for messages.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>A translation method using the translator, overloaded to make it easier to use in code</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="tab-pane" aria-labelledby="tabset1_messagetranslator">
+<div class="paragraph">
+<p>The <code>MessageTranslator</code> class uses a singleton pattern.
+There should be one <code>MessageTranslator</code> instance per group of messages (in this example booking).
+The group of messages is defined by the folder in which the message_&lt;COUNTRY&gt;.properties files are located.
+Each <code>MessageTranslator</code> has an <a href="https://docs.oracle.com/javase/7/docs/api/java/util/ResourceBundle.html"><code>ResourceBundle</code></a> per Locale.
+When a messageKey should be translated into a locale message, the translator looks up the <a href="https://docs.oracle.com/javase/7/docs/api/java/util/ResourceBundle.html"><code>ResourceBundle</code></a> for the locale and returns the message from it.
+Then <a href="https://unicode-org.github.io/icu/userguide/icu4j/">ICU4J</a> is used to format the message and replace variables. In this example, maps are used to allow named parameters. When using the native Message Formatter, this is not possible.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public class MessageTranslator {
+    private final static ConcurrentHashMap&lt;String, MessageTranslator&gt; instances = new ConcurrentHashMap &lt;&gt;(); <i class="conum" data-value="1"></i><b>(1)</b>
+    private final ConcurrentHashMap&lt;Locale, ResourceBundle&gt; bundleMap = new ConcurrentHashMap&lt;&gt;(); <i class="conum" data-value="2"></i><b>(2)</b>
+    private final String BASE_DIRECTORY_NAME = "i18n";
+    private final String MESSAGE_PROPERTY_PREFIX = "message";
+    private final String messageBundleName; <i class="conum" data-value="3"></i><b>(3)</b>
+
+    private MessageTranslator(String messageBundleName){...}
+
+    public static MessageTranslator getInstance(String messageBundleName) {<i class="conum" data-value="1"></i><b>(1)</b>
+        return instances.computeIfAbsent(messageBundleName, MessageTranslator::new);
+    }
+
+    private String getPattern(String patternKey, Locale locale){<i class="conum" data-value="4"></i><b>(4)</b>
+        ResourceBundle bundle = bundleMap.computeIfAbsent(locale, (key) -&gt;
+             ResourceBundle.getBundle(
+                String.join("/", BASE_DIRECTORY_NAME, messageBundleName, MESSAGE_PROPERTY_PREFIX),
+                key,
+                Thread.currentThread().getContextClassLoader()
+             )
+        );
+        return bundle.getString(patternKey);
+    }
+
+    public String translate(String patternKey, Locale locale, Map&lt;String, Object&gt; arguments){
+        String pattern = getPattern(patternKey, locale);
+        MessageFormat messageFormat = new MessageFormat(pattern, locale);
+        StringBuffer stringBuffer = new StringBuffer();
+        return messageFormat.format(arguments, stringBuffer, new FieldPosition(0)).toString();<i class="conum" data-value="5"></i><b>(5)</b>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>A <code>MessageTranslator</code> instance exists for each group of messages. Make sure to use thread safe code.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>A <code>MessageTranslator</code> instance has a <a href="https://docs.oracle.com/javase/7/docs/api/java/util/ResourceBundle.html"><code>ResourceBundle</code></a> per locale.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The messageBundles are stored in the same folder with the pattern <code>i18n/&lt;messageBundleName&gt;/message_&lt;LOCALE&gt;.properties</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Returns the message from the locale-specific <a href="https://docs.oracle.com/javase/7/docs/api/java/util/ResourceBundle.html"><code>ResourceBundle</code></a> using the bundleMap.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Uses the ICU&#8217;s <a href="https://unicode-org.github.io/icu-docs/apidoc/dev/icu4j/com/ibm/icu/text/MessageFormat.html"><code>MessageFormat</code></a> to format the message based on the arguments and the locale.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="tab-pane" aria-labelledby="tabset1_message_en_us-properties">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-asciidoc hljs" data-lang="asciidoc">welcome=Welcome {name}
+bookingDateShort=Your table is booked at {bookingDate, date, short}. <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Will return the date in a numeric format depending on LOCALE (e.g. 24.10.22 in german or 10/24/22 in US). See <a href="https://unicode-org.github.io/icu/userguide/format_parse/datetime/">ICU Formatting details</a>.</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_usage_example"><a class="anchor" href="#_usage_example"></a>Usage example</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">String bookingDateText = BookingMessages.BOOKING_DATE_SHORT.translate(Map.of("bookingDate", date));
+System.out.println(bookingDateText); //OUT: Your table is booked at 10/24/22.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this example, the constant <code>BOOKING_DATE_SHORT</code> from the enum <code>BookingMessages</code> is used to call the "translate" function. The "translate" function is then using the <code>MessageTranslator</code> to convert the message into the current locale language. To make this possible, the translator is using a ResourceBundler to obtain the message text from the <code>message.properties</code> file and the Messageformatter to replace the placeholder with the input variable containing the date. After the translation, the message is returned.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../_images/TranslationFlow.drawio.svg" alt="Translation Flow">
 </div>
 </div>
 </div>
@@ -320,6 +523,19 @@ Those settings might be stored in the application itself (e.g. the database) or 
 <div class="paragraph">
 <p>The localization specifics might also result from business specific indicators (e.g. A flag in a message or defined values).
 Discuss with business responsibles on this topic.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_further_references"><a class="anchor" href="#_further_references"></a>Further references</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.oracle.com/javase/8/docs/api/java/util/ResourceBundle.html" class="bare">https://docs.oracle.com/javase/8/docs/api/java/util/ResourceBundle.html</a></p>
+</li>
+<li>
+<p><a href="https://www.baeldung.com/java-localization-messages-formatting" class="bare">https://www.baeldung.com/java-localization-messages-formatting</a></p>
+</li>
+</ul>
 </div>
 </div>
 </div>

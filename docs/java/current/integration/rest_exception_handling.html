@@ -73,7 +73,7 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="2">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="rest-service.html">REST</a>
+    <a class="nav-link" href="rest_service.html">REST</a>
 <ul class="nav-list">
   <li class="nav-item is-current-page" data-depth="3">
     <a class="nav-link" href="rest_exception_handling.html">RESTful Exception Handling</a>
@@ -117,7 +117,7 @@
     <a class="nav-link" href="../cross_cutting/configuration.html">Configuration</a>
   </li>
   <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../cross_cutting/dependency-injection.html">Dependency Injection</a>
+    <a class="nav-link" href="../cross_cutting/dependency_injection.html">Dependency Injection</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../cross_cutting/exceptions.html">Exceptions</a>
@@ -199,7 +199,7 @@
   <ul>
     <li><a href="../index.html">Java</a></li>
     <li>Integration</li>
-    <li><a href="rest-service.html">REST</a></li>
+    <li><a href="rest_service.html">REST</a></li>
     <li><a href="rest_exception_handling.html">RESTful Exception Handling</a></li>
   </ul>
 </nav>
@@ -221,128 +221,144 @@ If not handled correct a generated error message is send to the client.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_response_messages_for_exceptions"><a class="anchor" href="#_response_messages_for_exceptions"></a>Response messages for exceptions</h2>
+<h2 id="_use_rfc_7807_for_error_responses"><a class="anchor" href="#_use_rfc_7807_for_error_responses"></a>Use RFC 7807 for error responses</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>An error response message contains the following information:</p>
+<p><a href="https://www.rfc-editor.org/rfc/rfc7807">RFC7807</a> defines a "problem detail" so no new response formats need to be defined.
+It&#8217;s recommended to go with the described format.
+In the following chapters a few recommendations based on the RFC are documented</p>
 </div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col>
-<col>
-<col>
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Response Header</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">HTTP status code</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Status Code corresponding to the error</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-middle" rowspan="3"><p class="tableblock">Response body message</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">message</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A human-readable message describing the error</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">code</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A code identifying the concrete error</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">uuid</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">An identifier (generally the correlation id) to help identify corresponding requests in logs</p></td>
-</tr>
-</tbody>
-</table>
+<div class="sect2">
+<h3 id="_do_not_use_urls"><a class="anchor" href="#_do_not_use_urls"></a>Do not use URLs</h3>
+<div class="paragraph">
+<p>The RFC describes at least title and instance to be URIs.
+Often readers imagine callable URLs at this place, which leads to a lot of complex solutions ideas.
+Consider using URNs instead of URLs to be most flexible and still aligning with the specification.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_define_a_problem_type_and_title_as_constant_string"><a class="anchor" href="#_define_a_problem_type_and_title_as_constant_string"></a>Define a problem type and title as constant string</h3>
+<div class="paragraph">
+<p>The type should be a URN that identifies the underlying error.
+Use <code>urn:problem:&lt;error-code&gt;</code> as type.</p>
+</div>
+<div class="paragraph">
+<p><code>&lt;error-code&gt;</code> should identify the underlying error and should not change.
+The classname e.g. is not a good error-code as it might change due to refactoring work.
+It&#8217;s best to have a mapping of exception class to error-code.</p>
+</div>
+<div class="paragraph">
+<p>It&#8217;s recommended to use a String representation of the error like ValidationError, ResourceNotFound. But it could also be a number.</p>
+</div>
+<div class="paragraph">
+<p>The title should be a human understandable definition of the type.
+The same type should always match to the same title.
+E.g.: ValidationError - The request was not valid. ResourceNotFound - A resource was not found</p>
+</div>
+<div class="paragraph">
+<p>The details can be used to provide further information like the Validation Problems or the id and type of the resource that was not found.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_use_a_unique_identifier_to_define_the_instance"><a class="anchor" href="#_use_a_unique_identifier_to_define_the_instance"></a>Use a unique identifier to define the instance</h3>
+<div class="paragraph">
+<p>The instance should identify the concrete error that occurs.
+It&#8217;s recommended to use a UUID to define this.
+<code>urn:uuid:&lt;UUID&gt;</code></p>
+</div>
+<div class="paragraph">
+<p>In cases where there&#8217;s a trace-id this could be used.
+This way it&#8217;s easiest for the operations team to quickly identify the requests related to the error.</p>
+</div>
+<div class="paragraph">
+<p>If no ID can be reused that marks the error instance, a new UUID should be created and logged out together with helpful information.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_use_an_openapi_specification_to_define_the_problem_details"><a class="anchor" href="#_use_an_openapi_specification_to_define_the_problem_details"></a>Use an OpenAPI specification to define the problem details</h3>
+<div class="paragraph">
+<p>OpenAPI can be used to define and generate the problem details.
+This is especially helpful, when additional attributes are used, that are not defined by the specification.
+That way the caller can expect further information and display it.</p>
+</div>
+<div class="paragraph">
+<p>When inheritance for the problem details is used in the OpenAPI spec, define an additional <code>_schema</code> attribute as discriminator for the concrete type. For more details take a look at the <a href="https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.1.0.md#composition-and-inheritance-polymorphism">openAPI specification</a>.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_exception_types"><a class="anchor" href="#_exception_types"></a>Exception Types</h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="_security_exceptions"><a class="anchor" href="#_security_exceptions"></a>Security Exceptions</h3>
-<div class="ulist">
-<ul>
-<li>
-<p>Do not expose details of security exceptions in the body of the response</p>
-</li>
-</ul>
+<div class="paragraph">
+<p>Special exceptions have clear requirements regarding the information that is exposed.</p>
 </div>
+<div class="sect2">
+<h3 id="_do_not_expose_any_information_on_security_exceptions"><a class="anchor" href="#_do_not_expose_any_information_on_security_exceptions"></a>Do not expose any information on Security Exceptions</h3>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col>
 <col>
 <col>
 </colgroup>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Response Header</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP status code</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">403 (FORBIDDEN)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-middle" rowspan="3"><p class="tableblock">Response body message</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">message</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">about:blank</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">title</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">"forbidden"</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">code</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>null</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">details</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">empty</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">uuid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">instance</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">An identifier (generally the correlation id) to help identify corresponding requests in logs</p></td>
 </tr>
 </tbody>
 </table>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-tip" title="Tip"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>For debugging it makes sense to configure a parameter that allows returning the exception details on developer environments.
-E.g.: adding a property that is false on default and when set to true the details are exposed. This must not be possible on the production environment.</p>
-</div>
-</td>
-</tr>
-</table>
-</div>
 </div>
 <div class="sect2">
-<h3 id="_validation_exceptions"><a class="anchor" href="#_validation_exceptions"></a>Validation Exceptions</h3>
-<div class="ulist">
-<ul>
-<li>
+<h3 id="_log_all_validation_errors_of_validation_exceptions"><a class="anchor" href="#_log_all_validation_errors_of_validation_exceptions"></a>Log all validation errors of Validation Exceptions</h3>
+<div class="paragraph">
 <p>Validation errors include <strong>all</strong> validation issues that do not fullfil the requirements, because it is a tedious work to figure out and fix all errors request by request.</p>
-</li>
-</ul>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col>
 <col>
-<col>
 </colgroup>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Response Header</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP status code</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">400 (BAD REQUEST)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-middle" rowspan="3"><p class="tableblock">Response body message</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">message</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">All violated constraints.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">urn:problem:ValidationError</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">code</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ValidationError</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">title</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Request validation failed.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">uuid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">details</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If not in a separate field, also in the details all Validation errors could be listed.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">instance</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">A unique identifier to later correspond to the logs, to identify real problems with login.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">validationError</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A list of all errors that occurred during the validation.
+The list should contain the fieldname and the reason of each failure</p></td>
 </tr>
 </tbody>
 </table>
@@ -353,25 +369,26 @@ E.g.: adding a property that is false on default and when set to true the detail
 <colgroup>
 <col>
 <col>
-<col>
 </colgroup>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Response Header</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP status code</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Depending on the reason of the exception. Default: 400 (BAD REQUEST)</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-middle" rowspan="3"><p class="tableblock">Response body message</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">message</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A english message from the exception (translation should be done in the client)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An exception specific type.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">code</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Exception specific code</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">title</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Exception specific title</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">uuid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">details</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This is often the message of the underlying exception.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">instance</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">A unique identifier to later correspond to the logs, to identify real problems with login.</p></td>
 </tr>
 </tbody>
@@ -387,22 +404,19 @@ E.g.: adding a property that is false on default and when set to true the detail
 </colgroup>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Response Header</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">HTTP status code</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">500 (INTERNAL_SERVER_ERROR) For technical exceptions</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-middle" rowspan="3"><p class="tableblock">Response body message</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">message</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An exception specific type. 'urn:problem:InternalServerError' could be the default.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">title</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Exception specific title. 'An internal server error occurred' could be the default.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">details</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Hide the concrete error details and display "An unexpected error has occurred! We apologize any inconvenience. Please try again later."</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">code</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Exception specific code</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">uuid</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A unique identifier to later correspond to the logs, to identify real problems with login.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">instance</p></td>
 </tr>
 </tbody>
 </table>
