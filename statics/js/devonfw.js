@@ -50,7 +50,7 @@ window.addEventListener('scroll', (e) => {
   var overlay = document.querySelector('.overlay');
   var bannerBtn = document.querySelector('.banner-btn');
   var readAnnouncement = getCookie("read_announcement");
-  console.log("Announcement", readAnnouncement)
+
   if (!overlay) return
   if (readAnnouncement.length > 0) {
     overlay.style.display = "none";
