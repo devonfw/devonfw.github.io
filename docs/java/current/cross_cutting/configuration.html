@@ -211,13 +211,25 @@
 <article class="doc">
 <h1 class="page">Configuration</h1>
 <div class="sect1">
-<h2 id="_overview"><a class="anchor" href="#_overview"></a>Overview</h2>
+<h2 id="_set_configuration_via_environment_variables"><a class="anchor" href="#_set_configuration_via_environment_variables"></a>Set configuration via environment variables</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>The <a href="https://12factor.net/config">12-Factor App</a> recommends to set configurations via environments variables.
+devonfw follows this recommendation.</p>
+</div>
+<div class="paragraph">
+<p>In both frameworks (Spring Boot and Quarkus) it&#8217;s possible to define configuration properties in a <code>application.properties</code> file and reference them via annotations in code.
+Both frameworks allow to overwrite those properties using environment variables.
+For links to related articles see the framework specific tab.</p>
+</div>
 <div class="tabset is-loading">
 <div class="ulist tabs">
 <ul>
 <li>
 <p><a id="tabset1_spring"></a>Spring</p>
+</li>
+<li>
+<p><a id="tabset1_quarkus"></a>Quarkus</p>
 </li>
 </ul>
 </div>
@@ -246,81 +258,45 @@
 </li>
 </ul>
 </div>
+<div class="paragraph">
+<p>The binding from environment variables is described here: <a href="https://github.com/eclipse/microprofile-config/blob/master/spec/src/main/asciidoc/configsources.asciidoc#default-configsources" class="bare">https://github.com/eclipse/microprofile-config/blob/master/spec/src/main/asciidoc/configsources.asciidoc#default-configsources</a></p>
+</div>
+</div>
+<div class="tab-pane" aria-labelledby="tabset1_quarkus">
+<div class="paragraph">
+<p>A basic overview of defining and using configuration in Quarkus can be found here: <a href="https://quarkus.io/guides/config" class="bare">https://quarkus.io/guides/config</a></p>
+</div>
+<div class="paragraph">
+<p>The <a href="https://quarkus.io/guides/config-reference">Quarkus config reference guide</a> provides a detailed overview of the configuration options in quarkus.
+It follows the MicroProfile Config specification.
+Quarkus can read configs from multiple sources.
+Environment variables follow a certain conversion rule defined by <a href="https://github.com/eclipse/microprofile-config/blob/master/spec/src/main/asciidoc/configsources.asciidoc#default-configsources">MicroProfiles ConfigSource</a>.</p>
+</div>
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_profile_configuration_files"><a class="anchor" href="#_profile_configuration_files"></a>Profile configuration files</h2>
+<h2 id="_define_a_application_properties_file_with_default_values"><a class="anchor" href="#_define_a_application_properties_file_with_default_values"></a>Define a application.properties file with default values</h2>
 <div class="sectionbody">
-<div class="tabset is-loading">
-<div class="ulist tabs">
-<ul>
-<li>
-<p><a id="tabset2_spring"></a>Spring</p>
-</li>
-</ul>
-</div>
-<div class="content">
-<div class="tab-pane" aria-labelledby="tabset2_spring">
 <div class="paragraph">
-<p>With <a href="https://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#features.profiles">Spring Profiles</a> parts of the configuration can be made available in certain environments. The most prominent example might be the database config for dev and prod. Imagine on dev a h2 is used, whereas in prod a PostgreSQL instance needs to be connected.</p>
+<p>An application.properties file is a good starting point and should contain default values, that are ready to be used in a productive environment.
+Do not write values there that are not valid in a production environment, as an overwrite can be easily missed.
+It&#8217;s better to not start an application, because of missing configuration, than starting a missconfigured system.
+The environment specific configuration is done as mentioned above via environment variables.</p>
 </div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_do_not_add_local_configurations_to_the_scm"><a class="anchor" href="#_do_not_add_local_configurations_to_the_scm"></a>Do not add local configurations to the SCM</h2>
+<div class="sectionbody">
 <div class="paragraph">
-<p>In Spring there&#8217;re multiple ways to configure and use profiles:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#features.external-config.files.profile-specific">Profile specific files</a> can be used to store profile related config. By setting <code>spring.profiles.active</code> to one of the profiles, the selected profile is considered.</p>
-</li>
-<li>
-<p>Using <code>spring.config.activate.on-profile</code> in different property files, that mark those properties as configuration of a certain profile. Again the profile needs to be set form outside.</p>
-</li>
-<li>
-<p>Using <a href="https://docs.spring.io/spring-boot/docs/current-SNAPSHOT/reference/htmlsingle/#features.external-config.files">external application properties</a> that reside outside the jar</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>It has proven a good practices to use external application properties in combination with defaults inside the jar.
-Therefore, the following properties files are used in devonfw application:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>src/main/resources/application.properties</code> providing a default configuration - bundled and deployed with the application package. It further acts as a template to derive a tailored minimal environment-specific configuration.</p>
-</li>
-<li>
-<p><code>src/main/resources/config/application.properties</code> providing additional properties only used at development time (for all local deployment scenarios). This property file is excluded from all packaging.</p>
-</li>
-<li>
-<p><code>src/test/resources/config/application.properties</code> providing additional properties only used for testing.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>For other environments where the software gets deployed such as <code>test</code>, <code>acceptance</code> and <code>production</code> a tailored copy of <code>application.properties</code> needs to be provided. The name will stay <code>application.properties</code> and the location depends on the deployment strategy:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>standalone run-able Spring Boot App using embedded tomcat: <code>config/application.properties</code> under the installation directory of the spring boot application.</p>
-</li>
-<li>
-<p>dedicated tomcat (one tomcat per app): <code>$CATALINA_BASE/lib/config/application.properties</code></p>
-</li>
-<li>
-<p>tomcat serving a number of apps (requires expanding the wars): <code>$CATALINA_BASE/webapps/&lt;app&gt;/WEB-INF/classes/config</code></p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>In this <code>application.properties</code> the minimum set of properties that are environment specific are defined everything else is inherited from the bundled <code>src/main/resources/application.properties</code>. In any case, it needs to be sure that the classloader will find the file.</p>
-</div>
-</div>
-</div>
+<p>Any kind of configuration that is not designed for production or contains secret information should not be added to the SCM.
+It is common practice to use a .env file (mostly Quarkus) or a externalized resources/config/application.properties file (Spring Boot) for the configuration of local services.
+Those files should be added to the .gitignore file.
+For new developers an example file should be added to the SCM that does only contain the configuration keys and no values.
+The developer can create and define a valid configuration starting with this.</p>
 </div>
 </div>
 </div>
@@ -394,15 +370,15 @@ How and if the password can be provided securely depends highly on the environme
 <div class="ulist tabs">
 <ul>
 <li>
-<p><a id="tabset3_spring"></a>Spring</p>
+<p><a id="tabset2_spring"></a>Spring</p>
 </li>
 <li>
-<p><a id="tabset3_quarkus"></a>Quarkus</p>
+<p><a id="tabset2_quarkus"></a>Quarkus</p>
 </li>
 </ul>
 </div>
 <div class="content">
-<div class="tab-pane" aria-labelledby="tabset3_spring">
+<div class="tab-pane" aria-labelledby="tabset2_spring">
 <div class="paragraph">
 <p>Use the Spring Boot Jasypt starter.
 The github repository delivers a god documentation:
@@ -412,7 +388,7 @@ The github repository delivers a god documentation:
 <p>The default encryption options and the algorithm <code>PBEWITHHMACSHA512ANDAES_256</code> are considered secure enough.</p>
 </div>
 </div>
-<div class="tab-pane" aria-labelledby="tabset3_quarkus">
+<div class="tab-pane" aria-labelledby="tabset2_quarkus">
 <div class="paragraph">
 <p>For Quarkus there&#8217;s currently no known ready to use library.
 <a href="https://stackoverflow.com/questions/67159572/how-to-encrypt-and-decrypt-using-jasypt-in-quarkus-for-database-password" class="bare">https://stackoverflow.com/questions/67159572/how-to-encrypt-and-decrypt-using-jasypt-in-quarkus-for-database-password</a></p>
@@ -431,20 +407,20 @@ This could be for example <a href="https://www.vaultproject.io/">HashiCorp Vault
 <div class="ulist tabs">
 <ul>
 <li>
-<p><a id="tabset4_spring"></a>Spring</p>
+<p><a id="tabset3_spring"></a>Spring</p>
 </li>
 <li>
-<p><a id="tabset4_quarkus"></a>Quarkus</p>
+<p><a id="tabset3_quarkus"></a>Quarkus</p>
 </li>
 </ul>
 </div>
 <div class="content">
-<div class="tab-pane" aria-labelledby="tabset4_spring">
+<div class="tab-pane" aria-labelledby="tabset3_spring">
 <div class="paragraph">
 <p>Spring provides an integration with HashiCorp Vault. <a href="https://spring.io/projects/spring-vault" class="bare">https://spring.io/projects/spring-vault</a></p>
 </div>
 </div>
-<div class="tab-pane" aria-labelledby="tabset4_quarkus">
+<div class="tab-pane" aria-labelledby="tabset3_quarkus">
 <div class="paragraph">
 <p>See the official Quarkus guide for instruction on using HashiCorp Vault <a href="https://quarkiverse.github.io/quarkiverse-docs/quarkus-vault/dev/index.html" class="bare">https://quarkiverse.github.io/quarkiverse-docs/quarkus-vault/dev/index.html</a></p>
 </div>

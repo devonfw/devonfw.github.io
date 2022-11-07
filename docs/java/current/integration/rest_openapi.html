@@ -324,6 +324,137 @@ You can set/overwrite the server path of the Api inside the application.properti
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_code_snippets_to_integrate_the_generation_in_the_build_tools"><a class="anchor" href="#_code_snippets_to_integrate_the_generation_in_the_build_tools"></a>Code Snippets to integrate the generation in the build tools</h3>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset2_gradle"></a>Gradle</p>
+</li>
+<li>
+<p><a id="tabset2_maven"></a>Maven</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset2_gradle">
+<div class="listingblock">
+<div class="content">
+<pre>plugins {
+   ...
+    id "org.openapi.generator" version "6.2.0"
+    ...
+}
+
+sourceSets.main.java.srcDirs += 'build/generated-sources/server/src/main/java' <i class="conum" data-value="1"></i><b>(1)</b>
+
+dependencies { <i class="conum" data-value="2"></i><b>(2)</b>
+  ...
+  implementation 'io.swagger.parser.v3:swagger-parser:2.1.7'
+  implementation 'org.openapitools:jackson-databind-nullable:0.2.4'
+  ...
+}
+
+
+openApiGenerate {
+    artifactId = "MyThaiApi-java-client"
+    groupId = "com.devonfw.devon4j.generated.client"
+    apiPackage = "com.devonfw.devon4j.generated.client.service"
+    modelPackage = "com.devonfw.devon4j.generated.client.model"
+    invokerPackage = "com.devonfw.devon4j.generated.client.handler"
+    inputSpec = "${rootDir}/src/main/resources/MyThaiApi.yml" <i class="conum" data-value="3"></i><b>(3)</b>
+    output = "${buildDir}/generated-sources/client"
+    generatorName = "java" <i class="conum" data-value="4"></i><b>(4)</b>
+    library = "native" <i class="conum" data-value="5"></i><b>(5)</b>
+    generateApiTests = "false"
+    generateModelTests = "false"
+    modelNameSuffix = "To"
+}
+
+tasks.compileJava.dependsOn(tasks.openApiGenerate) <i class="conum" data-value="5"></i><b>(5)</b></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Add the generated sources to the sourceSets, otherwise the IDE will not know the generated files and mark them. Also autocompletion would not work.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Add the dependencies that are necessary for the generated sources</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Path to the openapi spec</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The generator <code>java</code> is a client generator. See <a href="https://openapi-generator.tech/docs/generators#config-generators" class="bare">https://openapi-generator.tech/docs/generators#config-generators</a>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The library defines with which http library the calls should be generated</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="tab-pane" aria-labelledby="tabset2_maven">
+<div class="listingblock">
+<div class="content">
+<pre>&lt;!--Generation dependencies--&gt;
+&lt;dependencies&gt;
+ ...
+		&lt;dependency&gt;
+			&lt;groupId&gt;io.swagger.parser.v3&lt;/groupId&gt;
+			&lt;artifactId&gt;swagger-parser&lt;/artifactId&gt;
+			&lt;version&gt;2.1.2&lt;/version&gt;
+		&lt;/dependency&gt;
+		&lt;dependency&gt;
+			&lt;groupId&gt;org.openapitools&lt;/groupId&gt;
+			&lt;artifactId&gt;jackson-databind-nullable&lt;/artifactId&gt;
+			&lt;version&gt;0.2.3&lt;/version&gt;
+		&lt;/dependency&gt;
+...
+&lt;/dependencies&gt;
+
+&lt;build&gt;
+  &lt;plugins&gt;
+    ...
+    &lt;plugin&gt;
+				&lt;groupId&gt;org.openapitools&lt;/groupId&gt;
+				&lt;artifactId&gt;openapi-generator-maven-plugin&lt;/artifactId&gt;
+				&lt;version&gt;6.1.0&lt;/version&gt;
+				&lt;executions&gt;
+					&lt;execution&gt;
+						&lt;goals&gt;
+							&lt;goal&gt;generate&lt;/goal&gt;
+						&lt;/goals&gt;
+						&lt;configuration&gt;
+							&lt;artifactId&gt;MyThaiApi-java-client&lt;/artifactId&gt;
+							&lt;groupId&gt;com.devonfw.devon4j.generated.client&lt;/groupId&gt;
+							&lt;apiPackage&gt;com.devonfw.devon4j.generated.client.service&lt;/apiPackage&gt;
+							&lt;modelPackage&gt;com.devonfw.devon4j.generated.client.model&lt;/modelPackage&gt;
+							&lt;invokerPackage&gt;com.devonfw.devon4j.generated.client.handler&lt;/invokerPackage&gt;
+							&lt;inputSpec&gt;${project.basedir}/src/main/resources/MyThaiApi.yml&lt;/inputSpec&gt;
+							&lt;output&gt;${project.build.directory}/auto-generated&lt;/output&gt;
+							&lt;generatorName&gt;java&lt;/generatorName&gt;
+							&lt;library&gt;native&lt;/library&gt;
+							&lt;generateApiTests&gt;false&lt;/generateApiTests&gt;
+							&lt;generateModelTests&gt;false&lt;/generateModelTests&gt;
+							&lt;modelNameSuffix&gt;TO&lt;/modelNameSuffix&gt;
+						&lt;/configuration&gt;
+					&lt;/execution&gt;
+				&lt;/executions&gt;
+			&lt;/plugin&gt;
+    &lt;/plugins&gt;</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -340,6 +471,143 @@ If there are multiple response types and xml should be used as default, add the 
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-asciidoc hljs" data-lang="asciidoc">&lt;singleContentTypes&gt;false&lt;/singleContentTypes&gt;
 &lt;withXml&gt;true&lt;/withXml&gt;</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_code_snippets_to_integrate_the_generation_in_the_build_tools_2"><a class="anchor" href="#_code_snippets_to_integrate_the_generation_in_the_build_tools_2"></a>Code Snippets to integrate the generation in the build tools</h3>
+<div class="tabset is-loading">
+<div class="ulist tabs">
+<ul>
+<li>
+<p><a id="tabset3_gradle"></a>Gradle</p>
+</li>
+<li>
+<p><a id="tabset3_maven"></a>Maven</p>
+</li>
+</ul>
+</div>
+<div class="content">
+<div class="tab-pane" aria-labelledby="tabset3_gradle">
+<div class="listingblock">
+<div class="content">
+<pre>plugins {
+   ...
+    id "org.openapi.generator" version "6.2.0"
+    ...
+  }
+
+sourceSets.main.java.srcDirs += 'build/generated-sources/server/src/main/java' <i class="conum" data-value="1"></i><b>(1)</b>
+
+dependencies { <i class="conum" data-value="2"></i><b>(2)</b>
+  ...
+  implementation 'io.swagger.parser.v3:swagger-parser:2.1.7'
+  implementation 'org.openapitools:jackson-databind-nullable:0.2.4'
+  ...
+}
+
+
+openApiGenerate {
+    // other settings omitted
+    inputSpec = "${rootDir}/src/main/openapi/BookingOpenApi.yaml" <i class="conum" data-value="3"></i><b>(3)</b>
+    outputDir = "${buildDir}/generated-sources/server"
+    generatorName = "spring"
+    library = "spring-boot" <i class="conum" data-value="4"></i><b>(4)</b>
+    modelNameSuffix = "To"
+    apiPackage = "com.devonfw.devon4j.generated.api.service"
+    modelPackage = "com.devonfw.devon4j.generated.api.model"
+    invokerPackage = "com.devonfw.devon4j.generated.api.handler"
+    configOptions = [
+            sourceFolder      : "src/main/java",
+            interfaceOnly     : "true",
+            serializableModel : "true",
+            singleContentTypes: "true",
+    ]
+}
+
+tasks.compileJava.dependsOn(tasks.openApiGenerate) <i class="conum" data-value="5"></i><b>(5)</b></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Add the generated sources to the sourceSets, otherwise the IDE will not know the generated files and mark them. Also autocompletion would not work.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Add the dependencies that are necessary for the generated sources</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Path to the openapi spec</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Depending on the library the annotations are different. Here we define spring-boot.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Add a dependeny from compile to openApiGenerate so that the sources are generated before the compile task.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="tab-pane" aria-labelledby="tabset3_maven">
+<div class="listingblock">
+<div class="content">
+<pre>&lt;!--Generation dependencies--&gt;
+&lt;dependencies&gt;
+ ...
+		&lt;dependency&gt;
+			&lt;groupId&gt;io.swagger.parser.v3&lt;/groupId&gt;
+			&lt;artifactId&gt;swagger-parser&lt;/artifactId&gt;
+			&lt;version&gt;2.1.2&lt;/version&gt;
+		&lt;/dependency&gt;
+		&lt;dependency&gt;
+			&lt;groupId&gt;org.openapitools&lt;/groupId&gt;
+			&lt;artifactId&gt;jackson-databind-nullable&lt;/artifactId&gt;
+			&lt;version&gt;0.2.3&lt;/version&gt;
+		&lt;/dependency&gt;
+...
+&lt;/dependencies&gt;
+
+&lt;build&gt;
+  &lt;plugins&gt;
+    ...
+    &lt;plugin&gt;
+				&lt;groupId&gt;org.openapitools&lt;/groupId&gt;
+				&lt;artifactId&gt;openapi-generator-maven-plugin&lt;/artifactId&gt;
+				&lt;version&gt;6.1.0&lt;/version&gt;
+				&lt;executions&gt;
+					&lt;execution&gt;
+						&lt;id&gt;server-generator&lt;/id&gt;
+						&lt;goals&gt;
+							&lt;goal&gt;generate&lt;/goal&gt;
+						&lt;/goals&gt;
+						&lt;configuration&gt;
+							&lt;inputSpec&gt;${project.basedir}/src/main/resources/MyThaiApi.yml&lt;/inputSpec&gt;
+							&lt;output&gt;${project.build.directory}/generated-sources/server&lt;/output&gt;
+							&lt;generatorName&gt;spring&lt;/generatorName&gt;
+							&lt;library&gt;spring-boot&lt;/library&gt;
+							&lt;modelNameSuffix&gt;To&lt;/modelNameSuffix&gt;
+							&lt;apiPackage&gt;com.devonfw.devon4j.generated.api.service&lt;/apiPackage&gt;
+							&lt;modelPackage&gt;com.devonfw.devon4j.generated.api.model&lt;/modelPackage&gt;
+							&lt;invokerPackage&gt;com.devonfw.devon4j.generated.api.handler&lt;/invokerPackage&gt;
+							&lt;configOptions&gt;
+								&lt;sourceFolder&gt;src/java/main&lt;/sourceFolder&gt;
+								&lt;interfaceOnly&gt;true&lt;/interfaceOnly&gt;
+								&lt;serializableModel&gt;true&lt;/serializableModel&gt;
+								&lt;singleContentTypes&gt;true&lt;/singleContentTypes&gt;
+							&lt;/configOptions&gt;
+						&lt;/configuration&gt;
+					&lt;/execution&gt;
+				&lt;/executions&gt;
+			&lt;/plugin&gt;
+    &lt;/plugins&gt;</pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
