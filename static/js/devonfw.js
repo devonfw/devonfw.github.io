@@ -57,11 +57,11 @@ window.addEventListener('scroll', (e) => {
   } else {
       overlay.addEventListener('click', () => {
       overlay.style.display = "none";
-      setCookie("read_announcement", "true", 30);
+      setCookie("read_announcement", "true", 300);
     }); 
       bannerBtn.addEventListener('click', () => {
       overlay.style.display = "none";
-      setCookie("read_announcement", "true", 30);
+      setCookie("read_announcement", "true", 300);
     }); 
   }
 }()
