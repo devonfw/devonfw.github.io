@@ -1,6 +1,8 @@
 name: build-and-deploy
 
 on:
+  push:
+    branches: [ main ]
   repository_dispatch:
     types: [dispatch-build-website]
   workflow_dispatch:
@@ -191,7 +193,10 @@ jobs:
       - name: Build Antora 
         run: | 
           npm run build 
-          
+      
+      - name: Copy static 
+        run: |
+          cp -avr ./static/. ./target/generated-docs/
       
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v2.5.0
