@@ -1,0 +1,3645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Devon4Net.Infrastructure.AWS.CDK</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="/website/assets/scripts/lunr.min.js"></script>
+<!-- JQuery -->
+<script src="/website/assets/scripts/jquery.min.js"></script>
+<link rel="stylesheet" href="/website/assets/styles/font-awesome.min.css">
+<link rel="stylesheet" href="/website/assets/styles/googlecode.min.css">
+<script src="/website/assets/scripts/highlight.min.js"></script>
+<script src="/website/assets/scripts/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="/website/assets/styles/bootstrap.min.css">
+
+<script src="/website/assets/scripts/anchor.min.js"></script>
+
+<script src="/website/components/header/search-engine/bundle.js"></script>
+
+<script src="/website/shared/rightmenu.js"></script>
+
+<!-- ************** Google analytics ************ -->
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+
+gtag('consent', 'default', {
+  'analytics_storage': 'denied'
+});
+</script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+<script>
+  function consentGranted() {
+    gtag('consent', 'update', {
+      'analytics_storage': 'granted'
+    });
+  }
+</script>
+
+<!-- ******************************************** -->
+
+
+</head>
+<body id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc" class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="https://devonfw.com/"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="https://devonfw.com/website/pages/learning/">Tutorials</a></p>
+</li>
+<li>
+<p><a href="/website/pages/solutions/index.html">Solutions</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Docs</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"
+      autocomplete="off"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div id="preamble">
+<div class="sectionbody">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_key-classes">Key classes</a>
+<ul class="sectlevel2">
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_cdkoptions">CdkOptions</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_provisionstack">ProvisionStack</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_awscdkhandlermanager">AwsCdkHandlerManager</a></li>
+</ul>
+</li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_configuration">Configuration</a>
+<ul class="sectlevel2">
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_provision-stack">Provision Stack</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_apigateways">ApiGateways</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_autoscalinggroups">AutoScalingGroups</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_capacityproviders">CapacityProviders</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_cognito">Cognito</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_dynamodb">DynamoDB</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_databases">Databases</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_databasemigrationservice">DatabaseMigrationService</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_databaseparametergroups">DatabaseParameterGroups</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_ecrrepositories">EcrRepositories</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_ecsservices">EcsServices</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_ecsclusters">EcsClusters</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_ecstaskdefinitions">EcsTaskDefinitions</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_lambdas">Lambdas</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_lambdapolicies">LambdaPolicies</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_loggroups">LogGroups</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_managedpolicies">ManagedPolicies</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_networkloadbalancers">NetworkLoadBalancers</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_networktargetgroups">NetworkTargetGroups</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_pipelines">Pipelines</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_argumentss3">ArgumentsS3</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_policydocuments">PolicyDocuments</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_roles">Roles</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_s3buckets">S3Buckets</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_securitygroups">SecurityGroups</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_secrets">Secrets</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_snstopics">SnsTopics</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_ssmparameters-ssm-parameter-store">SsmParameters (SSM Parameter Store)</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_subnets">Subnets</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_vpcs">VPCs</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_cdk_services.asciidoc_wafs-web-application-firewall">Wafs (Web Application Firewall)</a></li>
+</ul>
+</li>
+</ul>
+<div class="paragraph">
+<p>This component is part of the AWS Stack in Devon4Net. It has the necessary classes to configure your whole AWS infrastructure by using a json configuration file.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_key-classes">Key classes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this section you will find an overview of the code structure and the most important classes that intervene in the CDK component.</p>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_cdkoptions">CdkOptions</h3>
+<div class="paragraph">
+<p>This is the class that maps the JSON file into an object with all of the required parameters. This class its used as a parameter for the <code>ProvisionStack</code> object that we will explain in the next section.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="c# language-c#">public class CdkOptions
+{
+    public ProvisionStackOptions ProvisionStack { get; set; }
+    public List&lt;RoleOptions&gt; Roles { get; set; }
+    .
+    .
+    .
+    public List&lt;ManagedPolicyOptions&gt; ManagedPolicies { get; set; }
+    public CognitoOptions Cognito { get; set; }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In your application you will need to create an instance of the object and read the configuration via Options Pattern.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+You can follow a guide on how to set up and use the package in the How To documentation.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_provisionstack">ProvisionStack</h3>
+<div class="paragraph">
+<p>This partial class is classified according to the type of service they define (<code>{TypeOfService}ProvisionStack.cs</code>). Together, this pieces make up the <code>ProvisionStack</code> class, which is found in the component&#8217;s <code>Stack</code> directory and its Process() method lets you create infrastructure:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="c# language-c#">public void Process()
+{
+    CreatePolicyDocuments();
+    CreateManagedPolicies();
+    CreateOrLocateVpcs();
+    LocateSubnetGroups();
+    LocateSubnets();
+    CreateOrLocateSecurityGroups();
+    CreateRoles();
+    CreateOrLocateS3Buckets();
+    CreateLambdas();
+    CreateS3Events();
+    CreateLogGroups();
+    AddLambdaPolicies();
+    CreateEcrRepositories();
+    CreateRules();
+    CreateApiGateways();
+    CreateCodeBuildProjects();
+    CreateDatabaseParameterGroups();
+    CreateDatabases();
+    CreateSecrets();
+    CreateSsmParameters();
+    CreateNetworkTargetGroup();
+    CreateEcsAutoScalingGroups();
+    CreateEcsTaskDefinitions();
+    CreateEcsClusters();
+    CreateAsgCapacityProviders();
+    CreateEcsService();
+    CreatePipelines();
+    CreateNetworkLoadBalancers();
+    CreateDms();
+    CreateDynamoDB();
+    CreateWaf();
+    CreateSns();
+    CreateCognito();
+
+    App.Synth();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As you can see this function calls all of the services that we wish to configure in a specific order sequence since they may have dependencies between them.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_awscdkhandlermanager">AwsCdkHandlerManager</h3>
+<div class="paragraph">
+<p>This is another partial class, also classified by service:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/AWS-CDK-resources.png" alt="AWS CDK resources">
+</div>
+<div class="title">Figure 1. Folder structure of the AwsCdkHandlerManager partial class</div>
+</div>
+<div class="paragraph">
+<p>As you can see on the image generally each service has two classes the <code>I{TypeOfRecource}HandlerManager</code> interface and its implementation, and is in charge of controlling the handler for each service.</p>
+</div>
+<div class="paragraph">
+<p>[[devonfw-guide_devon4net.wiki_cdk_services.asciidoc_awscdk{typeofservice}handler]]
+=== AwsCdk{TypeOfService}Handler</p>
+</div>
+<div class="paragraph">
+<p>This Handler allows you to connect with the AWS CDK NuGet. every service has its own handler. For example, in case of the Lambda service (<code>AwsCdkLambdaHandler</code>):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="c# language-c#">public IFunctionProps CreateLambdaProperties(IBucket codeBucket, string codeFileName...)
+{
+    return new FunctionProps
+    {
+        Code = Code.FromBucket(codeBucket, codeFileName),
+        Handler = lambdaHandler,
+        Runtime = runtime,
+        MemorySize = memorySize,
+        Timeout = Duration.Seconds(timeOutSeconds),
+        FunctionName = lambdaName,
+        Role = lambdaRole,
+        Vpc = vpc,
+        SecurityGroups = new ISecurityGroup[]
+        {
+            securityGroup
+        },
+        VpcSubnets = new SubnetSelection
+        {
+            Subnets = subnets
+        },
+        Environment = environmentVariables
+    };
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In This case the <code>CreateLambdaProperties</code> creates an instance of the <code>FunctionProp</code> class with all the parameters needed to create the Lambda function.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_configuration">Configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can configure and define your infrastructure through the <code>appsettings.{environment}.json</code> file. This configuration is divided into sections by resource type, with all services configuration being defined in each of the sections.</p>
+</div>
+<div class="paragraph">
+<p>From all the fields in this file, the only one that is mandatory is the <code>ProvisionStack</code> section, which will contain the credentials, stack name, etc. of the environment that is going to be deployed. The rest are optional, you will need to define the configuration for the ones you will be adding to your infrastructure.</p>
+</div>
+<div class="paragraph">
+<p>All resource types have a field <code>Id</code> that is used as an internal identifier, so if one resource needs to reference another, that reference is made using the value in the <code>Id</code> field.</p>
+</div>
+<div class="paragraph">
+<p>The whole file will look as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+    "CdkOptions": [
+        {
+            "ProvisionStack": {...},
+            "Vpcs": [...],
+            "Subnets": [...],
+            "SecurityGroups": [...],
+            "S3Buckets": [...],
+            "Roles": [...],
+            "Lambdas": [...],
+            "ApiGateways": [...],
+            "LambdaRules": [...],
+            "Databases": [...],
+            "Secrets": [...],
+            "CodeBuildProjects": [...],
+            "Pipelines": [...]
+        }
+    ]
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following sections describe the configuration for each of the services that you can set up with the CDK. Before reading it take into account that the json samples provided have been filled with sample values:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <strong>string</strong> fields have been established to <code>string</code>.</p>
+</li>
+<li>
+<p>The <strong>boolean</strong> fields have been established to <code>true</code>.</p>
+</li>
+<li>
+<p>The <strong>int</strong> fields have been established to <code>0</code>.</p>
+</li>
+<li>
+<p>The <strong>double</strong> fields have been established to <code>0.0</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Also <strong>[required fields]</strong> have been marked with brackets in the property list of each of the services.</p>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_provision-stack">Provision Stack</h3>
+<div class="paragraph">
+<p>A stack is a grouping of AWS resources that can be managed as a single entity.
+In other words, by creating, updating, or deleting stacks, you can create, update, or delete a collection of resources.</p>
+</div>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>Provision Stack</strong> section.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"ProvisionStack":
+{
+    "Id": "string",                        // Internal Id to identify the provisioned stack
+    "ApplicationName": "string",           // Name of the stack
+    "EnvironmentName": "string",           // Name of the environment
+    "AwsAccount": "string",                // Id of the AWS account
+    "AwsRegion": "string",                 // AWS Region
+    "GenerateBootstrapVersionRule": true   // Add a Rule verifying the bootstrap version.
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Internal identifier to identify the provisioned stack.</p>
+</li>
+<li>
+<p><strong>[ApplicationName]</strong>: Name of the configuration stack.</p>
+</li>
+<li>
+<p><strong>[EnvironmentName]</strong>: Name of the environment.</p>
+</li>
+<li>
+<p><strong>[AwsAccount]</strong>: Identifier of the AWS account.</p>
+</li>
+<li>
+<p><strong>[AwsRegion]</strong>: Region code for the AWS deployment.</p>
+</li>
+<li>
+<p><strong>[GenerateBootstrapVersionRule]</strong>: Boolean that indicates Whether to add a Rule to the stack template verifying the bootstrap stack version. Generally should be left set to true, unless you explicitly want to be able to deploy to an unbootstrapped environment.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_apigateways">ApiGateways</h3>
+<div class="paragraph">
+<p>Amazon API Gateway is a fully managed service that enables developers to easily create, publish, maintain, monitor, and secure APIs of any size.</p>
+</div>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>Api Gateways</strong> section.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"ApiGateways":
+[
+  {
+    "Id": "string",                      // Internal Id to identify the Api Gateway
+    "RestApiName": "string",             // Name of the Api Gateway
+    "EnableAccessLogging": true,         // Enable / Disable Api-Gateway access logging (true by default)
+    "TracingEnabled": true,              // Enable / Disable Api-Gateway tracing
+    "CloudWatchLoggingLevel": "string",  // Log level of the Api-Gateway to CloudWatch, the allowed values are INFO, ERROR and OFF (OFF if not specified)
+    "BinaryMediaTypes": [                // List of binary types accepted in the Api Gateway
+      "string"
+    ],
+    "Resources":[                        // List of resources
+      {
+        "ResourceName":"string",         // Resource's name
+        "IsProxy":true,                  // Boolean that indicates if it is a proxy resource
+        "Resources":[                    // List of child resources
+        ],
+        "Method":[                       // List of api methods from the resource
+          {
+            "HttpMethod":"string",       // Type of Http method
+            "ApiLambdaName":"string",    // Name of the lambda which manages the method
+            "IntegrationLambdaOptions":{ // Lambda options
+              "AllowTestInvoke": true,   // Allow invoking method from AWS console UI for testing
+              "Proxy": true              // Use proxy integration or normal integration (request response)
+            }
+          }
+        ]
+      }
+    ]
+  }
+]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Internal Id to identify the Api Gateway.</p>
+</li>
+<li>
+<p><strong>[RestApiName]</strong>: Name of the Api Gateway.</p>
+</li>
+<li>
+<p><strong>EnableAccessLogging</strong>: Enable / Disable Api-Gateway access logging (true by default).</p>
+</li>
+<li>
+<p><strong>TracingEnabled</strong>: Enable / Disable Api-Gateway tracing.</p>
+</li>
+<li>
+<p><strong>CloudWatchLoggingLevel</strong>: Log level of the Api-Gateway to CloudWatch, the allowed values are INFO, ERROR and OFF (OFF if not specified)</p>
+</li>
+<li>
+<p><strong>[BinaryMediaTypes]</strong>: List of binary types accepted in the Api Gateway.</p>
+</li>
+<li>
+<p><strong>Resources</strong>: This resources also can contain other resources which are also the same type:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>ResourceName</strong>: Resource&#8217;s name.</p>
+</li>
+<li>
+<p><strong>IsProxy</strong>: Boolean that indicates if it is a proxy resource.</p>
+</li>
+<li>
+<p><strong>Resources</strong>: List of child resources.</p>
+</li>
+<li>
+<p><strong>Method</strong>: List of api methods from the resource:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>HttpMethod</strong>: Type of Http method</p>
+</li>
+<li>
+<p><strong>ApiLambdaName</strong>: Name of the lambda which manages the method.</p>
+</li>
+<li>
+<p><strong>IntegrationLambdaOptions</strong>: Lambda options.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>AllowTestInvoke</strong>: Allow invoking method from AWS console UI for testing.</p>
+</li>
+<li>
+<p><strong>Proxy</strong>: Use proxy integration or normal integration (request response).</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_autoscalinggroups">AutoScalingGroups</h3>
+<div class="paragraph">
+<p>An Auto Scaling group is a collection of EC2 instances that are treated as a logical grouping for automatic scaling and management purposes.
+You can also use Amazon EC2 Auto Scaling features like health check replacements and scaling policies with an Auto Scaling group.</p>
+</div>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>Auto Scaling Groups</strong> section:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"AutoScalingGroups":
+[
+    {
+        "Id": "string",                                           // Internal identification for the AutoScalingGroup
+        "AutoScalingGroupName": "string",                         // Name of the AutoScalingGroup
+        "InstanceTypeId": "string",                               // Identification of the machine that will be instantiated
+        "MachineImageRegion": "string",                           // AWS region of the AutoScalingGroup
+        "MachineImage": "string",                                 // Machine image type, expects genericLinux or genericWindows.
+        "VpcId": "string",                                        // Internal Id of the VPC the AutoScalingGroup belongs to
+        "AmiId": "string",                                        // AMI identification of the machine image to be used
+        "AllowAllOutbound" : "bool",                              // Allows all outbound traffic
+        "MinCapacity": 0,                                         // Minimum number of machine instances the AutoScalingGroup will run
+        "MaxCapacity": 0,                                         // Maximum number of machine instances the AutoScalingGroup will run
+        "DesiredCapacity": 0,                                     // Number of machine instances required to reach an stable status
+        "SecurityGroupId": "string",                              // Internal Id of the Security Group atached to the EC2 instances for the AutoScalingGroup
+        "CreationTimeOut": 0,                                     // Creation timeout time in minutes
+        "RoleId": "string",                                       // Role attached to the AutoScalingGroup
+        "KeyPairName": "string",                                  // KeyPair associated to the instantiated machines to cypher the access credentials
+        "BlockDevices":                                           // List of block devices used by the instantiated machines
+        [
+            {
+                "BlockDeviceName": "string",                      // Name of the block device
+                "BlockDeviceVolume":                              // Describes a block device mapping for an EC2 instance or Auto Scaling group
+                {
+                   "EbsDevice":                                   // Creates a new Elastic Block Storage device from an existing snapshot
+                        {
+                            "DeleteOnTermination": true,          // Remove the volume when the instance is terminated
+                            "Encrypted": true,                    // Specifies if the volume is encrypted or not
+                            "Iops": 0,                            // The number of I/O operations per second (IOPS) to provision for the volume.
+                            "SnapshotId": "string",               // The snapshot ID of the volume to use.
+                            "VolumeSize": 0,                      // Size of the volume defined in GB
+                            "VolumeIndex": 0,                     // Index of the volume
+                            "EbsDeviceVolumeType": "string"       // Type of the volume, the default value is GP2, expects STANDARD, IO1, GP2, GP3, ST1 or SC1.
+                        },
+                    "CreationOption": "string"                    // Type of creation, expects EBS, EBS_FROM_SNAPSHOT_ID, EPHEMERAL, NO_DEVICE.
+                }
+            }
+        ],
+        "EnableProtectionFromScaleIn" : true,                      // True to control whether an Auto Scaling group can terminate a particular instance when scaling in
+        "SubnetsId":
+        [
+          "string", "string"
+        ],                                                         // Internal Id of the Subnet the AutoScalingGroup belongs to
+        "UserData":
+        [
+          "string","string"
+        ]                                                          // User data to configure an instance during launch
+    }
+]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Internal identification for the AutoScalingGroup.</p>
+</li>
+<li>
+<p><strong>[AutoScalingGroupName]</strong>: Name of the AutoScalingGroup.</p>
+</li>
+<li>
+<p>($$<strong>$) *[InstanceTypeId]</strong>: Identification of the machine that will be instantiated.</p>
+</li>
+<li>
+<p><strong>[MachineImageRegion]</strong>: AWS region of the AutoScalingGroup.</p>
+</li>
+<li>
+<p><strong>[MachineImage]</strong>: Machine image type, expects:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>genericLinux</code>: Linux machine.</p>
+</li>
+<li>
+<p><code>genericWindows</code>: Windows machine.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>[VpcId]</strong>: Internal Id of the VPC the AutoScalingGroup belongs to.</p>
+</li>
+<li>
+<p><strong>[AmiId]</strong>: AMI identification of the machine image to be used.</p>
+</li>
+<li>
+<p><strong>[AllowAllOutbound]</strong>: Allows all outbound traffic.</p>
+</li>
+<li>
+<p><strong>[MinCapacity]</strong>: Minimum number of machine instances the AutoScalingGroup will run.</p>
+</li>
+<li>
+<p><strong>[MaxCapacity]</strong>: Maximum number of machine instances the AutoScalingGroup will run.</p>
+</li>
+<li>
+<p><strong>[DesiredCapacity]</strong>: Number of machine instances required to reach an stable status.</p>
+</li>
+<li>
+<p><strong>[SecurityGroupId]</strong>: Internal Id of the Security Group atached to the EC2 instances for the AutoScalingGroup.</p>
+</li>
+<li>
+<p><strong>[CreationTimeOut]</strong>: Creation timeout time in minutes.</p>
+</li>
+<li>
+<p><strong>[RoleId]</strong>: Role attached to the AutoScalingGroup.</p>
+</li>
+<li>
+<p><strong>[KeyPairName]</strong>: KeyPair associated to the instantiated machines to cypher the access credentials.</p>
+</li>
+<li>
+<p><strong>[BlockDevices]</strong>: List of block devices used by the instantiated machines:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>($<strong>*$) *[BlockDeviceName]</strong>: Name of the block device.</p>
+</li>
+<li>
+<p><strong>[BlockDeviceVolume]</strong>: Describes a block device mapping for an EC2 instance or Auto Scaling group.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[EbsDevice]</strong>: Creates a new Elastic Block Storage device from an existing snapshot.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[DeleteOnTermination]</strong>: Remove the volume when the instance is terminated</p>
+</li>
+<li>
+<p><strong>[Encrypted]</strong>: Specifies if the volume is encrypted or not.</p>
+</li>
+<li>
+<p><strong>[Iops]</strong>: The number of I/O operations per second (IOPS) to provision for the volume.</p>
+</li>
+<li>
+<p><strong>[SnapshotId]</strong>: The snapshot ID of the volume to use.</p>
+</li>
+<li>
+<p><strong>[VolumeSize]</strong>: Size of the volume defined in GB.</p>
+</li>
+<li>
+<p><strong>[VolumeIndex]</strong>: Index of the volume.</p>
+</li>
+<li>
+<p><strong>[EbsDeviceVolumeType]</strong>: Type of the volume, the default value is GP2,string value that expects:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>STANDARD</code>: Magnetic</p>
+</li>
+<li>
+<p><code>IO1</code>: Provisioned IOPS SSD - IO1.</p>
+</li>
+<li>
+<p><code>GP2</code>: General Purpose SSD - GP2.</p>
+</li>
+<li>
+<p><code>GP3</code>: General Purpose SSD - GP3.</p>
+</li>
+<li>
+<p><code>ST1</code>: Throughput Optimized HDD.</p>
+</li>
+<li>
+<p><code>SC1</code>: Cold HDD.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>[CreationOption]</strong>: Type of creation, string value that expects:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>EBS</code>: Creates a new Elastic Block Storage device</p>
+</li>
+<li>
+<p><code>EBS_FROM_SNAPSHOT_ID</code>: Creates a new Elastic Block Storage device from an existing snapshot</p>
+</li>
+<li>
+<p><code>EPHEMERAL</code>: Creates a virtual, ephemeral device</p>
+</li>
+<li>
+<p><code>NO_DEVICE</code>: Supresses a volume mapping</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>[EnableProtectionFromScaleIn]</strong>: True to control whether an Auto Scaling group can terminate a particular instance when scaling in.</p>
+</li>
+<li>
+<p><strong>[SubnetsId]</strong>: Internal Id of the Subnet the AutoScalingGroup belongs to.</p>
+</li>
+<li>
+<p><strong>UserData</strong>: User data to configure an instance during launch.</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+* For more info about InstanceTypeId check <a href="https://aws.amazon.com/es/ec2/instance-types/">Aws instance types</a>.<br>
+** For more info about BlockDevice naming check:<br>
+    <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/device_naming.html">Aws block devices Linux</a> or
+     <a href="https://docs.aws.amazon.com/en_en/AWSEC2/latest/WindowsGuide/device_naming.html">Aws block devices windows</a>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_capacityproviders">CapacityProviders</h3>
+<div class="paragraph">
+<p>Amazon ECS capacity providers are used to manage the infrastructure that your cluster&#8217;s tasks depend on.
+Each cluster can have one or more capacity providers, as well as a default capacity provider strategy if desired.
+The capacity provider strategy controls how tasks are distributed among the cluster&#8217;s capacity providers.</p>
+</div>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>CapacityProviders</strong> section:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"CapacityProviders":
+[
+  {
+    "Id": "string",                                 // Internal identification for the Capacity Provider
+    "Name": "string",                               // Name of the Capacity Provider
+    "TargetCapacityPercent": 0,                     // Specify an integer between 1 and 100 (100 by default)
+    "AutoScalingGroupId": "string",                 // Internal identification for the Auto Scaling group
+    "EnableScaleInTerminationProtection": true,     // True to enable managed termination protection (true by default)
+    "ClusterId": "string"                           // Internal identification for the Cluster
+  }
+]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Internal identification for the Capacity Provider.</p>
+</li>
+<li>
+<p><strong>[Name]</strong>: Name of the Capacity Provider.</p>
+</li>
+<li>
+<p><strong>TargetCapacityPercent</strong>: The target capacity value is used as the target value for the CloudWatch metric used in the Amazon ECS-managed target tracking scaling policy. This target capacity value is matched on a best effort basis. If managed scaling is enabled, specify an integer between 1 and 100 (100 by default).</p>
+</li>
+<li>
+<p><strong>[AutoScalingGroupId]</strong>: Internal identification for the Auto Scaling group.</p>
+</li>
+<li>
+<p><strong>[EnableScaleInTerminationProtection]</strong>: To control whether an Auto Scaling group can terminate a particular instance when scaling in, use instance scale-in protection. True to enable scale in termination protection (true by default).</p>
+</li>
+<li>
+<p><strong>[ClusterId]</strong>: Internal identification for the Cluster.</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_codebuildprojects">CodeBuildProjects</h4>
+<div class="paragraph">
+<p>AWS CodeBuild is a fully managed cloud build service.
+CodeBuild compiles your source code, runs unit tests, and generates deployable artifacts.
+CodeBuild relieves you of the burden of provisioning, managing, and scaling your own build servers.</p>
+</div>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>CodeBuild Projects</strong> section:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"CodeBuildProjects":
+[
+  {
+    "Id": "string",                   // Internal Id to identify the CodeBuild Project
+    "ProjectName": "string",          // Name of the CodeBuild Project
+    "Role": "string",                 // Role to use on the CodeBuild exection
+    "BuildSpecPath": "string",        // Path to the buildSpec file, if not specified, buildspec.yml will be used as default
+    "EnableIndependentTrigger": true  // Set to true to create a codebuild project without a pipeline (false by default)
+  }
+]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Internal Id to identify the CodeBuild Project.</p>
+</li>
+<li>
+<p><strong>[ProjectName]</strong>: Name of the CodeBuild Project.</p>
+</li>
+<li>
+<p><strong>Role</strong>: Role to use on the CodeBuild execution.</p>
+</li>
+<li>
+<p><strong>BuildSpecPath</strong>: Path to the buildSpec file, if not specified, buildspec.yml will be used as default.</p>
+</li>
+<li>
+<p><strong>EnableIndependentTrigger</strong>: Set to true to create a codebuild project without a pipeline (false by default).</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_cognito">Cognito</h3>
+<div class="paragraph">
+<p>Amazon Cognito provides authentication, authorization, and user management for your web and mobile apps.</p>
+</div>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>Cognito</strong> section:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"Cognito":
+[
+  {
+    "UserPools": [
+      {
+          "Id": "string",                          // Internal identifier to identify the User pool
+          "UserPoolName": "string",                // The name of the User pool
+          "UserPoolClients": [                     // List of the User pool clients
+            {
+              "Id": "string",                      // Identifier ofthe User pool client
+              "AccessTokenValidityMinutes": 0.0,   // Validity of the access token in minutes
+              "AuthFlows": {                       // Types of authentication flow
+                "AdminUserPassword": true,         // Enable admin based user password authentication flow
+                "Custom": true,                    // Enable custom authentication flow
+                "UserPassword": true,              // Enable auth using username &amp; password
+                "UserSrp": true,                   // Enable SRP based authentication
+              },
+              "DisableOAuth": true,                // True to turn off all Oauth interactions for the client
+              "EnableTokenRevocation": true,       // True to enable Token revocation for the client
+              "GenerateSecret": true,              // True to generate a client Secret
+              "IdTokenValidityMinutes": 0.0,       // Validity of the ID token in minutes
+              "OAuthSettings":{                    // OAuth settings for this client to interact with the app
+                "CallBackUrls":[                   // List of allowed redirect URLs for the identity providers
+                  "string","string"
+                ],
+                "Flows":{                          // OAuth flows that are allowed with this client.
+                  "AuthorizationCodeGrant": true,  // True to initiate an authorization code grant flow, which provides an authorization code as the response (false by default)
+                  "ClientCredentials": true,       // If true the client should get the access token and ID token from the token endpoint using a combination of client and client_secret (false by default)
+                  "ImplicitCodeGrant": true,       // If true the client should get the access token and ID token directly (false by default)
+                },
+                "LogoutUrls":[                     // List of allowed logout URLs for the identity providers
+                  "string","string"
+                ],
+                "OAuthScopes":[                    // OAuth scopes that are allowed with this client
+                  "string","string"
+                ],
+              },
+              "RefreshTokenValidityDays": 0.0,     // Validity of the refresh token expressed in days
+              "SupportedIdentityProviders":[       // The list of identity providers that users should be able to use to sign in using this client
+                "string","string"
+              ],
+              "UserPoolClientName": "string",      // Name of the application client
+              "ResourceServersIds":[               // List of resource servers identifiers
+                "string","string"
+              ]
+            }
+          ],
+          "UserPoolResourceServers": [             // List of Cognito user pool resource servers
+            {
+              "Id": "string",                      // CDK ID
+              "Identifier": "string",              // Inside Cognito ID
+              "Name": "string",                    // Name of the resource server.
+              "Scopes":[                           // List of scopes
+                {
+                  "ScopeName": "string",           // The name of the scope
+                  "ScopeDescription": "string"     // Scope's description
+                }
+              ]
+            }
+          ]
+        }
+      ]
+  }
+]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Internal identifier to identify the User pool.</p>
+</li>
+<li>
+<p><strong>[UserPoolName]</strong>: The name of the User pool.</p>
+</li>
+<li>
+<p><strong>[UserPoolClients]</strong>: List of the User pool clients:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Identifier ofthe User pool client.</p>
+</li>
+<li>
+<p><strong>AccessTokenValidityMinutes</strong>: Validity of the access token in minutes.</p>
+</li>
+<li>
+<p><strong>AuthFlows</strong>: Types of authentication flow:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>AdminUserPassword</strong>: Enable admin based user password authentication flow.</p>
+</li>
+<li>
+<p><strong>Custom</strong>: Enable custom authentication flow.</p>
+</li>
+<li>
+<p><strong>UserPassword</strong>: Enable auth using username and password.</p>
+</li>
+<li>
+<p><strong>UserSrp</strong>: Enable SRP based authentication.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>DisableOAuth</strong>: True to turn off all Oauth interactions for the client.</p>
+</li>
+<li>
+<p><strong>EnableTokenRevocation</strong>: True to enable Token revocation for the client.</p>
+</li>
+<li>
+<p><strong>GenerateSecret</strong>: True to generate a client Secret.</p>
+</li>
+<li>
+<p><strong>IdTokenValidityMinutes</strong>: Validity of the ID token in minutes</p>
+</li>
+<li>
+<p><strong>OAuthSettings</strong>: OAuth settings for this client to interact with the app:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>CallBackUrls</strong>: List of allowed redirect URLs for the identity providers.</p>
+</li>
+<li>
+<p><strong>Flows</strong>: OAuth flows that are allowed with this client:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>AuthorizationCodeGrant</strong>: True to initiate an authorization code grant flow, which provides an authorization code as the response (false by default).</p>
+</li>
+<li>
+<p><strong>ClientCredentials</strong>: If true the client should get the access token and ID token from the token endpoint using a combination of client and client_secret (false by default).</p>
+</li>
+<li>
+<p><strong>ImplicitCodeGrant</strong>: If true the client should get the access token and ID token directly (false by default).</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>LogoutUrls</strong>: List of allowed logout URLs for the identity providers.</p>
+</li>
+<li>
+<p><strong>OAuthScopes</strong>: OAuth scopes that are allowed with this client.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>RefreshTokenValidityDays</strong>: Validity of the refresh token expressed in days.</p>
+</li>
+<li>
+<p><strong>[SupportedIdentityProviders]</strong>: The list of identity providers that users should be able to use to sign in using this client. Supports all identity providers that are registered with the user pool.</p>
+</li>
+<li>
+<p><strong>[UserPoolClientName]</strong>: Name of the application client.</p>
+</li>
+<li>
+<p><strong>[ResourceServersIds]</strong>: List of resource servers identifiers.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>[UserPoolResourceServers]</strong>: List of Cognito user pool resource servers:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: CDK ID.</p>
+</li>
+<li>
+<p><strong>[Identifier]</strong>: Inside Cognito ID.</p>
+</li>
+<li>
+<p><strong>[Name]</strong>: Name of the resource server.</p>
+</li>
+<li>
+<p><strong>[Scopes]</strong>: List of scopes:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[ScopeName]</strong>: The name of the scope.</p>
+</li>
+<li>
+<p><strong>[ScopeDescription]</strong>: Scope&#8217;s description.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_dynamodb">DynamoDB</h3>
+<div class="paragraph">
+<p>Amazon DynamoDB is a fully managed NoSQL database service with seamless scalability and fast and predictable performance.</p>
+</div>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>DynamoDB</strong> section.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"DynamoDB":
+[
+  {
+    "Id": "string",                       // Internal Id to identify the DynamoDB
+    "TableName": "string",                // Name of the DynamoDb Table
+    "PartitionKeyName": "string",         // Name of the partition key
+    "PartitionKeyType": 0,                // Type of the partition key
+    "BillingMode": 0,                     // Billing mode of the database (Provisioned/Pay-Per-Use)
+    "ContributorInsights": true,          // Wheter CloudWatch contributor insights are enabled
+    "PointInTimeRecovery": true,          // Whether point-in-time recovery is enabled.
+    "ReadCapacity": 0,                    // Read capacity
+    "WriteCapacity": 0,                   // Write capacity
+    "RemovalPolicy": 0,                   // The removal policy applied to the DynamoDB
+    "SortKeyName": "string",              // Name of the sort key
+    "SortKeyType": 0,                     // Type of the sort key
+    "TimeToLiveAttribute": "string",      // Name of the TTL attibutte
+  }
+]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Internal identifier to identify the Dynamo Database.</p>
+</li>
+<li>
+<p><strong>[TableName]</strong>: Name of the DynamoDb Table.</p>
+</li>
+<li>
+<p><strong>[PartitionKeyName]</strong>: Name of the partition key.</p>
+</li>
+<li>
+<p><strong>[PartitionKeyType]</strong>: Type of the partition key.</p>
+</li>
+<li>
+<p>(*) <strong>BillingMode</strong>: Integer that specifies the database billing mode. By default is <code>Provisioned</code>.</p>
+<div class="paragraph">
+<p>Expects: <code>1</code> for <code>Provisioned</code>, <code>other</code> for <code>Pay-Per-Use</code>.</p>
+</div>
+</li>
+<li>
+<p><strong>[ContributorInsights]</strong>: Boolean that activates CloudWatch contributor insights.</p>
+</li>
+<li>
+<p><strong>[PointInTimeRecovery]</strong>: Boolean that activates DynamoDb point-in-time recovery.</p>
+</li>
+<li>
+<p>(*) <strong>ReadCapacity</strong>: Read capacity for the table. Default is <code>5</code>.</p>
+</li>
+<li>
+<p>(*) <strong>WriteCapacity</strong>: Write capacity for the table. Default is <code>5</code>.</p>
+</li>
+<li>
+<p><strong>[RemovalPolicy]</strong>: The removal policy applied to the DynamoDB. Expects:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>0</code>: <code>DESTROY</code> (It means that when the resource is removed from the app, it will be physically destroyed.)</p>
+</li>
+<li>
+<p><code>1</code>: <code>RETAIN</code> (This uses the 'Retain' DeletionPolicy, which will cause the resource to be retained in the account, but orphaned from the stack.)</p>
+</li>
+<li>
+<p><code>2</code>: <code>SNAPSHOT</code> (This retention policy deletes the resource, but saves a snapshot of its data before deleting, so that it can be re-created later.)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>[SortKeyName]</strong>: Name of the sort key.</p>
+</li>
+<li>
+<p><strong>SortKeyType</strong>: Type of the sort key used on the Table. Expects:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>0</code>: <code>BINARY</code> Up to 400KiB of binary data (which must be encoded as base64 before sending to DynamoDB).</p>
+</li>
+<li>
+<p><code>1</code>: <code>NUMBER</code> Numeric values made of up to 38 digits (positive, negative or zero).</p>
+</li>
+<li>
+<p><code>2</code>: <code>STRING</code> Up to 400KiB of UTF-8 encoded text.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>[TimeToLiveAttribute]</strong>: Name of the attribute that contains a timestamp used as Time To Live q  for the item. Shortly after the date and time of the specified timestamp, DynamoDB deletes the item from your table.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>(*) Careful if you add Global Secondary Indexes, as those will share the table&#8217;s provisioned throughput. Can only be provided if billingMode is Provisioned.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_databases">Databases</h3>
+<div class="paragraph">
+<p>The Amazon Relational Database Service (Amazon RDS) is a set of managed services that makes it easy to set up, run, and scale databases in the cloud.
+Select from seven popular engines: Amazon Aurora with MySQL support, Amazon Aurora with PostgreSQL support, MySQL, MariaDB, PostgreSQL, Oracle, and SQL Server.</p>
+</div>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>Databases</strong> section:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"Databases":
+[
+  {
+    "Id": "string",                              // Internal Id to identify the secret
+    "DatabaseName": "string",                    // Name of the database
+    "InstanceIdentifier": "string",              // Instance identifier of the database
+    "Port": "string",                            // Port of the database
+    "UserName": "string",                        // UserName of the database
+    "Secrets": {"key": "value"},                 // Secrets of AWS Secrets Manager database credentials
+    "SsmParameters": {"key": "value"},           // SsmParameters of AWS Systems Manager database credentials
+    "VpcId": "string",                           // Internal Vpc Id to which the database will belong
+    "SecurityGroupsIds": ["string", "string"],   // Internal Security Group Id to which the database will belong
+    "SubnetGroupId": "string",                   // Internal Subnet Group Id to which the database will belong
+    "LogTypes": ["string","string"],             // The database logs' type
+    "StorageEncrypted": true,                    // True to encrypt the database instance
+    "EnableIamAuthentication": true,             // True to enable the IAM database authentication
+    "DeletionProtection": true,                  // True to enable the Database Deletion Protection (false by default)
+    "MultiAvailabilityZoneEnabled": true,        // Enable / Disable Multi Availability Zones (true by default)
+    "PasswordRotationDaysPeriod": 0,             // Password rotation time expressed in days
+    "RotationLambdaId": "string",                // Id of the lambda that applies a rotation to the Database credentials
+    "AutoMinorVersionUpgrade": true,             // True for enabling the upgrade of the DB engine version of a database automatically (false by default)
+    "ParameterGroupId": "string",                // Internal Parameter Group Id to which the database will belong
+    "DmsEndpoints":                              // List of source and target endpoints
+    [
+      {
+        "Id": "string",                          // Endpoint identifier
+        "Name": "string",                        // The name used to identify the endpoint.
+        "Type": "string"                         // Endpoint type : source or target endpoint.
+      }
+    ],
+    "DatabaseType": "string",                    // Type of the database
+    "Edition": "string",                         // Edition of the database instance
+    "AllocatedStorageGb": 0.0,                   // Allocated storage of the database in GB (5.0 GB by default)
+    "LicensesOption": "string",                  // Amazon RDS for SQL Server and Oracle supports the “LICENSE_INCLUDED” licensing model
+    "InstanceSize": "string",                    // Size of the instance, expects micro, small, medium or large.
+    "Password": "string",                        // Password of the database instance
+    "BackupRetentionPeriod": 0,                  // Backup retention period expressed in days (1 day by default, max 35 days)
+    "StorageType":[                              // Type of storage, expects:
+    "STANDARD",                                  // Magnetic
+    "GP2",                                       // General Purpose SSD
+    "IO1"                                        // Provisioned IOPS SSD
+    ],
+    "DatabaseEngineVersion": "string",           // The engine version of the SQL Server instance
+    "InstanceType":[                             // The type of the instance, e.g `"M3"` or `"STANDARD5_NVME_DRIVE_HIGH_PERFORMANCE"`.
+    "string"
+    ],
+    "EnhancedMonitoringIntervalSeconds": 0,      // Specifies the interval, in seconds. Expects 0, 1, 5, 10, 15, 30, and 60. (0 by default).
+    "MonitoringRoleId": "string",                // Internal Id to identify the IAM role
+    "EnablePerformanceInsights": true,           // True for enabling Performance Insights (false by default)
+    "PerformanceInsightsRetentionPeriod": 0,     // The amount of time to retain Performance Insights data, expressed in days (0 by default)
+  }
+]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Internal Id to identify the database.</p>
+</li>
+<li>
+<p><strong>[DatabaseName]</strong>: Name of the database.</p>
+</li>
+<li>
+<p><strong>[InstanceIdentifier]</strong>: Instance identifier of the database.</p>
+</li>
+<li>
+<p><strong>[Port]</strong>: Port of the database.</p>
+</li>
+<li>
+<p><strong>[UserName]</strong>: Database user name.</p>
+</li>
+<li>
+<p>(*) <strong>[Secrets]</strong>: Secrets of AWS Secrets Manager database credentials. All the secrets listed here will be added to your AWS Secrets Manager.</p>
+</li>
+<li>
+<p><strong>[SsmParameters]</strong>: SsmParameters of AWS Systems Manager database credentials. All the SsmParameters listed here will be added to your AWS Systems Manager Parameter Store.</p>
+</li>
+<li>
+<p><strong>[VpcId]</strong>: Internal Vpc Id to which the database will belong.</p>
+</li>
+<li>
+<p><strong>[SecurityGroupsIds]</strong>: List of internal Security Group Id to which the database will belong.</p>
+</li>
+<li>
+<p><strong>[SubnetGroupId]</strong>: Internal Subnet Group Id to which the database will belong.</p>
+</li>
+<li>
+<p><strong>[LogTypes]</strong>: The database logs' type.</p>
+</li>
+<li>
+<p><strong>StorageEncrypted</strong>: Set to true to encrypt the database instance.</p>
+</li>
+<li>
+<p><strong>EnableIamAuthentication</strong>: Set to true to enable the IAM database authentication. IAM database authentication works with MariaDB, MySQL, and PostgreSQL.</p>
+</li>
+<li>
+<p><strong>DeletionProtection</strong>: Set to true to enable the Database Deletion Protection. This prevents any user from deleting the database. Deletion protection is available for Amazon Aurora and Amazon RDS for MySQL, MariaDB, Oracle, PostgreSQL, and SQL Server database instances in all AWS Regions (false by default).</p>
+</li>
+<li>
+<p><strong>MultiAvailabilityZoneEnabled</strong>: Enable / Disable Multi Availability Zones (true by default).</p>
+</li>
+<li>
+<p><strong>PasswordRotationDaysPeriod</strong>: Password rotation time expressed in days.</p>
+</li>
+<li>
+<p><strong>[RotationLambdaId]</strong>: Id of the lambda that applies a rotation to the Database credentials.</p>
+</li>
+<li>
+<p><strong>AutoMinorVersionUpgrade</strong>: True for enabling the upgrade of the DB engine version of a database automatically (false by default)</p>
+</li>
+<li>
+<p><strong>[ParameterGroupId]</strong>: Internal Parameter Group Id to which the database will belong</p>
+</li>
+<li>
+<p><strong>[DmsEndPoint]</strong>: An endpoint provides connection, data store type, and location information about your data store. AWS Database Migration Service uses this information to connect to a data store and migrate data from a source endpoint to a target endpoint, you can configure the following parameters:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Endpoint identifier.</p>
+</li>
+<li>
+<p><strong>[Name]</strong>: The name you want to use to identify the endpoint.</p>
+</li>
+<li>
+<p><strong>[Type]</strong>: Endpoint type : source or target endpoint.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>[DatabaseType]</strong>: Type of the database.</p>
+</li>
+<li>
+<p><strong>[Edition]</strong>: Edition of the database instance.</p>
+</li>
+<li>
+<p><strong>AllocatedStorageGb</strong>: Allocated storage of the database in GB (5.0 GB by default).</p>
+</li>
+<li>
+<p><strong>[LicensesOption]</strong>: Amazon RDS for SQL Server  and Oracle supports the “License Included” licensing model.</p>
+</li>
+<li>
+<p><strong>[InstanceSize]</strong>: Size of the instance, expects micro, small, medium or large.</p>
+</li>
+<li>
+<p><strong>[Password]</strong>: Password of the database instance.</p>
+</li>
+<li>
+<p><strong>[BackupRetentionPeriod]</strong>: Backup retention period expressed in days (1 day by default, max 35 days).</p>
+</li>
+<li>
+<p><strong>[StorageType]</strong>: Type of storage, expects:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>STANDARD</code>: Magnetic.</p>
+</li>
+<li>
+<p><code>GP2</code>: General Purpose SSD.</p>
+</li>
+<li>
+<p><code>IO1</code>: Provisioned IOPS SSD.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>DatabaseEngineVersion</strong>: The engine version of the SQL Server instance.</p>
+</li>
+<li>
+<p>(**) <strong>[InstanceType]</strong>: The type of the instance, e.g <code>"M3"</code> or <code>"STANDARD5_NVME_DRIVE_HIGH_PERFORMANCE"</code>.</p>
+</li>
+<li>
+<p><strong>EnhancedMonitoringIntervalSeconds</strong>: Specifies the interval, in seconds, between points when Enhanced Monitoring metrics are collected. Valid values are 0, 1, 5, 10, 15, 30, and 60. (0 by default, which means that Enhanced Monitoring is off).</p>
+</li>
+<li>
+<p><strong>[MonitoringRoleId]</strong>: Internal Id to identify the IAM role.</p>
+</li>
+<li>
+<p><strong>EnablePerformanceInsights</strong>: True for enabling Performance Insights (false by default).</p>
+</li>
+<li>
+<p><strong>PerformanceInsightsRetentionPeriod</strong>: The amount of time to retain Performance Insights data, expressed in days (0 by default).</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+(*) For more information about <strong>AWS Secrets Manager database credential secrets</strong> visit <a href="https://docs.aws.amazon.com/secretsmanager/latest/userguide/reference_secret_json_structure.html">JSON structure of AWS Secrets Manager database credential secrets</a> documentation.<br>
+(**) For more information about <strong>Instance Types</strong> visit <a href="https://aws.amazon.com/ec2/instance-types/?nc1=h_ls">Amazon EC2 Instance Types</a> documentation.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_databasemigrationservice">DatabaseMigrationService</h3>
+<div class="paragraph">
+<p>AWS Database Migration Service (AWS DMS) helps you migrate databases to AWS quickly and securely. During the migration, the source database remains fully operational, minimizing downtime for applications that rely on it.</p>
+</div>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>DatabaseMigrationService</strong> section.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"DatabaseMigrationService":
+[
+  {
+    "DmsReplicationSubnetGroups": [
+      {
+        "Id": "string",                       // Internal Id to identify the DmsReplicationSubnetGroups
+        "LocateInsteadOfCreate": true,        // True if you want to locate, false if you want to create
+        "Name": "string",                     // Name of the subnet group
+        "Description": "string",              // Description of the subnet group
+        "ReplicationSubnetIds": [             // Identifiers of the subnets in the group
+          "string"
+        ]
+      }
+    ],
+    "DmsReplicationInstances": [
+      {
+        "Id": "string",                       // Internal Id to identify the DmsReplicationInstances
+        "Name": "string",                     // Name of the instance
+        "ReplicationInstanceClass": "string", // The compute and memory capacity of the replication instance as defined for the specified replication instance class
+        "SubnetGroupId": "string",            // Identifier of the subnet group linked to this instance
+        "SecurityGroupIds": [                 // Internal identifier of the security group
+          "string"
+        ],
+        "PubliclyAccessible": true,           // True for a public IP address, false for a private IP address
+
+      }
+    ],
+    "DmsMigrationTasks": [
+      {
+        "Id": "string",                       // Internal Id to identify the DmsMigrationTasks
+        "Name": "string",                     // Name of the task
+        "SourceEndpointId": "string",         // Internal Identifier of the Source Endopint
+        "TargetEndpointId": "string",         // Internal Identifier of the Target Endopint
+        "ReplicationInstanceId": "string",    // Internal Identifier of the Replication Instance
+        "MigrationType": "string",            // The migration type
+        "TableMappings": "string",            // The table mappings for the task, in JSON format.
+      }
+    ],
+  }
+]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>DmsReplicationSubnetGroups</strong>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Id</strong>: Internal identifier to identify the <code>DmsReplicationSubnetGroup</code>.</p>
+</li>
+<li>
+<p><strong>LocateInsteadOfCreate</strong>: True if you want to locate, false if you want to create.</p>
+</li>
+<li>
+<p><strong>Name</strong>: Name of the subnet group.</p>
+</li>
+<li>
+<p><strong>Description</strong>: Description of the subnet group.</p>
+</li>
+<li>
+<p><strong>ReplicationSubnetIds</strong>: Identifiers of the subnets in the group.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>DmsReplicationInstances</strong>: Internal identifier to identify the <code>DmsReplicationInstances</code>.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Id</strong>: Internal Id to identify the DmsReplicationInstances.</p>
+</li>
+<li>
+<p><strong>Name</strong>: Name of the instance</p>
+</li>
+<li>
+<p>(*) <strong>ReplicationInstanceClass</strong>: The compute and memory capacity of the replication instance as defined for the specified replication instance class</p>
+</li>
+<li>
+<p><strong>SubnetGroupId</strong>: Internal identifier of the security group</p>
+</li>
+<li>
+<p><strong>PubliclyAccessible</strong>: Specifies the accessibility options for the replication instance. A value of true represents an instance with a public IP address. A value of false represents an instance with a private IP address.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>DmsMigrationTasks</strong>: Internal identifier to identify the <code>DmsMigrationTasks</code>.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Id</strong>: Internal Id to identify the DmsMigrationTasks.</p>
+</li>
+<li>
+<p><strong>Name</strong>: Name of the task.</p>
+</li>
+<li>
+<p><strong>SourceEndpointId</strong>: Internal Identifier of the Source Endopint.</p>
+</li>
+<li>
+<p><strong>TargetEndpointId</strong>: Internal Identifier of the Target Endopint.</p>
+</li>
+<li>
+<p><strong>ReplicationInstanceId</strong>: Internal Identifier of the Replication Instance.</p>
+</li>
+<li>
+<p><strong>MigrationType</strong>: The migration type.</p>
+</li>
+<li>
+<p><strong>TableMappings</strong>: The table mappings for the task, in JSON format.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+(*) For example, to specify the instance class dms.c4.large, set this parameter to "dms.c4.large" . For more information on the settings and capacities for the available replication instance classes, see Selecting the right AWS DMS replication instance for your migration in the AWS Database Migration Service User Guide. Link: <a href="http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dms-replicationinstance.html#cfn-dms-replicationinstance-replicationinstanceclass" class="bare">http://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dms-replicationinstance.html#cfn-dms-replicationinstance-replicationinstanceclass</a>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_databaseparametergroups">DatabaseParameterGroups</h3>
+<div class="paragraph">
+<p>Database parameters specify how the database is configured. For example, database parameters can specify the amount of resources, such as memory, to allocate to a database.</p>
+</div>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>Database Parameter Group</strong> section.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"DatabaseParameterGroups":
+[
+  {
+    "Id": "string",                       // Internal Id to identify the Database Parameter Group
+    "LocateInsteadOfCreate": true,        // true if you want to locate, false if you want to create
+    "Name": "string",                     // Name of the parameter group
+    "Descritpion": "string",              // Description of the parameter group
+    "Parameters": {                       // Dictionary of key-value parameters in this parameter group
+      "key": "value"
+    },
+  }
+]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Internal identifier to identify the Database Parameter Group.</p>
+</li>
+<li>
+<p><strong>[LocateInsteadOfCreate]</strong>: Boolean to indicate if you want to locate an existing Database Parameter Group.</p>
+</li>
+<li>
+<p><strong>[Name]</strong>: Name of the parameter group.</p>
+</li>
+<li>
+<p><strong>[Descritpion]</strong>: Description of the parameter group.</p>
+</li>
+<li>
+<p><strong>[Parameters]</strong>: Parameters in this parameter group in the form of key-value pairs.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_ecrrepositories">EcrRepositories</h3>
+<div class="paragraph">
+<p>Amazon Elastic Container Registry (Amazon ECR) offers API operations for creating, monitoring, and deleting image repositories, as well as setting permissions for who can access them.</p>
+</div>
+<div class="paragraph">
+<p>This is de information related to configure the <strong>ECR</strong> section:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"EcrRepositories":
+[
+  {
+    "Id": "string",                   // Internal Id to identify the repository
+    "LocateInsteadOfCreate*": true,   // true if you want to locate a ECR, false if you want to create a new one
+    "RepositoryName": "string",       // Name of the repository
+    "IsMutableImage": true,           // true if you want to allow image overwrite, false otherwise
+    "ExpireImageRules":               // List of expiration riles for images with a specific tag name
+    [
+      {
+        "Description": "string",      // Describes the purpose of the rule.
+        "MaxImageAgeDays": 0,         // The maximum age of images to retain. The value must represent a number of days.
+        "MaxImageNumber": 0,          // The maximum number of images to retain.
+        "PriorityOrder": 0,           // Controls the order in which rules are evaluated (low to high).
+        "TagPrefixList": [            // Select images that have ALL the given prefixes in their tag.
+          "string",
+          "string"
+        ],
+        "TagStatus": "string"         // Select images based on tags, expects ANY, TAGGED or UNTAGGED.
+      }
+    ],
+    "ImageScanOnPush": true           // True in order to enable image scanning
+  }
+]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Internal Id to identify the repository.</p>
+</li>
+<li>
+<p><strong>[LocateInsteadOfCreate]</strong>: True if you want to locate a ECR, false if you want to create a new one.</p>
+</li>
+<li>
+<p><strong>[RepositoryName]</strong>: Name of the repository.</p>
+</li>
+<li>
+<p><strong>[IsMutableImage]</strong>: True if you want to allow image overwrite, false otherwise.</p>
+</li>
+<li>
+<p><strong>[ExpireImageRules]</strong>: List of expiration riles for images with a specific tag name:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Description]</strong>: Describes the purpose of the rule.</p>
+</li>
+<li>
+<p><strong>[MaxImageAgeDays]</strong>: The maximum age of images to retain. The value must represent a number of days.</p>
+</li>
+<li>
+<p><strong>[MaxImageNumber]</strong>: The maximum number of images to retain.</p>
+</li>
+<li>
+<p><strong>[PriorityOrder]</strong>: Controls the order in which rules are evaluated (low to high).</p>
+</li>
+<li>
+<p><strong>[TagPrefixList]</strong>: Select images that have ALL the given prefixes in their tag.</p>
+</li>
+<li>
+<p><strong>[TagStatus]</strong>: Select images based on tags, string value that expects:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ANY</code>: Rule applies to all images.</p>
+</li>
+<li>
+<p><code>TAGGED</code>: Rule applies to tagged images.</p>
+</li>
+<li>
+<p><code>UNTAGGED</code>: Rule applies to untagged images.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>[ImageScanOnPush]</strong>: True in order to enable image scanning.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_ecsservices">EcsServices</h3>
+<div class="paragraph">
+<p>You can use an Amazon ECS service to run and maintain a specified number of instances of a task definition in an Amazon ECS cluster at the same time.
+If one of your tasks fails or terminates, the Amazon ECS service scheduler launches a new instance of your task definition to take its place.
+This helps to maintain the desired number of tasks in the service.</p>
+</div>
+<div class="paragraph">
+<p>This is de information related to configure the <strong>EcsServices</strong> section:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"EcsServices":
+[
+  {
+    "Id": "string",                                // Internal Id to identify the service
+    "LocateInsteadOfCreate": true,                 // True if you want to locate a ECS, false if you want to create a new one
+    "ServiceName": "string",                       // Name of the Service
+    "EcsClusterId": "string",                      // Internal Id to identify the Cluster
+    "EcsTaskDefinitionId": "string",               // Internal Id to identify the Task Definition
+    "TargetGroups": [                              // List of target groups
+        {
+            "ContainerName": "string",             // Container name to foward the request
+            "Port": 0.0,                           // Container port to foward the request
+            "NetworkTargetGroupId": "string",      // Id of the target group
+            "LoadBalancerType": "string"           // Type of load balancer: Network, Application, Gateway
+        }
+    ],
+    "HealthCheckGracePeriod": 0,                   // Number of seconds to wait until the service is ready for the target group healthChecks
+    "CapacityProviderStrategy": [                  // List of Capacity providers strategies
+        {
+            "ProviderId": "string",                // Internal Id to identify the Provider
+            "Base": 0,                             // Designates how many tasks, at a minimum, to run on the specified capacity provider.
+            "Weigth": 0                            // Designates the relative percentage of the total number of tasks launched that should use the specified capacity provider
+        }
+    ],
+    "DesiredCount": 0,                             // Your service's desired count
+    "UseDistinctInstances": true,                  // Use distinctInstance to ensure that each task in a particular group is running on a different container instance.
+    "PlacementStrategies":                         // Supports the following task placement strategies binpackmemory, binpackcpu, random, spread_instance or spread_az
+    [
+      "string","string"
+    ],
+  }
+]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Internal Id to identify the repository.</p>
+</li>
+<li>
+<p>(*) <strong>[LocateInsteadOfCreate]</strong>: True if you want to locate a ECS, false if you want to create a new one.</p>
+</li>
+<li>
+<p><strong>[ServiceName]</strong>: Name of the Service.</p>
+</li>
+<li>
+<p><strong>[EcsClusterId]</strong>: Internal Id to identify the Cluster.</p>
+</li>
+<li>
+<p><strong>[TargetGroups]</strong>: List of target groups.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[ContainerName]</strong>: Container name to foward the request.</p>
+</li>
+<li>
+<p><strong>[Port]</strong>: Container port to foward the request.</p>
+</li>
+<li>
+<p><strong>[NetworkTargetGroupId]</strong>: Id of the target group.</p>
+</li>
+<li>
+<p><strong>[LoadBalancerType]</strong>: Type of load balancer: Network, Application, Gateway.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>HealthCheckGracePeriod</strong>: Number of seconds to wait until the service is ready for the target group healthChecks</p>
+</li>
+<li>
+<p><strong>[CapacityProviderStrategy]</strong>: List of Capacity providers strategies.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[ProviderId]</strong>: Internal Id to identify the Provider.</p>
+</li>
+<li>
+<p><strong>[Base]</strong>: Designates how many tasks, at a minimum, to run on the specified
+capacity provider. Only one capacity provider in a capacity provider strategy can have a base defined. If no value is specified, the default value of 0 is used.</p>
+</li>
+<li>
+<p><strong>[Weigth]</strong>: The weight value designates the relative percentage of the total number of tasks launched that should use the specified capacity provider.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>DesiredCount</strong>: Your service&#8217;s desired count.</p>
+</li>
+<li>
+<p><strong>[UseDistinctInstances]</strong>: Use distinctInstance to ensure that each task in a particular group is running on a different container instance.</p>
+</li>
+<li>
+<p><strong>[PlacementStrategies]</strong>: Supports the following task placement strategies:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>binpackmemory</code></p>
+</li>
+<li>
+<p><code>binpackcpu</code></p>
+</li>
+<li>
+<p><code>random</code></p>
+</li>
+<li>
+<p><code>spread_instance</code></p>
+</li>
+<li>
+<p><code>spread_az</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+(*) If the LocateInsteadOfCreate field is set to true, only the Id and RepositoryName fields will be used, the others will be ignored.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_ecsclusters">EcsClusters</h3>
+<div class="paragraph">
+<p>An Amazon ECS cluster is a logical grouping of tasks or services. Your tasks and services are executed on infrastructure that is part of a cluster.</p>
+</div>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>EcsClusters</strong> section:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"EcsClusters":
+[
+  {
+    "Id": "string",                    // Identificator of the Ecs Cluster
+    "ClusterName": "string",           // Name of the Ecs Cluster
+    "VpcId": "string",                 // Identifier for the VPC
+  }
+]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Identificator of the Ecs Cluster.</p>
+</li>
+<li>
+<p><strong>[ClusterName]</strong>: Name of the Ecs Cluster.</p>
+</li>
+<li>
+<p><strong>[VpcId]</strong>: Identifier for the VPC.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_ecstaskdefinitions">EcsTaskDefinitions</h3>
+<div class="paragraph">
+<p>A task definition is required to run Docker containers in Amazon ECS.</p>
+</div>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>EcsTaskDefinitions</strong> section:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"EcsTaskDefinitions":
+[
+  {
+    "Id": "string",                    // Internal Id to identify the Ecs Task Definition
+    "Family": "string",                // The name of a family that this Task Definition is registered to
+    "RoleId": "string",                // Role identifier
+    "Compatibility": "string",         // Task launch compatibility requirement
+    "Containers":                      // List of containers in your task definition
+    [
+      {
+        "Id": "string",                // Internal Id to identify the container
+        "ImageTag": "string",          // The image used to start the container
+        "RepositoryId": "string",      // Internal identifier of the repository
+        "MemoryReservationMiB": 0.0,   // Future update
+        "MemoryLimitMiB": 0.0,         // The amount (in MiB) of memory to present to the container
+        "CpuUnits": 0.0,               // The minimum number of CPU units to reserve for the container
+        "StartTimeOutMinutes": 0,      // Time duration (in minutes) to wait before giving up on resolving dependencies for a container
+        "TCPPortMapping":              // The port mappings to add to the container definition
+        [
+          {
+            "ContainerPort": 0,        // Port of the container
+            "HostPort": 0              // Port of the host
+          }
+        ],
+        "EnvironmentVariables":        // The environment variables to pass to the container
+        {
+          "string": "string"
+        },
+        "DnsServers":                  // A list of DNS servers that are presented to the container
+        [
+          "string","string"
+        ],
+        "Essential": true              // True to specify the container is marked as essential
+      }
+    ],
+    "Volumes":                         // List of docker volumes
+    [
+      {
+        "Name": "string",              // The name of the volume
+        "AutoProvision": true,         // True for enable the creation of the volume if the volume doesn't already exists (false by default)
+        "Driver": "string",            // The docker volume driver to use
+        "Scope": "string",             // The scope for the Docker volume that determines its lifecycle
+      }
+    ],
+    "MountPoints":                     // The details of data volume mount points for a container
+    [
+      {
+        "SourceVolume": "string",      // The name of the volume to mount.
+        "ContainerPath": "string"      // The path on the container to mount the host volume at.
+      }
+    ]
+  }
+]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Internal identifier to identify the Ecs Task Definition.</p>
+</li>
+<li>
+<p><strong>[Family]</strong>: The name of a family that this Task Definition is registered to</p>
+</li>
+<li>
+<p><strong>[RoleId]</strong>: The Id of the role that grants containers in the task permission to call AWS APIs on your behalf.</p>
+</li>
+<li>
+<p><strong>[Compatibility]</strong>: The task launch compatibility requirement. Expects:</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+At the moment the module only supports EC2 compatibility.
+</td>
+</tr>
+</table>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>EC2</code>: The task should specify the EC2 launch type.</p>
+</li>
+<li>
+<p><code>FARGATE</code>: The task should specify the Fargate launch type.</p>
+</li>
+<li>
+<p><code>EC2_AND_FARGATE</code>: The task can specify either the EC2 or Fargate launch types.</p>
+</li>
+<li>
+<p><code>EXTERNAL</code>: The task should specify the External launch type.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>[Containers]</strong>: List of containers in your task definition:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Internal identifier to identify the container.</p>
+</li>
+<li>
+<p><strong>[ImageTag]</strong>: The image used to start the container. This string is passed directly to the Docker daemon. Images in the Docker Hub registry are available by default.</p>
+</li>
+<li>
+<p><strong>[RepositoryId]</strong>: Internal identifier of the repository.</p>
+</li>
+<li>
+<p><strong>MemoryReservationMiB</strong>: Future update.</p>
+</li>
+<li>
+<p><strong>MemoryLimitMiB</strong>: The amount (in MiB) of memory to present to the container.</p>
+</li>
+<li>
+<p><strong>CpuUnits</strong>: The minimum number of CPU units to reserve for the container.</p>
+</li>
+<li>
+<p><strong>[StartTimeOutMinutes]</strong>: Time duration (in minutes) to wait before giving up on resolving dependencies for a container.</p>
+</li>
+<li>
+<p><strong>[TCPPortMapping]</strong>: The port mappings to add to the container definition:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[ContainerPort]</strong>: Port of the container.</p>
+</li>
+<li>
+<p><strong>[HostPort]</strong>: Port of the host.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>[EnvironmentVariables]</strong>: The environment variables to pass to the container.</p>
+</li>
+<li>
+<p><strong>[DnsServers]</strong>: A list of DNS servers that are presented to the container.</p>
+</li>
+<li>
+<p><strong>Essential</strong>: True to specify the container is marked as essential.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>[Volumes]</strong>: List of Docker volumes:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Name]</strong>: The name of the volume</p>
+</li>
+<li>
+<p><strong>[AutoProvision]</strong>: True for enable the creation of the volume if the volume doesn&#8217;t already exists (false by default).</p>
+</li>
+<li>
+<p><strong>[Driver]</strong>: The docker volume driver to use.</p>
+</li>
+<li>
+<p><strong>[Scope]</strong>: The scope for the Docker volume that determines its lifecycle.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>[MountPoints]</strong>: The details of data volume mount points for a container:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[SourceVolume]</strong>: The name of the volume to mount.</p>
+</li>
+<li>
+<p><strong>[ContainerPath]</strong>: The path on the container to mount the host volume at.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_lambdas">Lambdas</h3>
+<div class="paragraph">
+<p>Lambda is a compute service that allows you to run code without having to provision or manage servers.
+Lambda runs your code on a high-availability compute infrastructure and handles all compute resource administration, such as server and operating system maintenance, capacity provisioning and automatic scaling, and logging.</p>
+</div>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>Lambdas</strong> section.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"Lambdas":
+[
+  {
+    "Id": "string",                               // Id nternal Id to identify the Lambda
+    "FunctionName": "string",                     // Name of the Lambda
+    "Role": "string",                             // Name of the Role that will use the Lambda
+    "SecurityGroupId": "string",                  // Internal Security Group Id to which the Lambda will belong
+    "FunctionHandler": "string",                  // Location of the function handler
+    "Runtime": "string",                          // Technology used to run Lambda
+    "VpcId": "string",                            // Internal Vpc Id to which the Lambda will belong
+    "SubnetIds": [                                // List of Subnets to which the Lambda will belong
+      "string"
+    ],
+    "SourceCode": {
+      "CodeZipFilePath": "string",                // Local path where the zip of the Lambda function is located
+      "CodeBucket": {
+        "BucketName": "string",                   // Name of the S3 bucket where the Lambda function zip is located.
+        "FilePath": "string"                      // Path inside of the S3 bucket where the zip of the Lambda function is located
+      }
+    },
+    "LambdaEnvironmentVariables": [               // List of environment variables
+      {
+        "EnvironmentVariableName": "string",      // Environment variable key
+        "EnvironmentVariableValue": "string"      // Environment variable value
+      }
+    ]
+  },
+]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Id nternal Id to identify the Lambda.</p>
+</li>
+<li>
+<p><strong>[FunctionName]</strong>: Name of the Lambda.</p>
+</li>
+<li>
+<p><strong>[Role]</strong>: Name of the Role that will use the Lambda.</p>
+</li>
+<li>
+<p><strong>[SecurityGroupId]</strong>: Internal Security Group Id to which the Lambda will belong.</p>
+</li>
+<li>
+<p><strong>[FunctionHandler]</strong>: Lambda function handler in the form of <code>Assembly::Namespace.ClassName::MethodName</code>.</p>
+</li>
+<li>
+<p><strong>[Runtime]</strong>: Technology used to run Lambda.</p>
+</li>
+<li>
+<p><strong>VpcId</strong>: Internal Vpc Id to which the Lambda will belong.</p>
+</li>
+<li>
+<p><strong>SubnetIds</strong>: List of Subnets to which the Lambda will belong.</p>
+</li>
+<li>
+<p><strong>SourceCode</strong>: Source code options of the lambda function:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>(*) <strong>CodeZipFilePath</strong>: Local path where the zip of the Lambda function is located.</p>
+</li>
+<li>
+<p>(*) <strong>CodeBucket</strong>: Code Bucket options of the lambda function:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>BucketName</strong>: Name of the S3 bucket where the Lambda function zip is located.</p>
+</li>
+<li>
+<p><strong>FilePath</strong>: Path inside of the S3 bucket where the zip of the Lambda function is located.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>LambdaEnvironmentVariables</strong>: Environment variables as key value pairs for the lambda functions:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>EnvironmentVariableName</strong>: Name of the value (key).</p>
+</li>
+<li>
+<p><strong>EnvironmentVariableValue</strong>: Value of the variable (value).</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>(*) The fields CodeZipFilePath and CodeBucket are mutually exclusive.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_lambdapolicies">LambdaPolicies</h3>
+<div class="paragraph">
+<p>Lambda functions and layers can use resource-based permissions policies.
+You can grant usage permission to other AWS accounts or organizations on a per-resource basis with resource-based policies.
+A resource-based policy is also used to allow an AWS service to invoke your function on your behalf.</p>
+</div>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>LambdaPolicies</strong> section.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"LambdaPolicies":
+[
+  {
+    "Id": "string",                 // Internal Id to identify the Lambda Policy
+    "FunctionId": "string",         // Id of the function it is related to
+    "PolicyStatements": [           // List of policy statements this Lambda function may need (e.g: allow the Lambda function to be invoked from the Secrets Manager to perform a rotation)
+      {
+        "Principal": "string",      // Principal which will be allowed to perform the action
+        "Action": "string"          // Action that will be allowed
+      }
+    ]
+  },
+]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Internal identifier to identify the Lambda Policy.</p>
+</li>
+<li>
+<p><strong>[FunctionId]</strong>: Identifier of the Lambda Function to which this policy is related.</p>
+</li>
+<li>
+<p><strong>PolicyStatements</strong>: List of policy statements this Lambda function may need (e.g: allow the Lambda function to be invoked from the Secrets Manager to perform a rotation):</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Principal</strong>: Principal which will be allowed to perform the action</p>
+</li>
+<li>
+<p><strong>Action</strong>: Action that will be allowed</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_loggroups">LogGroups</h3>
+<div class="paragraph">
+<p>A log group is a collection of log streams with similar retention, monitoring, and access control settings.
+You can create log groups and specify which streams go in each one.</p>
+</div>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>LogGroups</strong> section.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"LogGroups":
+[
+  {
+    "Id": "string",                 // Internal Id to identify the Log Group
+    "FunctionId": "string",         // Id of the lambda function it is related to
+    "LogRetentionTime": "string",   // Log retention in CloudWatch
+    "SubscribedLambdaIds": [        // Internal identifier for the lambdas in the log group
+    ]
+  },
+]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Internal identifier to identify the Log Group</p>
+</li>
+<li>
+<p><strong>FunctionId</strong>: Id of the lambda function it is related to</p>
+</li>
+<li>
+<p><strong>LogRetentionTime</strong>: Log retention in CloudWatch</p>
+</li>
+<li>
+<p><strong>SuscribedLambdaIds</strong>: Internal identifier for the lambdas in the log group.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_managedpolicies">ManagedPolicies</h3>
+<div class="paragraph">
+<p>AWS managed policies are standalone policies that are created and managed by AWS.</p>
+</div>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>ManagedPolicies</strong> section:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"ManagedPolicies":
+[
+  {
+    "Id": "string",                     // Internal identification for the Managed Policy
+    "LocateInsteadOfCreate": true,      // True for Import a managed policy from one of the policies that AWS manages
+    "PolicyDocumentId": "string",       // Identification of the policy document
+    "Name": "string",                   // The name of the managed policy
+    "Description": "string",            // Description of the managed policy
+    "Path": "string",                   // Path of the policy
+  }
+]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Internal identification for the managed policy.</p>
+</li>
+<li>
+<p><strong>LocateInsteadOfCreate</strong>: True for import a managed policy from one of the policies that AWS manages.</p>
+</li>
+<li>
+<p><strong>[PolicyDocumentId]</strong>: Identification of the policy document.</p>
+</li>
+<li>
+<p><strong>[Name]</strong>: The name of the managed policy.</p>
+</li>
+<li>
+<p><strong>Description</strong>: Description of the managed policy.</p>
+</li>
+<li>
+<p><strong>Path</strong>: The path for the policy. This parameter allows (through its regex pattern) a string of characters consisting of either a forward slash (/) by itself or a string that must begin and end with forward slashes. In addition, it can contain any ASCII character from the ! (\u0021) through the DEL character (\u007F), including most punctuation characters, digits, and upper and lowercased letters. Default: - "/"</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_networkloadbalancers">NetworkLoadBalancers</h3>
+<div class="paragraph">
+<p>Elastic Load Balancing automatically distributes your incoming traffic across multiple targets in one or more Availability Zones, such as EC2 instances, containers, and IP addresses.
+It monitors the health of its registered targets and routes traffic only to those that are in good condition.</p>
+</div>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>Network Load Balancers</strong> section:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"NetworkLoadBalancers":
+[
+  {
+      "Id": "string",                       // Identificator of the NetworkLoadBalancer
+      "LoadBalancerName": "string",         // Aws name of the NetworkLoadBalancer
+      "CrossZoneEnabled": true,             // Indicates whether cross-zone load balancing is enabled.
+      "DeletionProtection": true,           // Indicates whether deletion protection is enabled.
+      "InternetFacing": true,               // Whether the load balancer has an internet-routable address.
+      "VpcId": "string",                    // Internal Id of the network to place the load balancer in.
+      "Subnets":                            // List of subnets in the Network Load Balancer
+    [
+        "string",
+        "string"
+    ],
+      "SubnetMappings":
+    [
+      {
+          "AllocationId": "string",       // Elastic allocation ip id to associate the NetworkLoadBalancer
+          "SubnetId": "string"            // Aws Id of the subnet to be associated
+      }
+    ],
+    "Listeners":                          // List of the listeners associated to the NetworkLoadBalancer
+    [
+      {
+        "Id": "string",                   // Identificator of the Network Listener
+        "DefaultAction":                  //  Default action to take for requests to this listener.
+        {
+          "Type": "string"                // The type of action
+        },
+        "DefaultTargetGroups":            // Default target groups to load balance to.
+        [
+            "string",
+            "string"
+        ],
+        "Port": 0,                        // The port on which the listener listens for requests.
+        "Protocol": "string"              // Protocol for listener, expects TCP, TLS, UDP, or TCP_UDP.
+      }
+    ]
+  }
+]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Identificator of the NetworkLoadBalancer.</p>
+</li>
+<li>
+<p><strong>[LoadBalancerName]</strong>: Aws name of the NetworkLoadBalancer.</p>
+</li>
+<li>
+<p><strong>[CrossZoneEnabled]</strong>: Indicates whether cross-zone load balancing is enabled.</p>
+</li>
+<li>
+<p><strong>[DeletionProtection]</strong>: Indicates whether deletion protection is enabled.</p>
+</li>
+<li>
+<p><strong>[InternetFacing]</strong>: Whether the load balancer has an internet-routable address.</p>
+</li>
+<li>
+<p><strong>[VpcId]</strong>: Internal Id of the network to place the load balancer in.</p>
+</li>
+<li>
+<p><strong>[Subnets]</strong>: List of subnets in the Network Load Balancer</p>
+</li>
+<li>
+<p><strong>[SubnetMappings]</strong>: Indicates whether cross-zone load balancing is enabled:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[AllocationId]</strong>: Elastic allocation ip id to associate the NetworkLoadBalancer</p>
+</li>
+<li>
+<p><strong>[SubnetId]</strong>: Aws Id of the subnet to be associated.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>[Listeners]</strong>: List of the listeners associated to the NetworkLoadBalancer:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Identificator of the Network Listener.</p>
+</li>
+<li>
+<p><strong>DefaultAction</strong> :  Default action to take for requests to this listener:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Type</strong>: The type of action.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>[DefaultTargetGroups]</strong>: Default target groups to load balance to.</p>
+</li>
+<li>
+<p><strong>[Port]</strong>: The port on which the listener listens for requests.</p>
+</li>
+<li>
+<p><strong>[Protocol]</strong>: String value that can be the following:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>HTTP</code>: ALB health checks and NLB health checks.</p>
+</li>
+<li>
+<p><code>HTTPS</code>: ALB health checks and NLB health checks.</p>
+</li>
+<li>
+<p><code>TCP</code>: NLB, NLB health checks.</p>
+</li>
+<li>
+<p><code>TLS</code>: NLB.</p>
+</li>
+<li>
+<p><code>UDP</code>: NLB.</p>
+</li>
+<li>
+<p><code>TCP_UDP</code>: Listen to both TCP and UDP on the same port (NLB).</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_networktargetgroups">NetworkTargetGroups</h3>
+<div class="paragraph">
+<p>Requests are routed to one or more registered targets via each target group.
+When you create a listener, you specify a default action group.
+The listener rule directs traffic to the specified target group.
+You can designate different target groups for various types of requests.</p>
+</div>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>Network Target Groups</strong> section:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"NetworkTargetGroups": [
+  {
+    "Id": "string",               // Identificator of the target group
+    "Name": "string",             // Name of the target group
+    "Port": 0.0,                  // Port in which the target group listens to
+    "VpcId": "string",            // VPC in which the target group will be running
+    "HealthCheckCount": 0         // number health checks, between 2 and 10
+  }
+]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Identificator of the target group.</p>
+</li>
+<li>
+<p><strong>[Name]</strong>: Name of the target group.</p>
+</li>
+<li>
+<p><strong>[Port]</strong>: Port in which the target group listens to.</p>
+</li>
+<li>
+<p><strong>[VpcId]</strong>: PC in which the target group will be running.</p>
+</li>
+<li>
+<p><strong>[HealthCheckCount]</strong>: Number health checks, between 2 and 10 .</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_pipelines">Pipelines</h3>
+<div class="paragraph">
+<p>AWS CodePipeline is a continuous delivery service you can use to model, visualize, and automate the steps required to release your software.</p>
+</div>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>Pipelines</strong> section:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"Pipelines":
+[
+  {
+    "Id": "string",                             // Internal Id to identify the Pipeline
+    "Name": "string",                           // Name of the Pipeline
+    "ArtifactBucket": "string",                 // Name of the Artifact Bucket
+    "Role": "string",                           // Name of the Role
+    "Stages":                                   // List of stages of the pipeline
+    [
+      {
+        "Name": "string",                       // Name of the stage of the pipeline
+        "Actions":                              // List of pipeline stage actions
+        [
+          {
+            "Type": "string",                   // Type of the action expects s3Source, codebuild, cloudformation, ecrsource or ecsdeploy
+            "argumentsType": {"...":}
+          }
+        ]
+      }
+    ]
+  }
+]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Internal Id to identify the Pipeline.</p>
+</li>
+<li>
+<p><strong>[Name]</strong>: Name of the Pipeline.</p>
+</li>
+<li>
+<p><strong>ArtifactBucket</strong>: Name of the Artifact Bucket of the pipeline.</p>
+</li>
+<li>
+<p><strong>Role</strong>: Name of the Role.</p>
+</li>
+<li>
+<p><strong>Stages</strong>: List of stages of the pipeline:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Name]</strong>: Name of the stage of the pipeline.</p>
+</li>
+<li>
+<p><strong>Actions</strong>: List of pipeline stage actions:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Type]</strong>: Type of the action expects:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>s3Source</code></p>
+</li>
+<li>
+<p><code>codebuild</code></p>
+</li>
+<li>
+<p><code>cloudformation</code></p>
+</li>
+<li>
+<p><code>ecrsource</code></p>
+</li>
+<li>
+<p><code>ecsdeploy</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>(*) <strong>[<code>argumentsType</code>]</strong>:</p>
+<div class="paragraph">
+<p>There are currently 3 supported types of actions, each one will require an {<code>argumentsType</code>}, whose structure will be defined further below:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>If the S3Source is used, the {<code>argumentsType</code>} will be <code>ArgumentsS3</code>.</p>
+</li>
+<li>
+<p>If the CodeBuild is used, the {<code>argumentsType</code>} will be <code>ArgumentsCodeBuild</code>.</p>
+</li>
+<li>
+<p>If the CloudFormation is used, the {<code>argumentsType</code>} will be <code>ArgumentsCloudFormation</code>.</p>
+</li>
+<li>
+<p>If the EcsRepository is used, the {<code>argumentsType</code>} will be <code>ArgumentsEcrRepository</code>.</p>
+</li>
+<li>
+<p>If the EcsDeploy is used, the {<code>argumentsType</code>} will be <code>ArgumentsEcsDeploy</code>.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_argumentss3">ArgumentsS3</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+  "Name": "string",              // Name of the pipeline action
+  "BucketName": "string",        // Name of the S3 bucket where the Lambda function zip is located
+  "BucketKey": "string",         // Path inside of the S3 bucket where the zip of the Lambda function is located
+  "OutputArtifact": "string",    // Artifact which will contain the code
+  "Role": "string"               // Role to allow access to the S3 bucket, if necessary
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Name]</strong>: Name of the pipeline action.</p>
+</li>
+<li>
+<p><strong>[BucketName]</strong>: Name of the S3 bucket where the Lambda function zip is located.</p>
+</li>
+<li>
+<p><strong>[BucketKey]</strong>: Path inside of the S3 bucket where the zip of the Lambda function is located.</p>
+</li>
+<li>
+<p><strong>[OutputArtifact]</strong>: Artifact which will contain the code.</p>
+</li>
+<li>
+<p><strong>Role</strong>: Role to allow access to the S3 bucket, if necessary.</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_argumentscodebuild">ArgumentsCodeBuild</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+  "Name": "string",                               // Name of the pipeline action
+  "InputArtifact": "string",                      // Artifact that will be extracted inside the CodeBuild machine
+  "CodeBuildProject": "string",                   // Id of the CodeBuild project that will be used
+  "EnvironmentVariables": {"string":"string"}     // Environment variables to set in the CodeBuild before its execution
+}</code></pre>
+</div>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_argumentscloudformation">ArgumentsCloudFormation</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+  "Name": "string",                 // Name of the pipeline action
+  "InputArtifact": "string",        // Artifact that will contain the file with new structure of the Stack
+  "TemplatePath": "string",         // Path of the json inside the input artifact that will specify the new structure of the Stack
+  "StackName": "string",            // Name of the stack that will be created/updated
+  "DeploymentRole": "string",       // Role of the action during its execution
+  "Role": "string",                 // Role of the action before its execution
+  "CfnCapabilities": "string"       // Permissions given to the action to execute changes in the IAM service, at least one is mandatory, expects "ANONYMOUS_IAM","NAMED_IAM", or"AUTO_EXPAND"
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Name]</strong>: Name of the pipeline action.</p>
+</li>
+<li>
+<p><strong>[InputArtifact]</strong>: Artifact that will contain the file with new structure of the Stack.</p>
+</li>
+<li>
+<p><strong>[TemplatePath]</strong>: Path of the json inside the input artifact that will specify the new structure of the Stack.</p>
+</li>
+<li>
+<p><strong>[StackName]</strong>: Name of the stack that will be created/updated</p>
+</li>
+<li>
+<p><strong>[DeploymentRole]</strong>: Role of the action during its execution</p>
+</li>
+<li>
+<p><strong>[Role]</strong>: Role of the action before its execution</p>
+</li>
+<li>
+<p><strong>[CfnCapabilities]</strong>: Permissions given to the action to execute changes in the IAM service, at least one is mandatory, expects:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>ANONYMOUS_IAM</code></p>
+</li>
+<li>
+<p><code>NAMED_IAM</code></p>
+</li>
+<li>
+<p><code>AUTO_EXPAND</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_argumentsecrrepository">ArgumentsEcrRepository</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+  "Name": "string",                 // Name of the pipeline action
+  "ImageTag": "string",             // Tag for the image we want to retrieve from ECR
+  "EcrRepositoryName": "string",    // The name of the ECR to retrieve the image
+  "OutputArtifact": "string",       // Artifact which will contain the code
+  "Role": "string"                  // Role of the action
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Name]</strong>: Name of the pipeline action.</p>
+</li>
+<li>
+<p><strong>[ImageTag]</strong>: Tag for the image we want to retrieve from ECR.</p>
+</li>
+<li>
+<p><strong>[EcrRepositoryName]</strong>: The name of the ECR to retrieve the image.</p>
+</li>
+<li>
+<p><strong>[OutputArtifact]</strong>: Artifact which will contain the code.</p>
+</li>
+<li>
+<p><strong>[Role]</strong>: Role of the action.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_argumentsecsdeploy">ArgumentsEcsDeploy</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+  "Name": "string",                 // Name of the pipeline action
+  "ServiceName": "string",          // Name of the service
+  "ClusterId": "string",            // The cluster's Id
+  "DeploymentTimeoutMinutes": 0,    // Deployment timeout in minutes
+  "ImageName": "string",            // Tag for the image we want to retrieve from ECS.
+  "InputArtifact": "string" ,       // Artifact that will contain the file with new structure of the Stack.
+  "Role": "string"                  // Role of the action
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Name]</strong>: Name of the pipeline action.</p>
+</li>
+<li>
+<p><strong>[ServiceName]</strong>: Name of the service.</p>
+</li>
+<li>
+<p><strong>[ClusterId]</strong>: The cluster&#8217;s Id.</p>
+</li>
+<li>
+<p><strong>[DeploymentTimeoutMinutes]</strong>:  Deployment timeout in minutes.</p>
+</li>
+<li>
+<p><strong>[ImageName]</strong>: Tag for the image we want to retrieve from ECS.</p>
+</li>
+<li>
+<p><strong>[InputArtifact]</strong>: Artifact that will contain the file with new structure of the Stack.</p>
+</li>
+<li>
+<p><strong>[Role]</strong>: Role of the action.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_policydocuments">PolicyDocuments</h3>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>Policy Documents</strong> section:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"PolicyDocuments":
+[
+  {
+    "Id": "string",                 // Identificator of the policy
+    "PolicyStatements":             // List of the statements the policy will include
+        [
+          {
+            "Effect":               // Whether to allow or deny the actions in this statement.
+              [
+                "ALLOW or DENY"
+              ],
+            "Action":               // List of actions to add to the statement
+              [
+                "string",
+                "string"
+              ],
+            "Resource":             // Resource ARNs to add to the statement. The wildcard * is accepted.
+              [
+                "string",
+                "string"
+              ]
+          }
+        ]
+  }
+]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Identifier of the policy.</p>
+</li>
+<li>
+<p><strong>[PolicyStatements]</strong>: Aws name of the NetworkLoadBalancer</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Effect]</strong>: Whether to allow or deny the actions in this statement. The values must be the following:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>ALLOW</p>
+</li>
+<li>
+<p>DENY</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>[Action]</strong>: List of actions to add to the statement.</p>
+</li>
+<li>
+<p><strong>[Resource]</strong>: Resource ARNs to add to the statement. The wildcard * is accepted.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_roles">Roles</h3>
+<div class="paragraph">
+<p>AWS Identity and Access Management (IAM) is a web service that helps you securely control access to AWS resources. You use IAM to control who is authenticated (signed in) and authorized (has permissions) to use resources.</p>
+</div>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>Roles</strong> section.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"Roles":
+[
+  {
+    "Id": "string",                  // Internal Id to identify the Role
+    "Name": "string",                // Name of the role
+    "RoleArn": "string",             // Amazon Resource Name format of the role
+    "LocateInsteadOfCreate": true,   // true if you want to locate an existing role, false if you want to create a new one
+
+    "AssumedBy": [                   // List of authorized services to use this role
+      "string"
+    ],
+    "AwsPolicies": [                 // List of AWS managed policies used by this role
+      "string"
+    ],
+    "CustomPolicies": [              // List of user managed policies used by this role
+      "string"
+    ],
+    "InlinePolicies": [              // List of IDs of the PolicyDocuments used by this role**.
+      "string"
+    ],
+    "AwsActions": [                  // List of AWS actions that this role will allow
+      "string"
+    ]
+  }
+]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Internal identifier to identify the Role.</p>
+</li>
+<li>
+<p><strong>[Name]</strong>: Name of the role.</p>
+</li>
+<li>
+<p><strong>RoleArn</strong>: Amazon Resource Name format of the role (<code>arn:partition:service:region:account:resource</code>).</p>
+</li>
+<li>
+<p><strong>LocateInsteadOfCreate</strong>: Boolean to indicate if the role needs to be located instead of created.</p>
+</li>
+<li>
+<p><strong>AssumedBy</strong>: List of authorized services to use this role.</p>
+</li>
+<li>
+<p>(*) <strong>AwsPolicies</strong>: List of AWS managed policies used by this role.</p>
+</li>
+<li>
+<p>(*) <strong>CustomPolicies</strong>: List of user managed policies used by this role.</p>
+</li>
+<li>
+<p>(*) <strong>InlinePolicies</strong>: List of IDs of the PolicyDocuments used by this role.</p>
+</li>
+<li>
+<p>(*) <strong>AwsActions</strong>: List of AWS actions that this role will allow.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>(*) The allowed combinations of fields are:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>AwsPolicies, CustomPolicies, InlinePolicies or any combination of them</p>
+</li>
+<li>
+<p>AwsActions</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_s3buckets">S3Buckets</h3>
+<div class="paragraph">
+<p>Amazon S3 is an object storage service that provides industry-leading scalability, data availability, security, and performance.
+Amazon S3 can be used to store and retrieve any amount of data at any time and from any location.</p>
+</div>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>S3 Bucket</strong> section.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"S3Buckets":
+[
+  {
+    "Id": "string",                 // Internal Id to identify the S3 bucket
+    "LocateInsteadOfCreate": true,  // true if you want to locate a s3 bucket, false if you want to create a new one
+    "BucketName": "string",         // Name of the bucket
+    "Versioned": true,              // true if you want to enable versioning, false otherwise
+    "ExpirationDays": 0,            // Number of days that an object will remain in the S3 Bucket
+    "ExpireDocumentRules":          // List of expiration rules for objects with a specific tag name and tag value
+    [
+      {
+        "RuleName": "string",       // Name of the rule
+        "Expiration": 0,            // Number of days the affected objects will remain in the S3 bucket
+        "TagName": "string",        // Tag name that an object must have if it has to be affected by this rule
+        "TagValue": "string"        // Tag value that an object must have if it has to be affected by this rule
+      }
+    ],
+    "EnforceSSL": true,             // Enforces SSL for requests.
+    "BlockPublicAccess" : true,     // Blocks all the public access if set to true.
+    "Events": [                     // List of trigger events
+        {
+            "EventType": "string",  // Type of the event
+            "LambdaId": "string"    // Id of the lambda
+        }
+    ]
+  }
+]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Internal identifier to identify the S3 bucket.</p>
+</li>
+<li>
+<p>(*) <strong>[LocateInsteadOfCreate]</strong>: Boolean to locate a existing S3Bucket. <code>true</code> if you want to locate a vpc, <code>false</code> if you want to create a new one.</p>
+</li>
+<li>
+<p><strong>[BucketName]</strong>: Name of the bucket.</p>
+</li>
+<li>
+<p><strong>[Versioned]</strong>: Boolean that indicates if the S3Bucket needs to have versioning. <code>true</code> if you want to enable versioning, <code>false</code> otherwise.</p>
+</li>
+<li>
+<p><strong>ExpirationDays</strong>: Number of days that an object will remain in the S3 Bucket.</p>
+</li>
+<li>
+<p><strong>ExpireDocumentRules</strong>: List of expiration rules for objects with a specific tag name and tag value:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[RuleName]</strong>: Name of the rule.</p>
+</li>
+<li>
+<p><strong>[Expiration]</strong>: Number of days the affected objects will remain in the S3 bucket.</p>
+</li>
+<li>
+<p>(**) <strong>[TagName]</strong>: Tag name that an object must have if it has to be affected by this rule.</p>
+</li>
+<li>
+<p><strong>[TagValue]</strong> : Tag value that an object must have if it has to be affected by this rule.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>[EnforceSSL]</strong>: Boolean that forces the use of SSL protocol. See: <a href="https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-ssl-requests-only.html">S3 Bucket SSL Requests</a>.</p>
+</li>
+<li>
+<p><strong>BlockPublicAccess</strong>: Boolean  Blocks all the public access if set to true.</p>
+</li>
+<li>
+<p><strong>Events</strong>: List of trigger events:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>(***) <strong>EventType</strong> : Type of the event.</p>
+</li>
+<li>
+<p><strong>LambdaId</strong> : Id of the lambda that manages the event.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>(*) If the LocateInsteadOfCreate field is set to true, only the Id and BucketName fields will be used, the others will be ignored.</p>
+</div>
+<div class="paragraph">
+<p>(**) If the TagName and the TagValue are not specified, the expiration rule will be applied to all the objects of the bucket.</p>
+</div>
+<div class="paragraph">
+<p>(***) For more information about type of events in S3 buckets, please check the <a href="https://docs.aws.amazon.com/AmazonS3/latest/userguide/notification-how-to-event-types-and-destinations.html#supported-notification-event-types">Supported event types documentation</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_securitygroups">SecurityGroups</h3>
+<div class="paragraph">
+<p>A security group manages the traffic that is allowed to enter and exit the resources with which it is associated.
+For example, after you associate a security group with an EC2 instance, it controls the instance&#8217;s inbound and outbound traffic.</p>
+</div>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>Security Groups</strong> section</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"SecurityGroups":
+[
+  {
+    "Id": "string",                      // Internal Id to identify the security group
+    "SecurityGroupName": "string",       // Name of the security group
+    "VpcId": "string",                   // Internal Id of the VPC
+    "AllowAllOutbound": true,            // Boolean to indicate if this security group should allow all outcoming traffic
+    "DisableInlineRules": true,          // Disable inline ingress and egress rule optimization.
+    "LocateInsteadOfCreate": true,       // true if you want to locate a SecurityGroup, false if you want to create a new one
+    "IngressRules":                      // List of rules to all incoming traffic
+    [
+      {
+        "SecurityGroupId": "string",     // Internal Id of the Security Group
+        "IpAddress": "string",           // IP address which will be allowed
+        "Port": 0,                       // Port which will be allowed
+        "PortRangeStart": 0.0,           // TCP Port range start
+        "PortRangeEnd": 0.0,             // TCP port range end
+        "Description": "string"
+      }
+    ],
+    "EgressRules":                       // List of rules to all outcoming traffic
+    [
+      {
+        "SecurityGroupId": "string",
+        "IpAddress": "string",
+        "Port": 0,
+        "PortRangeStart": 0.0,
+        "PortRangeEnd": 0.0,
+        "Description": "string"
+      }
+    ]
+  }
+]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Internal identifier to identify the security group.</p>
+</li>
+<li>
+<p><strong>[SecurityGroupName]</strong>: Name of the security group.</p>
+</li>
+<li>
+<p><strong>[VpcId]</strong>: Internal identifier of the VPC to which the security group will belong.</p>
+</li>
+<li>
+<p>(*) <strong>[AllowAllOutbound]</strong>: Boolean <code>true</code> if this security group should allow all outcoming traffic, <code>false</code> otherwise.</p>
+</li>
+<li>
+<p><strong>[DisableInlineRules]</strong>: Boolean that indicates whether to disable inline ingress and egress rule optimization. If this is set to true, ingress and egress rules will not be declared under the SecurityGroup in cloudformation.</p>
+</li>
+<li>
+<p><strong>LocateInsteadOfCreate</strong>: Boolean to locate a existing SecurityGroup. <code>true</code> if you want to locate or <code>false</code> if you want to create a new one.</p>
+</li>
+<li>
+<p><strong>IngressRules</strong>: List of rules to all incoming traffic:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[SecurityGroupId]</strong>: Internal Id of the Security Group which will be allowed to contact the current Security Group.</p>
+</li>
+<li>
+<p><strong>[IpAddress]</strong>: IP address which will be allowed to contact the current Security Group.</p>
+</li>
+<li>
+<p><strong>[Port]</strong>: Port which will be allowed to contact the current Security Group.</p>
+</li>
+<li>
+<p><strong>[PortRangeStart]</strong>: TCP Port range start.</p>
+</li>
+<li>
+<p><strong>[PortRangeEnd]</strong>: TCP port range end.</p>
+</li>
+<li>
+<p><strong>Description</strong>: Description of the rule.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>(*) <strong>EgressRules</strong>: List of rules to all outcoming traffic:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>(**) <strong>[SecurityGroupId]</strong>: Internal Id of the Security Group which will be allowed to be contacted from the current Security Group.</p>
+</li>
+<li>
+<p>(**) <strong>[IpAddress]</strong>: IP address which will be allowed to be contacted from the current Security Group.</p>
+</li>
+<li>
+<p><strong>[Port]</strong>: Port which will be allowed to be contacted from the current Security Group.</p>
+</li>
+<li>
+<p><strong>[PortRangeStart]</strong>: TCP Port range start.</p>
+</li>
+<li>
+<p><strong>[PortRangeEnd]</strong>: TCP port range end.</p>
+</li>
+<li>
+<p><strong>Description</strong>: Description of the rule.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>(*) If the AllowAllOutbound field is set to true, it is strongly recommended to leave the EgressRules field empty.</p>
+</div>
+<div class="paragraph">
+<p>(**) The SecurityGroupId and the IpAddress are mutually exclusive.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_secrets">Secrets</h3>
+<div class="paragraph">
+<p>Secrets Manager allows you to replace hardcoded credentials, such as passwords, in your code with an API call to Secrets Manager to retrieve the secret programmatically.
+Because the secret no longer exists in the code, it cannot be compromised by someone examining your code.
+You can also set Secrets Manager to automatically rotate the secret for you on a predefined schedule.
+This allows you to replace long-term secrets with short-term ones, lowering the risk of compromise significantly.</p>
+</div>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>Secrets</strong> section:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"Secrets":
+[
+  {
+    "Id": "string",       // Internal Id to identify the secret
+    "Key": "string",      // Key name of the secret
+    "Value": "string"     // Value of the secret
+  }
+]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Internal Id to identify the secret.</p>
+</li>
+<li>
+<p><strong>[Key]</strong>: Key name of the secret.</p>
+</li>
+<li>
+<p><strong>[Value]</strong>: Value of the secret.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_snstopics">SnsTopics</h3>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>SnsTopics</strong> section:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"SnsTopics":
+[
+  {
+    "Id": "string",                       // Internal identification for the Sns topic
+    "Name": "string",                     // Name of the sns topic
+    "DisplayName": "string",              // A developer-defined string that can be used to identify this SNS topic
+    "Fifo": true,                         // Set to true to create a FIFO topic
+    "ContentBasedDeduplication": true     // True to Enable content-based deduplication for FIFO topics
+  }
+]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Internal identification for the Sns topic.</p>
+</li>
+<li>
+<p><strong>[Name]</strong>: Name of the sns topic.</p>
+</li>
+<li>
+<p><strong>[DisplayName]</strong>: A developer-defined string that can be used to identify this SNS topic.</p>
+</li>
+<li>
+<p><strong>Fifo</strong>: Set to true to create a FIFO topic.</p>
+</li>
+<li>
+<p><strong>ContentBasedDeduplication</strong>: True to Enable content-based deduplication for FIFO topics.</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_snsemailsubscriptions">SnsEmailSubscriptions</h4>
+<div class="paragraph">
+<p>Amazon SNS (Amazon Simple Notification Service) is a managed service that delivers messages from publishers to subscribers (also known as producers and consumers).
+Publishers communicate with subscribers asynchronously by sending messages to a topic, which serves as a logical access point and communication channel.</p>
+</div>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>SnsEmailSubscriptions</strong> section:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"SnsEmailSubscriptions":
+[
+  {
+    "Email": "string",      // Email adress for the subscriptions
+    "Json": true,           // Indicates if the full notification JSON should be sent to the email address or just the message text
+    "TopicIds":             // Topics list to suscribe
+        [
+          "string",
+          "string"
+        ]
+  }
+]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Email]</strong>: Email adress for the subscriptions.</p>
+</li>
+<li>
+<p><strong>Json</strong>: Indicates if the full notification JSON should be sent to the email address or just the message text.</p>
+</li>
+<li>
+<p><strong>[TopicIds]</strong>: Topics list to suscribe.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_ssmparameters-ssm-parameter-store">SsmParameters (SSM Parameter Store)</h3>
+<div class="paragraph">
+<p>AWS Systems Manager&#8217;s Parameter Store feature provides secure, hierarchical storage for configuration data management and secrets management.
+Passwords, database strings, Amazon Machine Image (AMI) IDs, and license codes can all be stored as parameter values.
+Values can be stored as plain text or encrypted data.</p>
+</div>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>Parameter Store</strong> section.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"SsmParameters": [
+  {
+    "Id": "string",                   // Internal Id to identify the parameter
+    "Name": "string",                 // Name of the parameter e.g: /parameters/parameter-1
+    "Value": "string",                // Value of the parameter
+    "LocateInsteadOfCreate": true,    // True if you just want to locate the parameter (default false)
+    "Description": "string",          // Optional description of the parameter
+    "IsAdvancedTier": true,           // Optional tier definition (default false)
+    "IsStringList": true              // Optional type of parameter (default false)
+  }
+]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Internal Id to identify the repository.</p>
+</li>
+<li>
+<p><strong>[Name]</strong>: Name of the parameter e.g: /parameters/parameter-1.</p>
+</li>
+<li>
+<p><strong>[Value]</strong>: Value of the parameter.</p>
+</li>
+<li>
+<p><strong>LocateInsteadOfCreate</strong>: True if you just want to locate the parameter default false.</p>
+</li>
+<li>
+<p><strong>Description</strong>: Optional description of the parameter.</p>
+</li>
+<li>
+<p><strong>IsAdvancedTier</strong>: Optional tier definition, default false.</p>
+</li>
+<li>
+<p><strong>IsStringList</strong>: Optional type of parameter, default false.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_subnets">Subnets</h3>
+<div class="paragraph">
+<p>In your VPC, a subnet is a range of IP addresses.
+AWS resources can be launched into a specific subnet.
+A public subnet should be used for resources that must be connected to the internet, and a private subnet should be used for resources that will not be connected to the internet.</p>
+</div>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>Subnets</strong> section.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"Subnets":
+[
+  {
+    "SubnetGroups":                     // List of subnet groups
+    [
+      {
+        "Id": "string",                 // Internal Id to identify the subnet group
+        "SubnetGroupName": "string"     // Name of the subnet group
+      }
+    ],
+    "Subnets":                          // List of subnets
+    [
+      {
+        "Id": "string",                 // Internal Id to identify the subnet
+        "AwsSubnetId": "string"         // AWS Subnet Id
+      }
+    ]
+  }
+],</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>SubnetGroups</strong>: List of subnet groups, if any:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Internal identifier to identify the subnet group.</p>
+</li>
+<li>
+<p><strong>[SubnetGroupName]</strong>: Name of the subnet group.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>Subnets</strong>: List of subnets:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Internal identifier to identify the subnet .</p>
+</li>
+<li>
+<p><strong>[AwsSubnetId]</strong>: Internal identifier to identify the subnet.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_vpcs">VPCs</h3>
+<div class="paragraph">
+<p>Amazon Virtual Private Cloud (Amazon VPC) enables you to launch AWS resources into a virtual network that you&#8217;ve defined.</p>
+</div>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>VPCs</strong> section.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"Vpcs":
+[
+  {
+    "Id": "string",                 // Internal Id to identify the VPC
+    "AwsVpcId": "string",           // AWS VPC Id
+    "LocateInsteadCreate": true,    // boolean to locate a existing VPC
+    "IsDefault": true               // boolean to mark this one as default
+  }
+],</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Internal identifier to identify the VPC.</p>
+</li>
+<li>
+<p><strong>[AwsVpcId]</strong>: Name of the configuration stack.</p>
+</li>
+<li>
+<p><strong>[LocateInsteadCreate]</strong>: Boolean to locate a existing VPC. <code>true</code> if you want to locate a vpc or <code>false</code> if you want to create a new one (currently creating a VPC is not supported, so this field should be always false).</p>
+</li>
+<li>
+<p><strong>[IsDefault]</strong>: Identifier of the AWS account.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_cdk_services.asciidoc_wafs-web-application-firewall">Wafs (Web Application Firewall)</h3>
+<div class="paragraph">
+<p>AWS WAF is a web application firewall that allows you to monitor HTTP and HTTPS requests forwarded to your protected web application resources. AWS WAF also lets you control access to your content.</p>
+</div>
+<div class="paragraph">
+<p>This is the information related to configure the <strong>Wafs</strong> section:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">"Wafs":
+[
+  {
+    "Id": "string",                       // Internal identification for the Waf
+    "Name": "string",                     // Name of the waf
+    "AssociatedApiGatewayId": "string",   // Internal identification for the associated Api Gateway
+    "Description": "string",              // A description of the web ACL that helps with identification.
+    "Scope": "string",                    // Specifies whether this is for an Amazon CloudFront distribution or for a regional application (REGIONAL by default)
+    "CloudWatchMetricsEnabled": true,     //  A boolean indicating whether the associated resource sends metrics to Amazon CloudWatch (true by default)
+    "SampledRequestsEnabled": true,       // A boolean indicating whether AWS WAF should store a sampling of the web requests that match the rules (true by default)
+  }
+]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>[Id]</strong>: Internal identification for the Web application firewall.</p>
+</li>
+<li>
+<p><strong>[Name]</strong>: Name of the Web application firewall.</p>
+</li>
+<li>
+<p><strong>[AssociatedApiGatewayId]</strong>: Internal identification for the associated Api Gateway</p>
+</li>
+<li>
+<p><strong>Description</strong>: A description of the web ACL that helps with identification.</p>
+</li>
+<li>
+<p><strong>Scope</strong>: Specifies whether this is for an Amazon CloudFront distribution or for a regional application (REGIONAL by default). Valid Values are CLOUDFRONT and REGIONAL. For CLOUDFRONT , you must create your WAFv2 resources in the US East (N. Virginia) Region, us-east-1.</p>
+</li>
+<li>
+<p><strong>CloudWatchMetricsEnabled</strong>: A boolean indicating whether the associated resource sends metrics to Amazon CloudWatch (true by default).</p>
+</li>
+<li>
+<p><strong>SampledRequestsEnabled</strong>: A boolean indicating whether AWS WAF should store a sampling of the web requests that match the rules (true by default).</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/welcome/welcome.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_getting-started.wiki_introduction-why-should-i-use-devonfw.asciidoc_features.html">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_devon4j.wiki_architecture.asciidoc.html#devonfw-guide_devon4j.wiki_architecture.asciidoc_technology-stack">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_getting-started.wiki_getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_devon4j.wiki_architecture.asciidoc.html">Architecture</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_ide.wiki_devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_general_master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-guide_ide.wiki_LICENSE.asciidoc.html">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script src="/website/assets/scripts/popper.min.js"></script>
+    <script src="/website/assets/scripts/bootstrap.min.js"></script>
+<div class="footnote"><sub>
+
+Last updated 2022-11-14 16:02:29 UTC
+</sub></div>
+</div>
+</div>
+<link rel="stylesheet" type="text/css" href="https://cginternal.devonfw.com/websitesnippets/main.css">
+<script async src="https://cginternal.devonfw.com/websitesnippets/main.js"></script>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+<script>
+  var internalUrls = ["https://cginternal.devonfw.com/websitesnippets/"];
+  $(".internal").each(function(){
+    internalUrls.forEach((internalUrl, index) => {
+      $.ajax({url: internalUrl + $(this).text() + "/index.html" })
+      .then(r => {
+        var leftDiv = $('<div class="info"><span class="infoText">Internal</span><img class="infoImage" src="' + internalUrl + 'logo.png"/></div>');
+        var rightFirstDiv = $('<div class="message">This is only visible inside of the corporate network.</div>');
+        var rightLastDiv = $('<div class="content"></div>');
+        rightLastDiv.html(r);
+        var rightDiv = $('<div class="right"></div>');
+        rightDiv.append(rightFirstDiv);
+        rightDiv.append(rightLastDiv);
+        $(this).html(leftDiv);
+        $(this).append(rightDiv);
+        $(this).addClass("internal-active");
+        $(this).removeClass("internal");
+      })
+    });
+	});
+</script>
+<script>
+      let cookieName = 'cookie_consent';
+      let expiryTime = new Date(2037, 11, 21);
+      let today = new Date();
+      let cookieConsentDeclinedDate = localStorage.getItem("cookie_consent_declined");
+      let dateDiffHours = 0;
+      let cookieConsentHtml = `
+      <div id="cookie-consent">
+        <p>
+          We use cookies to perform analytics and enhance user experience. Do you accept to the use of cookies?
+        </p>
+        <p class="cookie-consent-buttons">
+          <a id="decline-cookie-btn" class="btn white-button" href="javascript:void(0)">Decline</a>
+          <a id="accept-cookie-btn" class="btn blue-button" href="javascript:void(0)">Accept</a>
+        </p>
+      </div>
+      `;
+      
+      const parseCookie = str =>
+        str
+        .split(';')
+        .map(v => v.split('='))
+        .reduce((acc, v) => {
+          acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());
+          return acc;
+        }, {});
+      
+      dateDiffHours = cookieConsentDeclinedDate ? Math.abs(cookieConsentDeclinedDate - today) / 36e5 : 0;
+      if (document.cookie.indexOf(cookieName) < 0) {
+        if (cookieConsentDeclinedDate) {
+          if (dateDiffHours > 24) {
+            $("body").append(cookieConsentHtml);
+          }
+        } else {
+          $("body").append(cookieConsentHtml);
+        }
+      } else {
+        cookies = parseCookie(document.cookie);
+        if (cookies["cookie_consent"] == "accept") {
+          consentGranted();
+        }
+      }
+      
+      $("#accept-cookie-btn").click(function() {
+        document.cookie = `${cookieName}=accept;expires=${expiryTime};path=/`;
+        localStorage.removeItem("cookie_consent_declined");
+        consentGranted();
+        $("#cookie-consent").hide();
+      });
+      $("#decline-cookie-btn").click(function() {
+        localStorage.setItem("cookie_consent_declined", today);
+        $("#cookie-consent").hide();
+      });
+</script>
+</body>
+</html>

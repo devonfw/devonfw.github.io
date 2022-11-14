@@ -124,7 +124,7 @@ gtag('consent', 'default', {
 <p>The creation of the pipeline will follow the project workflow, so a new branch named <code>feature/build-pipeline</code> will be created and the YAML file for the pipeline will be pushed to it.</p>
 </div>
 <div class="paragraph">
-<p>Then, a Pull Request (PR) will be created in order to merge the new branch into the appropriate branch (provided in <code>-b</code> flag). The PR will be automatically merged if the repository policies are met. If the merge is not possible, either the PR URL will be shown as output, or it will be opened in your web browser if using <code>-w</code> flag.</p>
+<p>Then, the new branch will be merged into the appropriate branch (provided in <code>-b</code> flag).</p>
 </div>
 <div class="paragraph">
 <p>The script located at <code>/scripts/pipelines/gcloud/pipeline_generator.sh</code> will automatically create this new branch, create a build pipeline based on a YAML template appropriate for the project programming language or framework, create the Pull Request and, if it is possible, merge this new branch into the specified branch.</p>
@@ -150,8 +150,11 @@ gtag('consent', 'default', {
   -n &lt;pipeline name&gt; \
   -l &lt;language or framework&gt; \
   -d &lt;project local path&gt; \
+  --registry-location &lt;artifact registry&gt; \
+  --language-version &lt;version&gt; \
   [-t &lt;target-directory&gt;] \
-  [-b &lt;branch&gt;] \</code></pre>
+  [-b &lt;branch&gt;] \
+  [-m &lt;machine type for pipeline runner&gt;]</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -175,9 +178,11 @@ The config file for the build pipeline is located at <code>/scripts/pipelines/gc
 -n, --pipeline-name      [Required] Name that will be set to the pipeline.
 -l, --language           [Required] Language or framework of the project.
 -d, --local-directory    [Required] Local directory of your project.
+    --registry-location  [Required, if Flutter] Artifact registry location.
+    --language-version   [Required, if Flutter or Python] Language or framework version.
 -t, --target-directory              Target directory of build process. Takes precedence over the language/framework default one.
 -b, --target-branch                 Name of the branch to which the Pull Request will target. PR is not created if the flag is not provided.
--w                                  Open the Pull Request on the web browser if it cannot be automatically merged. Requires -b flag.</code></pre>
+-m, --machine-type                  Machine type for pipeline runner. Accepted values: E2_HIGHCPU_8, E2_HIGHCPU_32, N1_HIGHCPU_8, N1_HIGHCPU_32.</code></pre>
 </div>
 </div>
 </div>
@@ -189,7 +194,7 @@ The config file for the build pipeline is located at <code>/scripts/pipelines/gc
 <h5 id="devonfw-guide_hangar.wiki_gcloud_setup-build-pipeline.asciidoc_quarkus-native-project">Quarkus native project</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/build/build-pipeline.cfg -n quarkus-project-build -l quarkus -d C:/Users/$USERNAME/Desktop/quarkus-project -b develop -w</code></pre>
+<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/build/build-pipeline.cfg -n quarkus-project-build -l quarkus -d C:/Users/$USERNAME/Desktop/quarkus-project -b develop </code></pre>
 </div>
 </div>
 </div>
@@ -197,7 +202,7 @@ The config file for the build pipeline is located at <code>/scripts/pipelines/gc
 <h5 id="devonfw-guide_hangar.wiki_gcloud_setup-build-pipeline.asciidoc_quarkus-project-using-jvm">Quarkus project using JVM</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/build/build-pipeline.cfg -n quarkus-project-build -l quarkus-jvm -d C:/Users/$USERNAME/Desktop/quarkus-project -b develop -w</code></pre>
+<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/build/build-pipeline.cfg -n quarkus-project-build -l quarkus-jvm -d C:/Users/$USERNAME/Desktop/quarkus-project -b develop </code></pre>
 </div>
 </div>
 </div>
@@ -206,7 +211,7 @@ The config file for the build pipeline is located at <code>/scripts/pipelines/gc
 <h4 id="devonfw-guide_hangar.wiki_gcloud_setup-build-pipeline.asciidoc_node.js-project">Node.js project</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/build/build-pipeline.cfg -n node-project-build -l node -d C:/Users/$USERNAME/Desktop/node-project -b develop -w</code></pre>
+<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/build/build-pipeline.cfg -n node-project-build -l node -d C:/Users/$USERNAME/Desktop/node-project -b develop </code></pre>
 </div>
 </div>
 </div>
@@ -214,7 +219,23 @@ The config file for the build pipeline is located at <code>/scripts/pipelines/gc
 <h4 id="devonfw-guide_hangar.wiki_gcloud_setup-build-pipeline.asciidoc_angular-project">Angular project</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/build/build-pipeline.cfg -n angular-project-build -l angular -d C:/Users/$USERNAME/Desktop/angular-project -b develop -w</code></pre>
+<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/build/build-pipeline.cfg -n angular-project-build -l angular -d C:/Users/$USERNAME/Desktop/angular-project -b develop </code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_hangar.wiki_gcloud_setup-build-pipeline.asciidoc_python-project">Python project</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/build/build-pipeline.cfg -n python-project-build -l python -d C:/Users/$USERNAME/Desktop/python-project -b develop --language-version 3.10 </code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_hangar.wiki_gcloud_setup-build-pipeline.asciidoc_flutter-project">Flutter project</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/build/build-pipeline.cfg -n flutter-project-build -l flutter -d C:/Users/$USERNAME/Desktop/flutter-project -b develop --language-version 3.3.4 --registry-location europe </code></pre>
 </div>
 </div>
 </div>
@@ -332,7 +353,7 @@ The config file for the build pipeline is located at <code>/scripts/pipelines/gc
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-11-14 11:29:14 UTC
+Last updated 2022-11-14 16:06:06 UTC
 </sub></div>
 </div>
 </div>

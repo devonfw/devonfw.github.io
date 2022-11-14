@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2022-11-14 11:32:47 UTC">
+<meta name="author" content="Updated at 2022-11-14 16:10:44 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -533,7 +533,7 @@ gtag('consent', 'default', {
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2022-11-14 11:37:14 UTC</span><br>
+<span id="author" class="author">Updated at 2022-11-14 16:16:22 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -3893,17 +3893,6 @@ You can learn how to set up the component in your project by reading the compone
         "EnableSslCertificateVerification": false,
         "Debug": ""
       }
-    ],
-    "Streams": [
-      {
-        "ApplicationId": "Stream1",
-        "Servers": "127.0.0.1:9092",
-        "AutoOffsetReset": "earliest",
-        "StateDir": "./MyStream",
-        "CommitIntervalMs": "5000",
-        "Guarantee": "at_least_once",
-        "MetricsRecording": "debug"
-      }
     ]
   }</code></pre>
 </div>
@@ -3922,7 +3911,7 @@ Please refer to the component documentation to learn more about the configuratio
 </div>
 </div>
 <div class="sect4">
-<h5 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_producer">Producer</h5>
+<h5 id="devonfw-guide_devon4net.wiki_howto.asciidoc_producer">Producer</h5>
 <div class="paragraph">
 <p>After defining the configuration in the <code>appsettings.{environment}.json</code> now you can create your handlers extending the ones available in the Kafka component.</p>
 </div>
@@ -3933,7 +3922,7 @@ Please refer to the component documentation to learn more about the configuratio
 <div class="content">
 <pre class="highlight"><code class="language-c#" data-lang="c#">public class MessageProducerHandler : KafkaProducerHandler&lt;string,string&gt;
 {
-    public MessageProducerHandler(IServiceCollection services, KafkaOptions kafkaOptions, string producerId, ISerializer&lt;string&gt; keySerializer = null, ISerializer&lt;string&gt; valueSerializer = null) : base(services, kafkaOptions, producerId, keySerializer, valueSerializer)
+    public MessageProducerHandler(IServiceCollection services, IKakfkaHandler kafkaHandler, string producerId) : base(services, kafkaHandler, producerId)
     {
     }
 }</code></pre>
@@ -3944,7 +3933,7 @@ Please refer to the component documentation to learn more about the configuratio
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-c#" data-lang="c#">builder.Services.AddKafkaProducer&lt;MessageProducerHandler, string, string&gt;("Producer1");</code></pre>
+<pre class="highlight"><code class="language-c#" data-lang="c#">builder.Services.AddKafkaProducer&lt;MessageProducerHandler&gt;("Producer1");</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3982,7 +3971,7 @@ Please refer to the component documentation to learn more about the configuratio
 </div>
 </div>
 <div class="sect4">
-<h5 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_consumer">Consumer</h5>
+<h5 id="devonfw-guide_devon4net.wiki_howto.asciidoc_consumer">Consumer</h5>
 <div class="paragraph">
 <p>The consumer is a little different, as you can see in the following piece of code, you will need to override the <code>HandleCommand</code> method. This will handle the process of consuming new messages to which the consumer is subscribed.</p>
 </div>
@@ -3990,7 +3979,7 @@ Please refer to the component documentation to learn more about the configuratio
 <div class="content">
 <pre class="highlight"><code class="language-c#" data-lang="c#">public class MessageConsumerHandler : KafkaConsumerHandler&lt;string, string&gt;
 {
-    public MessageConsumerHandler(IServiceCollection services, KafkaOptions kafkaOptions, string consumerId, IDeserializer&lt;string&gt; keyDeserializer = null, IDeserializer&lt;string&gt; valueDeserializer = null, bool commit = false, int commitPeriod = 5, bool enableConsumerFlag = true) : base(services, kafkaOptions, consumerId, keyDeserializer, valueDeserializer, commit, commitPeriod, enableConsumerFlag)
+    public MessageConsumerHandler(IServiceCollection services, IKakfkaHandler kafkaHandler, string consumerId, bool commit = false, int commitPeriod = 5) : base(services, kafkaHandler, consumerId, commit, commitPeriod)
     {
     }
 
@@ -4006,151 +3995,7 @@ Please refer to the component documentation to learn more about the configuratio
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="language-c#" data-lang="c#">builder.Services.AddKafkaConsumer&lt;MessageConsumerHandler, string, string&gt;("Consumer1");</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_stream">Stream</h5>
-<div class="paragraph">
-<p>To create a stream with some logic on it you will need to create a service that extends the class <code>KafkaStreamService&lt;KeyType, ValueType&gt;</code> and override its method <code>CreateStreamBuilder</code> with something as follows:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-c#" data-lang="c#">public class MessageStreamService : KafkaStreamService&lt;string, string&gt;
-{
-    public MessageStreamService(IServiceCollection services, KafkaOptions kafkaOptions, string applicationId, ISerDes&lt;string&gt; keySerDes = null, ISerDes&lt;string&gt; valueSerDes = null) : base(services, kafkaOptions, applicationId, keySerDes, valueSerDes)
-    {
-    }
-
-    public override void CreateStreamBuilder()
-    {
-        StreamBuilder.Stream&lt;string, string&gt;("message_producer")
-            .Peek((k, v) =&gt; Console.WriteLine($"MessageStream says -&gt; Key: {k} | Value: {v}"))
-            .To("message_consumer");
-    }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The StreamBuilder will allow you to add all the logic to the stream. You can check <a href="https://lgouellec.github.io/kafka-streams-dotnet/">Streamiz Docs</a> to learn about the Stateless and Statefull Processors available on Kafka Streams.</p>
-</div>
-<div class="paragraph">
-<p>In the example, the <code>Stream&lt;&gt;()</code> method will create a Stream for the topic "message_producer". Inside this stream, the method <code>Peek</code> will do some operations based on the input data and return the input stream as-is, allowing to add more logic to it. In this case we use it to take a look to what is happening inside the stream.</p>
-</div>
-<div class="paragraph">
-<p>Then the method <code>To</code> will output the messages processed to another Stream, in this case "message_consumer".</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-c#" data-lang="c#">builder.Services.AddKafkaStreamService&lt;MessageStreamService, string, string&gt;("message_stream");</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="devonfw-guide_devon4net.wiki_howto.asciidoc_serialization">Serialization</h5>
-<div class="paragraph">
-<p>Kafka works with byte arrays so we need to serialize the data before sending it and deserializing after receiving.</p>
-</div>
-<div class="paragraph">
-<p>The process of turning objects into bytes is called serialization. The opposite procedure, known as deserialization, transforms a stream of bytes into an object.</p>
-</div>
-<div class="paragraph">
-<p>In devon4net, we provide default serializers for basic types and a default one for serializing custom objects. However, you can specify your own custom ones.</p>
-</div>
-<div class="sect5">
-<h6 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_producer_24">Producer</h6>
-<div class="paragraph">
-<p>The Producer will need to know how to serialize both, the <strong>key</strong> and the <strong>value</strong> data into bytes. So you will need to create a class that implements the interface <code>ISerializer&lt;T&gt;</code> from the package <code>Confluent.Kafka</code>. For example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-c#" data-lang="c#">public class CustomSerializer&lt;T&gt; : ISerializer&lt;T&gt;
-{
-    public byte[] Serialize(T data, SerializationContext context)
-    {
-        return JsonSerializer.SerializeToUtf8Bytes(data, typeof(T));
-    }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Then you can indicate the use of this serializer for the value in your <code>Program.cs</code>, as follows:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-c#" data-lang="c#">builder.Services.AddKafkaProducer&lt;MessageProducerHandler, string, string&gt;("message_stream", valueSerializer: new CustomSerializer());</code></pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_consumer_25">Consumer</h6>
-<div class="paragraph">
-<p>The Producer will need to know how to deserialize both, the <strong>key</strong> and the <strong>value</strong> bytes to readable data. So you will need to create a class that implements the interface <code>IDeserializer&lt;T&gt;</code> from the package <code>Confluent.Kafka</code>. For example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-c#" data-lang="c#">public class CustomDeserializer&lt;T&gt; : IDeserializer&lt;T&gt;
-{
-    public T Deserialize(ReadOnlySpan&lt;byte&gt; data, bool isNull, SerializationContext context)
-    {
-        return (T) JsonSerializer.Deserialize(new MemoryStream(data.ToArray()), typeof(T));
-    }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Then you can indicate the use of this deserializer for the key in your <code>Program.cs</code>, as follows:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-c#" data-lang="c#">builder.Services.AddKafkaConsumer&lt;MessageConsumerHandler, string, string&gt;("Consumer1", keyDeserializer: new CustomDeserializer());</code></pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_stream_26">Stream</h6>
-<div class="paragraph">
-<p>On the other hand, as the stream is located between the producer and the consumer, it will need both to serialize and deserialize, also the <strong>key</strong> and the <strong>value</strong>. For the stream, you will need to create a class that implements the interface <code>ISerDes&lt;T&gt;</code> from the package <code>Streamiz.Kafka.Net.SerDes</code>. For example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-c#" data-lang="c#">public class CustomKafkaSerDes&lt;T&gt; : ISerDes&lt;T&gt;
-{
-    public void Initialize(SerDesContext context)
-    {
-        // Purposely empty, necessary to implement the interface but nothing needs to be initialized at the moment
-    }
-
-    public byte[] Serialize(T data, SerializationContext context)
-    {
-        return JsonSerializer.SerializeToUtf8Bytes(data, typeof(T));
-    }
-
-    public byte[] SerializeObject(object data, SerializationContext context)
-    {
-        return JsonSerializer.SerializeToUtf8Bytes(data, typeof(T));
-    }
-
-    public T Deserialize(byte[] data, SerializationContext context)
-    {
-        return (T) JsonSerializer.Deserialize(new MemoryStream(data), typeof(T));
-    }
-
-    object ISerDes.DeserializeObject(byte[] data, SerializationContext context)
-    {
-        return (T) JsonSerializer.Deserialize(new MemoryStream(data), typeof(T));
-    }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Then you can indicate the use of this "SerDes" in your <code>Program.cs</code>, as follows:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="language-c#" data-lang="c#">builder.Services.AddKafkaStreamService&lt;MessageStreamService, string, string&gt;("message_stream", keySerDes: new CustomKafkaSerDes(), valueSerDes: new CustomKafkaSerDes());</code></pre>
-</div>
+<pre class="highlight"><code class="language-c#" data-lang="c#">builder.Services.AddKafkaConsumer&lt;MessageConsumerHandler&gt;("Consumer1");</code></pre>
 </div>
 </div>
 </div>
@@ -4170,15 +4015,15 @@ Please refer to the component documentation to learn more about the configuratio
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="language-C#" data-lang="C#">var rawHostedRepository new RawHostedRepository
-{
-    Name = "SampleRepository",
-    Online = true,
-    Storage = CreateDefaultStorage(),
-    Raw = new Raw
     {
-        ContentDisposition = "ATTACHMENT"
-    }
-};</code></pre>
+        Name = "SampleRepository",
+        Online = true,
+        Storage = CreateDefaultStorage(),
+        Raw = new Raw
+        {
+            ContentDisposition = "ATTACHMENT"
+        }
+    };</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4372,7 +4217,7 @@ Please revise the template documentation and the component documentation to lear
 </div>
 </div>
 <div class="sect4">
-<h5 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_references_27">References</h5>
+<h5 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_references_21">References</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -4715,7 +4560,7 @@ In that file we will find the configuration for all the functions, where we will
 </div>
 </div>
 <div class="sect4">
-<h5 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_references_30">References</h5>
+<h5 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_references_24">References</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -5265,7 +5110,7 @@ Choose an existing role or create one if you don’t have one already.</p>
 </div>
 </div>
 <div class="sect5">
-<h6 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_step-5---test-the-function_32">Step 5 - Test the function</h6>
+<h6 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_step-5---test-the-function_26">Step 5 - Test the function</h6>
 <div class="paragraph">
 <p>Now you can test your lambda function providing the function’s input parameters (1) in JSON format:</p>
 </div>
@@ -5284,7 +5129,7 @@ Choose an existing role or create one if you don’t have one already.</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_references_33">References</h5>
+<h5 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_references_27">References</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -5327,7 +5172,7 @@ We will make use of the devon4net AWS template. So please make sure you have rea
 </div>
 </div>
 <div class="sect4">
-<h5 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_install-the-aws-template-and-visual-studio-aws-tools_34">Install the AWS template and Visual Studio AWS tools</h5>
+<h5 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_install-the-aws-template-and-visual-studio-aws-tools_28">Install the AWS template and Visual Studio AWS tools</h5>
 <div class="paragraph">
 <p>In devon4Net you have some AWS templates available, to install them you can run the following command.</p>
 </div>
@@ -5341,7 +5186,7 @@ We will make use of the devon4net AWS template. So please make sure you have rea
 </div>
 </div>
 <div class="sect4">
-<h5 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_create-a-project-using-the-template_35">Create a project using the template</h5>
+<h5 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_create-a-project-using-the-template_29">Create a project using the template</h5>
 <div class="paragraph">
 <p>Now that everything is in place, you may begin by creating your project using the template:</p>
 </div>
@@ -5461,7 +5306,7 @@ If you want to learn more about these parameters you can check the template or t
 </div>
 </div>
 <div class="sect5">
-<h6 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_step-3---run-it_36">Step 3 - Run it</h6>
+<h6 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_step-3---run-it_30">Step 3 - Run it</h6>
 <div class="paragraph">
 <p>Run the project and now you can start to develop your serverless WebAPI.</p>
 </div>
@@ -5692,7 +5537,7 @@ public class UsersTable
 </div>
 </div>
 <div class="sect5">
-<h6 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_step-4---create-a-table_40">Step 4 - Create a table</h6>
+<h6 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_step-4---create-a-table_34">Step 4 - Create a table</h6>
 <div class="paragraph">
 <p>In this example, we want to create a table called <code>users</code>. The code below first checks if the table <code>users</code> already exists, and if it doesn’t, then uses the <code>CreateTable</code> method from the <code>DynamoDbEntityRepository</code> to create it:</p>
 </div>
@@ -5712,7 +5557,7 @@ public class UsersTable
 </div>
 </div>
 <div class="sect5">
-<h6 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_step-5---insert-values-into-the-table_41">Step 5 - Insert values into the table</h6>
+<h6 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_step-5---insert-values-into-the-table_35">Step 5 - Insert values into the table</h6>
 <div class="paragraph">
 <p>Now let’s insert data into the table using the repository’s <code>Create</code> method. In this case, we simply need to specify the entity itself as a parameter.</p>
 </div>
@@ -5818,7 +5663,7 @@ Similarly, we will be working in a variety of work environments.</p>
 <div class="sect4">
 <h5 id="devonfw-guide_devon4net.wiki_howto.asciidoc_how-to-use">How to use</h5>
 <div class="sect5">
-<h6 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_installing-the-nuget_42">Installing the NuGet</h6>
+<h6 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_installing-the-nuget_36">Installing the NuGet</h6>
 <div class="paragraph">
 <p>You need to install the <code>Devon4net.Infrastructure.AWS.CDK</code> NuGet, for that you can run the following command in the Package Manager Console:</p>
 </div>
@@ -5900,7 +5745,7 @@ For more information about the configuration of the component itself, please, vi
 </div>
 </div>
 <div class="sect4">
-<h5 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_references_43">References</h5>
+<h5 id="asciidoc_devonfw-guide_devon4net.wiki_howto.asciidoc_references_37">References</h5>
 <div class="paragraph">
 <p><a href="https://docs.aws.amazon.com/cdk/v2/guide/home.html">AWS CDK official documentation</a></p>
 </div>
@@ -6021,7 +5866,7 @@ For more information about the configuration of the component itself, please, vi
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-11-14 11:30:08 UTC
+Last updated 2022-11-14 16:07:17 UTC
 </sub></div>
 
 

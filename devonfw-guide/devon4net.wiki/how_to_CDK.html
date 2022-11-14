@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>AWS CDK</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="/website/assets/scripts/lunr.min.js"></script>
+<!-- JQuery -->
+<script src="/website/assets/scripts/jquery.min.js"></script>
+<link rel="stylesheet" href="/website/assets/styles/font-awesome.min.css">
+<link rel="stylesheet" href="/website/assets/styles/googlecode.min.css">
+<script src="/website/assets/scripts/highlight.min.js"></script>
+<script src="/website/assets/scripts/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="/website/assets/styles/bootstrap.min.css">
+
+<script src="/website/assets/scripts/anchor.min.js"></script>
+
+<script src="/website/components/header/search-engine/bundle.js"></script>
+
+<script src="/website/shared/rightmenu.js"></script>
+
+<!-- ************** Google analytics ************ -->
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+
+gtag('consent', 'default', {
+  'analytics_storage': 'denied'
+});
+</script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+<script>
+  function consentGranted() {
+    gtag('consent', 'update', {
+      'analytics_storage': 'granted'
+    });
+  }
+</script>
+
+<!-- ******************************************** -->
+
+
+</head>
+<body id="devonfw-guide_devon4net.wiki_how_to_CDK.asciidoc" class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="https://devonfw.com/"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="https://devonfw.com/website/pages/learning/">Tutorials</a></p>
+</li>
+<li>
+<p><a href="/website/pages/solutions/index.html">Solutions</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Docs</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"
+      autocomplete="off"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div id="preamble">
+<div class="sectionbody">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_what-is-aws-cdk">What is AWS CDK?</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_why-cdk-support-in-devon4net">Why CDK support in devon4net?</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_set-up-environment">Set up environment</a>
+<ul class="sectlevel2">
+<li><a href="#devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_installing-and-configuring-aws-cli">Installing and configuring AWS CLI</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_installing-aws-cdk-toolkit">Installing AWS CDK Toolkit</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_installing-devon4net.infrastructure.aws.cdk">Installing Devon4net.Infrastructure.AWS.CDK</a></li>
+</ul>
+</li>
+<li><a href="#devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_prepare-your-application">Prepare your application</a>
+<ul class="sectlevel2">
+<li><a href="#devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_cdk.json-file"><code>cdk.json</code> file</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_configure-your-provisionstack">Configure your <code>ProvisionStack</code></a></li>
+</ul>
+</li>
+<li><a href="#devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_deployment">Deployment</a>
+<ul class="sectlevel2">
+<li><a href="#devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_bootstrap">Bootstrap</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_synth">Synth</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_diff">Diff</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_deploy">Deploy</a></li>
+</ul>
+</li>
+<li><a href="#devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_cloudformation-dashboard">CloudFormation dashboard</a>
+<ul class="sectlevel2">
+<li><a href="#devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_change-sets">Change Sets</a></li>
+<li><a href="#devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_references">References</a></li>
+</ul>
+</li>
+</ul>
+<div class="paragraph">
+<p>You can supply resources in a wide range of ways using the AWS CDK. Using devon4net makes it possible to complete the task in a precise and standardized manner, speeding up the industrialization process. Through a configuration file it is possible to have the provision of different environments in the same place, in a scalable, standard and reusable form.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_what-is-aws-cdk">What is AWS CDK?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>AWS Cloud Development Kit (CDK) is an open-source software development framework to define your cloud application resources using familiar programming languages. This framework allows you to define all your AWS infrastructure as readable code. This process is known as Infrastructure as Code (IaC) and consists in provisioning and managing infrastructure for your software solutions through code, instead of doing so manually.</p>
+</div>
+<div class="paragraph">
+<p>This means that you can easily modify, distribute and reproduce configurations. In addition, by including infrastructure as code:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Facilitates the integration of infrastructure into version control systems for tracking changes and audit modifications.</p>
+</li>
+<li>
+<p>Enables the introduction of significant automation for infrastructure management. All of these factors contribute to the SDLC&#8217;s IaC being fully integrated into CI/CD pipelines.</p>
+</li>
+<li>
+<p>Eliminates the unnecessary manual management.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_why-cdk-support-in-devon4net">Why CDK support in devon4net?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In a real project, we will use AWS services such as DynamoDB databases, S3 buckets, multiple lambdas, and so on.
+Similarly, we will be working in a variety of work environments.</p>
+</div>
+<div class="paragraph">
+<p>Devon4Net, with the help of the CDK, allows us to treat these services as code (IaC), which allows us to take all of this service structure and replicate it in another environment that interests us, saving development time and treating this copy of your AWS services as a backup.</p>
+</div>
+<div class="paragraph">
+<p>In Devon4Net, we can use a standarized <code>json</code> file to configure the AWS CDK service, this <code>json</code> will be translated into readable code for the CDK framework.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_set-up-environment">Set up environment</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_installing-and-configuring-aws-cli">Installing and configuring AWS CLI</h3>
+<div class="paragraph">
+<p>The AWS Command Line Interface (AWS CLI) is a unified tool to manage your AWS services. With just one tool to download and configure, you can control multiple AWS services from the command line and automate them through scripts.</p>
+</div>
+<div class="paragraph">
+<p>You can download the installer <a href="https://aws.amazon.com/cli/?nc1=h_ls">here</a>. Follow the next steps to install:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Download the correct installer for your Operating System.</p>
+</li>
+<li>
+<p>Execute the installer and follow the steps of the setup wizard.</p>
+</li>
+<li>
+<p>To see if the installation was successful, run the following command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="console language-console">aws --version</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_create-a-user-for-deployment">Create a user for deployment</h4>
+<div class="paragraph">
+<p>Before deploying you will need to configure your AWS toolkit so is related to your AWS account. For that, you need to create a user with the necessary permissions to be able to deploy your infrastructure to your AWS account.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Using your root user access keys is not a good practice and could constitute a security risk.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Go to your <a href="https://aws.amazon.com/es/console/">AWS dashboard</a> and navigate to the <a href="https://console.aws.amazon.com/iam/">Identity and Access Management (IAM) Service</a> or by going to your profile on the top right corner (1) and accessing your security credentials (2) as shown in the next figure:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/aws_security_credentials.png" alt="aws security credentials">
+</div>
+<div class="title">Figure 1. AWS security credentials</div>
+</div>
+<div class="paragraph">
+<p>On the left side menu, select <code>Users</code> (1) and <code>Add users</code> (2) to start the process of adding a new user:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/aws_add_users.png" alt="aws add users">
+</div>
+<div class="title">Figure 2. IAM Add Users</div>
+</div>
+<div class="paragraph">
+<p>Choose a <code>User name</code> (1) and an <code>Credential Access Type</code> (2). For the CLI you will need to have <code>Access Keys</code>, so make sure you have that option selected before steping to the next section (3):</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/aws_first_steps.png" alt="aws first steps">
+</div>
+<div class="title">Figure 3. Create user - First Step</div>
+</div>
+<div class="paragraph">
+<p>In the second step you will add the permissions to the user. You can either <code>Add a user to a group</code> (which already has permissions granted), <code>Copy permissions of another user</code> or <code>Attach existing policies</code> (1). For deployment, the user must have <code>AdministratorAccess</code> policy asigned (2):</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/aws_add_policy.png" alt="aws add policy">
+</div>
+<div class="title">Figure 4. Create user - Add permissions</div>
+</div>
+<div class="paragraph">
+<p>The next steps are for adding tags to the user and reviewing your choices before finally creating the user-</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+We recommend adding some tag to your user so you can find it easier and have it well classified.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Once you create the user you will find your <code>Access Id</code> and <code>Secret Key</code>, copy them and save them, you will need them in the following steps for configuring your CLI:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/aws_copy_credentials.png" alt="aws copy credentials">
+</div>
+<div class="title">Figure 5. Create user - Copy user credentials</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_configure-your-aws-cli">Configure your AWS CLI</h4>
+<div class="paragraph">
+<p>Once we have created our user, we can use the <strong>Access Key Id</strong> and the <strong>Secret Access Key</strong> values to link your aws toolkit to your account. For that you can run the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="console language-console">aws configure</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The command will ask the following inputs:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>AWS Access Key ID</strong></p>
+</li>
+<li>
+<p><strong>AWS Secret Access Key</strong></p>
+</li>
+<li>
+<p><strong>Default region name</strong></p>
+</li>
+<li>
+<p><strong>Default output format</strong></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Paste the keys in their respective place and you have successfully configured your AWS CLI.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_installing-aws-cdk-toolkit">Installing AWS CDK Toolkit</h3>
+<div class="paragraph">
+<p>The AWS CDK Toolkit, the CLI command cdk, is the primary tool for interacting with your AWS CDK app. It executes your app, interrogates the application model you defined, and produces and deploys the AWS CloudFormation templates generated by the AWS CDK. It also provides other features useful for creating and working with AWS CDK projects.</p>
+</div>
+<div class="paragraph">
+<p>In order to Install the AWS CDK Toolkit you have to run the following command in a shell via npm:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="console language-console">npm install -g aws-cdk</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>All the CDK Toolkit commands start with <code>cdk</code>, which is followed by a subcommand, as you can see in the following table:</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Command</th>
+<th class="tableblock halign-left valign-top">Function</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cdk list (ls)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Lists the stacks in the app</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cdk synthesize (synth)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Synthesizes and prints the CloudFormation template for the specified stack(s)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cdk bootstrap</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Deploys the CDK Toolkit staging stack; see <a href="https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html">Bootstrapping</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cdk deploy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Deploys the specified stack(s)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cdk destroy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Destroys the specified stack(s)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cdk diff</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Compares the specified stack and its dependencies with the deployed stack(s) or a local CloudFormation template</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cdk metadata</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Displays metadata about the specified stack</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cdk init</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Creates a new CDK project in the current directory from a specified template</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cdk context</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Manages cached context values</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cdk docs (doc)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Opens the CDK API reference in your browser</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cdk doctor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Checks your CDK project for potential problems</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_installing-devon4net.infrastructure.aws.cdk">Installing Devon4net.Infrastructure.AWS.CDK</h3>
+<div class="paragraph">
+<p>You need to install the <code>Devon4net.Infrastructure.AWS.CDK</code> NuGet, for that you can run the following command in the Package Manager Console:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="console language-console">Install-Package Devon4net.Infrastructure.AWS.CDK</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_prepare-your-application">Prepare your application</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_cdk.json-file"><code>cdk.json</code> file</h3>
+<div class="paragraph">
+<p>For the project&#8217;s deployment, you must include a <code>cdk.json</code> file in your project.
+This file will contain the path of your project and will run the program.
+The file must contain the following information.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>{
+  "app": "dotnet run --project {PathToYourProjectSolution}.csproj",
+  "watch": {
+    "include": [
+      "**"
+    ],
+    "exclude": [
+      "README.md",
+      "cdk*.json",
+      "src/*/obj",
+      "src/*/bin",
+      "src/*.sln",
+      "src/*/GlobalSuppressions.cs",
+      "src/*/*.csproj"
+    ]
+  },
+  "context": {
+    "@aws-cdk/aws-apigateway:usagePlanKeyOrderInsensitiveId": true,
+    "@aws-cdk/core:stackRelativeExports": true,
+    "@aws-cdk/aws-rds:lowercaseDbIdentifier": true,
+    "@aws-cdk/aws-lambda:recognizeVersionProps": true,
+    "@aws-cdk/aws-cloudfront:defaultSecurityPolicyTLSv1.2_2021": true,
+    "@aws-cdk-containers/ecs-service-extensions:enableDefaultLogDriver": true,
+    "@aws-cdk/aws-ec2:uniqueImdsv2TemplateName": true,
+    "@aws-cdk/core:target-partitions": [
+      "aws",
+      "aws-cn"
+    ]
+  }
+}</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You simply need to replace <code>{PathToYourProjectSolution}</code> with the path to your project in order to use the cdk commands.</p>
+</div>
+<div class="paragraph">
+<p>[[devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_appsettings.{environment}.json-file]]
+=== <code>appsettings.{environment}.json</code> file</p>
+</div>
+<div class="paragraph">
+<p>You will also need to configure your infrastructure in your <code>appsettings.{environment}.json</code>. For example, the following configuration will create an S3Bucket in your AWS account:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">{
+  "CdkOptions": [
+    {
+      "ProvisionStack": {
+        "Id": "devon-test",
+        "ApplicationName": "devon-test",
+        "EnvironmentName": "test",
+        "AwsAccount": "000000000000",             // Input here your AWS Account Id
+        "AwsRegion": "eu-west-1"
+      },
+      "S3Buckets": [
+        {
+          "Id": "testbucket",
+          "LocateInsteadOfCreate": false,
+          "BucketName": "testbucket4765183745",
+          "ExpirationDays": 0,
+          "Versioned": false,
+          "EnforceSSL": true,
+          "BlockPublicAccess": true
+        }
+      ]
+    }
+  ]
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+To learn more about how to configure your desired services in your settings file, please read the CDK package documentation.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_configure-your-provisionstack">Configure your <code>ProvisionStack</code></h3>
+<div class="paragraph">
+<p>In the <strong>Startup</strong> class of your application, follow the nexts steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Load your <code>appsettings.{environment}.json</code> configuration file. As an example, consider the Options Pattern:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="c# language-c#">private static List&lt;CdkOptions&gt; LoadConfigurationFiles()
+{
+    var file = FileOperationsHelper.GetFilesFromPath("appsettings.json")?.FirstOrDefault();
+    if (file == null) throw new ArgumentException("No appsettings.json was provided");
+
+    var configuration = new ConfigurationBuilder().AddJsonFile(file, true, true).Build();
+
+    var environmentFileName = Configuration.GetSection("Environment").Value;
+
+    var environmentFile = FileOperationsHelper.GetFilesFromPath($"appsettings.{environmentFileName}.json")?.FirstOrDefault();
+    configuration = new ConfigurationBuilder().AddConfiguration(configuration).AddJsonFile(environmentFile, true, true).Build();
+
+    return Configuration.GetSection("CdkOptions").Get&lt;List&lt;CdkOptions&gt;&gt;();
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Once your setup has been charged, you may create an instance of the <code>ProvisionStack</code> class and then call the <code>Process()</code> method:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="c# language-c#">var cdkOptions = LoadConfigurationFiles();
+
+foreach (var stack in cdkOptions)
+{
+    if (string.IsNullOrWhiteSpace(AwsAccount))
+    {
+        AwsAccount = stack.ProvisionStack.AwsAccount;
+    }
+
+    if (string.IsNullOrWhiteSpace(AwsRegion))
+    {
+        AwsRegion = stack.ProvisionStack.AwsRegion;
+    }
+
+    var defaultPsrovisionStack = new ProvisionStack(AwsAccount, AwsRegion, stack);
+    defaultPsrovisionStack.Process();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>Process()</code> method is responsible for building the infrastructure that you specified in your configuration file.</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+For more information about the configuration of the component itself, please, visit the component documentation.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_deployment">Deployment</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this section you will learn how to deploy your previously configured application. Take a look at the <a href="https://docs.aws.amazon.com/cdk/v2/guide/hello_world.html">AWS Deployment Tutorial</a></p>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_bootstrap">Bootstrap</h3>
+<div class="paragraph">
+<p>You must provision the resources the AWS CDK needs to carry out the deployment before you may deploy AWS CDK apps into an AWS environment (a federation of an AWS account and region). These resources include an Amazon S3 bucket for file storage and IAM roles with deployment-related permissions. The process of provisioning these initial resources is called <a href="https://docs.aws.amazon.com/cdk/v2/guide/bootstrapping.html">Bootstrapping</a>.</p>
+</div>
+<div class="paragraph">
+<p>For bootstrapping your application you can run the folowing command in the project directory:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="console language-console">cdk bootstrap</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once you have your resources provisioned, you can continue with the following steps.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_synth">Synth</h3>
+<div class="paragraph">
+<p>It is optional (though good practice) to synthesize before deploying.</p>
+</div>
+<div class="paragraph">
+<p>To synthesize the infrastructure into an AWS CloudFormation template that AWS can use to prepare the infrastructure in our account, you will need to run the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="console language-console">cdk synth</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Your app is run by the cdk synth command, which converts the resources it defines into an AWS CloudFormation template. This process also will generate a <code>cdk.out</code> directory containing a <code>{name}.template.json</code> file among others.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_diff">Diff</h3>
+<div class="paragraph">
+<p>Using the <code>diff</code> command will allow you to see the changes that will be applied to your infrastructure. It basically retrieves the template from your AWS account and compares it with the template you have synthesized.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="console language-console">cdk diff</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_deploy">Deploy</h3>
+<div class="paragraph">
+<p>To deploy the stack using AWS CloudFormation use the following command:</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+You may be charged for data stored depending on the infrastructure you want to deploy.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="console language-console">cdk deploy</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The AWS CDK synthesizes your stack before each deployment.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_cloudformation-dashboard">CloudFormation dashboard</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>AWS CloudFormation is a service that you can use for modeling and configuration of your AWS resources so tyou can focuse on your AWS-based applications and less time managing those resources. You can use this service dashboard to deploy and manage your infrastructure.</p>
+</div>
+<div class="paragraph">
+<p>One way of deploying is by uploading your template:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/create_stack.png" alt="create stack">
+</div>
+<div class="title">Figure 6. CloudFormation upload template</div>
+</div>
+<div class="paragraph">
+<p>There are three forms of doing it:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Uploading a template</strong>, either to an S3 bucket or chosing a file from your system.</p>
+</li>
+<li>
+<p>Using a <strong>Sample template</strong>.</p>
+</li>
+<li>
+<p>Using <strong>Designer</strong> to create your infrastructure: It is a drag and drop tool where you can add different AWS Services and configure them as you wish.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_change-sets">Change Sets</h3>
+<div class="paragraph">
+<p>Knowing how your changes will effect currently running resources before implementing them might help you update stacks with confidence. AWS CloudFormation only modifies your stack when you decide to execute the change set, allowing you to choose whether to move forward with your proposed changes or explore other changes by creating another change set.</p>
+</div>
+<div class="paragraph">
+<p>You can basically apply a template, see what changed and confirm changes or cancel them if the results are not what you expect. Change sets allow you to preview how proposed changes to a stack might impact your running resources, for example, whether your changes will delete or replace any critical resources.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="/home/runner/work/devonfw.github.io/devonfw.github.io/target/generated-docs/images/change_set_stack.png" alt="change set stack">
+</div>
+<div class="title">Figure 7. CloudFormation upload template</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_devon4net.wiki_how_to_cdk.asciidoc_references">References</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.aws.amazon.com/cdk/v2/guide/home.html">AWS Docs - CDK</a></p>
+</li>
+<li>
+<p><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/Welcome.html">AWS Docs - CloudFormation</a></p>
+</li>
+<li>
+<p><a href="https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-changesets.html">AWS Docs - Updating stacks using change sets</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/welcome/welcome.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_getting-started.wiki_introduction-why-should-i-use-devonfw.asciidoc_features.html">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_devon4j.wiki_architecture.asciidoc.html#devonfw-guide_devon4j.wiki_architecture.asciidoc_technology-stack">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_getting-started.wiki_getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_devon4j.wiki_architecture.asciidoc.html">Architecture</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_ide.wiki_devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_general_master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-guide_ide.wiki_LICENSE.asciidoc.html">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script src="/website/assets/scripts/popper.min.js"></script>
+    <script src="/website/assets/scripts/bootstrap.min.js"></script>
+<div class="footnote"><sub>
+
+Last updated 2022-11-14 16:02:35 UTC
+</sub></div>
+</div>
+</div>
+<link rel="stylesheet" type="text/css" href="https://cginternal.devonfw.com/websitesnippets/main.css">
+<script async src="https://cginternal.devonfw.com/websitesnippets/main.js"></script>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+<script>
+  var internalUrls = ["https://cginternal.devonfw.com/websitesnippets/"];
+  $(".internal").each(function(){
+    internalUrls.forEach((internalUrl, index) => {
+      $.ajax({url: internalUrl + $(this).text() + "/index.html" })
+      .then(r => {
+        var leftDiv = $('<div class="info"><span class="infoText">Internal</span><img class="infoImage" src="' + internalUrl + 'logo.png"/></div>');
+        var rightFirstDiv = $('<div class="message">This is only visible inside of the corporate network.</div>');
+        var rightLastDiv = $('<div class="content"></div>');
+        rightLastDiv.html(r);
+        var rightDiv = $('<div class="right"></div>');
+        rightDiv.append(rightFirstDiv);
+        rightDiv.append(rightLastDiv);
+        $(this).html(leftDiv);
+        $(this).append(rightDiv);
+        $(this).addClass("internal-active");
+        $(this).removeClass("internal");
+      })
+    });
+	});
+</script>
+<script>
+      let cookieName = 'cookie_consent';
+      let expiryTime = new Date(2037, 11, 21);
+      let today = new Date();
+      let cookieConsentDeclinedDate = localStorage.getItem("cookie_consent_declined");
+      let dateDiffHours = 0;
+      let cookieConsentHtml = `
+      <div id="cookie-consent">
+        <p>
+          We use cookies to perform analytics and enhance user experience. Do you accept to the use of cookies?
+        </p>
+        <p class="cookie-consent-buttons">
+          <a id="decline-cookie-btn" class="btn white-button" href="javascript:void(0)">Decline</a>
+          <a id="accept-cookie-btn" class="btn blue-button" href="javascript:void(0)">Accept</a>
+        </p>
+      </div>
+      `;
+      
+      const parseCookie = str =>
+        str
+        .split(';')
+        .map(v => v.split('='))
+        .reduce((acc, v) => {
+          acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());
+          return acc;
+        }, {});
+      
+      dateDiffHours = cookieConsentDeclinedDate ? Math.abs(cookieConsentDeclinedDate - today) / 36e5 : 0;
+      if (document.cookie.indexOf(cookieName) < 0) {
+        if (cookieConsentDeclinedDate) {
+          if (dateDiffHours > 24) {
+            $("body").append(cookieConsentHtml);
+          }
+        } else {
+          $("body").append(cookieConsentHtml);
+        }
+      } else {
+        cookies = parseCookie(document.cookie);
+        if (cookies["cookie_consent"] == "accept") {
+          consentGranted();
+        }
+      }
+      
+      $("#accept-cookie-btn").click(function() {
+        document.cookie = `${cookieName}=accept;expires=${expiryTime};path=/`;
+        localStorage.removeItem("cookie_consent_declined");
+        consentGranted();
+        $("#cookie-consent").hide();
+      });
+      $("#decline-cookie-btn").click(function() {
+        localStorage.setItem("cookie_consent_declined", today);
+        $("#cookie-consent").hide();
+      });
+</script>
+</body>
+</html>

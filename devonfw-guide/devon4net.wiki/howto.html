@@ -223,8 +223,6 @@ gtag('consent', 'default', {
 <li><a href="#devonfw-guide_devon4net.wiki_howto.asciidoc_configuration">Configuration</a></li>
 <li><a href="#devonfw-guide_devon4net.wiki_howto.asciidoc_producer">Producer</a></li>
 <li><a href="#devonfw-guide_devon4net.wiki_howto.asciidoc_consumer">Consumer</a></li>
-<li><a href="#devonfw-guide_devon4net.wiki_howto.asciidoc_stream">Stream</a></li>
-<li><a href="#devonfw-guide_devon4net.wiki_howto.asciidoc_serialization">Serialization</a></li>
 </ul>
 </li>
 <li><a href="#devonfw-guide_devon4net.wiki_howto.asciidoc_how-to-use-nexus">How to: Use Nexus</a></li>
@@ -3568,17 +3566,6 @@ You can learn how to set up the component in your project by reading the compone
         "EnableSslCertificateVerification": false,
         "Debug": ""
       }
-    ],
-    "Streams": [
-      {
-        "ApplicationId": "Stream1",
-        "Servers": "127.0.0.1:9092",
-        "AutoOffsetReset": "earliest",
-        "StateDir": "./MyStream",
-        "CommitIntervalMs": "5000",
-        "Guarantee": "at_least_once",
-        "MetricsRecording": "debug"
-      }
     ]
   }</code></pre>
 </div>
@@ -3608,7 +3595,7 @@ Please refer to the component documentation to learn more about the configuratio
 <div class="content">
 <pre class="highlight"><code class="c# language-c#">public class MessageProducerHandler : KafkaProducerHandler&lt;string,string&gt;
 {
-    public MessageProducerHandler(IServiceCollection services, KafkaOptions kafkaOptions, string producerId, ISerializer&lt;string&gt; keySerializer = null, ISerializer&lt;string&gt; valueSerializer = null) : base(services, kafkaOptions, producerId, keySerializer, valueSerializer)
+    public MessageProducerHandler(IServiceCollection services, IKakfkaHandler kafkaHandler, string producerId) : base(services, kafkaHandler, producerId)
     {
     }
 }</code></pre>
@@ -3619,7 +3606,7 @@ Please refer to the component documentation to learn more about the configuratio
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="c# language-c#">builder.Services.AddKafkaProducer&lt;MessageProducerHandler, string, string&gt;("Producer1");</code></pre>
+<pre class="highlight"><code class="c# language-c#">builder.Services.AddKafkaProducer&lt;MessageProducerHandler&gt;("Producer1");</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3665,7 +3652,7 @@ Please refer to the component documentation to learn more about the configuratio
 <div class="content">
 <pre class="highlight"><code class="c# language-c#">public class MessageConsumerHandler : KafkaConsumerHandler&lt;string, string&gt;
 {
-    public MessageConsumerHandler(IServiceCollection services, KafkaOptions kafkaOptions, string consumerId, IDeserializer&lt;string&gt; keyDeserializer = null, IDeserializer&lt;string&gt; valueDeserializer = null, bool commit = false, int commitPeriod = 5, bool enableConsumerFlag = true) : base(services, kafkaOptions, consumerId, keyDeserializer, valueDeserializer, commit, commitPeriod, enableConsumerFlag)
+    public MessageConsumerHandler(IServiceCollection services, IKakfkaHandler kafkaHandler, string consumerId, bool commit = false, int commitPeriod = 5) : base(services, kafkaHandler, consumerId, commit, commitPeriod)
     {
     }
 
@@ -3681,151 +3668,7 @@ Please refer to the component documentation to learn more about the configuratio
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="c# language-c#">builder.Services.AddKafkaConsumer&lt;MessageConsumerHandler, string, string&gt;("Consumer1");</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="devonfw-guide_devon4net.wiki_howto.asciidoc_stream">Stream</h3>
-<div class="paragraph">
-<p>To create a stream with some logic on it you will need to create a service that extends the class <code>KafkaStreamService&lt;KeyType, ValueType&gt;</code> and override its method <code>CreateStreamBuilder</code> with something as follows:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="c# language-c#">public class MessageStreamService : KafkaStreamService&lt;string, string&gt;
-{
-    public MessageStreamService(IServiceCollection services, KafkaOptions kafkaOptions, string applicationId, ISerDes&lt;string&gt; keySerDes = null, ISerDes&lt;string&gt; valueSerDes = null) : base(services, kafkaOptions, applicationId, keySerDes, valueSerDes)
-    {
-    }
-
-    public override void CreateStreamBuilder()
-    {
-        StreamBuilder.Stream&lt;string, string&gt;("message_producer")
-            .Peek((k, v) =&gt; Console.WriteLine($"MessageStream says -&gt; Key: {k} | Value: {v}"))
-            .To("message_consumer");
-    }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The StreamBuilder will allow you to add all the logic to the stream. You can check <a href="https://lgouellec.github.io/kafka-streams-dotnet/">Streamiz Docs</a> to learn about the Stateless and Statefull Processors available on Kafka Streams.</p>
-</div>
-<div class="paragraph">
-<p>In the example, the <code>Stream&lt;&gt;()</code> method will create a Stream for the topic "message_producer". Inside this stream, the method <code>Peek</code> will do some operations based on the input data and return the input stream as-is, allowing to add more logic to it. In this case we use it to take a look to what is happening inside the stream.</p>
-</div>
-<div class="paragraph">
-<p>Then the method <code>To</code> will output the messages processed to another Stream, in this case "message_consumer".</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="c# language-c#">builder.Services.AddKafkaStreamService&lt;MessageStreamService, string, string&gt;("message_stream");</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="devonfw-guide_devon4net.wiki_howto.asciidoc_serialization">Serialization</h3>
-<div class="paragraph">
-<p>Kafka works with byte arrays so we need to serialize the data before sending it and deserializing after receiving.</p>
-</div>
-<div class="paragraph">
-<p>The process of turning objects into bytes is called serialization. The opposite procedure, known as deserialization, transforms a stream of bytes into an object.</p>
-</div>
-<div class="paragraph">
-<p>In devon4net, we provide default serializers for basic types and a default one for serializing custom objects. However, you can specify your own custom ones.</p>
-</div>
-<div class="sect3">
-<h4 id="devonfw-guide_devon4net.wiki_howto.asciidoc_producer">Producer</h4>
-<div class="paragraph">
-<p>The Producer will need to know how to serialize both, the <strong>key</strong> and the <strong>value</strong> data into bytes. So you will need to create a class that implements the interface <code>ISerializer&lt;T&gt;</code> from the package <code>Confluent.Kafka</code>. For example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="c# language-c#">public class CustomSerializer&lt;T&gt; : ISerializer&lt;T&gt;
-{
-    public byte[] Serialize(T data, SerializationContext context)
-    {
-        return JsonSerializer.SerializeToUtf8Bytes(data, typeof(T));
-    }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Then you can indicate the use of this serializer for the value in your <code>Program.cs</code>, as follows:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="c# language-c#">builder.Services.AddKafkaProducer&lt;MessageProducerHandler, string, string&gt;("message_stream", valueSerializer: new CustomSerializer());</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="devonfw-guide_devon4net.wiki_howto.asciidoc_consumer">Consumer</h4>
-<div class="paragraph">
-<p>The Producer will need to know how to deserialize both, the <strong>key</strong> and the <strong>value</strong> bytes to readable data. So you will need to create a class that implements the interface <code>IDeserializer&lt;T&gt;</code> from the package <code>Confluent.Kafka</code>. For example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="c# language-c#">public class CustomDeserializer&lt;T&gt; : IDeserializer&lt;T&gt;
-{
-    public T Deserialize(ReadOnlySpan&lt;byte&gt; data, bool isNull, SerializationContext context)
-    {
-        return (T) JsonSerializer.Deserialize(new MemoryStream(data.ToArray()), typeof(T));
-    }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Then you can indicate the use of this deserializer for the key in your <code>Program.cs</code>, as follows:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="c# language-c#">builder.Services.AddKafkaConsumer&lt;MessageConsumerHandler, string, string&gt;("Consumer1", keyDeserializer: new CustomDeserializer());</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="devonfw-guide_devon4net.wiki_howto.asciidoc_stream">Stream</h4>
-<div class="paragraph">
-<p>On the other hand, as the stream is located between the producer and the consumer, it will need both to serialize and deserialize, also the <strong>key</strong> and the <strong>value</strong>. For the stream, you will need to create a class that implements the interface <code>ISerDes&lt;T&gt;</code> from the package <code>Streamiz.Kafka.Net.SerDes</code>. For example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="c# language-c#">public class CustomKafkaSerDes&lt;T&gt; : ISerDes&lt;T&gt;
-{
-    public void Initialize(SerDesContext context)
-    {
-        // Purposely empty, necessary to implement the interface but nothing needs to be initialized at the moment
-    }
-
-    public byte[] Serialize(T data, SerializationContext context)
-    {
-        return JsonSerializer.SerializeToUtf8Bytes(data, typeof(T));
-    }
-
-    public byte[] SerializeObject(object data, SerializationContext context)
-    {
-        return JsonSerializer.SerializeToUtf8Bytes(data, typeof(T));
-    }
-
-    public T Deserialize(byte[] data, SerializationContext context)
-    {
-        return (T) JsonSerializer.Deserialize(new MemoryStream(data), typeof(T));
-    }
-
-    object ISerDes.DeserializeObject(byte[] data, SerializationContext context)
-    {
-        return (T) JsonSerializer.Deserialize(new MemoryStream(data), typeof(T));
-    }
-}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Then you can indicate the use of this "SerDes" in your <code>Program.cs</code>, as follows:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code class="c# language-c#">builder.Services.AddKafkaStreamService&lt;MessageStreamService, string, string&gt;("message_stream", keySerDes: new CustomKafkaSerDes(), valueSerDes: new CustomKafkaSerDes());</code></pre>
-</div>
+<pre class="highlight"><code class="c# language-c#">builder.Services.AddKafkaConsumer&lt;MessageConsumerHandler&gt;("Consumer1");</code></pre>
 </div>
 </div>
 </div>
@@ -3847,15 +3690,15 @@ Please refer to the component documentation to learn more about the configuratio
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="C# language-C#">var rawHostedRepository new RawHostedRepository
-{
-    Name = "SampleRepository",
-    Online = true,
-    Storage = CreateDefaultStorage(),
-    Raw = new Raw
     {
-        ContentDisposition = "ATTACHMENT"
-    }
-};</code></pre>
+        Name = "SampleRepository",
+        Online = true,
+        Storage = CreateDefaultStorage(),
+        Raw = new Raw
+        {
+            ContentDisposition = "ATTACHMENT"
+        }
+    };</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5707,7 +5550,7 @@ For more information about the configuration of the component itself, please, vi
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-11-14 11:26:40 UTC
+Last updated 2022-11-14 16:02:49 UTC
 </sub></div>
 </div>
 </div>

@@ -140,6 +140,13 @@ gtag('consent', 'default', {
 <li><a href="#devonfw-guide_hangar.wiki_setup-container-image-registry.asciidoc_image-format">Image Format</a></li>
 </ul>
 </li>
+<li><a href="#devonfw-guide_hangar.wiki_setup-container-image-registry.asciidoc_google-cloud-artifact-registry">Google Cloud Artifact Registry</a>
+<ul class="sectlevel2">
+<li><a href="#devonfw-guide_hangar.wiki_setup-container-image-registry.asciidoc_prerequisites">Prerequisites</a></li>
+<li><a href="#devonfw-guide_hangar.wiki_setup-container-image-registry.asciidoc_creating-an-artifact-registry-image-repository">Creating an Artifact Registry image repository</a></li>
+<li><a href="#devonfw-guide_hangar.wiki_setup-container-image-registry.asciidoc_image-format">Image Format</a></li>
+</ul>
+</li>
 <li><a href="#devonfw-guide_hangar.wiki_setup-container-image-registry.asciidoc_provider-documentation">Provider Documentation</a></li>
 </ul>
 <div class="sect1">
@@ -531,6 +538,125 @@ Any <a href="https://docs.microsoft.com/en-us/azure/container-registry/container
 </div>
 </div>
 <div class="sect1">
+<h2 id="devonfw-guide_hangar.wiki_setup-container-image-registry.asciidoc_google-cloud-artifact-registry">Google Cloud Artifact Registry</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="devonfw-guide_hangar.wiki_setup-container-image-registry.asciidoc_prerequisites">Prerequisites</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>A Google Cloud project already setup</p>
+</li>
+<li>
+<p>Artifact Repository API enabled for the project</p>
+</li>
+<li>
+<p>GCloud CLI installed and configured</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_hangar.wiki_setup-container-image-registry.asciidoc_creating-an-artifact-registry-image-repository">Creating an Artifact Registry image repository</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Login to GCloud using <code>gcloud auth login</code>.</p>
+</li>
+<li>
+<p>Create a container image repository with the following command:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="shell language-shell">   gcloud artifacts repositories create &lt;repository-name&gt; --repository-format=docker --location=&lt;repository-location&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Sample Output</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>Create request issued for: [testdockerrepo]
+Waiting for operation [projects/poc-cloudnative-capgemini/locations/europe-southwest1/operations/748b5502-43af-46b9-9f3
+a-eb2f5bd4178c] to complete...done.
+Created repository [testdockerrepo].</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Enable access to your Artifact Registry repository from your local Docker client using:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>gcloud auth configure-docker &lt;location&gt;-docker.pkg.dev</pre>
+</div>
+</div>
+<div class="paragraph">
+<p><strong>Sample Output</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>Adding credentials for: europe-west9-docker.pkg.dev
+After update, the following will be written to your Docker config file located at
+[C:\Users\mcerverc\.docker\config.json]:
+ {
+  "credHelpers": {
+    "europe-west9-docker.pkg.dev": "gcloud"
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_hangar.wiki_setup-container-image-registry.asciidoc_image-format">Image Format</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><code>&lt;location&gt;-docker.pkg.dev/&lt;project-id&gt;/&lt;repository&gt;/&lt;image-name&gt;:&lt;tag&gt;</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>&lt;location&gt;</code>: Regional or multi-regional location of the repository.</p>
+</li>
+<li>
+<p><code>&lt;project-id&gt;</code>: Google Cloud project ID.</p>
+</li>
+<li>
+<p><code>&lt;repository&gt;</code>: Previously chosen repository name.</p>
+</li>
+<li>
+<p><code>&lt;image-name&gt;</code>: Freely chosen project/image-name given by the user.</p>
+</li>
+<li>
+<p><code>&lt;tag&gt;</code>: Some alphanumeric tag which is given as identifier.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_hangar.wiki_setup-container-image-registry.asciidoc_examples">Examples</h4>
+<div class="ulist">
+<ul>
+<li>
+<p><code>europe-southwest1-docker.pkg.dev/poc-cloudnative-capgemini/testdockerrepo/imagendetest:v1</code></p>
+</li>
+<li>
+<p><code>us-east5-docker.pkg.dev/projecttest/repo123/helloworld:latest</code></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="devonfw-guide_hangar.wiki_setup-container-image-registry.asciidoc_provider-documentation">Provider Documentation</h2>
 <div class="sectionbody">
 <div class="ulist">
@@ -659,7 +785,7 @@ Any <a href="https://docs.microsoft.com/en-us/azure/container-registry/container
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-11-14 11:29:18 UTC
+Last updated 2022-11-14 16:06:12 UTC
 </sub></div>
 </div>
 </div>
