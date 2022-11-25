@@ -163,6 +163,7 @@ gtag('consent', 'default', {
 </ul>
 </li>
 </ul>
+<h1 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc" class="sect0">Java Persistence API</h1>
 <div class="admonitionblock warning">
 <table>
 <tr>
@@ -175,8 +176,6 @@ Hey there! Seems like you are still using the documentation of our legacy Java r
 </tr>
 </table>
 </div>
-<hr>
-<h1 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc" class="sect0">Java Persistence API</h1>
 <div class="paragraph">
 <p>For mapping java objects to a relational database we use the <a href="http://www.oracle.com/technetwork/java/javaee/tech/persistence-jsp-140049.html">Java Persistence API (JPA)</a>.
 As JPA implementation we recommend to use <a href="http://hibernate.org/orm/">Hibernate</a>. For general documentation about JPA and Hibernate follow the links above as we will not replicate the documentation. Here you will only find guidelines and examples how we recommend to use it properly. The following examples show how to map the data of a database to an entity. As we use JPA we abstract from <a href="#devonfw-guide_devon4j.wiki_guide-sql.asciidoc">SQL</a> here. However, you will still need a <a href="https://en.wikipedia.org/wiki/Data_definition_language">DDL</a> script for your schema and during maintenance also <a href="#devonfw-guide_devon4j.wiki_guide-database-migration.asciidoc">database migrations</a>. Please follow our <a href="#devonfw-guide_devon4j.wiki_guide-sql.asciidoc">SQL guide</a> for such artifacts.</p>
@@ -184,13 +183,33 @@ As JPA implementation we recommend to use <a href="http://hibernate.org/orm/">Hi
 <div class="sect1">
 <h2 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_entity">Entity</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>Entities are part of the persistence layer and contain the actual data. They are POJOs (Plain Old Java Objects) on which the relational data of a database is mapped and vice versa. The mapping is configured via JPA annotations (<code>javax.persistence</code>). Usually an entity class corresponds to a table of a database and a property to a column of that table. A persistent entity instance then represents a row of the database table.</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+Entities are part of the persistence layer and contain the actual data. They are POJOs (Plain Old Java Objects) on which the relational data of a database is mapped and vice versa. The mapping is configured via JPA annotations (<code>javax.persistence</code>). Usually an entity class corresponds to a table of a database and a property to a column of that table. A persistent entity instance then represents a row of the database table.
+</td>
+</tr>
+</table>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_a-simple-entity">A Simple Entity</h3>
-<div class="paragraph">
-<p>The following listing shows a simple example:</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+The following listing shows a simple example:
+</td>
+</tr>
+</table>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -227,9 +246,19 @@ With the help of the <code>@Column</code> annotation it is possible to define th
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_entities-and-datatypes">Entities and Datatypes</h3>
-<div class="paragraph">
-<p>Standard datatypes like <code>Integer</code>, <code>BigDecimal</code>, <code>String</code>, etc. are mapped automatically by JPA. Custom <a href="#devonfw-guide_devon4j.wiki_guide-datatype.asciidoc">datatypes</a> are mapped as serialized <a href="#devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_blob">BLOB</a> by default what is typically undesired.
-In order to map atomic custom datatypes (implementations of`+SimpleDatatype`) we implement an <code>AttributeConverter</code>. Here is a simple example:</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+Standard datatypes like <code>Integer</code>, <code>BigDecimal</code>, <code>String</code>, etc. are mapped automatically by JPA. Custom <a href="#devonfw-guide_devon4j.wiki_guide-datatype.asciidoc">datatypes</a> are mapped as serialized <a href="#devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_blob">BLOB</a> by default what is typically undesired.
+In order to map atomic custom datatypes (implementations of`+SimpleDatatype`) we implement an <code>AttributeConverter</code>. Here is a simple example:
+</td>
+</tr>
+</table>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -254,14 +283,34 @@ public class MoneyAttributeConverter implements AttributeConverter&lt;Money, Big
 </div>
 <div class="sect3">
 <h4 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_enumerations">Enumerations</h4>
-<div class="paragraph">
-<p>By default JPA maps Enums via their ordinal. Therefore the database will only contain the ordinals (0, 1, 2, etc.) . So , inside the database you can not easily understand their meaning. Using <code>@Enumerated</code> with <code>EnumType.STRING</code> allows to map the enum values to their name (<code>Enum.name()</code>). Both approaches are fragile when it comes to code changes and refactoring (if you change the order of the enum values or rename them) after the application is deployed to production. If you want to avoid this and get a robust mapping you can define a dedicated string in each enum value for database representation that you keep untouched. Then you treat the enum just like any other <a href="#devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_entities-and-datatypes">custom datatype</a>.</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+By default JPA maps Enums via their ordinal. Therefore the database will only contain the ordinals (0, 1, 2, etc.) . So , inside the database you can not easily understand their meaning. Using <code>@Enumerated</code> with <code>EnumType.STRING</code> allows to map the enum values to their name (<code>Enum.name()</code>). Both approaches are fragile when it comes to code changes and refactoring (if you change the order of the enum values or rename them) after the application is deployed to production. If you want to avoid this and get a robust mapping you can define a dedicated string in each enum value for database representation that you keep untouched. Then you treat the enum just like any other <a href="#devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_entities-and-datatypes">custom datatype</a>.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect3">
 <h4 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_blob">BLOB</h4>
-<div class="paragraph">
-<p>If binary or character large objects (BLOB/CLOB) should be used to store the value of an attribute, e.g. to store an icon, the <code>@Lob</code> annotation should be used as shown in the following listing:</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+If binary or character large objects (BLOB/CLOB) should be used to store the value of an attribute, e.g. to store an icon, the <code>@Lob</code> annotation should be used as shown in the following listing:
+</td>
+</tr>
+</table>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -293,8 +342,18 @@ Using a byte array will cause problems if BLOBs get large because the entire BLO
 </div>
 <div class="sect3">
 <h4 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_date-and-time">Date and Time</h4>
-<div class="paragraph">
-<p>To store date and time related values, the temporal annotation can be used as shown in the listing below:</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+To store date and time related values, the temporal annotation can be used as shown in the listing below:
+</td>
+</tr>
+</table>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -312,8 +371,18 @@ Mixing these two granularities can cause problems when comparing one value to an
 </div>
 <div class="sect3">
 <h4 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_querydsl-and-custom-types">QueryDSL and Custom Types</h4>
-<div class="paragraph">
-<p>Using the Aliases API of QueryDSL might result in an <code>InvalidDataAccessApiUsageException</code> when using custom datatypes in entity properties. This can be circumvented in two steps:</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+Using the Aliases API of QueryDSL might result in an <code>InvalidDataAccessApiUsageException</code> when using custom datatypes in entity properties. This can be circumvented in two steps:
+</td>
+</tr>
+</table>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -341,10 +410,20 @@ Mixing these two granularities can cause problems when comparing one value to an
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_primary-keys">Primary Keys</h3>
-<div class="paragraph">
-<p>We only use simple Long values as primary keys (IDs).
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+We only use simple Long values as primary keys (IDs).
 By default it is auto generated (<code>@GeneratedValue(strategy=GenerationType.AUTO)</code>).
-This is already provided by the class <code>com.devonfw.&lt;projectName&gt;.general.dataaccess.api.AbstractPersistenceEntity</code> within the <a href="#devonfw-guide_devon4j.wiki_guide-structure-classic.asciidoc_architecture-mapping">classic project structure</a> respectively <code>com.devonfw.&lt;projectName&gt;.general.domain.model.AbstractPersistenceEntity</code> within the <a href="#devonfw-guide_devon4j.wiki_guide-structure-modern.asciidoc_architecture-mapping">modern project structure</a>, that you can extend.</p>
+This is already provided by the class <code>com.devonfw.&lt;projectName&gt;.general.dataaccess.api.AbstractPersistenceEntity</code> within the <a href="#devonfw-guide_devon4j.wiki_guide-structure-classic.asciidoc_architecture-mapping">classic project structure</a> respectively <code>com.devonfw.&lt;projectName&gt;.general.domain.model.AbstractPersistenceEntity</code> within the <a href="#devonfw-guide_devon4j.wiki_guide-structure-modern.asciidoc_architecture-mapping">modern project structure</a>, that you can extend.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>The reason for this recommendation is simply because using a number (<code>Long</code>) is the most efficient representation for the database.
@@ -367,10 +446,32 @@ Be sure to include "AUTO_INCREMENT" in your sql table field ID to be able to per
 <div class="sect1">
 <h2 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_relationships">Relationships</h2>
 <div class="sectionbody">
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+</td>
+</tr>
+</table>
+</div>
 <div class="sect2">
 <h3 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_n1-and-11-relationships">n:1 and 1:1 Relationships</h3>
-<div class="paragraph">
-<p>Entities often do not exist independently but are in some relation to each other. For example, for every period of time one of the StaffMember&#8217;s of the restaurant example has worked, which is represented by the class <code>WorkingTime</code>, there is a relationship to this StaffMember.</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+Entities often do not exist independently but are in some relation to each other. For example, for every period of time one of the StaffMember&#8217;s of the restaurant example has worked, which is represented by the class <code>WorkingTime</code>, there is a relationship to this StaffMember.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>The following listing shows how this can be modeled using JPA:</p>
@@ -404,8 +505,18 @@ This is why the <code>@ManyToOne</code> annotation is used here. For 1:1 relatio
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_1n-and-nm-relationships">1:n and n:m Relationships</h3>
-<div class="paragraph">
-<p>The relationship of the example listed above is currently an unidirectional one, as there is a getter method for retrieving the <code>StaffMember</code> from the <code>WorkingTime</code> object, but not vice versa.</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+The relationship of the example listed above is currently an unidirectional one, as there is a getter method for retrieving the <code>StaffMember</code> from the <code>WorkingTime</code> object, but not vice versa.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>To make it a bidirectional one, the following code has to be added to <code>StaffMember</code>:</p>
@@ -484,8 +595,18 @@ For example if one wanted to extend the example application so that all ingredie
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_eager-vs.-lazy-loading">Eager vs. Lazy Loading</h3>
-<div class="paragraph">
-<p>Using JPA it is possible to use either lazy or eager loading. Eager loading means that for entities retrieved from the database, other entities that are referenced by these entities are also retrieved, whereas lazy loading means that this is only done when they are actually needed, i.e. when the corresponding getter method is invoked.</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+Using JPA it is possible to use either lazy or eager loading. Eager loading means that for entities retrieved from the database, other entities that are referenced by these entities are also retrieved, whereas lazy loading means that this is only done when they are actually needed, i.e. when the corresponding getter method is invoked.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>Application based on devon4j are strongly advised to <strong>always use lazy loading</strong>. The JPA defaults are:</p>
@@ -524,9 +645,19 @@ Please read the <a href="#devonfw-guide_devon4j.wiki_guide-jpa-performance.ascii
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_cascading-relationships">Cascading Relationships</h3>
-<div class="paragraph">
-<p>For relations it is also possible to define whether operations are cascaded (like a recursion) to the related entity.
-By default, nothing is done in these situations. This can be changed by using the <code>cascade</code> property of the annotation that specifies the relation type (<code>@OneToOne</code>, <code>@ManyToOne</code>, <code>@OneToMany</code>, <code>@ManyToOne</code>). This property accepts a <code>CascadeType</code> that offers the following options:</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+For relations it is also possible to define whether operations are cascaded (like a recursion) to the related entity.
+By default, nothing is done in these situations. This can be changed by using the <code>cascade</code> property of the annotation that specifies the relation type (<code>@OneToOne</code>, <code>@ManyToOne</code>, <code>@OneToMany</code>, <code>@ManyToOne</code>). This property accepts a <code>CascadeType</code> that offers the following options:
+</td>
+</tr>
+</table>
 </div>
 <div class="ulist">
 <ul>
@@ -556,6 +687,18 @@ By default, nothing is done in these situations. This can be changed by using th
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_typesafe-foreign-keys-using-idref">Typesafe Foreign Keys using IdRef</h3>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>For simple usage you can use <code>Long</code> for all your foreign keys.
 However, as an optional pattern for advanced and type-safe usage, we offer <a href="#devonfw-guide_devon4j.wiki_guide-jpa-idref.asciidoc">IdRef</a>.</p>
@@ -566,8 +709,18 @@ However, as an optional pattern for advanced and type-safe usage, we offer <a hr
 <div class="sect1">
 <h2 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_embeddable">Embeddable</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>An embeddable Object is a way to group properties of an <a href="#devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_entity">entity</a> into a separate Java (child) object. Unlike with implement <a href="#devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_relationships">relationships</a> the embeddable is not a separate entity and its properties are stored (embedded) in the same table together with the entity. This is helpful to structure and reuse groups of properties.</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+An embeddable Object is a way to group properties of an <a href="#devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_entity">entity</a> into a separate Java (child) object. Unlike with implement <a href="#devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_relationships">relationships</a> the embeddable is not a separate entity and its properties are stored (embedded) in the same table together with the entity. This is helpful to structure and reuse groups of properties.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>The following example shows an <code>Address</code> implemented as an embeddable class:</p>
@@ -630,8 +783,18 @@ However, in this case the embeddable becomes part of your <code>api</code> modul
 <div class="sect1">
 <h2 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_inheritance">Inheritance</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>Just like normal java classes, <a href="#devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_entity">entity</a> classes can inherit from others. The only difference is that you need to specify how to map a class hierarchy to database tables. Generic abstract super-classes for entities can simply be annotated with <code>@MappedSuperclass</code>.</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+Just like normal java classes, <a href="#devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_entity">entity</a> classes can inherit from others. The only difference is that you need to specify how to map a class hierarchy to database tables. Generic abstract super-classes for entities can simply be annotated with <code>@MappedSuperclass</code>.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>For all other cases the JPA offers the annotation <code>@Inheritance</code> with the property <code>strategy</code> talking an <code>InheritanceType</code> that has the following options:</p>
@@ -687,13 +850,33 @@ public class MyOtherEntity extends MyParentEntity implements MyChild {
 <div class="sect1">
 <h2 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_repositories-and-daos">Repositories and DAOs</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>For each entity a code unit is created that groups all database operations for that entity. We recommend to use <a href="#devonfw-guide_devon4j.wiki_guide-repository.asciidoc">spring-data repositories</a> for that as it is most efficient for developers. As an alternative there is still the classic approach using <a href="#devonfw-guide_devon4j.wiki_guide-dao.asciidoc">DAOs</a>.</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+For each entity a code unit is created that groups all database operations for that entity. We recommend to use <a href="#devonfw-guide_devon4j.wiki_guide-repository.asciidoc">spring-data repositories</a> for that as it is most efficient for developers. As an alternative there is still the classic approach using <a href="#devonfw-guide_devon4j.wiki_guide-dao.asciidoc">DAOs</a>.
+</td>
+</tr>
+</table>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_concurrency-control">Concurrency Control</h3>
-<div class="paragraph">
-<p>The concurrency control defines the way concurrent access to the same data of a database is handled. When several users (or threads of application servers) concurrently access a database, anomalies may happen, e.g. a transaction is able to see changes from another transaction although that one did, not yet commit these changes. Most of these anomalies are automatically prevented by the database system, depending on the <a href="http://en.wikipedia.org/wiki/Isolation_(database_systems)"><em>isolation level</em></a> (property <code>hibernate.connection.isolation</code> in the <code>jpa.xml</code>, see <a href="http://docs.jboss.org/hibernate/orm/5.0/manual/en-US/html/ch03.html">here</a>, or <code>quarkus.datasource.jdbc.transaction-isolation-level</code> in the <code>application.properties</code>).</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+The concurrency control defines the way concurrent access to the same data of a database is handled. When several users (or threads of application servers) concurrently access a database, anomalies may happen, e.g. a transaction is able to see changes from another transaction although that one did, not yet commit these changes. Most of these anomalies are automatically prevented by the database system, depending on the <a href="http://en.wikipedia.org/wiki/Isolation_(database_systems)"><em>isolation level</em></a> (property <code>hibernate.connection.isolation</code> in the <code>jpa.xml</code>, see <a href="http://docs.jboss.org/hibernate/orm/5.0/manual/en-US/html/ch03.html">here</a>, or <code>quarkus.datasource.jdbc.transaction-isolation-level</code> in the <code>application.properties</code>).
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>Another anomaly is when two stakeholders concurrently access a record, do some changes and write them back to the database. The JPA addresses this with different locking strategies (see <a href="http://www.objectdb.com/java/jpa/persistence/lock">here</a>).</p>
@@ -704,9 +887,19 @@ public class MyOtherEntity extends MyParentEntity implements MyChild {
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_optimistic-locking">Optimistic Locking</h3>
-<div class="paragraph">
-<p>The class <code>com.devonfw.module.jpa.persistence.api.AbstractPersistenceEntity</code> already provides optimistic locking via a <code>modificationCounter</code> with the <code>@Version</code> annotation. Therefore JPA takes care of optimistic locking for you. When entities are transferred to clients, modified and sent back for update you need to ensure the <code>modificationCounter</code> is part of the game. If you follow our guides about <a href="#devonfw-guide_devon4j.wiki_guide-transferobject.asciidoc">transfer-objects</a> and <a href="#devonfw-guide_devon4j.wiki_guide-service-layer.asciidoc">services</a> this will also work out of the box.
-You only have to care about two things:</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+The class <code>com.devonfw.module.jpa.persistence.api.AbstractPersistenceEntity</code> already provides optimistic locking via a <code>modificationCounter</code> with the <code>@Version</code> annotation. Therefore JPA takes care of optimistic locking for you. When entities are transferred to clients, modified and sent back for update you need to ensure the <code>modificationCounter</code> is part of the game. If you follow our guides about <a href="#devonfw-guide_devon4j.wiki_guide-transferobject.asciidoc">transfer-objects</a> and <a href="#devonfw-guide_devon4j.wiki_guide-service-layer.asciidoc">services</a> this will also work out of the box.
+You only have to care about two things:
+</td>
+</tr>
+</table>
 </div>
 <div class="ulist">
 <ul>
@@ -723,9 +916,19 @@ According to KISS our recommendation is that the user gets an error displayed th
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_pessimistic-locking">Pessimistic Locking</h3>
-<div class="paragraph">
-<p>For back-end <a href="#devonfw-guide_devon4j.wiki_guide-service-layer.asciidoc">services</a> and especially for <a href="#devonfw-guide_devon4j.wiki_guide-batch-layer.asciidoc">batches</a> optimistic locking is not suitable. A human user shall not cause a large batch process to fail because he was editing the same entity. Therefore such use-cases use pessimistic locking what gives them a kind of priority over the human users.
-In your <a href="#devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_data-access-object">DAO</a> implementation you can provide methods that do pessimistic locking via <a href="http://docs.oracle.com/javaee/7/api/javax/persistence/EntityManager.html"><code>EntityManager</code></a> operations that take a <a href="http://docs.oracle.com/javaee/7/api/javax/persistence/LockModeType.html"><code>LockModeType</code></a>. Here is a simple example:</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+For back-end <a href="#devonfw-guide_devon4j.wiki_guide-service-layer.asciidoc">services</a> and especially for <a href="#devonfw-guide_devon4j.wiki_guide-batch-layer.asciidoc">batches</a> optimistic locking is not suitable. A human user shall not cause a large batch process to fail because he was editing the same entity. Therefore such use-cases use pessimistic locking what gives them a kind of priority over the human users.
+In your <a href="#devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_data-access-object">DAO</a> implementation you can provide methods that do pessimistic locking via <a href="http://docs.oracle.com/javaee/7/api/javax/persistence/EntityManager.html"><code>EntityManager</code></a> operations that take a <a href="http://docs.oracle.com/javaee/7/api/javax/persistence/LockModeType.html"><code>LockModeType</code></a>. Here is a simple example:
+</td>
+</tr>
+</table>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -745,24 +948,54 @@ Use one of the types if you want to modify the entity later on, for read only ac
 <div class="sect1">
 <h2 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_database-auditing">Database Auditing</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>See <a href="#devonfw-guide_devon4j.wiki_guide-auditing.asciidoc">auditing guide</a>.</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+See <a href="#devonfw-guide_devon4j.wiki_guide-auditing.asciidoc">auditing guide</a>.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_testing-data-access">Testing Data-Access</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>For testing of Entities and Repositories or DAOs see <a href="#devonfw-guide_devon4j.wiki_guide-testing.asciidoc_level-2-component-test">testing guide</a>.</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+For testing of Entities and Repositories or DAOs see <a href="#devonfw-guide_devon4j.wiki_guide-testing.asciidoc_level-2-component-test">testing guide</a>.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_principles">Principles</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>We strongly recommend these principles:</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+We strongly recommend these principles:
+</td>
+</tr>
+</table>
 </div>
 <div class="ulist">
 <ul>
@@ -782,6 +1015,18 @@ Use one of the types if you want to modify the entity later on, for read only ac
 <div class="sect1">
 <h2 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_database-configuration">Database Configuration</h2>
 <div class="sectionbody">
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>For details on the configuration of the database connection and database logging of the individual framework, please refer to the respective configuration guide.</p>
 </div>
@@ -793,14 +1038,34 @@ Use one of the types if you want to modify the entity later on, for read only ac
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_database-migration">Database Migration</h3>
-<div class="paragraph">
-<p>See <a href="#devonfw-guide_devon4j.wiki_guide-database-migration.asciidoc">database migration</a>.</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+See <a href="#devonfw-guide_devon4j.wiki_guide-database-migration.asciidoc">database migration</a>.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_pooling">Pooling</h3>
-<div class="paragraph">
-<p>You typically want to pool JDBC connections to boost performance by recycling previous connections. There are many libraries available to do connection pooling. We recommend to use <a href="https://github.com/brettwooldridge/HikariCP">HikariCP</a>. For Oracle RDBMS see <a href="#devonfw-guide_devon4j.wiki_guide-oracle.asciidoc_pooling">here</a>.</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+You typically want to pool JDBC connections to boost performance by recycling previous connections. There are many libraries available to do connection pooling. We recommend to use <a href="https://github.com/brettwooldridge/HikariCP">HikariCP</a>. For Oracle RDBMS see <a href="#devonfw-guide_devon4j.wiki_guide-oracle.asciidoc_pooling">here</a>.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -808,10 +1073,32 @@ Use one of the types if you want to modify the entity later on, for read only ac
 <div class="sect1">
 <h2 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_security">Security</h2>
 <div class="sectionbody">
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+</td>
+</tr>
+</table>
+</div>
 <div class="sect2">
 <h3 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_sql-injection">SQL-Injection</h3>
-<div class="paragraph">
-<p>A common <a href="#devonfw-guide_devon4j.wiki_guide-security.asciidoc">security</a> threat is <a href="http://en.wikipedia.org/wiki/SQL_injection">SQL-injection</a>. Never build queries with string concatenation or your code might be vulnerable as in the following example:</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+A common <a href="#devonfw-guide_devon4j.wiki_guide-security.asciidoc">security</a> threat is <a href="http://en.wikipedia.org/wiki/SQL_injection">SQL-injection</a>. Never build queries with string concatenation or your code might be vulnerable as in the following example:
+</td>
+</tr>
+</table>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -841,8 +1128,18 @@ Use one of the types if you want to modify the entity later on, for read only ac
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc_limited-permissions-for-application">Limited Permissions for Application</h3>
-<div class="paragraph">
-<p>We suggest that you operate your application with a database user that has limited permissions so he can not modify the SQL schema (e.g. drop tables). For initializing the schema (DDL) or to do schema migrations use a separate user that is not used by the application itself.</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-warning" title=""></i>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+We suggest that you operate your application with a database user that has limited permissions so he can not modify the SQL schema (e.g. drop tables). For initializing the schema (DDL) or to do schema migrations use a separate user that is not used by the application itself.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -958,7 +1255,7 @@ Use one of the types if you want to modify the entity later on, for read only ac
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-11-22 09:53:23 UTC
+Last updated 2022-11-25 10:44:44 UTC
 </sub></div>
 </div>
 </div>

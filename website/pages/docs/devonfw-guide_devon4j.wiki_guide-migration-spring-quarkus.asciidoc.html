@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2022-11-22 10:05:15 UTC">
+<meta name="author" content="Updated at 2022-11-25 10:53:32 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -533,7 +533,7 @@ gtag('consent', 'default', {
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2022-11-22 10:12:13 UTC</span><br>
+<span id="author" class="author">Updated at 2022-11-25 10:58:49 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -607,12 +607,36 @@ gtag('consent', 'default', {
 </div><div id="content">
 <div class="sect2">
 <h3 id="devonfw-guide_devon4j.wiki_guide-migration-spring-quarkus.asciidoc">Migrate from Spring to Quarkus</h3>
+<div class="admonitionblock warning">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won’t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+</td>
+</tr>
+</tbody></table>
+</div>
 <div class="paragraph">
 <p>This guide will cover the migration process of a Spring application to a Quarkus application. There are already articles about migrating from Spring to Quarkus (e.g. <a href="https://developers.redhat.com/blog/2020/04/10/migrating-a-spring-boot-microservices-application-to-quarkus" class="bare">https://developers.redhat.com/blog/2020/04/10/migrating-a-spring-boot-microservices-application-to-quarkus</a>, <a href="https://dzone.com/articles/migrating-a-spring-boot-application-to-quarkus-cha" class="bare">https://dzone.com/articles/migrating-a-spring-boot-application-to-quarkus-cha</a>).
 This guide will focus more on the devon4j specific aspects. We assume that a working Spring application exists, built in the <a href="devonfw-guide_devon4j.wiki_guide-structure-classic.asciidoc.html">classic devon4j specific way</a> (e.g. <a href="https://github.com/devonfw/jump-the-queue/tree/master/java/jtqj">Jump The Queue</a> or <a href="https://github.com/devonfw/my-thai-star">My Thai Star</a>).</p>
 </div>
 <div class="sect3">
 <h4 id="devonfw-guide_devon4j.wiki_guide-migration-spring-quarkus.asciidoc_create-the-quarkus-application">Create the Quarkus application</h4>
+<div class="admonitionblock warning">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won’t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+</td>
+</tr>
+</tbody></table>
+</div>
 <div class="paragraph">
 <p>We start with an empty Quarkus project. You can create the project with Maven on the command line or use the <a href="https://code.quarkus.io/">online generator</a>. The advantage of the online generator is that you have a pre-selection of dependencies to use in your project.
 For starters, let’s select the basic dependencies required to develop a REST service with database connectivity (you can use one of the links in the <a href="asciidoc_devonfw-guide_devon4j.wiki_devon4j.asciidoc_guides_2.html#devonfw-guide_devon4j.wiki_quarkus_quarkus-template.asciidoc">Quarkus template guide</a>): <em>RESTEasy JAX-RS, RESTEasy Jackson, Hibernate ORM, Spring Data JPA API, JDBC Driver (choose the type of database you need), Flyway (if you have database migration schemas), SmallRye Health (optional for Health Monitoring)</em></p>
@@ -622,20 +646,54 @@ For starters, let’s select the basic dependencies required to develop a REST s
 </div>
 <div class="sect4">
 <h5 id="devonfw-guide_devon4j.wiki_guide-migration-spring-quarkus.asciidoc_migration-toolkit-from-red-hat">Migration Toolkit from Red Hat</h5>
-<div class="paragraph">
-<p>Red Hat provides a migration toolkit (<a href="https://developers.redhat.com/products/mta/overview">MTA, Migration Toolkit for Applications</a>), that supports migration of a Spring to a Quarkus application. There are several versions of this toolkit (e.g., a web console, a Maven plugin, or an IDE plugin).
-The MTA analyzes your existing application and generates a report with hints and instructions for migrating from Spring to Quarkus. For example, it gives you an indication of which dependencies are not supported in your project for a Quarkus application and which dependencies you need to swap them with. The analysis is rule-based, and you can also add your own rules that will be checked during analysis.</p>
+<div class="admonitionblock warning">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won’t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+Red Hat provides a migration toolkit (<a href="https://developers.redhat.com/products/mta/overview">MTA, Migration Toolkit for Applications</a>), that supports migration of a Spring to a Quarkus application. There are several versions of this toolkit (e.g., a web console, a Maven plugin, or an IDE plugin).
+The MTA analyzes your existing application and generates a report with hints and instructions for migrating from Spring to Quarkus. For example, it gives you an indication of which dependencies are not supported in your project for a Quarkus application and which dependencies you need to swap them with. The analysis is rule-based, and you can also add your own rules that will be checked during analysis.
+</td>
+</tr>
+</tbody></table>
 </div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="devonfw-guide_devon4j.wiki_guide-migration-spring-quarkus.asciidoc_entities">Entities</h4>
+<div class="admonitionblock warning">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won’t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+</td>
+</tr>
+</tbody></table>
+</div>
 <div class="paragraph">
 <p>There is nothing special to consider when creating the entities. In most cases, you can simply take the code from your Spring application and use it for your Quarkus application. Usually, the entities extend a superclass <code>ApplicationPersistenceEntity</code> containing, for example, the <code>id</code> property. You can also take this class from your Spring application and reuse it.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="devonfw-guide_devon4j.wiki_guide-migration-spring-quarkus.asciidoc_transfer-objects">Transfer objects</h4>
+<div class="admonitionblock warning">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won’t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+</td>
+</tr>
+</tbody></table>
+</div>
 <div class="paragraph">
 <p>The next step is to create the appropriate transfer objects for the entities. In a devon4j Spring application, we would use CobiGen to create these classes. Since CobiGen is not usable for this purpose in Quarkus applications yet, we have to create the classes manually.</p>
 </div>
@@ -689,6 +747,18 @@ The MTA analyzes your existing application and generates a report with hints and
 </div>
 <div class="sect3">
 <h4 id="devonfw-guide_devon4j.wiki_guide-migration-spring-quarkus.asciidoc_data-access-layer">Data Access Layer</h4>
+<div class="admonitionblock warning">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won’t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+</td>
+</tr>
+</tbody></table>
+</div>
 <div class="paragraph">
 <p>In devon4j, we propose to use <a href="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc.html#devonfw-guide_devon4j.wiki_guide-repository.asciidoc">Spring Data JPA</a> to build the data access layer using repositories and Querydsl to build <a href="devonfw-guide_devon4j.wiki_guide-jpa.asciidoc.html#devonfw-guide_devon4j.wiki_guide-jpa-query.asciidoc_dynamic-queries">dynamic queries</a>. We will also use this approach for Quarkus applications, but we need to change the implementation because the devon4j modules are based on reflection, which is not suitable for Quarkus.
 In Quarkus we will use Querydsl using code generation. So for this layer, more changes are required and we can’t just take the existing code.</p>
@@ -760,6 +830,18 @@ quarkus.datasource.password=...</code></pre>
 </div>
 <div class="sect3">
 <h4 id="devonfw-guide_devon4j.wiki_guide-migration-spring-quarkus.asciidoc_logic-layer">Logic Layer</h4>
+<div class="admonitionblock warning">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won’t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+</td>
+</tr>
+</tbody></table>
+</div>
 <div class="paragraph">
 <p>For the logic layer, devon4j uses a <a href="devonfw-guide_devon4j.wiki_devon4j.asciidoc_layers.html#devonfw-guide_devon4j.wiki_guide-usecase.asciidoc">use-case approach</a>. You can reuse the use case interfaces from the api module of the Spring application. Again, make sure to rename the transfer objects.</p>
 </div>
@@ -769,6 +851,18 @@ quarkus.datasource.password=...</code></pre>
 </div>
 <div class="sect3">
 <h4 id="devonfw-guide_devon4j.wiki_guide-migration-spring-quarkus.asciidoc_mapping">Mapping</h4>
+<div class="admonitionblock warning">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won’t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+</td>
+</tr>
+</tbody></table>
+</div>
 <div class="paragraph">
 <p>For bean mapping, we need to use a completely different approach in the Quarkus application than in the Spring application. For Quarkus, we use MapStruct, which creates the mapper at build time rather than at runtime using reflection. Add the following dependencies to your pom.xml.</p>
 </div>
@@ -809,6 +903,18 @@ public interface YourEntityMapper {
 </div>
 <div class="sect3">
 <h4 id="devonfw-guide_devon4j.wiki_guide-migration-spring-quarkus.asciidoc_service-layer">Service Layer</h4>
+<div class="admonitionblock warning">
+<table>
+<tbody><tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won’t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
+</td>
+</tr>
+</tbody></table>
+</div>
 <div class="paragraph">
 <p>For the implementation of the service layer, we use the <a href="devonfw-guide_devon4j.wiki_guide-rest.asciidoc.html#devonfw-guide_devon4j.wiki_guide-rest.asciidoc_jax-rs">JAX-RS</a> for both Quarkus and Spring applications to create the REST services. Classic devon4j Spring applications rely on Apache CFX as the implemention of JAX-RS.
 For Quarkus, we use RESTEasy. Since both are implementations of JAX-RS, much of the Spring application code can be reused.</p>
@@ -842,15 +948,6 @@ public class YourComponentRestService {
 </div>
 <div class="sect3">
 <h4 id="devonfw-guide_devon4j.wiki_guide-migration-spring-quarkus.asciidoc_summary">Summary</h4>
-<div class="paragraph">
-<p>As you have seen, some parts hardly differ when migrating a Spring application to a Quarkus application, while other parts differ more. The above sections describe the parts needed for simple applications that provide REST services with a data access layer.
-If you add more functionality, more customization and other frameworks, dependencies may be required. If that is the case, take a look at the corresponding guide on the topic in the devon4j documentation or check if there is a tutorial on the official <a href="https://quarkus.io/guides/">Quarkus website</a>.</p>
-</div>
-<div class="paragraph">
-<p>Furthermore, we can summarize that migrating from a Spring application to a Quarkus representative is not complex. Although Quarkus is a very young framework (release 1.0 was in 2019), it brings a lot of proven standards and libraries that you can integrate into your application.
-This makes it easy to migrate and reuse code from existing (Spring) applications. Also, Quarkus comes with Spring API compatibility for many Spring modules (<a href="https://quarkus.io/guides/spring-data-jpa">Spring Data JPA</a>, <a href="https://quarkus.io/guides/spring-di">Spring DI</a>, <a href="https://github.com/quarkusio/quarkus/tree/main/extensions">etc.</a>), which makes it easier for developers to reuse their knowledge.</p>
-</div>
-<!-- toc disabled -->
 <div class="admonitionblock warning">
 <table>
 <tbody><tr>
@@ -863,7 +960,15 @@ Hey there! Seems like you are still using the documentation of our legacy Java r
 </tr>
 </tbody></table>
 </div>
-<hr>
+<div class="paragraph">
+<p>As you have seen, some parts hardly differ when migrating a Spring application to a Quarkus application, while other parts differ more. The above sections describe the parts needed for simple applications that provide REST services with a data access layer.
+If you add more functionality, more customization and other frameworks, dependencies may be required. If that is the case, take a look at the corresponding guide on the topic in the devon4j documentation or check if there is a tutorial on the official <a href="https://quarkus.io/guides/">Quarkus website</a>.</p>
+</div>
+<div class="paragraph">
+<p>Furthermore, we can summarize that migrating from a Spring application to a Quarkus representative is not complex. Although Quarkus is a very young framework (release 1.0 was in 2019), it brings a lot of proven standards and libraries that you can integrate into your application.
+This makes it easy to migrate and reuse code from existing (Spring) applications. Also, Quarkus comes with Spring API compatibility for many Spring modules (<a href="https://quarkus.io/guides/spring-data-jpa">Spring Data JPA</a>, <a href="https://quarkus.io/guides/spring-di">Spring DI</a>, <a href="https://github.com/quarkusio/quarkus/tree/main/extensions">etc.</a>), which makes it easier for developers to reuse their knowledge.</p>
+</div>
+<!-- toc disabled -->
 </div>
 </div>
 <div class="paragraph nav-footer">
@@ -980,7 +1085,7 @@ Hey there! Seems like you are still using the documentation of our legacy Java r
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-11-22 10:00:47 UTC
+Last updated 2022-11-25 10:50:11 UTC
 </sub></div>
 
 
