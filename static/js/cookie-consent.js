@@ -97,7 +97,7 @@
                     name: "cookieconsent_status",
                     path: "/",
                     domain: "",
-                    expiryDays: 30,
+                    expiryDays: 300,
                     secure: !1
                 },
                 onPopupOpen: function() {},
