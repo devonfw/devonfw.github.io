@@ -117,18 +117,6 @@ gtag('consent', 'default', {
 <div id="content" class="mt-4 mt-sm-5">
 <div id="preamble">
 <div class="sectionbody">
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="icon-warning" title=""></i>
-</td>
-<td class="content">
-Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
-</td>
-</tr>
-</table>
-</div>
 <div class="paragraph">
 <p>We have developed a solution that uses a <code>BeanMapper</code> that allows to abstract from the underlying implementation. As mentioned in the <a href="#devonfw-guide/devon4j.wiki/spring_../guide-beanmapping.asccidoc">general bean mapping guide</a>, we started with <a href="http://dozer.sourceforge.net/documentation/about.html">Dozer</a> a Java Bean to Java Bean mapper that recursively copies data from one object to another. Now we recommend using <a href="https://orika-mapper.github.io/orika-docs/">Orika</a>. This guide will show an introduction to Orika and Dozer bean-mapper.</p>
 </div>
@@ -137,18 +125,6 @@ Hey there! Seems like you are still using the documentation of our legacy Java r
 <div class="sect1">
 <h2 id="devonfw-guide_devon4j.wiki_spring_guide-beanmapping-spring.asciidoc_bean-mapper-dependency">Bean-Mapper Dependency</h2>
 <div class="sectionbody">
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="icon-warning" title=""></i>
-</td>
-<td class="content">
-Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
-</td>
-</tr>
-</table>
-</div>
 <div class="paragraph">
 <p>To get access to the <code>BeanMapper</code> we have to use either of the below dependency in our POM:</p>
 </div>
@@ -177,32 +153,8 @@ Hey there! Seems like you are still using the documentation of our legacy Java r
 <div class="sect1">
 <h2 id="devonfw-guide_devon4j.wiki_spring_guide-beanmapping-spring.asciidoc_bean-mapper-configuration">Bean-Mapper Configuration</h2>
 <div class="sectionbody">
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="icon-warning" title=""></i>
-</td>
-<td class="content">
-Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
-</td>
-</tr>
-</table>
-</div>
 <div class="sect2">
 <h3 id="devonfw-guide_devon4j.wiki_spring_guide-beanmapping-spring.asciidoc_bean-mapper-configuration-using-dozer">Bean-Mapper Configuration using Dozer</h3>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="icon-warning" title=""></i>
-</td>
-<td class="content">
-Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
-</td>
-</tr>
-</table>
-</div>
 <div class="paragraph">
 <p>The <code>BeanMapper</code> implementation is based on an existing open-source bean-mapping framework.
 In case of Dozer the mapping is configured <code>src/main/resources/config/app/common/dozer-mapping.xml</code>.</p>
@@ -229,50 +181,36 @@ Important is that you configure all your custom datatypes as <code>&lt;copy-by-r
 <div class="sect1">
 <h2 id="devonfw-guide_devon4j.wiki_spring_guide-beanmapping-spring.asciidoc_bean-mapper-configuration-using-orika">Bean-Mapper Configuration using Orika</h2>
 <div class="sectionbody">
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="icon-warning" title=""></i>
-</td>
-<td class="content">
-Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
-</td>
-</tr>
-</table>
-</div>
 <div class="paragraph">
-<p>Orika with devonfw is configured by default and sets some custom mappings for <em>GenericEntity.java</em> to <em>GenericEntityDto.java</em>. To specify and customize the mappings you can create the class <em>BeansOrikaConfig.java</em> that extends the class <em>BaseOrikaConfig.java</em> from the <strong>devon4j.orika</strong> package. To register a basic mapping, register a <strong>ClassMap</strong> for the <strong>mapperFactory</strong> with your custom mapping. Watch the example below and follow the <a href="https://orika-mapper.github.io/orika-docs/mappings-via-classmapbuilder.html">basic Orika mapping configuration guide</a> and the <a href="https://orika-mapper.github.io/orika-docs/advanced-mappings.html">Orika advanced mapping guide</a>.</p>
+<p>Orika with devonfw is configured by default and sets some custom mappings for <em>GenericEntity.java</em> to <em>GenericEntityDto.java</em>. To specify and customize the mappings you can create the class <em>BeansOrikaConfig.java</em> that extends the class <em>BaseOrikaConfig.java</em> from the <strong>devon4j.orika</strong> package. To register a basic mapping, register a <strong>ClassMap</strong> for the <strong>mapperFactory</strong> with your custom mapping, by extending the method <code>configureCustomMapping</code> in the class <code>BaseOrikaConfig</code>. See the example below and follow the <a href="https://orika-mapper.github.io/orika-docs/mappings-via-classmapbuilder.html">basic Orika mapping configuration guide</a> and the <a href="https://orika-mapper.github.io/orika-docs/advanced-mappings.html">Orika advanced mapping guide</a>.</p>
 </div>
 <div class="paragraph">
 <p>Register Mappings:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="java language-java">mapperFactory.classMap(UserEntity.class, UserEto.class)
+<pre class="highlight"><code class="java language-java">@Override
+protected MapperFactory configureCustomMapping(MapperFactory mapperFactory) {
+  super.configureCustomMapping(mapperFactory);
+
+  mapperFactory.classMap(UserEntity.class, UserEto.class)
 			.field("email", "email")
 			.field("username", "name")
 			.byDefault()
-			.register();</code></pre>
+			.register();
+
+  return mapperFactory;
+}</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>The call to <code>super.configureCustomMapping</code> allows to keep and extend the existing mapping (to support proper JPA <code>@Version</code> attribute when converting from <code>ApplicationPersistenceEntity</code> to <code>AbstractEto</code> like with Dozer above).</p>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="devonfw-guide_devon4j.wiki_spring_guide-beanmapping-spring.asciidoc_bean-mapper-usage">Bean-Mapper Usage</h2>
 <div class="sectionbody">
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="icon-warning" title=""></i>
-</td>
-<td class="content">
-Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
-</td>
-</tr>
-</table>
-</div>
 <div class="paragraph">
 <p>Then we can get the <code>BeanMapper</code> via <a href="#devonfw-guide_devon4j.wiki_spring_guide-dependency-injection.asciidoc">dependency-injection</a> what we typically already provide by an abstract base class (e.g. <code>AbstractUc</code>). Now we can solve our problem very easy:</p>
 </div>
@@ -397,7 +335,7 @@ return getBeanMapper().map(resultEntity, UserEto.class);</code></pre>
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-12-07 17:48:28 UTC
+Last updated 2023-08-23 07:40:29 UTC
 </sub></div>
 </div>
 </div>

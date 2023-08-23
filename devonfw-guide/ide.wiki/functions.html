@@ -206,12 +206,15 @@ gtag('consent', 'default', {
 </li>
 <li><a href="#devonfw-guide_ide.wiki_functions.asciidoc_version-handling">8. Version handling</a>
 <ul class="sectlevel2">
-<li><a href="#devonfw-guide_ide.wiki_functions.asciidoc_dogetnextversion">8.1. doGetNextVersion</a></li>
-<li><a href="#devonfw-guide_ide.wiki_functions.asciidoc_dogetsoftwareversion">8.2. doGetSoftwareVersion</a></li>
-<li><a href="#devonfw-guide_ide.wiki_functions.asciidoc_doisdevversion">8.3. doIsDevVersion</a></li>
-<li><a href="#devonfw-guide_ide.wiki_functions.asciidoc_dolistsoftwareversions">8.4. doListSoftwareVersions</a></li>
-<li><a href="#devonfw-guide_ide.wiki_functions.asciidoc_dosetsoftwareversion">8.5. doSetSoftwareVersion</a></li>
-<li><a href="#devonfw-guide_ide.wiki_functions.asciidoc_doversioncompare">8.6. doVersionCompare</a></li>
+<li><a href="#devonfw-guide_ide.wiki_functions.asciidoc_dochecksoftwaresecurityversion">8.1. doCheckSoftwareSecurityVersion</a></li>
+<li><a href="#devonfw-guide_ide.wiki_functions.asciidoc_docheckversionrange">8.2. doCheckVersionRange</a></li>
+<li><a href="#devonfw-guide_ide.wiki_functions.asciidoc_dogetnextversion">8.3. doGetNextVersion</a></li>
+<li><a href="#devonfw-guide_ide.wiki_functions.asciidoc_dogetsoftwareversion">8.4. doGetSoftwareVersion</a></li>
+<li><a href="#devonfw-guide_ide.wiki_functions.asciidoc_doisdevversion">8.5. doIsDevVersion</a></li>
+<li><a href="#devonfw-guide_ide.wiki_functions.asciidoc_dolistsoftwareversions">8.6. doListSoftwareVersions</a></li>
+<li><a href="#devonfw-guide_ide.wiki_functions.asciidoc_doreportversionsecuritywarning">8.7. doReportVersionSecurityWarning</a></li>
+<li><a href="#devonfw-guide_ide.wiki_functions.asciidoc_dosetsoftwareversion">8.8. doSetSoftwareVersion</a></li>
+<li><a href="#devonfw-guide_ide.wiki_functions.asciidoc_doversioncompare">8.9. doVersionCompare</a></li>
 </ul>
 </li>
 <li><a href="#devonfw-guide_ide.wiki_functions.asciidoc_functions-on-workspaces">9. Functions on workspaces</a>
@@ -874,7 +877,8 @@ Attention: for one installation package the function doReplaceExtractedSkipSingl
 <div class="paragraph">
 <p>Called with the three parameters path of the file or directory to be moved, the target directory and a backup directory.
 The function creates missing directories, makes a backup from the target directory to the backup directory.
-Then the files specified in the first parameter are moved to the target directory.</p>
+Then the files specified in the first parameter are moved to the target directory.
+Finally, the <a href="#devonfw-guide_ide.wiki_migration.asciidoc">migration script</a> is run to migrate the ide to the latest version.</p>
 </div>
 </div>
 <div class="sect2">
@@ -979,13 +983,25 @@ If so, the function returns 0, otherwise 255.</p>
 <h2 id="devonfw-guide_ide.wiki_functions.asciidoc_version-handling">8. Version handling</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="devonfw-guide_ide.wiki_functions.asciidoc_dogetnextversion">8.1. doGetNextVersion</h3>
+<h3 id="devonfw-guide_ide.wiki_functions.asciidoc_dochecksoftwaresecurityversion">8.1. doCheckSoftwareSecurityVersion</h3>
+<div class="paragraph">
+<p>Determines whether the actual version is contained in the security file for the corresponding tool and print out a message if so.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_ide.wiki_functions.asciidoc_docheckversionrange">8.2. doCheckVersionRange</h3>
+<div class="paragraph">
+<p>Determines whether a version is in a version range.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_ide.wiki_functions.asciidoc_dogetnextversion">8.3. doGetNextVersion</h3>
 <div class="paragraph">
 <p>A version number is passed to the function doGetNextVersion as an argument and the next version number is generated from this by incrementing the last digit by one and outputs it.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="devonfw-guide_ide.wiki_functions.asciidoc_dogetsoftwareversion">8.2. doGetSoftwareVersion</h3>
+<h3 id="devonfw-guide_ide.wiki_functions.asciidoc_dogetsoftwareversion">8.4. doGetSoftwareVersion</h3>
 <div class="paragraph">
 <p>Determines the currently installed version of a software and prints it out for the end-user.</p>
 </div>
@@ -1020,27 +1036,33 @@ If so, the function returns 0, otherwise 255.</p>
 </table>
 </div>
 <div class="sect2">
-<h3 id="devonfw-guide_ide.wiki_functions.asciidoc_doisdevversion">8.3. doIsDevVersion</h3>
+<h3 id="devonfw-guide_ide.wiki_functions.asciidoc_doisdevversion">8.5. doIsDevVersion</h3>
 <div class="paragraph">
 <p>Checks whether one of the two values "dev-SNAPSHOT" or "0-SNAPSHOT" was passed to it as a parameter.
 If this is the case, it ends with the return value <code>0</code> otherwise <code>1</code>.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="devonfw-guide_ide.wiki_functions.asciidoc_dolistsoftwareversions">8.4. doListSoftwareVersions</h3>
+<h3 id="devonfw-guide_ide.wiki_functions.asciidoc_dolistsoftwareversions">8.6. doListSoftwareVersions</h3>
 <div class="paragraph">
 <p>Takes the name of the tool as a parameter and displays the available versions.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="devonfw-guide_ide.wiki_functions.asciidoc_dosetsoftwareversion">8.5. doSetSoftwareVersion</h3>
+<h3 id="devonfw-guide_ide.wiki_functions.asciidoc_doreportversionsecuritywarning">8.7. doReportVersionSecurityWarning</h3>
+<div class="paragraph">
+<p>Prints out a message on version security alerts.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_ide.wiki_functions.asciidoc_dosetsoftwareversion">8.8. doSetSoftwareVersion</h3>
 <div class="paragraph">
 <p>Used to set a specific version of a software tool, and requires 2 parameters: the name of the software tool and the desired version.
 The version is saved as <code>«tool»_VERSION</code> variable in <code>settings/devon.properties</code>.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="devonfw-guide_ide.wiki_functions.asciidoc_doversioncompare">8.6. doVersionCompare</h3>
+<h3 id="devonfw-guide_ide.wiki_functions.asciidoc_doversioncompare">8.9. doVersionCompare</h3>
 <div class="paragraph">
 <p>Two version numbers are passed to the doVersionCompare function as parameters.
 If the versions are equal, the function returns 0, if the first version is higher than the second, returns 1, and if the second version is higher than the first, the function returns 2.</p>
@@ -1257,7 +1279,7 @@ If none of these options are passed, the return value is 255.</p>
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-12-07 17:54:57 UTC
+Last updated 2023-08-23 07:45:26 UTC
 </sub></div>
 </div>
 </div>

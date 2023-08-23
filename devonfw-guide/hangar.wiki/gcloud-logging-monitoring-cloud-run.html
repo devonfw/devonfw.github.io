@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Logging and monitoring a service on Cloud Run</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="/website/assets/scripts/lunr.min.js"></script>
+<!-- JQuery -->
+<script src="/website/assets/scripts/jquery.min.js"></script>
+<link rel="stylesheet" href="/website/assets/styles/font-awesome.min.css">
+<link rel="stylesheet" href="/website/assets/styles/googlecode.min.css">
+<script src="/website/assets/scripts/highlight.min.js"></script>
+<script src="/website/assets/scripts/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="/website/assets/styles/bootstrap.min.css">
+
+<script src="/website/assets/scripts/anchor.min.js"></script>
+
+<script src="/website/components/header/search-engine/bundle.js"></script>
+
+<script src="/website/shared/rightmenu.js"></script>
+
+<!-- ************** Google analytics ************ -->
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+
+gtag('consent', 'default', {
+  'analytics_storage': 'denied'
+});
+</script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+<script>
+  function consentGranted() {
+    gtag('consent', 'update', {
+      'analytics_storage': 'granted'
+    });
+  }
+</script>
+
+<!-- ******************************************** -->
+
+
+</head>
+<body id="devonfw-guide_hangar.wiki_gcloud-logging-monitoring-cloud-run.asciidoc" class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="https://devonfw.com/"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="https://devonfw.com/website/pages/learning/">Tutorials</a></p>
+</li>
+<li>
+<p><a href="/website/pages/solutions/index.html">Solutions</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Docs</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"
+      autocomplete="off"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this section we will explain how to use the default dashboard of Cloud Run to monitor and see the logs of our service(s) in Cloud Run, and how to import templates in Cloud Monitoring to have a more personalized dashboard if needed.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_hangar.wiki_gcloud-logging-monitoring-cloud-run.asciidoc_prerequisites">Prerequisites</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You need to already have an application deployed in Cloud Run, and an account with the role <code>roles/monitoring.editor</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_hangar.wiki_gcloud-logging-monitoring-cloud-run.asciidoc_monitoring">Monitoring</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="devonfw-guide_hangar.wiki_gcloud-logging-monitoring-cloud-run.asciidoc_default-dashboard-of-cloud-run">Default dashboard of Cloud Run</h3>
+<div class="paragraph">
+<p>If you access this page <a href="https://console.cloud.google.com/run/detail/&lt;region&gt;/&lt;service-name&gt;/metrics?project=&lt;project-name&gt;" class="bare">https://console.cloud.google.com/run/detail/&lt;region&gt;/&lt;service-name&gt;/metrics?project=&lt;project-name&gt;</a>:<br>
+(you can also access it from the main page of Cloud Run: <a href="https://console.cloud.google.com/run" class="bare">https://console.cloud.google.com/run</a>).<br></p>
+</div>
+<div class="paragraph">
+<p>You can see different metrics set by default for Cloud Run allowing you to know the traffic reaching your app, the amount of container created, the memory used, etc&#8230;&#8203;</p>
+</div>
+<div class="paragraph">
+<p>The issue with that dashboard is that you can only monitor one specific service. If you wanna be able to monitor all your services on one dashboard, you can create one in Cloud Monitoring.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_hangar.wiki_gcloud-logging-monitoring-cloud-run.asciidoc_custom-dashboard-in-cloud-monitoring">Custom dashboard in Cloud Monitoring</h3>
+<div class="sect3">
+<h4 id="devonfw-guide_hangar.wiki_gcloud-logging-monitoring-cloud-run.asciidoc_create-the-dashboard">Create the dashboard</h4>
+<div class="paragraph">
+<p>You can manually create your dashboard from that page: <a href="https://console.cloud.google.com/monitoring" class="bare">https://console.cloud.google.com/monitoring</a><br></p>
+</div>
+<div class="paragraph">
+<p>Or You can also import the template we already created for Cloud Run.<br>
+To do so, execute this command <code>gcloud monitoring dashboards create --config-from-file Cloud-Run-dashboard.json</code>   (You can add <code>--project=&lt;project-id&gt;</code> to create on another project than the one set by default)</p>
+</div>
+<div class="paragraph">
+<p>You can now access this dashboard from the list here: <a href="https://console.cloud.google.com/monitoring/dashboards" class="bare">https://console.cloud.google.com/monitoring/dashboards</a> (named <code>Cloud Run dashboard</code>)<br></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_hangar.wiki_gcloud-logging-monitoring-cloud-run.asciidoc_some-example-of-group-and-filters">Some example of Group and Filters</h4>
+<div class="paragraph">
+<p>Once you accessed your dashboard, you can <code>Group By</code> or <code>Add Filter</code>, allowing you to get more specific infos. By default the values that appears on the graph are separated by service_name (as if a <code>Group By service_name</code> was done)<br></p>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_hangar.wiki_gcloud-logging-monitoring-cloud-run.asciidoc_get-metrics-all-services-combined">Get metrics all services combined</h5>
+<div class="paragraph">
+<p>If you want to display the values on the graph independently of the service, you can <code>Group By project_id</code>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="devonfw-guide_hangar.wiki_gcloud-logging-monitoring-cloud-run.asciidoc_get-metrics-for-one-specific-revision">Get metrics for one specific revision</h5>
+<div class="paragraph">
+<p>If you want to display the values on the graph for one specific revision, can add a filter on <code>revision_name</code></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_hangar.wiki_gcloud-logging-monitoring-cloud-run.asciidoc_logging">Logging</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To access the log of the service you can go to this link <a href="https://console.cloud.google.com/run/detail/&lt;region&gt;/&lt;service-name&gt;/logs" class="bare">https://console.cloud.google.com/run/detail/&lt;region&gt;/&lt;service-name&gt;/logs</a></p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/welcome/welcome.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_getting-started.wiki_introduction-why-should-i-use-devonfw.asciidoc_features.html">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_devon4j.wiki_architecture.asciidoc.html#devonfw-guide_devon4j.wiki_architecture.asciidoc_technology-stack">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_getting-started.wiki_getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_devon4j.wiki_architecture.asciidoc.html">Architecture</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_ide.wiki_devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_general_master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-guide_ide.wiki_LICENSE.asciidoc.html">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script src="/website/assets/scripts/popper.min.js"></script>
+    <script src="/website/assets/scripts/bootstrap.min.js"></script>
+<div class="footnote"><sub>
+
+Last updated 2023-08-23 07:44:51 UTC
+</sub></div>
+</div>
+</div>
+<link rel="stylesheet" type="text/css" href="https://cginternal.devonfw.com/websitesnippets/main.css">
+<script async src="https://cginternal.devonfw.com/websitesnippets/main.js"></script>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+<script>
+  var internalUrls = ["https://cginternal.devonfw.com/websitesnippets/"];
+  $(".internal").each(function(){
+    internalUrls.forEach((internalUrl, index) => {
+      $.ajax({url: internalUrl + $(this).text() + "/index.html" })
+      .then(r => {
+        var leftDiv = $('<div class="info"><span class="infoText">Internal</span><img class="infoImage" src="' + internalUrl + 'logo.png"/></div>');
+        var rightFirstDiv = $('<div class="message">This is only visible inside of the corporate network.</div>');
+        var rightLastDiv = $('<div class="content"></div>');
+        rightLastDiv.html(r);
+        var rightDiv = $('<div class="right"></div>');
+        rightDiv.append(rightFirstDiv);
+        rightDiv.append(rightLastDiv);
+        $(this).html(leftDiv);
+        $(this).append(rightDiv);
+        $(this).addClass("internal-active");
+        $(this).removeClass("internal");
+      })
+    });
+	});
+</script>
+<script>
+      let cookieName = 'cookie_consent';
+      let expiryTime = new Date(2037, 11, 21);
+      let today = new Date();
+      let cookieConsentDeclinedDate = localStorage.getItem("cookie_consent_declined");
+      let dateDiffHours = 0;
+      let cookieConsentHtml = `
+      <div id="cookie-consent">
+        <p>
+          We use cookies to perform analytics and enhance user experience. Do you accept to the use of cookies?
+        </p>
+        <p class="cookie-consent-buttons">
+          <a id="decline-cookie-btn" class="btn white-button" href="javascript:void(0)">Decline</a>
+          <a id="accept-cookie-btn" class="btn blue-button" href="javascript:void(0)">Accept</a>
+        </p>
+      </div>
+      `;
+      
+      const parseCookie = str =>
+        str
+        .split(';')
+        .map(v => v.split('='))
+        .reduce((acc, v) => {
+          acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());
+          return acc;
+        }, {});
+      
+      dateDiffHours = cookieConsentDeclinedDate ? Math.abs(cookieConsentDeclinedDate - today) / 36e5 : 0;
+      if (document.cookie.indexOf(cookieName) < 0) {
+        if (cookieConsentDeclinedDate) {
+          if (dateDiffHours > 24) {
+            $("body").append(cookieConsentHtml);
+          }
+        } else {
+          $("body").append(cookieConsentHtml);
+        }
+      } else {
+        cookies = parseCookie(document.cookie);
+        if (cookies["cookie_consent"] == "accept") {
+          consentGranted();
+        }
+      }
+      
+      $("#accept-cookie-btn").click(function() {
+        document.cookie = `${cookieName}=accept;expires=${expiryTime};path=/`;
+        localStorage.removeItem("cookie_consent_declined");
+        consentGranted();
+        $("#cookie-consent").hide();
+      });
+      $("#decline-cookie-btn").click(function() {
+        localStorage.setItem("cookie_consent_declined", today);
+        $("#cookie-consent").hide();
+      });
+</script>
+</body>
+</html>

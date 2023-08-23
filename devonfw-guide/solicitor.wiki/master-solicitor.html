@@ -510,6 +510,11 @@ For this step <em>Solicitor</em> only provides a framework / tool to support the
 <td class="tableblock halign-left valign-top"><p class="tableblock">URL of the OSS homepage</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sourceRepoUrl</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">URL of the Source-Code-Repo</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">groupId</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">component identifier: maven group</p></td>
@@ -577,6 +582,11 @@ For this step <em>Solicitor</em> only provides a framework / tool to support the
 <td class="tableblock halign-left valign-top"><p class="tableblock">licenseUrl</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">URL of the declared license</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">declaredLicenseContent</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">license text as provided in the input data</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">trace</p></td>
@@ -1682,7 +1692,7 @@ This reader is deprecated and should no longer be used. It requires a specific d
 <pre>"readers" : [ {
   "type" : "yarn",
   "source" : "file:path/to/yarnlicenses.json",
-  "usagePattern" : "DYNAMIC_LINKING",
+  "usagePattern" : "STATIC_LINKING",
   "repoType" : "yarn"
 } ]</pre>
 </div>
@@ -3468,6 +3478,12 @@ from the local file system, see <a href="#devonfw-guide_solicitor.wiki_master-so
 from a corporate server or even a public service available on the internet.</p>
 </div>
 </div>
+<div class="sect4">
+<h5 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_com.devonfw.tools.solicitor.lifecycle.solicitorlifecyclelistener"><code>com.devonfw.tools.solicitor.lifecycle.SolicitorLifecycleListener</code></h5>
+<div class="paragraph">
+<p>Spring beans implementing this interface will be called at certain points in the <em>Solicitor</em> processing lifecycle. See the Javadoc for details. Implementations should preferably use <code>com.devonfw.tools.solicitor.lifecycle.AbstractSolicitorLifecycleListener</code> as base class which contains NOOP functionality for all methods which might be overridden as required.</p>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -3477,6 +3493,65 @@ from a corporate server or even a public service available on the internet.</p>
 <div class="sectionbody">
 <div class="dlist">
 <dl>
+<dt class="hdlist1">Changes in 1.9.0</dt>
+<dt class="hdlist1">Changes in 1.8.1</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/devonfw/solicitor/issues/164" class="bare">https://github.com/devonfw/solicitor/issues/164</a>: Fixed a bug which might result in license texts not being retrieved.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Changes in 1.8.0</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/devonfw/solicitor/issues/154" class="bare">https://github.com/devonfw/solicitor/issues/154</a>: Corrected dependency declaration for solicitor-core.jar.</p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/solicitor/issues/156" class="bare">https://github.com/devonfw/solicitor/issues/156</a>: Included engagement name as member in class SolicitorSetup.</p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/solicitor/issues/158" class="bare">https://github.com/devonfw/solicitor/issues/158</a>: Include library com.auth0/java-jwt to make it available for extensions.</p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/solicitor/issues/160" class="bare">https://github.com/devonfw/solicitor/issues/160</a>: License texts are now included in the data model json.</p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/solicitor/issues/162" class="bare">https://github.com/devonfw/solicitor/issues/162</a>: Include added notice file content and license texts to the ComponentInfo interface.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Changes in 1.7.0</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/devonfw/solicitor/issues/152" class="bare">https://github.com/devonfw/solicitor/issues/152</a>: Enhancements for using java code in extensions.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Changes in 1.6.0</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/devonfw/solicitor/issues/146" class="bare">https://github.com/devonfw/solicitor/issues/146</a>: Fixed the bug which prevented already defined velocity macro with same name to be redefined in different template.</p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/solicitor/issues/135" class="bare">https://github.com/devonfw/solicitor/issues/135</a>: Introduce <code>sourceRepoUrl</code> as new property in <code>ApplicationComponent</code>. Depending on the kind of Reader either <code>ossHomepage</code> and/or <code>sourceRepoUrl</code> will be filled with data.</p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/solicitor/issues/149" class="bare">https://github.com/devonfw/solicitor/issues/149</a>: Added name mappings so that for all SPDX-IDs used in the name mapping the SPDX-ID itself is also recognized and formally mapped.</p>
+</li>
+</ul>
+</div>
+</dd>
 <dt class="hdlist1">Changes in 1.5.0</dt>
 <dd>
 <div class="ulist">
@@ -3832,7 +3907,7 @@ multiapplication projects even is some license files are unavailable.</p>
 <div class="footnote"><sub>
 
 Version {project-version}-{buildNumber}<br>
-Last updated 2022-12-07 17:58:02 UTC
+Last updated 2023-08-23 07:47:49 UTC
 </sub></div>
 </div>
 </div>

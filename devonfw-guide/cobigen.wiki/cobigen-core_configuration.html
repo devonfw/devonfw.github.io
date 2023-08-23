@@ -120,6 +120,13 @@ gtag('consent', 'default', {
 <ul class="sectlevel0">
 <li><a href="#devonfw-guide_cobigen.wiki_cobigen-core_configuration.asciidoc">Configuration</a>
 <ul class="sectlevel1">
+<li><a href="#devonfw-guide_cobigen.wiki_cobigen-core_configuration.asciidoc_cobigen-configuration-file">CobiGen Configuration File</a>
+<ul class="sectlevel2">
+<li><a href="#devonfw-guide_cobigen.wiki_cobigen-core_configuration.asciidoc_templates">Templates</a></li>
+<li><a href="#devonfw-guide_cobigen.wiki_cobigen-core_configuration.asciidoc_template-sets">Template Sets</a></li>
+<li><a href="#devonfw-guide_cobigen.wiki_cobigen-core_configuration.asciidoc_template-set-attributes">Template set attributes</a></li>
+</ul>
+</li>
 <li><a href="#devonfw-guide_cobigen.wiki_cobigen-core_configuration.asciidoc_context-configuration">Context Configuration</a>
 <ul class="sectlevel2">
 <li><a href="#devonfw-guide_cobigen.wiki_cobigen-core_configuration.asciidoc_trigger-node">Trigger Node</a></li>
@@ -192,14 +199,129 @@ gtag('consent', 'default', {
 <div class="content">
 <pre class="highlight"><code>CobiGen_Templates
  |- templateFolder1
-    |- templates.xml
+  |- src
+    |- main
+      |- templates
+        |- template1
+          |- templates
+          |- templates.xml
  |- templateFolder2
-    |- templates.xml
  |- context.xml</code></pre>
 </div>
 </div>
 <div class="paragraph">
+<p>Since: CobiGen 2021.12.007:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>template-sets
+ |- downloaded
+   |- template-set1.jar
+   |- template-set2.jar
+   |- template-set-utilities.jar
+ |- adapted
+   |- template-set1
+     |- src
+       |- main
+         |- templates
+           |- templates
+             |- context.xml
+             |- templates.xml
+   |- template-set2</code></pre>
+</div>
+</div>
+<div class="paragraph">
 <p>Find some examples <a href="https://github.com/devonfw/cobigen/tree/master/cobigen-templates">here</a>.</p>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_cobigen.wiki_cobigen-core_configuration.asciidoc_cobigen-configuration-file">CobiGen Configuration File</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The CobiGen configuration file located at: <code>$home/.cobigen</code> can be used to set the path to the custom <code>templates</code> as well as the <code>template sets</code> project.
+You can also specify attributes to control the behaviour of your template sets.</p>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_cobigen.wiki_cobigen-core_configuration.asciidoc_templates">Templates</h3>
+<div class="paragraph">
+<p>For a custom templates folder simply set the <code>templates</code> parameter like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>templates=C:\\project\\ide\\conf\\templates</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For a custom templates jar simply set the <code>templates</code> parameter like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>templates=C:\\project\\ide\\conf\\templates\\my-custom-templates-devon4j-2021.06.001.jar</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_cobigen.wiki_cobigen-core_configuration.asciidoc_template-sets">Template Sets</h3>
+<div class="paragraph">
+<p>Since: CobiGen 2021.12.006</p>
+</div>
+<div class="paragraph">
+<p>For a custom template-sets folder simply set the <code>template-sets</code> parameter like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>template-sets=C:\\project\\ide\\conf\\template-sets</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_cobigen.wiki_cobigen-core_configuration.asciidoc_template-set-attributes">Template set attributes</h3>
+<div class="paragraph">
+<p>Since: CobiGen 2021.12.006</p>
+</div>
+<div class="paragraph">
+<p>You can specify <code>template-sets</code> attributes f.e. to restrict the teams to ask for default templates provided by CobiGen. There are <code>four</code> custom template-sets attributes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>template-sets.groupIds</code>: Search for template-set artifacts by that configuration key
+configure multiple (comma separated) <code>groupIds</code>. By default, (public) CobiGen <code>groupId</code> will be used.</p>
+</li>
+<li>
+<p><code>template-sets.allow-snapshots</code>: Allow snapshots of template-sets to be offered for template-set development purposes. By default, no snapshots should be queried.</p>
+</li>
+<li>
+<p><code>template-sets.disable-default-lookup</code>: Disable by default querying of default public <code>groupIds</code> configured in CobiGen.</p>
+</li>
+<li>
+<p><code>template-sets.hide:</code> Hide very specific template sets or versions of template sets.</p>
+</li>
+<li>
+<p><code>template-sets.installed:</code> Template sets will be available at CobiGen startup if template sets are not already adapted.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The key <code>template-sets.hide</code> and <code>template-sets.installed</code> accept maven coordinate with the following format: <code>groupID:artifactID:version</code> the version is optional and if omitted the <strong>LATEST</strong> version will be used. You can specify multiple maven coordinates separated with <strong>,</strong>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>An example of how such a configuration should look like:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>template-sets.groupIds=com.devonfw.cobigen.templates,jaxen,jakarta.xml.bind
+template-sets.allow-snapshots=true
+template-sets.disable-default-lookup=false
+template-sets.hide=com.devonfw.cobigen.templates:crud-angular-client-app:2021.12.007-SNAPSHOT
+template-sets.installed=com.devonfw.cobigen.templates:crud-angular-client-app:2021.12.007-SNAPSHOT, com.devonfw.cobigen.templates:crud-java-server-app:</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div class="sect1">
 <h2 id="devonfw-guide_cobigen.wiki_cobigen-core_configuration.asciidoc_context-configuration">Context Configuration</h2>
@@ -474,7 +596,7 @@ Such a container might be a package, which encloses multiple types or---more gen
 <p><code>?replace(regex, replacement)</code> - Replaces all occurrences of the regular expression <code>regex</code> in the variable&#8217;s value with the given <code>replacement</code> string. (since <code>cobigen-core v1.1.0</code>)</p>
 </li>
 <li>
-<p><code>?removeSuffix(suffix)</code> - Removes the given <code>suffix</code> in the variable&#8217;s value iff the variable&#8217;s value ends with the given <code>suffix</code>. Otherwise nothing will happen. (since <code>cobigen-core v1.1.0</code>)</p>
+<p><code>?removeSuffix(suffix)</code> - Removes the given <code>suffix</code> in the variable&#8217;s value if and only if the variable&#8217;s value ends with the given <code>suffix</code>. Otherwise nothing will happen. (since <code>cobigen-core v1.1.0</code>)</p>
 </li>
 <li>
 <p><code>?removePrefix(prefix)</code> - Analogue to <code>?removeSuffix</code> but removes the prefix of the variable&#8217;s value. (since <code>cobigen-core v1.1.0</code>)</p>
@@ -866,7 +988,7 @@ Given the <code>relocate</code> feature, you can even step out of the root path,
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-12-07 17:46:18 UTC
+Last updated 2023-08-23 07:38:56 UTC
 </sub></div>
 </div>
 </div>

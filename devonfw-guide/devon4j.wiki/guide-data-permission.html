@@ -132,36 +132,14 @@ gtag('consent', 'default', {
 </li>
 </ul>
 <h1 id="devonfw-guide_devon4j.wiki_guide-data-permission.asciidoc" class="sect0">Data-permissions</h1>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="icon-warning" title=""></i>
-</td>
-<td class="content">
-Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
-</td>
-</tr>
-</table>
-</div>
 <div class="paragraph">
 <p>In some projects there are demands for permissions and authorization that is dependent on the processed data. E.g. a user may only be allowed to read or write data for a specific region. This is adding some additional complexity to your authorization. If you can avoid this it is always best to keep things simple. However, in various cases this is a requirement. Therefore the following sections give you guidance and patterns how to solve this properly.</p>
 </div>
 <div class="sect1">
 <h2 id="devonfw-guide_devon4j.wiki_guide-data-permission.asciidoc_structuring-your-data">Structuring your data</h2>
 <div class="sectionbody">
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="icon-warning" title=""></i>
-</td>
-<td class="content">
-Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
-For all your business objects (entities) that have to be secured regarding to data permissions we recommend that you create a separate interface that provides access to the relevant data required to decide about the permission. Here is a simple example:
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<p>For all your business objects (entities) that have to be secured regarding to data permissions we recommend that you create a separate interface that provides access to the relevant data required to decide about the permission. Here is a simple example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -183,18 +161,8 @@ For all your business objects (entities) that have to be secured regarding to da
 <div class="sect1">
 <h2 id="devonfw-guide_devon4j.wiki_guide-data-permission.asciidoc_permissions-for-processing-data">Permissions for processing data</h2>
 <div class="sectionbody">
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="icon-warning" title=""></i>
-</td>
-<td class="content">
-Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
-When saving or processing objects with a data-permission, we recommend to provide dedicated methods to verify the permission in an abstract base-class such as <code>AbstractUc</code> and simply call this explicitly from your business code. This makes it easy to understand and debug the code. Here is a simple example:
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<p>When saving or processing objects with a data-permission, we recommend to provide dedicated methods to verify the permission in an abstract base-class such as <code>AbstractUc</code> and simply call this explicitly from your business code. This makes it easy to understand and debug the code. Here is a simple example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -203,18 +171,8 @@ When saving or processing objects with a data-permission, we recommend to provid
 </div>
 <div class="sect2">
 <h3 id="devonfw-guide_devon4j.wiki_guide-data-permission.asciidoc_beware-of-aop">Beware of AOP</h3>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="icon-warning" title=""></i>
-</td>
-<td class="content">
-Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
-For simple but cross-cutting data-permissions you may also use <a href="#devonfw-guide_devon4j.wiki_guide-aop.asciidoc">AOP</a>. This leads to programming aspects that reflectively scan method arguments and magically decide what to do. Be aware that this quickly gets tricky:
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<p>For simple but cross-cutting data-permissions you may also use <a href="#devonfw-guide_devon4j.wiki_guide-aop.asciidoc">AOP</a>. This leads to programming aspects that reflectively scan method arguments and magically decide what to do. Be aware that this quickly gets tricky:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -238,18 +196,8 @@ For simple but cross-cutting data-permissions you may also use <a href="#devonfw
 <div class="sect1">
 <h2 id="devonfw-guide_devon4j.wiki_guide-data-permission.asciidoc_permissions-for-reading-data">Permissions for reading data</h2>
 <div class="sectionbody">
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="icon-warning" title=""></i>
-</td>
-<td class="content">
-Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
-When it comes to restrictions on the data to read it becomes even more tricky. In the context of a user only entities shall be loaded from the database he is permitted to read. This is simple for loading a single entity (e.g. by its ID) as you can load it and then if not permitted throw an exception to secure your code. But what if the user is performing a search query to find many entities? For performance reasons we should only find data the user is permitted to read and filter all the rest already via the database query. But what if this is not a requirement for a single query but needs to be applied cross-cutting to tons of queries? Therefore we have the following pattern that solves your problem:
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<p>When it comes to restrictions on the data to read it becomes even more tricky. In the context of a user only entities shall be loaded from the database he is permitted to read. This is simple for loading a single entity (e.g. by its ID) as you can load it and then if not permitted throw an exception to secure your code. But what if the user is performing a search query to find many entities? For performance reasons we should only find data the user is permitted to read and filter all the rest already via the database query. But what if this is not a requirement for a single query but needs to be applied cross-cutting to tons of queries? Therefore we have the following pattern that solves your problem:</p>
 </div>
 <div class="paragraph">
 <p>For each data-permission attribute (or set of such) we create an abstract base entity:</p>
@@ -389,18 +337,8 @@ public class PermissionCheckerAdvisor implements PointcutAdvisor, Pointcut, Clas
 <div class="sect1">
 <h2 id="devonfw-guide_devon4j.wiki_guide-data-permission.asciidoc_managing-and-granting-the-data-permissions">Managing and granting the data-permissions</h2>
 <div class="sectionbody">
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="icon-warning" title=""></i>
-</td>
-<td class="content">
-Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
-Following our <a href="#devonfw-guide_devon4j.wiki_guide-access-control.asciidoc_authorization">authorization guide</a> we can simply create a permission for each country. We might simply reserve a prefix (as virtual <code>«app-id»</code>) for each data-permission to allow granting data-permissions to end-users across all applications of the IT landscape. In our example we could create access controls <code>country.DE</code>, <code>country.US</code>, <code>country.ES</code>, etc. and assign those to the users. The method <code>permissionChecker.getPermittedCountriesForReading()</code> would then scan for these access controls and only return the 2-letter country code from it.
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<p>Following our <a href="#devonfw-guide_devon4j.wiki_guide-access-control.asciidoc_authorization">authorization guide</a> we can simply create a permission for each country. We might simply reserve a prefix (as virtual <code>«app-id»</code>) for each data-permission to allow granting data-permissions to end-users across all applications of the IT landscape. In our example we could create access controls <code>country.DE</code>, <code>country.US</code>, <code>country.ES</code>, etc. and assign those to the users. The method <code>permissionChecker.getPermittedCountriesForReading()</code> would then scan for these access controls and only return the 2-letter country code from it.</p>
 </div>
 <div class="admonitionblock caution">
 <table>
@@ -543,7 +481,7 @@ Before you make your decisions how to design your access controls please clarify
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-12-07 17:47:37 UTC
+Last updated 2023-08-23 07:39:54 UTC
 </sub></div>
 </div>
 </div>

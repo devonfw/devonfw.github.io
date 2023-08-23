@@ -125,6 +125,9 @@
     <a class="nav-link" href="../cross_cutting/i18n.html">Internationalization (I18N)</a>
   </li>
   <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cross_cutting/oauth2_proxy.html">Authentication with Keycloak using a OAuth 2 Proxy</a>
+  </li>
+  <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../cross_cutting/logging.html">Logging</a>
   </li>
   <li class="nav-item" data-depth="2">
@@ -147,6 +150,24 @@
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="../cross_cutting/tracing.html">Tracing</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../cross_cutting/test_automation/test_automation.html">Test Automation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../cross_cutting/test_automation/unit_tests.html">Unit Tests</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../cross_cutting/test_automation/sub_system_tests.html">Subsystem- and System-Tests</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../cross_cutting/test_automation/contract_tests.html">Consumer Driven Contract (CDC) Tests</a>
+  </li>
+  <li class="nav-item" data-depth="3">
+    <a class="nav-link" href="../cross_cutting/test_automation/architecture_tests.html">Architecture Tests</a>
+  </li>
+</ul>
   </li>
 </ul>
   </li>
@@ -289,9 +310,9 @@ The components are divided into following layers:</p>
 <dd>
 <p>Contains the business logic.</p>
 </dd>
-<dt class="hdlist1">Domain layer</dt>
+<dt class="hdlist1">Dataaccess layer</dt>
 <dd>
-<p>The domain layer manages the domain entities. This usually includes their persistence.</p>
+<p>The dataaccess layer manages the entities including their storage and retrieval.</p>
 </dd>
 </dl>
 </div>
@@ -338,11 +359,11 @@ Inside the same component (e.g. <em>Component A1</em>) the following rules adher
 </li>
 <li>
 <p>A layer can <span class="underline">never</span> depend on a layer above.
-The domain layer should never depend on the logic layer.</p>
+The dataaccess layer should never depend on the logic layer.</p>
 </li>
 <li>
 <p>Layers should not be skipped.
-The service layer should not depend on the domain layer directly.</p>
+The service layer should not depend on the dataaccess layer directly.</p>
 </li>
 </ul>
 </div>
@@ -368,10 +389,10 @@ The logic layer of <em>Component A1</em> depends on the logic layer of <em>Compo
 <p>The Service layer of <em>Component A1</em> should <span class="underline">not</span> have a dependency to any other layer in <em>Component A2</em></p>
 </li>
 <li>
-<p>The Logic Layer of <em>Component A1</em> should <span class="underline">not</span> have a dependency to the domain or the service layer in <em>Component A2</em></p>
+<p>The Logic Layer of <em>Component A1</em> should <span class="underline">not</span> have a dependency to the dataaccess or the service layer in <em>Component A2</em></p>
 </li>
 <li>
-<p>The Domain Layer of <em>Component A1</em> should <span class="underline">not</span> have a dependency to any other layer in <em>Component A2</em></p>
+<p>The Dataaccess Layer of <em>Component A1</em> should <span class="underline">not</span> have a dependency to any other layer in <em>Component A2</em></p>
 </li>
 </ul>
 </div>
@@ -407,7 +428,7 @@ Other layer should <span class="underline">never</span> expose their functionali
 <h2 id="_constraints_and_alternatives"><a class="anchor" href="#_constraints_and_alternatives"></a>Constraints and alternatives</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>For services with a very limited number of use cases and exposed endpoints, that are also planned to stay small, the three layers might be an overhead. In such cases it might be an option to combine the logic and service layer. Logic and domain layers should never be combined.</p>
+<p>For services with a very limited number of use cases and exposed endpoints, that are also planned to stay small, the three layers might be an overhead. In such cases it might be an option to combine the logic and service layer. Logic and dataaccess layers should never be combined.</p>
 </div>
 <div class="paragraph">
 <p>For large modulith systems further rules and stricter divisions might be necessary. A possible way to handle this is to keep API and Implementation even stricter separated.</p>
@@ -497,7 +518,7 @@ The <code>«artifact»</code> is typically the technical name of the application
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">«layer»</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The technical layers the code belongs to. The layers are described below.</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>domain</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dataaccess</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">«detail»</p></td>
@@ -536,7 +557,7 @@ For versioning of the APIs further sub-packages can be created.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">No details expected</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>domain</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>dataaccess</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Use <code>repository</code> for repository and <code>dao</code> for DAOs.
 Entities belong into <code>model</code>.</p></td>
 </tr>
@@ -555,7 +576,7 @@ Check if common functionality might fit into other layers.</p></td>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-asciidoc hljs" data-lang="asciidoc">«root»
 ├──.«component»
-|  ├──.domain
+|  ├──.dataaccess
 |  |  ├──.repository
 |  |  |  ├──.«BusinessObject»Repository
 |  |  |  └──.«BusinessObject»Fragment
@@ -576,7 +597,7 @@ Check if common functionality might fit into other layers.</p></td>
 |           └──.model
 |              └──.«BusinessObject»Dto
 └──.general
-   └──.domain
+   └──.dataaccess
       └──.model
          └──.ApplicationPersistenceEntity</code></pre>
 </div>
@@ -588,7 +609,7 @@ Check if common functionality might fit into other layers.</p></td>
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-asciidoc hljs" data-lang="asciidoc">com.devonfw.application.mts
 ├──.bookingmanagement
-|  ├──.domain
+|  ├──.dataaccess
 |  |  ├──.repository
 |  |  |  ├──.BookingRepository.java
 |  |  |  ├──.InvitedGuestRepository.java
@@ -610,7 +631,7 @@ Check if common functionality might fit into other layers.</p></td>
 |     |  └──.TableCto.java
 |     └──.BookingManagementRestService.java
 ├──.dishmanagement
-|  ├──.domain
+|  ├──.dataaccess
 |  |  ├──.repository
 |  |  |  ├──.CategoryRepository.java
 |  |  |  ├──.DishRepository.java
@@ -640,7 +661,7 @@ Check if common functionality might fit into other layers.</p></td>
    |     ├──.JWTAuthenticationFilter.java
    |     ├──.QrCodeService.java
    |     └──.ValidationService.java
-   ├──.domain
+   ├──.dataaccess
    |  ├──.repository
    |  |  └──.BinaryObjectRepository.java
    |  └──.model

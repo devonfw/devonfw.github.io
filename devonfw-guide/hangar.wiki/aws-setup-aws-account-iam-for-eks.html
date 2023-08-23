@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Setup AWS account IAM for deployment in EKS</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="/website/assets/scripts/lunr.min.js"></script>
+<!-- JQuery -->
+<script src="/website/assets/scripts/jquery.min.js"></script>
+<link rel="stylesheet" href="/website/assets/styles/font-awesome.min.css">
+<link rel="stylesheet" href="/website/assets/styles/googlecode.min.css">
+<script src="/website/assets/scripts/highlight.min.js"></script>
+<script src="/website/assets/scripts/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="/website/assets/styles/bootstrap.min.css">
+
+<script src="/website/assets/scripts/anchor.min.js"></script>
+
+<script src="/website/components/header/search-engine/bundle.js"></script>
+
+<script src="/website/shared/rightmenu.js"></script>
+
+<!-- ************** Google analytics ************ -->
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+
+gtag('consent', 'default', {
+  'analytics_storage': 'denied'
+});
+</script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+<script>
+  function consentGranted() {
+    gtag('consent', 'update', {
+      'analytics_storage': 'granted'
+    });
+  }
+</script>
+
+<!-- ******************************************** -->
+
+
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="https://devonfw.com/"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="https://devonfw.com/website/pages/learning/">Tutorials</a></p>
+</li>
+<li>
+<p><a href="/website/pages/solutions/index.html">Solutions</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Docs</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"
+      autocomplete="off"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc">Setup AWS account IAM for deployment in EKS</a>
+<ul class="sectlevel1">
+<li><a href="#devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc_preparing-environment">Preparing environment</a></li>
+<li><a href="#devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc_prerequisites">Prerequisites</a>
+<ul class="sectlevel2">
+<li><a href="#devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc_alternative">Alternative</a></li>
+</ul>
+</li>
+<li><a href="#devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc_creating-iam-user-using-provided-script">Creating IAM user using provided script</a>
+<ul class="sectlevel2">
+<li><a href="#devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc_usage">Usage</a></li>
+<li><a href="#devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc_flags">Flags</a></li>
+<li><a href="#devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc_example">Example</a></li>
+<li><a href="#devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc_after-execution">After execution</a></li>
+</ul>
+</li>
+<li><a href="#devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc_check-iam-user-permissions">Check IAM user permissions</a>
+<ul class="sectlevel2">
+<li><a href="#devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc_usage">Usage</a></li>
+<li><a href="#devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc_flags">Flags</a></li>
+<li><a href="#devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc_example">Example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc" class="sect0">Setup AWS account IAM for deployment in EKS</h1>
+<div class="paragraph">
+<p>The scope of this section is to prepare an AWS account to be ready for deploying in AWS EKS. By the end of this guide, a new IAM user belonging to a group with the required permissions will be created.</p>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc_preparing-environment">Preparing environment</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>First of all, install <a href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html">AWS CLI</a> and <a href="https://www.python.org/downloads/">Python</a> for your OS.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc_prerequisites">Prerequisites</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>An AWS account with IAM full access permission.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc_alternative">Alternative</h3>
+<div class="paragraph">
+<p>In case you do not have an account or permission to create new IAM users, request it to your AWS administrator asking for the following policies being attached. Then go to <a href="#check-iam-user-permissions">[check-iam-user-permissions]</a>.</p>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc_required-managed-policies">Required managed policies</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>AmazonEC2FullAccess
+IAMReadOnlyAccess
+AmazonEKSServicePolicy
+AmazonS3FullAccess
+AmazonEC2ContainerRegistryFullAccess</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc_required-custom-policies">Required custom policies</h4>
+<div class="paragraph">
+<p>Find them on <code>/scripts/accounts/aws/eks-custom-policies.json</code>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc_creating-iam-user-using-provided-script">Creating IAM user using provided script</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The script located at <code>/scripts/accounts/aws/create-user.sh</code> will automatically create a user, also enrolling it in a newly created group with the required policies attached.</p>
+</div>
+<div class="paragraph">
+<p>In case you do not have an AWS access key (needed to authenticate through API), follow <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey">this guide</a> to create it.</p>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc_usage">Usage</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>create-user.sh \
+  -u &lt;username&gt; \
+  -g &lt;group&gt; \
+  [-p &lt;policies...&gt;] \
+  [-f &lt;policies file path&gt;] \
+  [-c &lt;custom policies file path&gt;] \
+  [-a &lt;AWS access key&gt;] \
+  [-s &lt;AWS secret key&gt;] \
+  [-r &lt;region&gt;]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc_flags">Flags</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>-u      [Required] Username for the new user
+-g      [Required] Group name for the group to be created or used
+-p      [Optional] Policies to be attached to the group, splitted by comma
+-f      [Optional] Path to a file containing the policies to be attached to the group
+-c      [Optional] Path to a json file containing the custom policies to be attached to the group.
+-a      [Optional] AWS administrator access key
+-s      [Optional] AWS administrator secret key
+-r      [Optional] AWS region</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc_example">Example</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>./create-user.sh -u Bob -g DevOps -f ./eks-managed-policies.txt -c ./eks-custom-policies.json -a "myAccessKey" -s "mySecretKey" -r eu-west-1</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+If the "DevOps" group does not exist, it will be created.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+Required policies for using EKS are located at <code>/scripts/accounts/aws/eks-managed-policies.txt</code> and <code>/scripts/accounts/aws/eks-custom-policies.json</code>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc_after-execution">After execution</h3>
+<div class="paragraph">
+<p>On success, the newly created user access data will be shown as output:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>Access key ID: &lt;accessKeyID&gt;
+Secret access key: &lt;secretAccessKey&gt;</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-important" title=""></i>
+</td>
+<td class="content">
+It is mandatory to store the access key ID and the secret access key securely at this point, as <strong>they will not be retrievable again</strong>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc_check-iam-user-permissions">Check IAM user permissions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The script located at <code>/scripts/accounts/aws/verify-account-policies.sh</code> will check that the necessary policies were attached to the IAM user.</p>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc_usage">Usage</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>verify-account-policies.sh \
+  -u &lt;username&gt; \
+  [-p &lt;policies...&gt;] \
+  [-f &lt;policies file path&gt;] \
+  [-c &lt;custom policies file path&gt;] \
+  [-a &lt;AWS access key&gt;] \
+  [-s &lt;AWS secret key&gt;] \
+  [-r &lt;region&gt;]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc_flags">Flags</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>-u      [Required] Username whose policies will be checked
+-p      [Optional] Policies to be checked, splitted by comma
+-f      [Optional] Path to a file containing the policies to be checked
+-c      [Optional] Path to a file containing the custom policies to be checked
+-a      [Optional] AWS administrator access key
+-s      [Optional] AWS administrator secret key
+-r      [Optional] AWS region</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+At least one policies flag (<code>-p</code>, <code>-f</code> or <code>-c</code>) is required.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc_example">Example</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>./verify-account-policies.sh -u Bob -f ./eks-managed-policies.txt -c ./eks-custom-policies.json -a "myAccessKey" -s "mySecretKey" -r eu-west-1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After execution, provided policies will be shown preceded by an <code>OK</code> or <code>FAILED</code> depending on the attachment status.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+Required policies for using EKS are located at <code>/scripts/accounts/aws/eks-managed-policies.txt</code> and <code>/scripts/accounts/aws/eks-custom-policies.json</code>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p><a id="devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc_configure-aws-cli-devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc_configure-cli"></a>]]
+== Configure AWS CLI <a id="devonfw-guide_hangar.wiki_aws-setup-aws-account-iam-for-eks.asciidoc_configure-cli"></a>
+Once you have been provided with an IAM user with the required policies attached, setup the AWS CLI using the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>aws configure</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Fill the prompted fields with your data:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>AWS Access Key ID [None]: &lt;accessKeyID&gt;
+AWS Secret Access Key [None]: &lt;secretAccessKey&gt;
+Default region name [None]: eu-west-1
+Default output format [None]: json</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now you have AWS CLI ready to use.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/welcome/welcome.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_getting-started.wiki_introduction-why-should-i-use-devonfw.asciidoc_features.html">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_devon4j.wiki_architecture.asciidoc.html#devonfw-guide_devon4j.wiki_architecture.asciidoc_technology-stack">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_getting-started.wiki_getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_devon4j.wiki_architecture.asciidoc.html">Architecture</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_ide.wiki_devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_general_master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-guide_ide.wiki_LICENSE.asciidoc.html">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script src="/website/assets/scripts/popper.min.js"></script>
+    <script src="/website/assets/scripts/bootstrap.min.js"></script>
+<div class="footnote"><sub>
+
+Last updated 2023-08-23 07:44:44 UTC
+</sub></div>
+</div>
+</div>
+<link rel="stylesheet" type="text/css" href="https://cginternal.devonfw.com/websitesnippets/main.css">
+<script async src="https://cginternal.devonfw.com/websitesnippets/main.js"></script>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+<script>
+  var internalUrls = ["https://cginternal.devonfw.com/websitesnippets/"];
+  $(".internal").each(function(){
+    internalUrls.forEach((internalUrl, index) => {
+      $.ajax({url: internalUrl + $(this).text() + "/index.html" })
+      .then(r => {
+        var leftDiv = $('<div class="info"><span class="infoText">Internal</span><img class="infoImage" src="' + internalUrl + 'logo.png"/></div>');
+        var rightFirstDiv = $('<div class="message">This is only visible inside of the corporate network.</div>');
+        var rightLastDiv = $('<div class="content"></div>');
+        rightLastDiv.html(r);
+        var rightDiv = $('<div class="right"></div>');
+        rightDiv.append(rightFirstDiv);
+        rightDiv.append(rightLastDiv);
+        $(this).html(leftDiv);
+        $(this).append(rightDiv);
+        $(this).addClass("internal-active");
+        $(this).removeClass("internal");
+      })
+    });
+	});
+</script>
+<script>
+      let cookieName = 'cookie_consent';
+      let expiryTime = new Date(2037, 11, 21);
+      let today = new Date();
+      let cookieConsentDeclinedDate = localStorage.getItem("cookie_consent_declined");
+      let dateDiffHours = 0;
+      let cookieConsentHtml = `
+      <div id="cookie-consent">
+        <p>
+          We use cookies to perform analytics and enhance user experience. Do you accept to the use of cookies?
+        </p>
+        <p class="cookie-consent-buttons">
+          <a id="decline-cookie-btn" class="btn white-button" href="javascript:void(0)">Decline</a>
+          <a id="accept-cookie-btn" class="btn blue-button" href="javascript:void(0)">Accept</a>
+        </p>
+      </div>
+      `;
+      
+      const parseCookie = str =>
+        str
+        .split(';')
+        .map(v => v.split('='))
+        .reduce((acc, v) => {
+          acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());
+          return acc;
+        }, {});
+      
+      dateDiffHours = cookieConsentDeclinedDate ? Math.abs(cookieConsentDeclinedDate - today) / 36e5 : 0;
+      if (document.cookie.indexOf(cookieName) < 0) {
+        if (cookieConsentDeclinedDate) {
+          if (dateDiffHours > 24) {
+            $("body").append(cookieConsentHtml);
+          }
+        } else {
+          $("body").append(cookieConsentHtml);
+        }
+      } else {
+        cookies = parseCookie(document.cookie);
+        if (cookies["cookie_consent"] == "accept") {
+          consentGranted();
+        }
+      }
+      
+      $("#accept-cookie-btn").click(function() {
+        document.cookie = `${cookieName}=accept;expires=${expiryTime};path=/`;
+        localStorage.removeItem("cookie_consent_declined");
+        consentGranted();
+        $("#cookie-consent").hide();
+      });
+      $("#decline-cookie-btn").click(function() {
+        localStorage.setItem("cookie_consent_declined", today);
+        $("#cookie-consent").hide();
+      });
+</script>
+</body>
+</html>

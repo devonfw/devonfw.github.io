@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<meta name="generator" content="Asciidoctor 1.5.8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- ******** SOCIAL MEDIA META ********** -->
+
+<meta name="title" property="og:title" content="devonfw website">
+<meta property="og:type" content="website">
+<meta name="image" property="og:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="description" property="og:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta property="og:url" content="https://devonfw.com/index.html">
+
+<meta name="twitter:title" content="devonfw website">
+<meta name="twitter:description" content="devonfw is the standard open source software development platform; Serving the full Software Delivery Life Cycle.">
+<meta name="twitter:image" content="https://devonfw.com/images/devonfwwebsite.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- ************************************* -->
+
+
+<title>Setting up a library package pipeline on Azure DevOps</title>
+<!-- devonfw website stylesheet -->
+<link rel="stylesheet" type="text/css" href="/devonfw.css">
+<!-- Lunr -->
+<script src="/website/assets/scripts/lunr.min.js"></script>
+<!-- JQuery -->
+<script src="/website/assets/scripts/jquery.min.js"></script>
+<link rel="stylesheet" href="/website/assets/styles/font-awesome.min.css">
+<link rel="stylesheet" href="/website/assets/styles/googlecode.min.css">
+<script src="/website/assets/scripts/highlight.min.js"></script>
+<script src="/website/assets/scripts/common.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+<link rel="stylesheet" href="/website/assets/styles/bootstrap.min.css">
+
+<script src="/website/assets/scripts/anchor.min.js"></script>
+
+<script src="/website/components/header/search-engine/bundle.js"></script>
+
+<script src="/website/shared/rightmenu.js"></script>
+
+<!-- ************** Google analytics ************ -->
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+
+gtag('consent', 'default', {
+  'analytics_storage': 'denied'
+});
+</script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151636804-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-151636804-1');
+</script>
+<script>
+  function consentGranted() {
+    gtag('consent', 'update', {
+      'analytics_storage': 'granted'
+    });
+  }
+</script>
+
+<!-- ******************************************** -->
+
+
+</head>
+<body class="article">
+<div id="website-navbar" class="website-navbar">
+<button id="menu-button" class="menu-button">
+  <img src="/images/menu-button.svg" width="32px" height="32px" alt=""/>
+</button>
+
+<ul>
+<li>
+<p><span class="image"><a class="image" href="https://devonfw.com/"><img alt="logo" src="/images/Logo_devonfw.svg"></a></span></p>
+</li>
+<li>
+<p><a href="https://devonfw.com/website/pages/learning/">Tutorials</a></p>
+</li>
+<li>
+<p><a href="/website/pages/solutions/index.html">Solutions</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Docs</a></p>
+</li>
+</ul>
+
+<form class="form-inline">
+  <div class="search-bar">
+    <input
+      id="search-field"
+      type="search"
+      class="form-control mr-sm-2"
+      placeholder="Search by keyword(s)..."
+      aria-label="Search"
+      style="height: auto;"
+      autocomplete="off"/>
+    <div class="sb-res-pos px-4">
+      <div id="click-outside" class="click-outside z-50 hidden"></div>
+      <div class="col rounded px-0 border z-100 bg-white hidden search-bar-results" id="search-results-box">
+      </div>
+    </div>
+  </div>
+</form>
+<a class="navbar-github text-white" href="https://github.com/devonfw/">
+  <img src="/images/github-mark.png" width=auto height=auto alt="">
+</a></div>
+<div id="sidebar" class="wiki-sidebar"></div>
+
+<div id="content" class="mt-4 mt-sm-5">
+<div class="toc2">
+<div class="title">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#devonfw-guide_hangar.wiki_azure-devops-setup-library-package-pipeline.asciidoc">Setting up a library package pipeline on Azure DevOps</a>
+<ul class="sectlevel1">
+<li><a href="#devonfw-guide_hangar.wiki_azure-devops-setup-library-package-pipeline.asciidoc_prerequisites">Prerequisites</a></li>
+<li><a href="#devonfw-guide_hangar.wiki_azure-devops-setup-library-package-pipeline.asciidoc_creating-the-pipeline-using-provided-script">Creating the pipeline using provided script</a>
+<ul class="sectlevel2">
+<li><a href="#devonfw-guide_hangar.wiki_azure-devops-setup-library-package-pipeline.asciidoc_usage">Usage</a></li>
+<li><a href="#devonfw-guide_hangar.wiki_azure-devops-setup-library-package-pipeline.asciidoc_flags">Flags</a></li>
+<li><a href="#devonfw-guide_hangar.wiki_azure-devops-setup-library-package-pipeline.asciidoc_examples">Examples</a></li>
+</ul>
+</li>
+<li><a href="#devonfw-guide_hangar.wiki_azure-devops-setup-library-package-pipeline.asciidoc_adding-maven-feed-to-library-repository-list">Adding Maven feed to library repository list</a></li>
+<li><a href="#devonfw-guide_hangar.wiki_azure-devops-setup-library-package-pipeline.asciidoc_appendix">Appendix</a>
+<ul class="sectlevel2">
+<li><a href="#devonfw-guide_hangar.wiki_azure-devops-setup-library-package-pipeline.asciidoc_consume-library-from-the-main-project">Consume library from the main project</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="devonfw-guide_hangar.wiki_azure-devops-setup-library-package-pipeline.asciidoc" class="sect0">Setting up a library package pipeline on Azure DevOps</h1>
+<div class="paragraph">
+<p>In this section we will create a package pipeline to generate a distributable of a library and push it to a feed in Azure DevOps. This pipeline will be configured in order to be triggered every time quality pipeline is executed successfully on a commit for <code>release/*</code> and <code>develop</code> branches, requiring manual launch for other branches but still enforcing that quality pipeline has passed. Depending on the language, it consumes the artifact produced by the build pipeline.</p>
+</div>
+<div class="paragraph">
+<p>The creation of this pipeline will follow the project workflow, so a new branch named feature/library-package-pipeline will be created. The YAML file and the bash script for the pipeline will be pushed to it, as well as a generated file containing required credentials for connecting to the feed.</p>
+</div>
+<div class="paragraph">
+<p>Then, a Pull Request (PR) will be created in order to merge the new branch into the appropriate branch (provided in -b flag). The PR will be automatically merged if the repository policies are met. If the merge is not possible, either the PR URL will be shown as output, or it will be opened in your web browser if using -w flag.</p>
+</div>
+<div class="paragraph">
+<p>The script located at <code>/scripts/pipelines/azure-devops/pipeline_generator.sh</code> will automatically create this new branch, create a library package pipeline based on a YAML template, create the feed, create a PAT token with permission to push to that feed, create the Pull Request, and if it is possible, merge this new branch into the specified branch.</p>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_hangar.wiki_azure-devops-setup-library-package-pipeline.asciidoc_prerequisites">Prerequisites</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This script will commit and push the corresponding YAML template into your repository, so please be sure your local repository is up-to-date (i.e you have pulled the latest changes with <code>git pull</code>).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_hangar.wiki_azure-devops-setup-library-package-pipeline.asciidoc_creating-the-pipeline-using-provided-script">Creating the pipeline using provided script</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="devonfw-guide_hangar.wiki_azure-devops-setup-library-package-pipeline.asciidoc_usage">Usage</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>./pipeline_generator.sh \
+  -c &lt;config file path&gt; \
+  -n &lt;pipeline name&gt; \
+  -l &lt;language or framework&gt; \
+  -d &lt;project local path&gt; \
+  --build-pipeline-name &lt;build pipeline name&gt; \
+  --quality-pipeline-name &lt;quality pipeline name&gt; \
+  [-b &lt;branch&gt;] \
+  [-w]</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+The config file for the library package pipeline is located at <code>/scripts/pipelines/azure-devops/templates/library-package/library-package-pipeline.cfg</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_hangar.wiki_azure-devops-setup-library-package-pipeline.asciidoc_flags">Flags</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>-c, --config-file              [Required] Configuration file containing pipeline definition.
+-n, --pipeline-name            [Required] Name that will be set to the pipeline.
+-l, --language                 [Required] Language or framework of the project.
+-d, --local-directory          [Required] Local directory of your project.
+    --build-pipeline-name      [Required, if Java/Maven] Build pipeline name.
+    --quality-pipeline-name    [Required] Quality pipeline name.
+-b, --target-branch                       Name of the branch to which the Pull Request will target. PR is not created if the flag is not provided.
+-w                                        Open the Pull Request on the web browser if it cannot be automatically merged. Requires -b flag.</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_hangar.wiki_azure-devops-setup-library-package-pipeline.asciidoc_examples">Examples</h3>
+<div class="sect3">
+<h4 id="devonfw-guide_hangar.wiki_azure-devops-setup-library-package-pipeline.asciidoc_java-project">Java project</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/library-package/library-package-pipeline.cfg -n library-package-pipeline -l java -d C:/Users/$USERNAME/Desktop/java-library-project --build-pipeline-name java-library-build --quality-pipeline-name java-library-quality</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="devonfw-guide_hangar.wiki_azure-devops-setup-library-package-pipeline.asciidoc_node.js-project">Node.js project</h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>./pipeline_generator.sh -c ./templates/library-package/library-package-pipeline.cfg -n library-package-pipeline -l node -d C:/Users/$USERNAME/Desktop/node-library-project --quality-pipeline-name node-library-quality</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_hangar.wiki_azure-devops-setup-library-package-pipeline.asciidoc_adding-maven-feed-to-library-repository-list">Adding Maven feed to library repository list</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Go to Artifacts section in Azure DevOps and select the newly created Maven feed by the script (default name is <code>maven-feed</code>). Then follow the <a href="#devonfw-guide/hangar.wiki_https://docs.microsoft.com/en-us/azure/devops/artifacts/maven/pom-and-settings?view=azure-devops">Set up the Maven client</a> guide from Azure Devops official documentation to perform required steps on the library project code side for being able to push the library from the pipeline.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-important" title=""></i>
+</td>
+<td class="content">
+Ignore the settings.xml part as it is created by the script. Only pom.xml modification is needed.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="devonfw-guide_hangar.wiki_azure-devops-setup-library-package-pipeline.asciidoc_appendix">Appendix</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="devonfw-guide_hangar.wiki_azure-devops-setup-library-package-pipeline.asciidoc_consume-library-from-the-main-project">Consume library from the main project</h3>
+<div class="sect3">
+<h4 id="devonfw-guide_hangar.wiki_azure-devops-setup-library-package-pipeline.asciidoc_maven-feed">Maven feed</h4>
+<div class="paragraph">
+<p>Go to Azure Artifacts and click on the artifact of the library. Then copy the contents of the &lt;dependency&gt; element and paste it inside the <code>&lt;dependencies&gt;</code> element of your <code>pom.xml</code> file.</p>
+</div>
+<div class="paragraph">
+<p>Then, follow again the <a href="#devonfw-guide/hangar.wiki_https://docs.microsoft.com/en-us/azure/devops/artifacts/maven/pom-and-settings?view=azure-devops">Set up the Maven client</a> guide to connect the main project to the Maven feed to be able to consume the library.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-important" title=""></i>
+</td>
+<td class="content">
+Ignore the settings.xml part as is not necessary to consume an artifact. Only pom.xml modification is needed.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer" class="footer">
+<div class="openblock footerLinks">
+<div class="content">
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">About</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/welcome/welcome.html">About devonfw</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_getting-started.wiki_introduction-why-should-i-use-devonfw.asciidoc_features.html">Features</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_devon4j.wiki_architecture.asciidoc.html#devonfw-guide_devon4j.wiki_architecture.asciidoc_technology-stack">Technology Stack</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Explore</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_getting-started.wiki_getting-started.asciidoc.html">Getting started</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_devon4j.wiki_architecture.asciidoc.html">Architecture</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Docs</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_ide.wiki_devonfw-ide-introduction.asciidoc.html">User guide</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/devonfw-guide_general_master-release-notes.asciidoc.html">Releases information</a></p>
+</li>
+<li>
+<p><a href="/website/pages/docs/master.html">Wiki</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="dlist linklist">
+<dl>
+<dt class="hdlist1">Community</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/orgs/devonfw/people">Contributors</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/devonfw.github.io/blob/develop/README.asciidoc">Website Contribution</a></p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="ulist footerFooter">
+<ul>
+<li>
+<p><a href="https://devonfw.com/website/pages/docs/devonfw-guide_ide.wiki_LICENSE.asciidoc.html">Terms of Use</a></p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw">Support</a></p>
+</li>
+</ul>
+</div>
+</div>
+    <script>
+      let bb = document.getElementById('menu-button');
+      bb.addEventListener('click', function() {
+        document.querySelector('.website-navbar ul').classList.toggle('visible');
+        console.log(document.querySelector('.website-navbar ul'))
+      })
+    </script>
+    <script type="module">
+      import { EditLinksModule } from '/website/shared/editlinks.js';
+
+      let alwaysVisible = true;
+      if(document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+        alwaysVisible = false;
+      }
+      EditLinksModule.addEditLinks(alwaysVisible);
+    </script>
+    <script src="/website/assets/scripts/popper.min.js"></script>
+    <script src="/website/assets/scripts/bootstrap.min.js"></script>
+<div class="footnote"><sub>
+
+Last updated 2023-08-23 07:44:47 UTC
+</sub></div>
+</div>
+</div>
+<link rel="stylesheet" type="text/css" href="https://cginternal.devonfw.com/websitesnippets/main.css">
+<script async src="https://cginternal.devonfw.com/websitesnippets/main.js"></script>
+<script>
+  if(!document.location.pathname.endsWith("pages/welcome/welcome.html")) {
+    anchors.options.visible = 'always';
+  }
+  anchors.add();
+</script>
+<script>
+  var internalUrls = ["https://cginternal.devonfw.com/websitesnippets/"];
+  $(".internal").each(function(){
+    internalUrls.forEach((internalUrl, index) => {
+      $.ajax({url: internalUrl + $(this).text() + "/index.html" })
+      .then(r => {
+        var leftDiv = $('<div class="info"><span class="infoText">Internal</span><img class="infoImage" src="' + internalUrl + 'logo.png"/></div>');
+        var rightFirstDiv = $('<div class="message">This is only visible inside of the corporate network.</div>');
+        var rightLastDiv = $('<div class="content"></div>');
+        rightLastDiv.html(r);
+        var rightDiv = $('<div class="right"></div>');
+        rightDiv.append(rightFirstDiv);
+        rightDiv.append(rightLastDiv);
+        $(this).html(leftDiv);
+        $(this).append(rightDiv);
+        $(this).addClass("internal-active");
+        $(this).removeClass("internal");
+      })
+    });
+	});
+</script>
+<script>
+      let cookieName = 'cookie_consent';
+      let expiryTime = new Date(2037, 11, 21);
+      let today = new Date();
+      let cookieConsentDeclinedDate = localStorage.getItem("cookie_consent_declined");
+      let dateDiffHours = 0;
+      let cookieConsentHtml = `
+      <div id="cookie-consent">
+        <p>
+          We use cookies to perform analytics and enhance user experience. Do you accept to the use of cookies?
+        </p>
+        <p class="cookie-consent-buttons">
+          <a id="decline-cookie-btn" class="btn white-button" href="javascript:void(0)">Decline</a>
+          <a id="accept-cookie-btn" class="btn blue-button" href="javascript:void(0)">Accept</a>
+        </p>
+      </div>
+      `;
+      
+      const parseCookie = str =>
+        str
+        .split(';')
+        .map(v => v.split('='))
+        .reduce((acc, v) => {
+          acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());
+          return acc;
+        }, {});
+      
+      dateDiffHours = cookieConsentDeclinedDate ? Math.abs(cookieConsentDeclinedDate - today) / 36e5 : 0;
+      if (document.cookie.indexOf(cookieName) < 0) {
+        if (cookieConsentDeclinedDate) {
+          if (dateDiffHours > 24) {
+            $("body").append(cookieConsentHtml);
+          }
+        } else {
+          $("body").append(cookieConsentHtml);
+        }
+      } else {
+        cookies = parseCookie(document.cookie);
+        if (cookies["cookie_consent"] == "accept") {
+          consentGranted();
+        }
+      }
+      
+      $("#accept-cookie-btn").click(function() {
+        document.cookie = `${cookieName}=accept;expires=${expiryTime};path=/`;
+        localStorage.removeItem("cookie_consent_declined");
+        consentGranted();
+        $("#cookie-consent").hide();
+      });
+      $("#decline-cookie-btn").click(function() {
+        localStorage.setItem("cookie_consent_declined", today);
+        $("#cookie-consent").hide();
+      });
+</script>
+</body>
+</html>

@@ -126,18 +126,8 @@ gtag('consent', 'default', {
 </li>
 </ul>
 <h1 id="devonfw-guide_devon4j.wiki_guide-jpa-performance.asciidoc" class="sect0">JPA Performance</h1>
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="icon-warning" title=""></i>
-</td>
-<td class="content">
-Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
-When using JPA the developer sometimes does not see or understand where and when statements to the database are triggered.
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<p>When using JPA the developer sometimes does not see or understand where and when statements to the database are triggered.</p>
 </div>
 <div class="quoteblock">
 <blockquote>
@@ -156,22 +146,12 @@ When using JPA the developer sometimes does not see or understand where and when
 <div class="sect1">
 <h2 id="devonfw-guide_devon4j.wiki_guide-jpa-performance.asciidoc_n-plus-1-problem">N plus 1 Problem</h2>
 <div class="sectionbody">
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="icon-warning" title=""></i>
-</td>
-<td class="content">
-Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
-The most prominent phenomena is call the <code>N+1 Problem</code>.
+<div class="paragraph">
+<p>The most prominent phenomena is call the <code>N+1 Problem</code>.
 We use entities from our <a href="https://github.com/devonfw/my-thai-star">MTS</a> demo app as an example to explain the problem.
 There is a <a href="https://github.com/devonfw/my-thai-star/blob/develop/java/mtsj/core/src/main/java/com/devonfw/application/mtsj/dishmanagement/dataaccess/api/DishEntity.java">DishEntity</a> that has a <code>@ManyToMany</code> relation to
 <a href="https://github.com/devonfw/my-thai-star/blob/develop/java/mtsj/core/src/main/java/com/devonfw/application/mtsj/dishmanagement/dataaccess/api/IngredientEntity.java">IngredientEntity</a>.
-Now we assume that we want to iterate all ingredients for a dish like this:
-</td>
-</tr>
-</table>
+Now we assume that we want to iterate all ingredients for a dish like this:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -191,18 +171,8 @@ Now <code>findDishById</code> caused 1 initial query statement and for any numbe
 <div class="sect1">
 <h2 id="devonfw-guide_devon4j.wiki_guide-jpa-performance.asciidoc_solving-n-plus-1-problem">Solving N plus 1 Problem</h2>
 <div class="sectionbody">
-<div class="admonitionblock warning">
-<table>
-<tr>
-<td class="icon">
-<i class="icon-warning" title=""></i>
-</td>
-<td class="content">
-Hey there! Seems like you are still using the documentation of our legacy Java repository. Since it won&#8217;t be maintained anymore, we recommend you to checkout the new Java page <a href="https://devonfw.com/docs/java/current/">here</a>.
-To solve the N+1 Problem you need to change your code to only trigger a single statement instead. This can be archived in various ways. The most universal solution is to use <code>FETCH JOIN</code> in order to pre-load the nested <code>N</code> child entities into the first level cache of the JPA vendor implementation. This will behave very similar as if the <code>@ManyToMany</code> relation to <code>IngredientEntity</code> was having <code>FetchType.EAGER</code> but only for the specific query and not in general. Because changing <code>@ManyToMany</code> to <code>FetchType.EAGER</code> would cause bad performance for other usecases where only the dish but not its extra ingredients are needed. For this reason all relations, including <code>@OneToOne</code> should always be <code>FetchType.LAZY</code>. Back to our example we simply replace <code>dao.findDishById(dishId)</code> with <code>dao.findDishWithExtrasById(dishId)</code> that we implement by the following JPQL query:
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<p>To solve the N+1 Problem you need to change your code to only trigger a single statement instead. This can be archived in various ways. The most universal solution is to use <code>FETCH JOIN</code> in order to pre-load the nested <code>N</code> child entities into the first level cache of the JPA vendor implementation. This will behave very similar as if the <code>@ManyToMany</code> relation to <code>IngredientEntity</code> was having <code>FetchType.EAGER</code> but only for the specific query and not in general. Because changing <code>@ManyToMany</code> to <code>FetchType.EAGER</code> would cause bad performance for other usecases where only the dish but not its extra ingredients are needed. For this reason all relations, including <code>@OneToOne</code> should always be <code>FetchType.LAZY</code>. Back to our example we simply replace <code>dao.findDishById(dishId)</code> with <code>dao.findDishWithExtrasById(dishId)</code> that we implement by the following JPQL query:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -341,7 +311,7 @@ To solve the N+1 Problem you need to change your code to only trigger a single s
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2022-12-07 17:47:47 UTC
+Last updated 2023-08-23 07:40:01 UTC
 </sub></div>
 </div>
 </div>
