@@ -554,6 +554,26 @@ For this step <em>Solicitor</em> only provides a framework / tool to support the
 <td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Copyright statements found in the components metadata / code (optional, see <a href="#devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_experimental-scancode-integration">Experimental Scancode Integration</a>)</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">packageDownloadUrl</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">URL for downloading the component (optional, see <a href="#devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_experimental-scancode-integration">Experimental Scancode Integration</a>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">sourceDownloadUrl</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">URL for downloading the sources of the component (optional, see <a href="#devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_experimental-scancode-integration">Experimental Scancode Integration</a>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">dataStatus</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional status of the data associated with the component. Possible values TBD.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">traceabilityNotes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Optional notes for tracing the information about this component back to its origin.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -1966,6 +1986,85 @@ The former reader of type <code>gradle</code> is deprecated and should no longer
 </table>
 </div>
 </div>
+<div class="sect2">
+<h3 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_cyclonedx">4.9. CycloneDX</h3>
+<div class="paragraph">
+<p>The CycloneDX reader can read SBOMs in CycloneDX 1.4 or 1.5 format (<a href="https://cyclonedx.org/specification/overview/" class="bare">https://cyclonedx.org/specification/overview/</a>).
+CDXGEN (<a href="https://github.com/CycloneDX/cdxgen" class="bare">https://github.com/CycloneDX/cdxgen</a>) is one tool which can create an SBOM in the required format.</p>
+</div>
+<div class="paragraph">
+<p>To install CDXGEN, the following command needs to be executed.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>sudo npm install -g @cyclonedx/cdxgen</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To run CDXGEN, change into the project directory containing the build file (i.e. pom.xml, package.json). For npm projects, execute "npm-install" before running CDXGEN to create a package-lock.json.</p>
+</div>
+<div class="paragraph">
+<p>Set the FETCH_LICENSE environmental variable, to fetch the declared licenses.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>export FETCH_LICENSE=true</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then execute the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>cdxgen -o sbom.json</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The export should look like the following</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>xref:devonfw-guide_solicitor.wiki_files_sbom.json[devonfw-guide/solicitor.wiki_files/sbom.json]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In Solicitor, the data is read with the following part of the config</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>"readers" : [ {
+      "type" : "cyclonedx",
+      "source" : "file:$/input/sbom.json",
+      "usagePattern" : "DYNAMIC_LINKING"
+      "repoType" : "maven" //or any other valid repoType
+   	} ]</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+Currently, Solicitor only has packageUrlHandlers for maven, npm and pip. For all other package types, Solicitor will ignore the packageUrl.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-note" title=""></i>
+</td>
+<td class="content">
+In the "repoType" field, only ONE type is allowed to be set. In case the SBOM contains packages of multiple types, create a separate SBOM and reader configuration for each type.
+</td>
+</tr>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -3109,13 +3208,46 @@ This will download all sources and process them via ScanCode.
 This might take several hours to complete.
 Results are stored in subdirectory <code>Source</code> of the directory <code>output</code> and is organized in a tree structure given by the <a href="https://github.com/package-url/purl-spec">PackageURL</a> of the ApplicationComponents.</p>
 </div>
+<div class="sect4">
+<h5 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_origin-file">Origin file</h5>
+<div class="paragraph">
+<p>The Scancode integration scripts try to download ApplicationComponent sources from default URLs derived from the PackageUrl (e.g. Maven Central). In cases where the sources are not available at these locations, the download will fail (and the subsequent source scan will be skipped). In this case it is possible to manually download the sources from some other location and store it in the directory structure. Restarting the Scancode integration script might then perform the source scan.</p>
+</div>
+<div class="paragraph">
+<p>To be able to document the (non default) origin of the ApplicationComponent sources a file <code>origin.yaml</code> is created in the components directory in the file system. If the failed source download has been performed manually it is possible to edit this file and correct the data given in this file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="yaml language-yaml"># This file contains metadata about the orgin of the package and the sources.
+# This file was automatically created but might manually be edited if the contained data is not correct
+sourceDownloadUrl: https://url/pointing/to/the/source/archive.jar  <i class="conum" data-value="1"></i><b>(1)</b>
+packageDownloadUrl: https://url/pointing/to/the/binary/archive.jar <i class="conum" data-value="2"></i><b>(2)</b>
+# note: to add comments: write them here and remove the hash at the beginning of the line (not yet processed by Solicitor)</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>URL for downloading the sources - will be available as property <code>ApplicationComponent.sourceDownloadUrl</code> in the Solicitor data model.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>URL for downloading the binaries - will be available as property <code>ApplicationComponent.packageDownloadUrl</code> in the Solicitor data model.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The content of the file <code>origin.yaml</code> currently just affects the above given two properties, it does not affect the downloading of sources by the scripts.</p>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_solicitor-2nd-run">11.3.3. Solicitor 2nd run</h4>
 <div class="paragraph">
 <p>Execute <em>Solicitor</em> a second time.
 After reading the component/license information from the Readers (but before starting the rule engine)
-<em>Solicitor</em> will try to look up ScanCode information from the directory tree in <code>output/Sources</code> for all processed ApplicationComponents. If information is found for an ApplicationsComponent the following is done:</p>
+<em>Solicitor</em> will try to look up ScanCode information from the directory tree in <code>output/Sources</code> for all processed ApplicationComponents. If information is found for an ApplicationComponent the following is done:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -3129,7 +3261,10 @@ After reading the component/license information from the Readers (but before sta
 <p>Info on NOTICE file is taken from the ScanCode results</p>
 </li>
 <li>
-<p>If the ScanCode results contain information about a project URL then this is stored as <code>ossHomepage</code></p>
+<p>If the ScanCode results contain information about project URLs this is stored as <code>sourceRepoUrl</code> and/or <code>ossHomepage</code></p>
+</li>
+<li>
+<p><code>sourceDownloadUrl</code>  and <code>packageDownloadUrl</code> are set to the values given in file <code>origin.yaml</code></p>
 </li>
 </ul>
 </div>
@@ -3197,7 +3332,7 @@ Applying Curation information from a "curations" file or changing the License in
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>URL of the project, will be stored as <code>ossHomepage</code>. (Optional: no change if not existing.)</td>
+<td>URL of the project, will be stored as <code>sourceRepoUrl</code>. (Optional: no change if not existing.)</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -3345,7 +3480,13 @@ Application, OSS Name/Product, OSS ArtifactId, OSS Version, Effective Normalized
 </div>
 </div>
 <div class="sect2">
-<h3 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_scancodescript.vm">C.6. ScancodeScript.vm, ScancodeScanScript.vm</h3>
+<h3 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_source_download_script.vm">C.6. Source_Download_Script.vm</h3>
+<div class="paragraph">
+<p>This template creates a bash script for downloading package sources for all packages where the license requires the source code to be included in the distribution.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_scancodescript.vm">C.7. ScancodeScript.vm, ScancodeScanScript.vm</h3>
 <div class="paragraph">
 <p>These templates create script files for downloading package sources and using <a href="https://github.com/nexB/scancode-toolkit">ScanCode</a> to do a "deep license scan"
 for finding licenses, copyright information (statements, holders, authors)
@@ -3365,7 +3506,7 @@ Generating these scripts is an experimental feature and might be changed or remo
 </div>
 </div>
 <div class="sect2">
-<h3 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_attributions.vm">C.7. Attributions.vm</h3>
+<h3 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_attributions.vm">C.8. Attributions.vm</h3>
 <div class="paragraph">
 <p>This template creates an attributions document which lists all used OSS components with their licenses, license texts and found copyrights information as well as found information from NOTICE files.
 The template is part of the <a href="#devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_experimental-scancode-integration">Experimental Scancode Integration</a> and requires ScanCode to be used to collect all necessary information.</p>
@@ -3493,7 +3634,81 @@ from a corporate server or even a public service available on the internet.</p>
 <div class="sectionbody">
 <div class="dlist">
 <dl>
+<dt class="hdlist1">Changes in 1.13.0</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/devonfw/solicitor/issues/198" class="bare">https://github.com/devonfw/solicitor/issues/198</a>: Add PackageUrlHandler for nuget packages.</p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/solicitor/issues/191" class="bare">https://github.com/devonfw/solicitor/issues/191</a>: Refactoring of the (experimental) Scancode integration (formerly class ScancodeFileAdapter).</p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/solicitor/issues/192" class="bare">https://github.com/devonfw/solicitor/issues/192</a>: References to files within the sources of a component (e.g. license or notice files)
+are now returned from the Scancode adapter by a local path prefixed by <code>$PKG_ROOT$/</code>. This replaces the usage of <code>file:</code> urls in this case. The same syntax needs to be used within curation data if the url pointing to license texts within the component needs to be curated.</p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/solicitor/issues/199" class="bare">https://github.com/devonfw/solicitor/issues/199</a>: Refactoring of Source_Download_Script.vm to use packageUrl instead of repoType.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Changes in 1.12.0</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/devonfw/solicitor/issues/182" class="bare">https://github.com/devonfw/solicitor/issues/182</a>: Add new data quality and traceability attributes to the ComponentInfo data structure.</p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/solicitor/issues/185" class="bare">https://github.com/devonfw/solicitor/issues/185</a>: Fixed random ordering of rows in OSS-Inventory-Simple, which causes false differences to be marked.</p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/solicitor/issues/189" class="bare">https://github.com/devonfw/solicitor/issues/189</a>: Added a CycloneDX Reader, to enable reading SBOMs in CycloneDX 1.4 or 1.5 format.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Changes in 1.11.0</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/devonfw/solicitor/pull/179" class="bare">https://github.com/devonfw/solicitor/pull/179</a>: Added further name mapping rules.</p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/solicitor/issues/168" class="bare">https://github.com/devonfw/solicitor/issues/168</a>: Fixed NullPointerException for blank license in License URL Guessing.</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Changes in 1.10.0</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/devonfw/solicitor/issues/175" class="bare">https://github.com/devonfw/solicitor/issues/175</a>: Introduce new properties <code>packageDownloadUrl</code> and <code>sourceDownloadUrl</code> in <code>ApplicationComponent</code>. Process file <code>origin.yaml</code> within <a href="#devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_experimental-scancode-integration">Experimental Scancode Integration</a> to be able to set these properties to non default values.</p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/solicitor/issues/177" class="bare">https://github.com/devonfw/solicitor/issues/177</a>: Contents of local resources (<code>file:</code>) are no longer cached in FilesystemCachingContentProvider.</p>
+</li>
+</ul>
+</div>
+</dd>
 <dt class="hdlist1">Changes in 1.9.0</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/devonfw/solicitor/issues/171" class="bare">https://github.com/devonfw/solicitor/issues/171</a>: Multiple improvements in processing of ScanCode results.</p>
+</li>
+<li>
+<p><a href="https://github.com/devonfw/solicitor/issues/167" class="bare">https://github.com/devonfw/solicitor/issues/167</a>: Fixed a bug which prevented license URLs given in scancode curations (see <a href="#devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_curations-file">Curations file</a>) to be resolved properly when they point to the local file system (starting with <code>file:</code>).</p>
+</li>
+</ul>
+</div>
+</dd>
 <dt class="hdlist1">Changes in 1.8.1</dt>
 <dd>
 <div class="ulist">
@@ -3574,7 +3789,7 @@ from a corporate server or even a public service available on the internet.</p>
 from alternative sources. See <a href="#devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_extension-interfaces">Extension Interfaces</a>.</p>
 </li>
 <li>
-<p><a href="https://github.com/devonfw/solicitor/issues/137" class="bare">https://github.com/devonfw/solicitor/issues/137</a>: Internal restructuration of Solicitor modules which allows Solicitor code to be used as dependency in other projects.</p>
+<p><a href="https://github.com/devonfw/solicitor/issues/137" class="bare">https://github.com/devonfw/solicitor/issues/137</a>: Internal restructuring of Solicitor modules which allows Solicitor code to be used as dependency in other projects.</p>
 </li>
 <li>
 <p><a href="https://github.com/devonfw/solicitor/issues/129" class="bare">https://github.com/devonfw/solicitor/issues/129</a>: Added spellcheck support within documentation for run-together words like camel cased ones.</p>
@@ -3907,7 +4122,7 @@ multiapplication projects even is some license files are unavailable.</p>
 <div class="footnote"><sub>
 
 Version {project-version}-{buildNumber}<br>
-Last updated 2023-08-23 07:47:49 UTC
+Last updated 2023-08-30 15:36:10 UTC
 </sub></div>
 </div>
 </div>

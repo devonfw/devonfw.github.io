@@ -426,7 +426,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <meta http-equiv="Content-Type" content="text/html; charset=">
 <meta name="generator" content="Asciidoctor 1.5.8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="author" content="Updated at 2023-08-23 07:49:34 UTC">
+<meta name="author" content="Updated at 2023-08-30 15:38:27 UTC">
 
 <!-- ******** SOCIAL MEDIA META ********** -->
 
@@ -533,7 +533,7 @@ gtag('consent', 'default', {
 <div id="header">
 <h1>devonfw guide</h1>
 <div class="details">
-<span id="author" class="author">Updated at 2023-08-23 07:55:47 UTC</span><br>
+<span id="author" class="author">Updated at 2023-08-30 15:46:37 UTC</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -635,13 +635,46 @@ This will download all sources and process them via ScanCode.
 This might take several hours to complete.
 Results are stored in subdirectory <code>Source</code> of the directory <code>output</code> and is organized in a tree structure given by the <a href="https://github.com/package-url/purl-spec">PackageURL</a> of the ApplicationComponents.</p>
 </div>
+<div class="sect5">
+<h6 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_origin-file">Origin file</h6>
+<div class="paragraph">
+<p>The Scancode integration scripts try to download ApplicationComponent sources from default URLs derived from the PackageUrl (e.g. Maven Central). In cases where the sources are not available at these locations, the download will fail (and the subsequent source scan will be skipped). In this case it is possible to manually download the sources from some other location and store it in the directory structure. Restarting the Scancode integration script might then perform the source scan.</p>
+</div>
+<div class="paragraph">
+<p>To be able to document the (non default) origin of the ApplicationComponent sources a file <code>origin.yaml</code> is created in the components directory in the file system. If the failed source download has been performed manually it is possible to edit this file and correct the data given in this file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-yaml" data-lang="yaml"># This file contains metadata about the orgin of the package and the sources.
+# This file was automatically created but might manually be edited if the contained data is not correct
+sourceDownloadUrl: https://url/pointing/to/the/source/archive.jar  <i class="conum" data-value="1"></i><b>(1)</b>
+packageDownloadUrl: https://url/pointing/to/the/binary/archive.jar <i class="conum" data-value="2"></i><b>(2)</b>
+# note: to add comments: write them here and remove the hash at the beginning of the line (not yet processed by Solicitor)</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tbody><tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>URL for downloading the sources - will be available as property <code>ApplicationComponent.sourceDownloadUrl</code> in the Solicitor data model.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>URL for downloading the binaries - will be available as property <code>ApplicationComponent.packageDownloadUrl</code> in the Solicitor data model.</td>
+</tr>
+</tbody></table>
+</div>
+<div class="paragraph">
+<p>The content of the file <code>origin.yaml</code> currently just affects the above given two properties, it does not affect the downloading of sources by the scripts.</p>
+</div>
+</div>
 </div>
 <div class="sect4">
 <h5 id="devonfw-guide_solicitor.wiki_master-solicitor.asciidoc_solicitor-2nd-run">Solicitor 2nd run</h5>
 <div class="paragraph">
 <p>Execute <em>Solicitor</em> a second time.
 After reading the component/license information from the Readers (but before starting the rule engine)
-<em>Solicitor</em> will try to look up ScanCode information from the directory tree in <code>output/Sources</code> for all processed ApplicationComponents. If information is found for an ApplicationsComponent the following is done:</p>
+<em>Solicitor</em> will try to look up ScanCode information from the directory tree in <code>output/Sources</code> for all processed ApplicationComponents. If information is found for an ApplicationComponent the following is done:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -655,7 +688,10 @@ After reading the component/license information from the Readers (but before sta
 <p>Info on NOTICE file is taken from the ScanCode results</p>
 </li>
 <li>
-<p>If the ScanCode results contain information about a project URL then this is stored as <code>ossHomepage</code></p>
+<p>If the ScanCode results contain information about project URLs this is stored as <code>sourceRepoUrl</code> and/or <code>ossHomepage</code></p>
+</li>
+<li>
+<p><code>sourceDownloadUrl</code>  and <code>packageDownloadUrl</code> are set to the values given in file <code>origin.yaml</code></p>
 </li>
 </ul>
 </div>
@@ -723,7 +759,7 @@ Applying Curation information from a "curations" file or changing the License in
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>URL of the project, will be stored as <code>ossHomepage</code>. (Optional: no change if not existing.)</td>
+<td>URL of the project, will be stored as <code>sourceRepoUrl</code>. (Optional: no change if not existing.)</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -907,7 +943,7 @@ Applying Curation information from a "curations" file or changing the License in
     <script src="/website/assets/scripts/bootstrap.min.js"></script>
 <div class="footnote"><sub>
 
-Last updated 2023-08-23 07:46:08 UTC
+Last updated 2023-08-30 15:33:58 UTC
 </sub></div>
 
 
