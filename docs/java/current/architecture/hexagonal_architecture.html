@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Hexagonal Architecture :: devonfw</title>
-    <link rel="canonical" href="https://devonfw.com/docs/java/current/architecture/hexagonale_architecture.html">
+    <link rel="canonical" href="https://devonfw.com/docs/java/current/architecture/hexagonal_architecture.html">
     <meta name="generator" content="Antora 3.0.2">
     <link rel="stylesheet" href="../../../_/css/site.css">
-<meta property="og:title" content="1/architecture/hexagonale_architecture.adoc" />    <script>var uiRootPath = '../../../_'</script>
+<meta property="og:title" content="1/architecture/hexagonal_architecture.adoc" />    <script>var uiRootPath = '../../../_'</script>
   </head>
   <body class="article">
 <header class="header">
@@ -65,7 +65,7 @@
     <a class="nav-link" href="layered_architecture.html">Layered Architecture</a>
   </li>
   <li class="nav-item is-current-page" data-depth="2">
-    <a class="nav-link" href="hexagonale_architecture.html">Hexagonal Architecture</a>
+    <a class="nav-link" href="hexagonal_architecture.html">Hexagonal Architecture</a>
   </li>
 </ul>
   </li>
@@ -222,10 +222,10 @@
   <ul>
     <li><a href="../index.html">Java</a></li>
     <li>Architecture</li>
-    <li><a href="hexagonale_architecture.html">Hexagonal Architecture</a></li>
+    <li><a href="hexagonal_architecture.html">Hexagonal Architecture</a></li>
   </ul>
 </nav>
-  <div class="edit-this-page"><a href="https://github.com/devonfw/java/edit/main/modules/ROOT/pages/architecture/hexagonale_architecture.adoc">Contribute to this page</a></div>
+  <div class="edit-this-page"><a href="https://github.com/devonfw/java/edit/main/modules/ROOT/pages/architecture/hexagonal_architecture.adoc">Contribute to this page</a></div>
   </div>
   <div class="content">
 <aside class="toc sidebar" data-title="Contents" data-levels="2">
@@ -284,14 +284,14 @@ Adapters implement these ports and handle the translation between the core&#8217
     │       └── [FindFreeTableService.java]
     └── adapter/
         ├── in/
-        │   └── rest/
+        │   └── web/
         │       ├── RestController.java
         │       ├── model/
         │       │   └── ReservationDto.java
         │       └── mapper/
         │           └── ReservationMapper.java
         └── out/
-            └── jpa/
+            └── repository/
                 ├── JpaAdapter.java
                 ├── model/
                 │   ├── ReservationEntity.java
@@ -339,21 +339,28 @@ It needs to be distinguished between incoming ports and outgoing ports.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">core.port.in</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Incoming ports are the entry of the application.
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Incoming ports are the entry of the application.
 They provide interfaces that are called from incoming adapters and hide the actual implementation.
 A proposal of structuring incoming ports is naming them like single use cases (e.g. CancelReservationPort).
-Each port should only provide a single method.
-.Design Decision
-[%collapsible]
-====
-Incoming Ports are not as relevant for the hexagonal architecture as the outgoing ports.
+Each port should only provide a single method.</p>
+</div>
+<details>
+<summary class="title">Design Decision</summary>
+<div class="content">
+<div class="paragraph">
+<p>Incoming Ports are not as relevant for the hexagonal architecture as the outgoing ports.
 Outgoing ports are used for the dependency inversion pattern.
 For incoming ports could also call the use cases directly.
 Therefore, an pragmatic alternative would be leaving out the incoming ports.</p>
-<p class="tableblock">It was decided to include the incoming ports nonetheless. They should implement single use cases that are offered.
+</div>
+<div class="paragraph">
+<p>It was decided to include the incoming ports nonetheless. They should implement single use cases that are offered.
 Each interface should clearly mark the use case that contains only one method.
-Use cases from the interface might be grouped logically in the use case implementation class.
-====</p></td>
+Use cases from the interface might be grouped logically in the use case implementation class.</p>
+</div>
+</div>
+</details></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">core.port.out</p></td>
@@ -446,6 +453,267 @@ This makes the application more difficult to understand and harder to locate the
 </div>
 <div class="paragraph">
 <p>Therefore, we propose to implement the domain model as anemic entities and make usage of use cases and services to implement the business logic and interact with the domain models.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_module_based_hexagonal_component_architecture"><a class="anchor" href="#_module_based_hexagonal_component_architecture"></a>Module-based hexagonal component architecture</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The previously described approach of using packages to maintain a hexagonal architecture is particularly suitable for lightweight and smaller applications.</p>
+</div>
+<div class="paragraph">
+<p>For larger applications, it makes sense to additionally implement the division using Maven or Gradle modules.
+This has the advantage that the application core of the hexagon remains completely without special technical frameworks such as JPA.
+As a result, it is technically not possible to use these functions in the core, which permanently leads to a "cleaner" core.</p>
+</div>
+<div class="paragraph">
+<p>The division into modules looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-plaintext hljs" data-lang="plaintext">application A1
+├── bootstrap (module)
+└── business component C1 (module)
+    ├── core (module)
+    │   ├── domain
+    │   ├── port
+    │   │   ├── in
+    │   │   └── out
+    │   ├── usecase
+    │   └── service (optional)
+    └── adapter (module)
+        ├── in
+        │   └── web
+        │       └── (analog with packages)
+        └── out
+            └── repository
+                └── (analog with packages)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Within the application we structure the individual business components using modules.
+The main purpose of this is to have a structure that is future-proof and allows multiple business components to be integrated.
+Modules at this level have the advantage that they can be developed independently and communication must be explicitly regulated.
+For the sake of simplicity, we initially only assume one business component.
+The business component is in turn divided into two further modules <code>core</code> and <code>adapter</code>.
+This separation allows the dependencies for both modules to be independent of each other and the core to remain free of technical frameworks.
+The direction of communication is also clearly regulated by the dependencies between core and adapter.
+In addition to the module for the business component, there is a <code>bootstrap</code> module that can be seen as a starting point for the application.
+When using Spring Boot, the <code>SpringBootApplication</code> and configurations can also be found here.
+This module in turn has a dependency on all business components (to be precise on their core and adapter).</p>
+</div>
+<div class="paragraph">
+<p>The adapter module contains all incoming and outgoing adapters of a business component.
+This offers a good compromise between structuring and tailor-made dependencies and manageable complexity on the other hand.
+Therefore, we suggest to structure the adapter module using packages to differentiate incoming and outgoing adapters and on the next level the specifics of adapters like web, repository, etc.
+See the package project structure to get the full picture.
+Given the usual level of complexity, it can be assumed that there are usually no more than 2-3 adapters, so structuring using packages is sufficient here.
+As complexity increases, two additional options become available:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Separate modules for in and out. This allows the frameworks for incoming and outgoing adapters to be maintained separately and provides an additional level of structuring.</p>
+</li>
+<li>
+<p>Individual modules for each adapter. This means that each adapter can be viewed and developed completely isolated.
+The dependencies can also be maintained independently.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>With both options, the complexity of managing modules and explicit dependencies increases accordingly.
+The recommendation is to start with a package structure and divide it further if necessary.</p>
+</div>
+<div class="paragraph">
+<p>Dependencies should be defined as far "down" as possible and not on the root or business component level.
+In particular, technical frameworks such as JPA should be defined directly in the adapter module so that they are not available in the core module.
+In order to keep versions consistent, <a href="https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Dependency_Management">dependency management</a> in the master pom can be used in Maven.
+The advantage of this is that the version only needs to be defined at the main level and does not need to be specified in every adapter pom.
+This approach also prevents the same framework from being used in different versions in the adapters.</p>
+</div>
+<div class="paragraph">
+<p>It is necessary that the adapters can access the core and therefore have a dependency so that, on the one hand, incoming adapters can call logic in the core and, on the other hand, outgoing adapters from the core can be used.
+The latter is only possible via dependency inversion, as the core is not allowed to access the outgoing adapter directly.
+In this case, the out ports in the core are defined and used as an interface.
+The dependency injection framework in Spring or Quarkus then determines in the background the appropriate implementation from the out adapters that implement the out port interface.
+In this way, it is possible for the core to call functionality in the adapters without having a dependency in this direction.
+Under no circumstances should there be a dependency from the core to the adapter.
+This would undermine the fundamental principle of a hexagonal architecture and destroy the benefits of it</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In case you are using Quarkus environment the dependency inversion is not possible out of the box.
+That means that outgoing ports cannot injected as expected which causes errors during application start.
+In that case you can inject outgoing ports with <code>Instance&lt;YourOutgoingPort&gt;</code> which decouples the injection process.
+You can find detailed information about it <a href="https://quarkus.io/guides/cdi#hm-wait-a-minute-what-happens-if-multiple-beans-declare-the-same-type">here</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_multiple_business_components_in_modulithic_high_level_architecture"><a class="anchor" href="#_multiple_business_components_in_modulithic_high_level_architecture"></a>Multiple business components in modulithic high-level architecture</h3>
+<div class="paragraph">
+<p>So far we have assumed one business component and therefore also one module that includes core and adapter.
+As functional complexity increases, additional business components/modules are added.</p>
+</div>
+<div class="paragraph">
+<p>The modulith approach is particularly useful if:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>the scaling requirements of the functional components are similar</p>
+</li>
+<li>
+<p>additional complexity due to communication between services is (currently) not desired</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>For new functional components, a new module must be added at the main level.
+Its substructure is analogous to the module described previously.
+This module must also be added as a dependency in the bootstrap module.</p>
+</div>
+<div id="img-t-hexagonal-architecture-modules" class="imageblock text-center">
+<div class="content">
+<img src="../_images/hexagonal_component_architecture_modules2.drawio.svg" alt="devonfw hexagonal architecture modules">
+</div>
+<div class="title">Figure 2. Module-based hexagonal component architecture with multiple modules</div>
+</div>
+<div class="paragraph">
+<p>A crucial aspect of several business components is their communication with each other.
+For example, it is necessary for business component C1 to communicate with component C2.
+Since the business components are within one application, it is not necessary to use communication technologies such as REST.
+JVM based adapters can be used instead.
+In the simplest case, these can be achieved with synchronous communication using direct procedure calls.
+In the case of asynchronous communication, internal message providers such as <a href="https://www.baeldung.com/spring-events">Spring Events</a> can be used.
+These enable decoupling through events at the JVM level and are particularly useful if you plan to later distribute the business components across several applications.</p>
+</div>
+<div class="paragraph">
+<p>To enable communication between the business components, the following steps must be followed:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>a Maven dependency from adapter C1 to adapter C2 need to be added</p>
+</li>
+<li>
+<p>an <code>JVM In adapter</code> is created in component C2, which provides an interface, defines transport objects (TO) and enables these TOs to be mapped to the domain objects in the core of component C2.</p>
+</li>
+<li>
+<p>an <code>JVM out adapter</code> is created in component C1, which maps the domain objects from the core of component C1 into a transport object (defined in adapter C2, see previous step) and then calls the interface of adapter C2.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-plaintext hljs" data-lang="plaintext">application A1
+├── bootstrap (module)
+├── business component C1 (module)
+│   ├── core (module)
+│   │   └── ...
+│   └── adapter (module)
+│       ├── in
+│       │   └── web
+│       │       └── ...
+│       └── out
+│           ├── repository
+│           │   └── ...
+│           └── jvm
+│               └── component C2
+│                   ├── mapper
+│                   │   └── BookingMapper.java
+│                   └── BookingComponentC1OutAdapter.java
+└── business component C2 (module)
+    ├── core (module)
+    │   └── ...
+    └── adapter (module)
+        ├── in
+        │   ├── event
+        │   │   └── ...
+        │   └── jvm
+        │       └── component C1
+        │           ├── model
+        │           │   └── BookingUpdateDto.java
+        │           └── BookingComponentC1InAdapter.java
+        └── out
+            └── repository
+                └── ...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this way, the two business components can communicate with each other within a modular architecture.
+At first glance, this seems complex and may involve overhead, since, for example, two mappings have to be implemented.
+However, this is deliberately chosen because, on the one hand, it means that communication between business components is used consciously and only where really necessary.
+On the other hand, these adapters represent a predetermined breaking point for later division.
+More on this in the next section.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_extract_business_components_into_microservices"><a class="anchor" href="#_extract_business_components_into_microservices"></a>Extract business components into microservices</h3>
+<div class="paragraph">
+<p>Increasing technical complexity or changing scaling requirements may make it necessary to (partially) convert the existing module structure into a microservice architecture over time.
+The previously selected structure of the hexagonal architecture and the explicit communication via JVM adapters enable such a transformation with relatively little effort.
+The decisive advantage is that communication takes place beforehand via firmly defined interfaces.
+These now have to be switched from a jvm-based communication to a communication technology e.g. REST.</p>
+</div>
+<div id="img-t-hexagonal-architecture-microservices" class="imageblock text-center">
+<div class="content">
+<img src="../_images/hexagonal_component_architecture_microservices.drawio.svg" alt="devonfw hexagonal architecture microservices">
+</div>
+<div class="title">Figure 3. Module-based hexagonal component architecture with microservices</div>
+</div>
+<div class="paragraph">
+<p>Based on the previous example, business components C1 and C2 should now be divided into separate microservices.
+The transformation includes the following steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a new application A2 with module structure as described previously with the Bootstap module (and no business component yet).</p>
+</li>
+<li>
+<p>Remove business component C2 from the existing application A1 and transfer it to application A2 created in the previous step.</p>
+</li>
+<li>
+<p>Adjustment of the Maven dependencies analogous to the specifications described previously.
+Additional adapter dependencies, for example for REST or event-based communication.</p>
+</li>
+<li>
+<p>Reimplementation of the previous JVM adapters with the new communication technology.
+This also means that there is no uniform Transfer Object (TO), but this must be defined on both the outgoing and incoming sides.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>After the transformation has been completed, the two business components are separated into two applications / microservices.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+It is important to note that this only highlights the benefits of a module-based hexagonal architecture and how it can be transformed into microservices.
+During the transition, a variety of other aspects such as database split, distributed logging and tracing, resilient communication or distributed transactions must be taken into account.
+These will not be considered further here and are independent of the backend architecture chosen.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Of course, a combination of the options mentioned above (package-based, module-based, microservice-based) is also possible.
+However, the recommendation is that, especially in larger contexts with several business components, at least modules (Maven or Gradle) are used and communication is carried out via adapters.
+This increases maintainability permanently and also enables later transformation into microservices.</p>
+</div>
 </div>
 </div>
 </div>
