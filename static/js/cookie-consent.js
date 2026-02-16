@@ -574,7 +574,7 @@
 function gtag(){dataLayer.push(arguments);}
 function loadGAonConsent(){
     // Google Analytics
-    if(location.hostname == "devonfw.com"){
+    if(location.hostname == "devonfw.github.io"){
       window.dataLayer = window.dataLayer || [];
       gtag('js', new Date());
       gtag('config', 'UA-151636804-1', { 'anonymize_ip': true });
@@ -615,7 +615,7 @@ window.addEventListener("load", function(){
       "deny":"Decline",
       "allow": "Accept",
       "link": "cookie policy",
-      "href": "https://devonfw.com/"
+      "href": "https://devonfw.github.io/"
     },
     revokable:true,
     onStatusChange: function(status, chosenBefore) {
@@ -637,3 +637,4 @@ if (document.cookie.split(';').filter(function(item) {
 }).length) {
     loadGAonConsent();
 }
+
