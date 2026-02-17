@@ -4,7 +4,7 @@ const PROTOCOL = 'https';
 const WIKI_TOKEN = 'wiki';
 const DEFAULT_ANCHOR = '';
 const WORDS_SEPARATOR = '-';
-const DOMAIN = 'devonfw.com';
+const DOMAIN = 'devonfw.github.io';
 const DEFAULT_PREFIX = 'master';
 const ANCHOR = (str) => `_${str}`;
 const ORIGINAL_FILE_EXT = '.asciidoc';
