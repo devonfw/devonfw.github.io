@@ -6,7 +6,7 @@ This graphic shows that modules acts as gates to access components &#34;inside&#
 
 Because the objective of this guide is related mainly with logic, the html structure and scss styles are less relevant.
 
-Before creating a devon4ng application, you first have to install the devonfw ide. You will find more information about devonfw on https://devonfw.com/website/pages/welcome/welcome.html.
+Before creating a devon4ng application, you first have to install the devonfw ide. You will find more information about devonfw on https://devonfw.github.io/website/pages/welcome/welcome.html.
 Once you have setup devonfw ide, you are ready to create your devon4ng application. (Please wait until the devon setup completes and the command prompt appears in the integrated terminal here).
 
 

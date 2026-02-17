@@ -56,8 +56,8 @@ function parseTutorials(tutorials, tutorialsFolder, tempFolder, types){
 
 function tutorialPaths(tutorial){
 	paths = {}
-	paths["eclipse"] = `https://devonfw.com/website/pages/learning/tutorials/wiki_eclipse/${tutorial}/`;
-	paths["vscode"] = `https://devonfw.com/website/pages/learning/tutorials/wiki_vscode/${tutorial}/`;
+	paths["eclipse"] = `https://devonfw.github.io/website/pages/learning/tutorials/wiki_eclipse/${tutorial}/`;
+	paths["vscode"] = `https://devonfw.github.io/website/pages/learning/tutorials/wiki_vscode/${tutorial}/`;
 	paths["killercoda"] = `https://killercoda.com/devonfw/scenario/${tutorial}/`;
 	return paths;
 	

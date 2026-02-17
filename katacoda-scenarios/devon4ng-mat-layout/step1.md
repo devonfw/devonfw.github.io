@@ -1,4 +1,4 @@
-Before creating a devon4ng application, you first have to install the devonfw ide. You will find more information about devonfw on https://devonfw.com/website/pages/welcome/welcome.html.
+Before creating a devon4ng application, you first have to install the devonfw ide. You will find more information about devonfw on https://devonfw.github.io/website/pages/welcome/welcome.html.
 Once you have setup devonfw ide, you are ready to create your first devon4ng project.(Please wait until the devon setup completes and the command prompt becomes ready for writing commands in the integrated terminal here).
 
 

@@ -81,7 +81,7 @@ Click on 'Copy to Editor' to change it automatically.
               &lt;contact&gt;
                 &lt;email&gt;icsddevonfwsupport.apps2@capgemini.com&lt;/email&gt;
                 &lt;name&gt;devon4j support&lt;/name&gt;
-                &lt;url&gt;https://devonfw.com&lt;/url&gt;
+                &lt;url&gt;https://devonfw.github.io&lt;/url&gt;
               &lt;/contact&gt;
               &lt;license&gt;
                 &lt;url&gt;https://github.com/devonfw-sample/devon4quarkus-order/blob/master/LICENSE&lt;/url&gt;

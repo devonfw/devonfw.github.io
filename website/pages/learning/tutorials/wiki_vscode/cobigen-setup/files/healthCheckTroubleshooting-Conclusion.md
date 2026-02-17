@@ -1,7 +1,7 @@
 ## Health Check
 However, you might face some errors while using CobiGen. So, we recommend to perform a Health Check for CobiGen Templates for better experience.
 
-To get more information on Health Check for CobiGen Templates visit on https://devonfw.com/website/pages/docs/master-cobigen.asciidoc_eclipse-integration.html#cobigen-eclipse_usage.asciidoc_health-check
+To get more information on Health Check for CobiGen Templates visit on https://devonfw.github.io/website/pages/docs/master-cobigen.asciidoc_eclipse-integration.html#cobigen-eclipse_usage.asciidoc_health-check
 
 ## Troubleshooting CLI
 When generating code from a Java file, CobiGen makes use of Java reflection for generating templates. In order to do that, the CLI needs to find the compiled source code of your project.
@@ -15,4 +15,4 @@ From this tutorial you have learned the following:
 * You can now integrate CobiGen with Eclipse and generate your crud services.
 * Now you know how to use CobiGen in a particular project with Eclipse as well as CLI.
 
-More information about CobiGen on https://devonfw.com/website/pages/docs/master-cobigen.asciidoc.html
+More information about CobiGen on https://devonfw.github.io/website/pages/docs/master-cobigen.asciidoc.html

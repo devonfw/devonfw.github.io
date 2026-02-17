@@ -7,9 +7,9 @@ The REST service implementation is a regular CDI bean that can use dependency in
 **Why** **Should** **you** **prefer** **devon4j** **client** **over** **other** **clients?**
 
 devon4j supports flexible configuration, adding headers for authentication, mapping of errors from server, logging success/errors with duration for performance analysis, support for synchronous and asynchronous invocations. Easy invocation of service inside a micro-service.
-For more details on REST visit https://devonfw.com/website/pages/docs/devon4j.asciidoc_guides.html#guide-rest.asciidoc
+For more details on REST visit https://devonfw.github.io/website/pages/docs/devon4j.asciidoc_guides.html#guide-rest.asciidoc
 
-For more details on devon4j Service Client https://devonfw.com/website/pages/docs/devon4j.asciidoc_guides.html#guide-service-client.asciidoc
+For more details on devon4j Service Client https://devonfw.github.io/website/pages/docs/devon4j.asciidoc_guides.html#guide-service-client.asciidoc
 
 ## Create the devon4j REST SERVER
 As explained in REST document, With JAX-RS it is important to make sure that each service method is annotated with the proper HTTP annotation(@GET, @POST, etc).

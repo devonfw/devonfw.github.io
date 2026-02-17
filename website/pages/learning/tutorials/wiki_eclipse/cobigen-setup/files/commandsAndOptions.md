@@ -9,4 +9,4 @@ To know more about implementation of this command you can follow https://katacod
 
 `cobigen a`{{execute T1}}
 
-To get more information about rest of all the command visit on https://devonfw.com/website/pages/docs/master-cobigen.asciidoc_cobigen-cli.html
+To get more information about rest of all the command visit on https://devonfw.github.io/website/pages/docs/master-cobigen.asciidoc_cobigen-cli.html
